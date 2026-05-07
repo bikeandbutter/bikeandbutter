@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Marketplace — Bike & Butter</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+
+    /* ===================== MARKETPLACE PAGE HEADER ===================== */
+    .mp-hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 220px;
+      border-bottom: 1px solid #ebebeb;
+    }
+
+    .mp-hero-left {
+      padding: 44px 40px;
+      border-right: 1px solid #ebebeb;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .mp-hero-eyebrow {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #bbb;
+    }
+
+    .mp-hero-title {
+      font-size: 52px;
+      font-weight: 700;
+      letter-spacing: -2px;
+      color: #111;
+      line-height: 1;
+      margin-top: 12px;
+    }
+
+    .mp-hero-right {
+      padding: 44px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .mp-hero-desc {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+      max-width: 380px;
+    }
+
+    .mp-hero-stats {
+      display: flex;
+      gap: 32px;
+    }
+
+    .mp-stat-num {
+      font-size: 28px;
+      font-weight: 700;
+      color: #111;
+      letter-spacing: -1px;
+    }
+
+    .mp-stat-label {
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 2px;
+    }
+
+    /* ===================== SELL CTA BANNER ===================== */
+    .sell-banner {
+      background: #111;
+      color: #fff;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #000;
+    }
+
+    .sell-banner p {
+      font-size: 13px;
+      color: #bbb;
+    }
+
+    .sell-banner strong {
+      color: #fff;
+    }
+
+    .sell-btn {
+      background: #fff;
+      color: #111;
+      border: none;
+      padding: 9px 20px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      letter-spacing: 0.3px;
+      transition: background 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .sell-btn:hover {
+      background: #f0f0f0;
+    }
+
+    /* ===================== FILTER BAR ===================== */
+    .mp-filter-bar {
+      padding: 14px 40px;
+      border-bottom: 1px solid #ebebeb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .mp-filter-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mp-results-count {
+      font-size: 13px;
+      color: #aaa;
+      white-space: nowrap;
+      min-width: 80px;
+    }
+
+    .mp-filter-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mp-search {
+      border: 1px solid #e0e0e0;
+      border-radius: 20px;
+      padding: 7px 16px;
+      font-size: 13px;
+      font-family: inherit;
+      color: #111;
+      outline: none;
+      width: 220px;
+      background: #fafafa;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .mp-search::placeholder { color: #bbb; }
+    .mp-search:focus { border-color: #111; background: #fff; }
+
+    .mp-sort {
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #555;
+      font-family: inherit;
+      background: #fff;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .mp-sort:hover { border-color: #111; }
+
+    /* ===================== LISTINGS ===================== */
+    .mp-listings {
+      padding: 24px 40px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .mp-loading {
+      padding: 60px 0;
+      text-align: center;
+      color: #bbb;
+      font-size: 13px;
+    }
+
+    /* ===================== LISTING CARD ===================== */
+    .mp-card {
+      display: grid;
+      grid-template-columns: 220px 1fr auto;
+      border: 1px solid #ebebeb;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+      background: #fff;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    .mp-card:hover {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border-color: #ddd;
+    }
+
+    .mp-card-img {
+      width: 220px;
+      height: 150px;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .mp-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: #fafafa;
+    }
+
+    .mp-card-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #111;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 3px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .mp-card-badge.used    { background: #555; }
+    .mp-card-badge.vintage { background: #8a6a2e; }
+    .mp-card-badge.parts   { background: #2e5c8a; }
+
+    .mp-card-body {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+    }
+
+    .mp-card-meta {
+      font-size: 11px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+
+    .mp-card-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    .mp-card-desc {
+      font-size: 12px;
+      color: #888;
+      line-height: 1.5;
+
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      /* FIX: silence linter warning */
+      line-clamp: 2;
+    }
+
+    .mp-card-footer {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .mp-card-seller { font-size: 11px; color: #bbb; }
+    .mp-card-seller span { color: #777; font-weight: 500; }
+    .mp-card-condition { font-size: 11px; color: #bbb; }
+    .mp-card-condition span { color: #777; }
+
+    .mp-card-right {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-left: 1px solid #f0f0f0;
+      min-width: 180px;
+    }
+
+    .mp-card-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111;
+      letter-spacing: -0.5px;
+      text-align: right;
+    }
+
+    .mp-card-price-note {
+      font-size: 11px;
+      color: #bbb;
+      text-align: right;
+      margin-top: 2px;
+    }
+
+    .mp-card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      width: 100%;
+    }
+
+    .mp-btn {
+      width: 100%;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      border: 1px solid #e0e0e0;
+      background: #fff;
+      color: #111;
+      transition: all 0.15s;
+      text-align: center;
+    }
+
+    .mp-btn:hover { border-color: #111; }
+
+    .mp-btn.primary {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
+    .mp-btn.primary:hover { background: #333; }
+
+    /* ===================== MODAL ===================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: #fff;
+      border-radius: 14px;
+      width: 480px;
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    }
+
+    .modal-header {
+      padding: 24px 28px 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #111;
+    }
+
+    .modal-subtitle { font-size: 12px; color: #aaa; margin-top: 2px; }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #bbb;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .modal-close:hover { color: #111; }
+
+    .modal-body {
+      padding: 20px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-listing-preview {
+      background: #f7f7f7;
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .modal-listing-preview img {
+      width: 60px;
+      height: 42px;
+      object-fit: contain;
+      border-radius: 4px;
+      background: #fff;
+    }
+
+    .modal-listing-name { font-size: 13px; font-weight: 600; color: #111; }
+    .modal-listing-price { font-size: 12px; color: #888; }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #555;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-family: inherit;
+      color: #111;
+      outline: none;
+      background: #fff;
+      transition: border-color 0.15s;
+      resize: none;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color: #111; }
+
+    .form-group textarea { min-height: 90px; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-submit {
+      background: #111;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-top: 4px;
+    }
+
+    .form-submit:hover { background: #333; }
+    .form-submit:disabled { background: #ccc; cursor: not-allowed; }
+
+    .whatsapp-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #25d366;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .whatsapp-btn:hover { background: #1ebe5d; }
+
+    .modal-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ddd;
+      font-size: 11px;
+    }
+
+    .modal-divider::before,
+    .modal-divider::after {
+      content: '';
+      flex: 1;
+      border-top: 1px solid #ebebeb;
+    }
+
+    .modal-success {
+      text-align: center;
+      padding: 32px 28px;
+    }
+
+    .modal-success-icon { font-size: 40px; margin-bottom: 12px; }
+
+    .modal-success h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .modal-success p { font-size: 13px; color: #888; line-height: 1.5; }
+
+    /* ===================== RESPONSIVE ===================== */
+    @media (max-width: 768px) {
+      .mp-hero { grid-template-columns: 1fr; }
+      .mp-hero-left { border-right: none; border-bottom: 1px solid #ebebeb; padding: 28px 20px; }
+      .mp-hero-right { padding: 24px 20px; }
+      .mp-hero-title { font-size: 36px; }
+      .sell-banner { padding: 14px 20px; gap: 12px; flex-wrap: wrap; }
+      .mp-filter-bar { padding: 14px 20px; }
+      .mp-search { width: 160px; }
+      .mp-listings { padding: 16px 20px 40px; }
+      .mp-card { grid-template-columns: 1fr; }
+      .mp-card-img { width: 100%; height: 200px; }
+      .mp-card-right {
+        border-left: none;
+        border-top: 1px solid #f0f0f0;
+        flex-direction: row;
+        align-items: center;
+        min-width: unset;
+        padding: 14px 20px;
+      }
+      .mp-card-actions { flex-direction: row; width: auto; }
+      .mp-btn { width: auto; white-space: nowrap; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <a href="home.html" class="logo-link">
+      <div class="logo-icon">B</div>
+      Bike &amp; Butter
+    </a>
+  </div>
+
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="index.html">Bikes</a>
+      <a href="brands.html">Brands</a>
+      <a href="community.html">Community</a>
+      <a href="feed.html">Feed</a>
+      <a href="marketplace.html" class="active">Marketplace</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+
+    <div id="auth-area"></div>
+  </div>
+</nav>
+
+  <!-- HERO -->
+  <div class="mp-hero">
+    <div class="mp-hero-left">
+      <p class="mp-hero-eyebrow">Bike &amp; Butter</p>
+      <h1 class="mp-hero-title">Market&shy;place</h1>
+    </div>
+    <div class="mp-hero-right">
+      <p class="mp-hero-desc">
+        Buy and sell complete bikes, parts, and gear — sourced directly from our community and the shop floor. Every listing is verified by the Bike &amp; Butter team.
+      </p>
+      <div class="mp-hero-stats">
+        <div>
+          <div class="mp-stat-num" id="stat-listings">—</div>
+          <div class="mp-stat-label">Active listings</div>
+        </div>
+        <div>
+          <div class="mp-stat-num" id="stat-categories">—</div>
+          <div class="mp-stat-label">Categories</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELL CTA BANNER -->
+  <div class="sell-banner">
+    <p><strong>Got something to sell?</strong> &nbsp;Drop it with us — we'll list it, handle enquiries, and help you close the deal.</p>
+    <button class="sell-btn" onclick="window.location.href='sell.html'">List an Item →</button>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="mp-filter-bar">
+    <div class="mp-filter-left">
+      <span class="mp-results-count" id="results-count">— listings</span>
+      <div class="filters">
+        <button class="filter-btn active" data-filter="All">All</button>
+        <button class="filter-btn" data-filter="Complete Bike">Complete Bikes</button>
+        <button class="filter-btn" data-filter="Parts">Parts</button>
+        <button class="filter-btn" data-filter="Accessories">Accessories</button>
+        <button class="filter-btn" data-filter="Vintage">Vintage</button>
+      </div>
+    </div>
+    <div class="mp-filter-right">
+      <input type="text" class="mp-search" id="mp-search" placeholder="Search listings…" />
+      <select class="mp-sort" id="mp-sort">
+        <option value="newest">Newest</option>
+        <option value="price-asc">Price: Low → High</option>
+        <option value="price-desc">Price: High → Low</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- LISTINGS -->
+  <div class="mp-listings" id="mp-listings">
+    <div class="mp-loading">Loading listings…</div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ===================== ENQUIRY / OFFER MODAL ===================== -->
+  <div class="modal-overlay" id="enquiry-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="modal-title">Make an Offer</div>
+          <div class="modal-subtitle" id="modal-subtitle"></div>
+        </div>
+        <button class="modal-close" onclick="closeModal('enquiry-modal')">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+
+        <div class="modal-listing-preview">
+          <img id="modal-preview-img" src="" alt="" />
+          <div>
+            <div class="modal-listing-name" id="modal-preview-name">—</div>
+            <div class="modal-listing-price" id="modal-preview-price">—</div>
+          </div>
+        </div>
+
+        <div class="filters" id="modal-tabs" style="gap:6px;">
+          <button class="filter-btn active" onclick="setModalMode('offer', this)">Make an Offer</button>
+          <button class="filter-btn" onclick="setModalMode('message', this)">Send a Message</button>
+        </div>
+
+        <!-- OFFER form -->
+        <div id="offer-form">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" id="offer-name" placeholder="e.g. Alex" />
+              </div>
+              <div class="form-group">
+                <label>Your Offer (SGD)</label>
+                <input type="number" id="offer-price" placeholder="e.g. 2500" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email or Phone</label>
+              <input type="text" id="offer-contact" placeholder="So we can reach you" />
+            </div>
+            <div class="form-group">
+              <label>Notes (optional)</label>
+              <textarea id="offer-notes" placeholder="Size, trade-in, pickup preference…"></textarea>
+            </div>
+            <button class="form-submit" onclick="submitOffer()">Send Offer →</button>
+            <div class="modal-divider">or contact us directly</div>
+            <a class="whatsapp-btn" id="offer-whatsapp" href="#" target="_blank">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              WhatsApp Us
+            </a>
+          </div>
+        </div>
+
+        <!-- MESSAGE form -->
+        <div id="message-form" style="display:none;">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" id="msg-name" placeholder="e.g. Alex" />
+              </div>
+              <div class="form-group">
+                <label>Email or Phone</label>
+                <input type="text" id="msg-contact" placeholder="So we can reach you" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Your Message</label>
+              <textarea id="msg-body" placeholder="Ask about size, condition, availability, trade-ins…" style="min-height:110px;"></textarea>
+            </div>
+            <button class="form-submit" onclick="submitMessage()">Send Message →</button>
+            <div class="modal-divider">or contact us directly</div>
+            <a class="whatsapp-btn" id="msg-whatsapp" href="#" target="_blank">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              WhatsApp Us
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SELL / LIST AN ITEM MODAL ===================== -->
+  <div class="modal-overlay" id="sell-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">List an Item</div>
+          <div class="modal-subtitle">We'll review and publish your listing within 24 hours</div>
+        </div>
+        <button class="modal-close" onclick="closeModal('sell-modal')">✕</button>
+      </div>
+      <div class="modal-body" id="sell-modal-body">
+        <div class="form-group">
+          <label>Item Name</label>
+          <input type="text" id="sell-name" placeholder="e.g. Colnago C68 Frameset" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="sell-category">
+              <option value="">Select…</option>
+              <option>Complete Bike</option>
+              <option>Parts</option>
+              <option>Accessories</option>
+              <option>Vintage</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Asking Price (SGD)</label>
+            <input type="number" id="sell-price" placeholder="e.g. 4500" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Condition</label>
+            <select id="sell-condition">
+              <option value="">Select…</option>
+              <option>New</option>
+              <option>Like New</option>
+              <option>Good</option>
+              <option>Fair</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Open to Offers?</label>
+            <select id="sell-negotiable">
+              <option value="Yes">Yes, negotiable</option>
+              <option value="No">Fixed price</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="sell-desc" placeholder="Brand, model, specs, size, mileage, any upgrades or damage…" style="min-height:90px;"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Photo Links (optional)</label>
+          <input type="text" id="sell-photos" placeholder="Google Drive / Dropbox link to your photos" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" id="sell-seller-name" placeholder="e.g. Alex" />
+          </div>
+          <div class="form-group">
+            <label>Contact (Email or Phone)</label>
+            <input type="text" id="sell-contact" placeholder="How we reach you" />
+          </div>
+        </div>
+        <button class="form-submit" onclick="submitListing()">Submit for Review →</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+
+<script>
+const SHEET_ID = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
+const API_KEY  = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
+const WA_NUMBER = '6591234567';
+
+const MP_RANGE = 'Marketplace!B2:W';
+
+let allListings = [];
+let activeFilter = 'All';
+let activeItem = null;
+
+// ================= FETCH =================
+async function fetchListings() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${MP_RANGE}?key=${API_KEY}`;
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.values || data.values.length < 2) {
+      showEmpty('No listings yet.');
+      return;
+    }
+
+    const headers = data.values[0].map(h => h.trim());
+
+    allListings = data.values.slice(1).map(row => {
+      let obj = {};
+      headers.forEach((h, i) => {
+        obj[h] = row[i] || '';
+      });
+
+      // 🔥 NORMALISE DATA HERE
+      return {
+        id: obj['ID'] || '',
+        name: obj['Name'] || '',
+        brand: obj['Brand'] || '',
+        category: obj['Category'] || '',
+        price: obj['Price'] || '',
+        currency: obj['Currency'] || 'SGD',
+        condition: obj['Condition'] || '',
+        description: obj['Description'] || '',
+        photo: obj['Photo_1'] || '',
+        seller: 'Bike & Butter', // fallback
+      };
+    });
+
+    updateStats(allListings.length);
+    renderListings();
+
+  } catch (err) {
+    console.error(err);
+    showEmpty('Error loading listings.');
+  }
+}
+
+// ================= RENDER =================
+function renderListings() {
+  const search = document.getElementById('mp-search').value.toLowerCase();
+
+  let filtered = allListings.filter(item => {
+    const matchFilter =
+      activeFilter === 'All' ||
+      item.category.toLowerCase() === activeFilter.toLowerCase();
+
+    const matchSearch =
+      !search ||
+      item.name.toLowerCase().includes(search) ||
+      item.brand.toLowerCase().includes(search) ||
+      item.description.toLowerCase().includes(search);
+
+    return matchFilter && matchSearch;
+  });
+
+  const container = document.getElementById('mp-listings');
+
+  if (!filtered.length) {
+    container.innerHTML = '<div class="mp-loading">No results.</div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(buildCard).join('');
+  document.getElementById('results-count').textContent = `${filtered.length} listings`;
+}
+
+// ================= CARD =================
+function buildCard(item) {
+  const price = item.price
+  ? `${item.currency || ''} ${String(item.price)}`
+  : 'POA';
+
+  const img = item.photo
+    ? item.photo
+    : 'https://placehold.co/220x150?text=No+Photo';
+
+  return `
+    <div class="mp-card" onclick="goToProduct('${item.id}')">
+      <div class="mp-card-img">
+        <img src="${img}">
+      </div>
+
+      <div class="mp-card-body">
+        <p class="mp-card-meta">${item.brand} · ${item.condition}</p>
+        <p class="mp-card-name">${item.name}</p>
+        <p class="mp-card-desc">${item.description}</p>
+      </div>
+
+      <div class="mp-card-right">
+        <div class="mp-card-price">${price}</div>
+
+        <div class="mp-card-actions">
+          <button class="mp-btn primary"
+            onclick='event.stopPropagation(); openEnquiryModal(${JSON.stringify(item)}, "offer")'>
+            Offer
+          </button>
+
+          <button class="mp-btn"
+            onclick='event.stopPropagation(); openEnquiryModal(${JSON.stringify(item)}, "message")'>
+            Message
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ================= MODAL =================
+function openEnquiryModal(item, mode = 'offer') {
+  activeItem = item;
+
+  document.getElementById('modal-title').textContent =
+    mode === 'offer' ? 'Make an Offer' : 'Send Message';
+
+  document.getElementById('modal-preview-name').textContent = item.name;
+  document.getElementById('modal-preview-price').textContent =
+    item.price ? `${item.currency} ${item.price}` : 'POA';
+
+  document.getElementById('modal-preview-img').src =
+    item.photo || 'https://placehold.co/60x42';
+
+  document.getElementById('enquiry-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+// ================= STATS =================
+function updateStats(total) {
+  document.getElementById('stat-listings').textContent = total;
+
+  const cats = new Set(allListings.map(i => i.category));
+  document.getElementById('stat-categories').textContent = cats.size;
+}
+
+// ================= EMPTY =================
+function showEmpty(msg) {
+  document.getElementById('mp-listings').innerHTML =
+    `<div class="mp-loading">${msg}</div>`;
+}
+
+// ================= EVENTS =================
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderListings();
+  });
+});
+
+document.getElementById('mp-search').addEventListener('input', renderListings);
+
+// ================= INIT =================
+fetchListings();
+
+window.addEventListener('bb-auth-change', () => {
+  // optional: refresh UI if needed later
+  console.log('Auth state changed');
+});
+
+function goToProduct(id) {
+  window.location.href = `product.html?id=${id}`;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brand — Bike & Butter</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <a href="home.html" class="logo-link">
+      <div class="logo-icon">B</div>
+      Bike &amp; Butter
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="index.html">Bikes</a>
+      <a href="brands.html" class="active">Brands</a>
+      <a href="community.html">Community</a>
+      <a href="feed.html">Feed</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <div id="auth-area"></div>
+  </div>
+</nav>
+
+<div class="brand-back">
+  <a href="brands.html">← Brands</a>
+</div>
+
+<div class="brand-hero">
+  <div class="brand-logo" id="brand-logo">
+    <img src="https://placehold.co/120x80?text=Logo">
+  </div>
+  <div class="brand-main">
+    <span class="brand-country-pill" id="brand-country">—</span>
+    <h1 id="brand-name">Loading...</h1>
+    <p id="brand-desc"></p>
+  </div>
+  <div class="brand-stats">
+    <div class="brand-count" id="brand-count">0</div>
+    <div class="brand-count-label">bikes</div>
+  </div>
+</div>
+
+<main>
+  <div id="bike-grid">
+    <div class="loading-state">Loading bikes...</div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="auth.js"></script>
+<script>
+const SHEET_ID    = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
+const API_KEY     = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
+const BRAND_RANGE = 'Brands!B2:F';
+const BIKE_RANGE  = 'Database!B1:W';
+
+let currentBrand = null;
+let allBikes     = [];
+
+function getBrandId() {
+  return new URLSearchParams(window.location.search).get('id');
+}
+
+async function loadBrand() {
+  const brandId = getBrandId();
+  if (!brandId) { showError("No brand ID in URL"); return; }
+
+  try {
+    const res  = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${BRAND_RANGE}?key=${API_KEY}`);
+    const data = await res.json();
+    const rows = data.values || [];
+    const headers = rows[0].map(h => String(h).trim());
+    const idIndex = headers.indexOf('ID');
+
+    const match = rows.slice(1).find(row =>
+      String(row[idIndex] || '').trim() === String(brandId).trim()
+    );
+
+    if (!match) { showError("Brand not found"); return; }
+
+    const brand = {};
+    headers.forEach((h, i) => { brand[h] = match[i] || ''; });
+    currentBrand = brand;
+
+    document.title = `${brand.Brand} — Bike & Butter`;
+    document.getElementById('brand-name').textContent    = brand.Brand;
+    document.getElementById('brand-country').textContent = brand.Country;
+    document.getElementById('brand-desc').textContent    = brand.Description || '';
+
+    if (brand.Logo) {
+      document.getElementById('brand-logo').innerHTML =
+        `<img src="${brand.Logo}" alt="${brand.Brand}">`;
+    }
+
+    loadBikes();
+  } catch (err) { console.error(err); showError("Error loading brand"); }
+}
+
+async function loadBikes() {
+  try {
+    const res  = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${BIKE_RANGE}?key=${API_KEY}`);
+    const data = await res.json();
+    const rows = data.values || [];
+
+    const headers  = rows[1].map(h => String(h).trim());
+    const dataRows = rows.slice(2);
+
+    allBikes = dataRows.map(row => {
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = row[i] || ''; });
+      return obj;
+    });
+
+    const brandBikes = allBikes.filter(b =>
+      String(b.Brand || '').trim().toLowerCase() ===
+      String(currentBrand.Brand || '').trim().toLowerCase()
+    );
+
+    document.getElementById('brand-count').textContent = brandBikes.length;
+
+    if (!brandBikes.length) {
+      document.getElementById('bike-grid').innerHTML = '<div class="loading-state">No bikes found for this brand.</div>';
+      return;
+    }
+
+    document.getElementById('bike-grid').innerHTML = brandBikes.map(renderCard).join('');
+  } catch (err) { console.error(err); showError("Error loading bikes"); }
+}
+
+function renderCard(bike) {
+  const a = window.getUserActions ? window.getUserActions()[bike.ID] || {} : {};
+
+  const favClass      = a.fav ? 'active' : '';
+  const riddenClass   = a.ridden ? 'active' : '';
+  const wishlistClass = a.wishlist ? 'active' : '';
+
+  const price = bike.Retail_Price
+    ? `${bike.Currency || ''} ${bike.Retail_Price}`
+    : '—';
+
+  return `
+    <a href="bike.html?id=${bike.ID}" class="bike-card">
+
+      <div class="bike-img">
+        <img src="${bike.Photo_1 || 'https://placehold.co/300x200?text=No+Photo'}"
+             alt="${bike.Name}" loading="lazy">
+      </div>
+
+      <div class="bike-info">
+
+        <p class="bike-brand">${bike.Brand}</p>
+        <p class="bike-name">${bike.Name}</p>
+
+        <!-- LINE 1 -->
+        <p class="bike-meta">
+          ${bike.Category || '—'} · ${bike.Year || '—'}
+        </p>
+
+        <!-- LINE 2 (PRICE + ICONS SAME ROW) -->
+        <div class="bike-bottom">
+
+          <span class="bike-price">${price}</span>
+
+          <div class="bike-icons">
+            <button class="icon-btn ${favClass}"
+              onclick="event.preventDefault(); handleAction('${bike.ID}', '${bike.Name.replace(/'/g,"\\'")}', 'fav', this)">
+              ☆
+            </button>
+
+            <button class="icon-btn ${riddenClass}"
+              onclick="event.preventDefault(); handleAction('${bike.ID}', '${bike.Name.replace(/'/g,"\\'")}', 'ridden', this)">
+              ✓
+            </button>
+
+            <button class="icon-btn ${wishlistClass}"
+              onclick="event.preventDefault(); handleAction('${bike.ID}', '${bike.Name.replace(/'/g,"\\'")}', 'wishlist', this)">
+              ▢
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </a>`;
+}
+
+function showError(msg) {
+  document.getElementById('bike-grid').innerHTML = `<div class="loading-state">${msg}</div>`;
+}
+
+function handleAction(bikeId, bikeName, action, btn) {
+  const toggle = window.toggleAction;
+
+  if (!toggle) {
+    console.warn("toggleAction not loaded");
+    return;
+  }
+
+  const nextState = btn.classList.toggle('active');
+
+  toggle(bikeId, bikeName, action);
+}
+
+loadBrand();
+</script>
+
+<style>
+  .brand-country-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+
+  text-transform: uppercase;
+
+  background: rgba(255, 60, 60, 0.08);
+  color: #c40000;
+}
+
+#brand-desc {
+  text-align: justify;
+  line-height: 1.6;
+  color: #555;
+  width: 100%;
+}
+
+.bike-meta {
+  font-size: 11px;
+  color: #aaa;
+  margin-bottom: 8px;
+}
+
+.bike-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.bike-price {
+  font-size: 13px;
+  color: #111;
+}
+
+.bike-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 15px;
+  color: #bbb;
+
+  transition: all 0.15s ease, background 0.2s ease;
+}
+
+.icon-btn:hover {
+  color: #111;
+  transform: translateY(-1px);
+}
+
+.bike-icons .icon-btn.active {
+  color: #c40000;
+  background: rgba(196, 0, 0, 0.08);
+  border-radius: 6px;
+}
+</style>
+
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bike & Butter</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+<nav>
+  <div class="nav-logo">
+    <a href="home.html" class="logo-link">
+      <div class="logo-icon">B</div>
+      Bike &amp; Butter
+    </a>
+  </div>
+
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="index.html" class="active">Bikes</a>
+      <a href="brands.html">Brands</a>
+      <a href="community.html">Community</a>
+      <a href="feed.html">Feed</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+
+    <div id="auth-area"></div>
+  </div>
+</nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <p class="page-header-sub">The Road Bike Archive</p>
+    <h1 class="page-header-title">Bikes</h1>
+    <p class="page-header-tagline" id="header-tagline">Loading collection...</p>
+  </div>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="filter-top">
+        <div class="filter-left">
+          <span class="results-count" id="results-count">— bikes</span>
+          <div class="filters">
+          <button class="filter-btn active" data-filter="All">All</button>
+          <button class="filter-btn" data-filter="Road">Road</button>
+          <button class="filter-btn" data-filter="Gravel">Gravel</button>
+          <button class="filter-btn" data-filter="Triathlon">Triathlon</button>
+          <button class="filter-btn" data-filter="Time Trial">Time Trial</button>
+          <button class="filter-btn" data-filter="Track">Track</button>
+        </div>
+        </div>
+        <div class="filter-right">
+          <select id="sort-select">
+            <option value="newest">Newest</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-bottom">
+        <input type="text" class="search-bar" id="search-bar" placeholder="Search bikes, brands..." />
+      </div>
+    </div>
+
+    <!-- BIKE GRID -->
+    <div class="bike-grid" id="bike-grid">
+      <div class="loading-state" id="loading-state">Loading bikes...</div>
+    </div>
+
+  </main>
+
+  <!-- TOAST (needed by auth.js) -->
+  <div class="toast" id="toast"></div>
+
+  <!-- auth.js must come before the inline script -->
+  <script src="auth.js"></script>
+
+  <script>
+    // ================================================
+    // CONFIG
+    // ================================================
+    const SHEET_ID  = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
+    const API_KEY   = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
+    const RANGE     = 'Database!B2:W';
+    // ================================================
+
+    let allBikes = [];
+    let activeFilter = 'All';
+    let userActions  = {};  // { bikeId: { wishlist, ridden, fav } }
+
+    // Keep userActions in sync whenever an action fires on this or another page
+    window.addEventListener('bb-action-change', async () => {
+      userActions = await getUserActions();
+      updateGrid();
+    });
+
+    // Also refresh when user signs in/out
+    window.addEventListener('bb-auth-change', async () => {
+      userActions = await getUserActions();
+      updateGrid();
+    });
+
+    window.addEventListener('bb-auth-change', async () => {
+      userActions = await getUserActions();
+      updateGrid();
+    });
+
+    // --- FETCH FROM GOOGLE SHEETS ---
+    async function fetchBikes() {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+      try {
+        const res  = await fetch(url);
+        const data = await res.json();
+        const rows = data.values || [];
+
+        if (rows.length < 2) { showError('No bikes found in the database yet.'); return; }
+
+        const headers = rows[0].map(h => h.trim());
+        allBikes = rows.slice(1).map(row => {
+          const bike = {};
+          headers.forEach((header, i) => { bike[header] = row[i] || ''; });
+          return bike;
+        });
+
+        // Load user's existing actions before first render
+        userActions = await getUserActions();
+
+        updateGrid();
+        updateCount(allBikes.length);
+        document.getElementById('header-tagline').textContent = 'Every bike has a story — from pro peloton weapons to everyday favourites. Browse the archive.';
+
+      } catch (err) {
+        showError('Could not load bikes. Check your API key and Sheet sharing settings.');
+        console.error(err);
+      }
+    }
+
+    // --- BUILD A SINGLE CARD ---
+    function buildCard(bike) {
+  const id       = bike['ID']           || '';
+  const name     = bike['Name']         || 'Unnamed Bike';
+  const brand    = bike['Brand']        || '';
+  const year     = bike['Year']         || '';
+  const category = bike['Category']     || '';
+  const retail   = bike['Retail_Price'] || '';
+  const currency = bike['Currency']     || '';
+  const photo    = bike['Photo_1']      || '';
+
+  const imgHtml = photo
+    ? `<img src="${photo}" alt="${brand} ${name}" loading="lazy" onerror="this.src='https://placehold.co/300x200?text=No+Photo'">`
+    : `<img src="https://placehold.co/300x200?text=No+Photo" alt="${name}">`;
+
+  const priceDisplay = retail ? `${currency ? currency + ' ' : ''}${retail}` : '—';
+  const tagHtml = category ? `<span class="bike-tag">${category}</span>` : '';
+
+  // user state
+  const a = userActions[id] || {};
+  const favClass      = a.fav      ? 'active' : '';
+  const riddenClass   = a.ridden   ? 'active' : '';
+  const wishlistClass = a.wishlist ? 'active' : '';
+
+  return `
+    <a href="bike.html?id=${id}" class="bike-card">
+      <div class="bike-img">
+        ${imgHtml}
+        ${tagHtml}
+      </div>
+      <div class="bike-info">
+        <p class="bike-brand">${brand}</p>
+        <p class="bike-name">${name}</p>
+        <p class="bike-category">${category}${year ? ' · ' + year : ''}</p>
+        <div class="bike-bottom">
+          <span class="bike-price">${priceDisplay}</span>
+
+          <div class="bike-icons">
+
+            <!-- Favourite -->
+            <button
+              class="icon-btn ${favClass}"
+              title="Favourite"
+              onclick="event.preventDefault(); handleAction('${id}', '${name.replace(/'/g,"\\'")}', 'fav', this)">
+              ☆
+            </button>
+
+            <!-- Ridden -->
+            <button
+              class="icon-btn ${riddenClass}"
+              title="Ridden"
+              onclick="event.preventDefault(); handleAction('${id}', '${name.replace(/'/g,"\\'")}', 'ridden', this)">
+              ✓
+            </button>
+
+            <!-- Wishlist -->
+            <button
+              class="icon-btn ${wishlistClass}"
+              title="Wishlist"
+              onclick="event.preventDefault(); handleAction('${id}', '${name.replace(/'/g,"\\'")}', 'wishlist', this)">
+              ▢
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </a>`;
+}
+
+    // CHANGED: wrapper so the button can update its own visual state immediately
+    async function handleAction(bikeId, bikeName, action, btn) {
+      const newState = await toggleAction(bikeId, bikeName, action);
+      if (newState === true)  btn.classList.add('active');
+      if (newState === false) btn.classList.remove('active');
+      // Also update userActions cache
+      if (!userActions[bikeId]) userActions[bikeId] = {};
+      userActions[bikeId][action] = newState;
+    }
+
+    // --- FILTER + SEARCH + SORT + RENDER ---
+    function updateGrid() {
+      const searchTerm = document.getElementById('search-bar').value.toLowerCase().trim();
+      const sortVal    = document.getElementById('sort-select').value;
+
+      let filtered = allBikes.filter(bike => {
+        const matchFilter = activeFilter === 'All' ||
+          (bike['Category'] || '').toLowerCase() === activeFilter.toLowerCase();
+        const matchSearch = !searchTerm ||
+          (bike['Name']     || '').toLowerCase().includes(searchTerm) ||
+          (bike['Brand']    || '').toLowerCase().includes(searchTerm) ||
+          (bike['Category'] || '').toLowerCase().includes(searchTerm);
+        return matchFilter && matchSearch;
+      });
+
+      if (sortVal === 'newest') {
+        filtered.sort((a, b) => parseInt(b['Year'] || 0) - parseInt(a['Year'] || 0));
+      } else if (sortVal === 'price-asc') {
+        filtered.sort((a, b) => parseFloat(a['Retail_Price'] || 0) - parseFloat(b['Retail_Price'] || 0));
+      } else if (sortVal === 'price-desc') {
+        filtered.sort((a, b) => parseFloat(b['Retail_Price'] || 0) - parseFloat(a['Retail_Price'] || 0));
+      }
+
+      const grid = document.getElementById('bike-grid');
+      grid.innerHTML = filtered.length === 0
+        ? '<div class="loading-state">No bikes match your search.</div>'
+        : filtered.map(buildCard).join('');
+
+      updateCount(filtered.length);
+    }
+
+    function updateCount(n) {
+      document.getElementById('results-count').textContent = `${n} bike${n !== 1 ? 's' : ''}`;
+    }
+
+    function showError(msg) {
+      document.getElementById('bike-grid').innerHTML = `<div class="loading-state">${msg}</div>`;
+      document.getElementById('header-tagline').textContent = 'Error loading collection';
+    }
+
+    // --- EVENT LISTENERS ---
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        updateGrid();
+      });
+    });
+
+    document.getElementById('search-bar').addEventListener('input', updateGrid);
+    document.getElementById('sort-select').addEventListener('change', updateGrid);
+
+    // --- INIT ---
+    fetchBikes();
+  </script>
+
+  <style>
+    .loading-state {
+      grid-column: 1 / -1;
+      padding: 60px 0;
+      text-align: center;
+      color: #bbb;
+      font-size: 13px;
+    }
+
+    /* CHANGED: active state for icon buttons */
+    .bike-icons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .bike-icons .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+
+      width: 24px;
+      height: 24px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 16px;
+      line-height: 1;
+      color: #bbb;
+
+      transition: all 0.15s ease;
+    }
+
+    /* Hover */
+    .bike-icons .icon-btn:hover {
+      color: #111;
+      transform: translateY(-1px);
+    }
+
+    /* Active state */
+    .bike-icons .icon-btn.active {
+      color: #c40000;
+      background: rgba(196, 0, 0, 0.08);
+      border-radius: 6px;
+    }
+  </style>
+
+</body>
+</html>

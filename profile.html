@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile — Bike & Butter</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    .profile-shell {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 32px 0 24px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .profile-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%; object-fit: cover; flex-shrink: 0;
+    }
+
+    .profile-avatar-fallback {
+      width: 64px; height: 64px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+
+    .profile-info { flex: 1; min-width: 0; }
+
+    .profile-name {
+      font-size: 1.1rem; font-weight: 700; margin: 0 0 2px; color: #111;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    .profile-handle { font-size: 0.85rem; color: #999; margin: 0 0 12px; }
+
+    .profile-stats { display: flex; gap: 20px; }
+    .stat-item { text-align: center; }
+    .stat-num   { display: block; font-size: 1.2rem; font-weight: 700; color: #111; line-height: 1; }
+    .stat-label { display: block; font-size: 0.68rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #bbb; margin-top: 3px; }
+
+    .own-profile-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: .05em;
+      text-transform: uppercase; background: #111; color: #fff;
+      padding: 2px 8px; border-radius: 99px; margin-bottom: 10px;
+    }
+
+    .profile-tabs {
+      display: flex; gap: 0;
+      padding: 16px 0 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .tab-btn {
+      padding: 8px 16px; font-size: 0.82rem; font-weight: 600;
+      letter-spacing: .02em; color: #aaa;
+      background: transparent; border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer; transition: all .15s; margin-bottom: -1px;
+    }
+
+    .tab-btn:hover { color: #333; }
+    .tab-btn.active { color: #111; border-bottom-color: #111; }
+
+    .tab-count {
+      display: inline-block; margin-left: 5px;
+      font-size: 0.7rem; font-weight: 700;
+      background: #eee; color: #888;
+      border-radius: 99px; padding: 1px 6px;
+    }
+
+    .tab-btn.active .tab-count { background: #111; color: #fff; }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+      padding: 20px 0 0;
+    }
+
+    .profile-bike-card {
+      display: block; text-decoration: none;
+      border: 1px solid #eee;
+      border-radius: 10px; overflow: hidden;
+      transition: border-color .15s, box-shadow .15s, transform .15s;
+      background: #fff;
+    }
+
+    .profile-bike-card:hover {
+      border-color: #ccc;
+      box-shadow: 0 4px 16px rgba(0,0,0,.07);
+      transform: translateY(-2px);
+    }
+
+    .profile-bike-img {
+      width: 100%; aspect-ratio: 4/3;
+      object-fit: cover; background: #f5f5f5; display: block;
+    }
+
+    .profile-bike-img-placeholder {
+      width: 100%; aspect-ratio: 4/3;
+      background: linear-gradient(135deg, #f5f5f5 0%, #ebebeb 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+    }
+
+    .profile-bike-info { padding: 10px 12px 12px; }
+
+    .profile-bike-brand {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; color: #aaa; margin: 0 0 2px;
+    }
+
+    .profile-bike-name {
+      font-size: 0.82rem; font-weight: 600; color: #111;
+      margin: 0; line-height: 1.3;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      line-clamp: 2;
+    }
+
+    .empty-state {
+      padding: 48px 0; text-align: center;
+      color: #bbb; font-size: 0.875rem;
+    }
+
+    .empty-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+
+    .not-found { padding: 80px 20px; text-align: center; }
+    .not-found h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
+    .not-found p { color: #999; font-size: 0.875rem; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <a href="home.html" class="logo-link">
+      <div class="logo-icon">B</div>
+      Bike &amp; Butter
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="index.html">Bikes</a>
+      <a href="brands.html">Brands</a>
+      <a href="community.html">Community</a>
+      <a href="feed.html">Feed</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <div id="auth-area"></div>
+  </div>
+</nav>
+
+<main>
+  <div class="profile-shell" id="profile-shell">
+    <div class="empty-state" style="padding-top:80px;">Loading profile…</div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="auth.js"></script>
+<script>
+const SHEET_ID = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
+const API_KEY  = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
+
+const params    = new URLSearchParams(location.search);
+const targetUid = params.get('uid') || '';
+
+let profileData = null;
+let userActions = [];
+let bikeMap     = {};
+
+document.addEventListener('DOMContentLoaded', init);
+window.addEventListener('bb-auth-change', () => { if (profileData) renderProfile(); });
+
+async function init() {
+  if (!targetUid) { renderNotFound('No user specified.'); return; }
+  await Promise.all([loadUserFeed(), loadBikeMeta()]);
+  if (!profileData) { renderNotFound('User not found.'); return; }
+  renderProfile();
+}
+
+async function loadUserFeed() {
+  try {
+    const res  = await fetch(`${APPS_SCRIPT_URL}?action=getFeed&uid=${encodeURIComponent(targetUid)}&limit=500`);
+    const text = await res.text();
+    userActions = JSON.parse(text);
+    if (userActions.length) {
+      const e = userActions[0];
+      profileData = { userId: e.userId, userName: e.userName, photoURL: e.photoURL || null };
+    }
+  } catch(err) { console.error('Profile feed load failed:', err); userActions = []; }
+}
+
+async function loadBikeMeta() {
+  try {
+    const url  = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Database!B2:W?key=${API_KEY}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    const rows = data.values || [];
+    const hdrs = rows[0];
+    const idIdx    = hdrs.indexOf('ID');
+    const brandIdx = hdrs.indexOf('Brand');
+    const imgIdx   = hdrs.indexOf('Photo_1');
+    rows.slice(1).forEach(r => {
+      if (r[idIdx]) {
+        bikeMap[String(r[idIdx])] = { brand: r[brandIdx] || '', image: r[imgIdx] || '' };
+      }
+    });
+  } catch(err) { console.warn('Bike meta load failed:', err); }
+}
+
+function renderProfile() {
+  const shell      = document.getElementById('profile-shell');
+  const favItems   = dedupe(userActions.filter(e => e.action === 'fav'));
+  const riddenItems= dedupe(userActions.filter(e => e.action === 'ridden'));
+  const wishItems  = dedupe(userActions.filter(e => e.action === 'wishlist'));
+  const isOwn      = window.currentUser && window.currentUser.uid === targetUid;
+
+  const avatarHTML = profileData.photoURL
+    ? `<img class="profile-avatar" src="${profileData.photoURL}" alt="${sanitize(profileData.userName)}" referrerpolicy="no-referrer">`
+    : `<div class="profile-avatar-fallback" style="background:#555">${sanitize(profileData.userName.slice(0,2).toUpperCase())}</div>`;
+
+  shell.innerHTML = `
+    <div class="profile-header">
+      ${avatarHTML}
+      <div class="profile-info">
+        <p class="profile-name">${sanitize(profileData.userName)}</p>
+        <p class="profile-handle">@${sanitize(handle(profileData.userName))}</p>
+        ${isOwn ? '<span class="own-profile-tag">You</span>' : ''}
+        <div class="profile-stats">
+          <div class="stat-item">
+            <span class="stat-num">${favItems.length}</span>
+            <span class="stat-label">Favourites</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">${riddenItems.length}</span>
+            <span class="stat-label">Ridden</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">${wishItems.length}</span>
+            <span class="stat-label">Wishlist</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-tabs">
+      <button class="tab-btn active" onclick="switchTab('fav', this)">
+        Favourites <span class="tab-count">${favItems.length}</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('ridden', this)">
+        Ridden <span class="tab-count">${riddenItems.length}</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('wishlist', this)">
+        Wishlist <span class="tab-count">${wishItems.length}</span>
+      </button>
+    </div>
+
+    <div class="profile-grid" id="profile-grid"></div>
+  `;
+
+  renderGrid('fav', favItems);
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const map = {
+    fav:      dedupe(userActions.filter(e => e.action === 'fav')),
+    ridden:   dedupe(userActions.filter(e => e.action === 'ridden')),
+    wishlist: dedupe(userActions.filter(e => e.action === 'wishlist')),
+  };
+  renderGrid(tab, map[tab]);
+}
+
+function renderGrid(tab, entries) {
+  const grid = document.getElementById('profile-grid');
+  if (!grid) return;
+  if (!entries.length) {
+    const msgs = {
+      fav:      { icon: '★', text: 'No favourited bikes yet.' },
+      ridden:   { icon: '☑', text: 'No bikes marked as ridden yet.' },
+      wishlist: { icon: '♡', text: 'No bikes on the wishlist yet.' },
+    };
+    const m = msgs[tab];
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><span class="empty-icon">${m.icon}</span>${m.text}</div>`;
+    return;
+  }
+  grid.innerHTML = entries.map(entry => {
+    const meta    = bikeMap[entry.bikeId] || {};
+    const imgHTML = meta.image
+      ? `<img class="profile-bike-img" src="${meta.image}" alt="${sanitize(entry.bikeName)}" loading="lazy">`
+      : '';
+    const phStyle = meta.image ? 'display:none' : '';
+    return `
+      <a href="bike.html?id=${entry.bikeId}" class="profile-bike-card">
+        ${imgHTML}
+        <div class="profile-bike-img-placeholder" style="${phStyle}">🚲</div>
+        <div class="profile-bike-info">
+          <p class="profile-bike-brand">${sanitize(meta.brand)}</p>
+          <p class="profile-bike-name">${sanitize(entry.bikeName)}</p>
+        </div>
+      </a>`;
+  }).join('');
+}
+
+function dedupe(entries) {
+  const seen = new Map();
+  [...entries].forEach(e => { if (!seen.has(e.bikeId)) seen.set(e.bikeId, e); });
+  return [...seen.values()];
+}
+
+function handle(name) { return String(name || '').toLowerCase().replace(/\s+/g, ''); }
+
+function sanitize(str) { return String(str || '').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+function renderNotFound(msg) {
+  document.getElementById('profile-shell').innerHTML = `
+    <div class="not-found">
+      <h2>Profile not found</h2>
+      <p>${msg}</p>
+      <a href="feed.html" style="font-size:.875rem;color:#111;font-weight:600;">← Back to Feed</a>
+    </div>`;
+}
+</script>
+
+</body>
+</html>

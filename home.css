@@ -1,0 +1,203 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* NAV */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  border-bottom: 1px solid #ebebeb;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: #fff;
+  z-index: 100;
+}
+
+/* LEFT LOGO (UNIFIED WITH OTHER PAGES) */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.3px;
+  line-height: 1;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #111;
+  font: inherit;
+}
+
+.logo-icon {
+  width: 28px;
+  height: 28px;
+  background: #111;
+  color: #fff;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* RIGHT SIDE */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+}
+
+.nav-links a {
+  font-size: 13px;
+  color: #555;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: #111;
+}
+
+.nav-signin {
+  font-size: 13px;
+  color: #555;
+  text-decoration: none;
+}
+
+.nav-signin:hover {
+  color: #111;
+}
+
+/* HARD RESET FOR CONSISTENCY */
+.nav-links a,
+.nav-signin,
+.logo-link {
+  text-decoration: none;
+}
+
+/* HERO */
+.hero {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* 🔥 NEW WHITE BOX */
+.hero-box {
+  background: rgba(255,255,255,0.9);
+  padding: 40px 60px;
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+  pointer-events: auto;
+}
+
+.hero-title {
+  font-size: 56px;
+  font-weight: 700;
+}
+
+.hero-sub {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #888;
+}
+
+.hero-meta {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #bbb;
+}
+
+.enter-btn {
+  margin-top: 24px;
+  padding: 10px 18px;
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+  font-size: 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* CANVAS (FIXED FOR INFINITE FEEL) */
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max-content;
+  height: max-content;
+  cursor: grab;
+  will-change: transform;
+}
+
+.canvas:active {
+  cursor: grabbing;
+}
+
+.canvas {
+  will-change: transform;
+}
+
+/* GRID (infinite-style density fix) */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(45, 220px);
+  gap: 40px;
+  padding: 200px;
+  justify-content: center;
+  align-content: center;
+}
+
+/* CARDS */
+.card {
+  text-decoration: none;
+  color: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* NEW: title below image */
+.card-title {
+  margin-top: 8px;
+  font-size: 13px;
+  text-align: center;
+  color: #111;
+}

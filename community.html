@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Community — Bike & Butter</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <a href="home.html" class="logo-link">
+      <div class="logo-icon">B</div>
+      Bike &amp; Butter
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="index.html">Bikes</a>
+      <a href="brands.html">Brands</a>
+      <a href="community.html" class="active">Community</a>
+      <a href="feed.html">Feed</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <div id="auth-area"></div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <p class="page-header-sub">Bike & Butter</p>
+  <h1 class="page-header-title">Community</h1>
+  <p class="page-header-tagline">See who's been exploring the most bikes</p>
+</div>
+
+<main>
+  <div class="community-stats">
+    <div class="stat-pill"><span id="stat-members">—</span> members</div>
+    <div class="stat-pill"><span id="stat-actions">—</span> total actions</div>
+    <div class="stat-pill"><span id="stat-wishlists">—</span> wishlists</div>
+    <div class="stat-pill"><span id="stat-ridden">—</span> ridden</div>
+    <div class="stat-pill"><span id="stat-favs">—</span> favourites</div>
+  </div>
+
+  <div class="signin-gate" id="signin-gate">
+    <div class="gate-inner">
+      <p class="gate-title">Join the community</p>
+      <p class="gate-sub">Sign in with Google to wishlist, mark as ridden, and favourite bikes.</p>
+    </div>
+  </div>
+
+  <div class="community-tabs">
+    <button class="comm-tab active" data-tab="collectors">Collectors</button>
+    <button class="comm-tab" data-tab="ridden">Most Ridden</button>
+    <button class="comm-tab" data-tab="favourited">Most Favourited</button>
+    <button class="comm-tab" data-tab="wishlisted">Most Wishlisted</button>
+  </div>
+
+  <div class="tab-panel" id="tab-collectors">
+    <div class="leaderboard-wrap">
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Member</th><th>Wishlisted</th>
+            <th>Ridden</th><th>Favourites</th><th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-body">
+          <tr><td colspan="6" class="comm-loading">Loading community...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tab-panel hidden" id="tab-ridden">
+    <div class="bike-rank-list" id="list-ridden"><div class="comm-loading">Loading...</div></div>
+  </div>
+  <div class="tab-panel hidden" id="tab-favourited">
+    <div class="bike-rank-list" id="list-favourited"><div class="comm-loading">Loading...</div></div>
+  </div>
+  <div class="tab-panel hidden" id="tab-wishlisted">
+    <div class="bike-rank-list" id="list-wishlisted"><div class="comm-loading">Loading...</div></div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="auth.js"></script>
+<script>
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyD5oir2beAnURC3hy56VCA4vIaJXuu6KoGlNmF03cyXEzqSwbAzqZOH9yiKdYGlEYQ/exec";
+const SHEET_ID    = "19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0";
+const API_KEY     = "AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8";
+const DB_RANGE    = "Database!B2:Z";
+
+let allBikes = [];
+
+document.querySelectorAll(".comm-tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".comm-tab").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
+    btn.classList.add("active");
+    document.getElementById("tab-" + btn.dataset.tab).classList.remove("hidden");
+  });
+});
+
+async function loadLeaderboard() {
+  try {
+    const res   = await fetch(BACKEND_URL + "?action=leaderboard");
+    const users = await res.json();
+    document.getElementById("stat-members").textContent   = users.length;
+    document.getElementById("stat-actions").textContent   = users.reduce((s, u) => s + (u.total || 0), 0);
+    document.getElementById("stat-wishlists").textContent = users.reduce((s, u) => s + (u.wishlist || 0), 0);
+    document.getElementById("stat-ridden").textContent    = users.reduce((s, u) => s + (u.ridden || 0), 0);
+    document.getElementById("stat-favs").textContent      = users.reduce((s, u) => s + (u.fav || 0), 0);
+    const sorted = [...users].sort((a, b) => (b.total || 0) - (a.total || 0));
+    document.getElementById("leaderboard-body").innerHTML = sorted.map((u, i) => {
+      const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1;
+      const isMe  = window.currentUser && window.currentUser.uid === u.uid;
+      return `
+        <tr class="${isMe ? "lb-me" : ""}">
+          <td>${medal}</td>
+          <td><div class="lb-user">
+            <div class="lb-avatar" style="background:${u.color || '#333'}">${(u.name?.[0] || "?").toUpperCase()}</div>
+            ${u.name}${isMe ? " <span class='you-badge'>you</span>" : ""}
+          </div></td>
+          <td>${u.wishlist || 0}</td>
+          <td>${u.ridden || 0}</td>
+          <td>${u.fav || 0}</td>
+          <td><strong>${u.total || 0}</strong></td>
+        </tr>`;
+    }).join("");
+  } catch (err) {
+    document.getElementById("leaderboard-body").innerHTML =
+      `<tr><td colspan="6" class="comm-loading">Could not load leaderboard.</td></tr>`;
+  }
+}
+
+async function fetchBikes() {
+  if (allBikes.length > 0) return allBikes;
+  const url  = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${DB_RANGE}?key=${API_KEY}`;
+  const res  = await fetch(url);
+  const data = await res.json();
+  const rows = data.values || [];
+  if (rows.length < 2) return [];
+  const headers = rows[0].map(h => h.trim());
+  allBikes = rows.slice(1).map(row => {
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = row[i] || "");
+    return obj;
+  });
+  return allBikes;
+}
+
+async function renderBikeRank(containerId, countKey, label) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = `<div class="comm-loading">Loading...</div>`;
+  try {
+    const bikes  = await fetchBikes();
+    const sorted = bikes
+      .filter(b => parseInt(b[countKey] || 0) > 0)
+      .sort((a, b) => parseInt(b[countKey] || 0) - parseInt(a[countKey] || 0));
+    if (sorted.length === 0) {
+      container.innerHTML = `<div class="comm-loading">No data yet — be the first!</div>`;
+      return;
+    }
+    container.innerHTML = sorted.map((bike, i) => {
+      const count = parseInt(bike[countKey] || 0);
+      const photo = bike["Photo_1"] || "";
+      const name  = bike["Name"] || "Unnamed";
+      const brand = bike["Brand"] || "";
+      const id    = bike["ID"] || "";
+      return `
+        <a class="bike-rank-row" href="bike.html?id=${id}">
+          <div class="rank-pos">${i + 1}</div>
+          <div class="rank-img">
+            ${photo
+              ? `<img src="${photo}" alt="${name}" loading="lazy" onerror="this.src='https://placehold.co/72x48?text=—'">`
+              : `<img src="https://placehold.co/72x48?text=—">`}
+          </div>
+          <div class="rank-info">
+            <p class="rank-brand">${brand}</p>
+            <p class="rank-name">${name}</p>
+          </div>
+          <div class="rank-count">
+            <span class="rank-num">${count}</span>
+            <span class="rank-label">${count === 1 ? label : label + "s"}</span>
+          </div>
+        </a>`;
+    }).join("");
+  } catch (err) {
+    container.innerHTML = `<div class="comm-loading">Could not load data.</div>`;
+  }
+}
+
+async function updateUI() {
+  document.getElementById("signin-gate").style.display = window.currentUser ? "none" : "flex";
+  loadLeaderboard();
+  await fetchBikes();
+  renderBikeRank("list-ridden",     "Ridden_Count",  "ride");
+  renderBikeRank("list-favourited", "Fav_Count",     "favourite");
+  renderBikeRank("list-wishlisted", "Wishlist_Count","wishlist");
+}
+
+window.addEventListener("bb-auth-change", updateUI);
+document.addEventListener("DOMContentLoaded", updateUI);
+</script>
+
+</body>
+</html>

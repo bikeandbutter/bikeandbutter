@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product — Bike & Butter</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <a href="home.html" class="logo-link">
+      <div class="logo-icon">B</div>
+      Bike &amp; Butter
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="index.html">Bikes</a>
+      <a href="brands.html">Brands</a>
+      <a href="community.html">Community</a>
+      <a href="feed.html">Feed</a>
+      <a href="marketplace.html" class="active">Marketplace</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <div id="auth-area"></div>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <a href="marketplace.html">Marketplace</a>
+  <span>›</span>
+  <span id="breadcrumb-brand">—</span>
+  <span>›</span>
+  <span id="breadcrumb-name">Loading...</span>
+</div>
+
+<div class="product-layout">
+
+  <!-- LEFT -->
+  <div class="left-column">
+    <div class="photo-section">
+      <div class="product-img-main">
+        <img id="main-photo" src="https://placehold.co/600x400?text=Loading..." />
+      </div>
+    </div>
+    <div class="description-section">
+      <div class="description-box">
+        <p class="table-heading">DESCRIPTION</p>
+        <p id="product-description">Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-column">
+    <div class="product-identity">
+      <div class="identity-top">
+        <span class="product-brand-label" id="product-brand">—</span>
+        <span class="product-tag" id="product-tag">—</span>
+      </div>
+      <h1 class="product-name" id="product-name">Loading...</h1>
+      <p class="product-meta">
+        <span id="meta-category">—</span> ·
+        <span id="meta-condition">—</span>
+      </p>
+      <p class="product-price" id="product-price">—</p>
+
+      <!-- CTA BUTTONS -->
+      <div class="product-actions" style="margin-top: 8px;">
+        <button class="action-btn" style="background:#111;color:#fff;border-color:#111;"
+          onclick="authGuard(() => window.location.href='contact.html?type=Make%20an%20Offer&bike=' + encodeURIComponent(currentProductName),
+            'Sign in to make an offer', 'You need to be signed in to make an offer.')">
+          Make an Offer
+        </button>
+        <button class="action-btn"
+          onclick="authGuard(() => window.location.href='contact.html?type=Ask%20a%20Question&bike=' + encodeURIComponent(currentProductName),
+            'Sign in to ask a question', 'You need to be signed in to send a message.')">
+          Ask a Question
+        </button>
+      </div>
+    </div>
+
+    <div class="info-block">
+      <table class="neat-table">
+        <thead><tr><td colspan="2">Details</td></tr></thead>
+        <tbody>
+          <tr><td>Brand</td><td id="detail-brand">—</td></tr>
+          <tr><td>Category</td><td id="detail-category">—</td></tr>
+          <tr><td>Condition</td><td id="detail-condition">—</td></tr>
+          <tr><td>Availability</td><td id="detail-availability">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-block">
+      <table class="neat-table">
+        <thead><tr><td colspan="2">Specifications</td></tr></thead>
+        <tbody>
+          <tr><td>Frame</td><td id="spec-frame">—</td></tr>
+          <tr><td>Groupset</td><td id="spec-groupset">—</td></tr>
+          <tr><td>Wheelset</td><td id="spec-wheelset">—</td></tr>
+          <tr><td>Brakes</td><td id="spec-brakes">—</td></tr>
+          <tr><td>Weight</td><td id="spec-weight">—</td></tr>
+          <tr><td>Size</td><td id="spec-size">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="auth.js"></script>
+<script>
+const SHEET_ID = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
+const API_KEY  = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
+const RANGE    = 'Marketplace!B2:U';
+
+let currentProductName = '';
+
+function setField(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val || '—';
+}
+
+function getId() {
+  return new URLSearchParams(window.location.search).get('id');
+}
+
+function populate(product) {
+  const name = product.Name || 'Unnamed Product';
+  currentProductName = name;
+  document.title = `${name} — Bike & Butter`;
+
+  setField('breadcrumb-brand',    product.Brand);
+  setField('breadcrumb-name',     name);
+  setField('product-brand',       (product.Brand || '').toUpperCase());
+  setField('product-tag',         product.Category);
+  setField('product-name',        name);
+  setField('meta-category',       product.Category);
+  setField('meta-condition',      product.Condition);
+  setField('product-price',       product.Price ? `${product.Currency || 'SGD'} ${product.Price}` : 'POA');
+  setField('product-description', product.Description);
+  setField('detail-brand',        product.Brand);
+  setField('detail-category',     product.Category);
+  setField('detail-condition',    product.Condition);
+  setField('detail-availability', product.Availability);
+  setField('spec-frame',          product.Frame_Material);
+  setField('spec-groupset',       product.Groupset);
+  setField('spec-wheelset',       product.Wheelset);
+  setField('spec-brakes',         product.Brakes);
+  setField('spec-weight',         product.Weight);
+  setField('spec-size',           product.Size);
+
+  document.getElementById('main-photo').src =
+    product.Photo_1 || product.Photo_2 || product.Photo_3 ||
+    product.Photo_4 || product.Photo_5 ||
+    'https://placehold.co/600x400?text=No+Photo';
+}
+
+async function loadProduct() {
+  const currentId = getId();
+  if (!currentId) return;
+
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+  try {
+    const res  = await fetch(url);
+    const data = await res.json();
+    if (!data.values || data.values.length < 2) return;
+
+    const headers = data.values[0];
+    const idIndex = headers.indexOf('ID');
+    const row     = data.values.slice(1).find(r => String(r[idIndex]) === String(currentId));
+    if (!row) return;
+
+    const product = {};
+    headers.forEach((h, i) => { product[h] = row[i] || ''; });
+    populate(product);
+  } catch (err) { console.error("Fetch failed:", err); }
+}
+
+loadProduct();
+</script>
+
+</body>
+</html>

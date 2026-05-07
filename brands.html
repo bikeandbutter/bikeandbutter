@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brands — Bike & Butter</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <a href="home.html" class="logo-link">
+      <div class="logo-icon">B</div>
+      Bike &amp; Butter
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="index.html">Bikes</a>
+      <a href="brands.html" class="active">Brands</a>
+      <a href="community.html">Community</a>
+      <a href="feed.html">Feed</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <div id="auth-area"></div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <p class="page-header-sub">The Road Bike Archive</p>
+  <h1 class="page-header-title">Brands</h1>
+  <p class="page-header-tagline" id="header-tagline">Loading brands...</p>
+</div>
+
+<main>
+  <div class="filter-bar">
+    <div class="filter-bottom">
+      <input type="text" class="search-bar" id="search-bar" placeholder="Search brands..." />
+    </div>
+  </div>
+  <div id="brand-grid">
+    <div class="loading-state">Loading brands...</div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="auth.js"></script>
+<script>
+const SHEET_ID = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
+const API_KEY  = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
+const RANGE    = 'Brands!A2:F';
+
+let allBrands = [];
+
+async function fetchBrands() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+  try {
+    const res  = await fetch(url);
+    const data = await res.json();
+    const rows = data.values || [];
+    if (!rows.length) { showError("No brands found"); return; }
+    const headers = rows[0].map(h => h.trim());
+    allBrands = rows.slice(1).map(row => {
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = row[i] || ''; });
+      return obj;
+    });
+    updateGrid();
+    document.getElementById('header-tagline').textContent = 'From heritage manufacturers to modern disruptors — explore the brands shaping cycling today.';
+  } catch (err) { console.error(err); showError("Failed to load brands"); }
+}
+
+function buildCard(brand) {
+  const img = brand.Logo
+    ? `<img src="${brand.Logo}" alt="${brand.Brand}" loading="lazy">`
+    : `<img src="https://placehold.co/200x120?text=No+Logo">`;
+  return `
+    <a href="solobrand.html?id=${brand.ID}" class="bike-card">
+      <div class="bike-img">${img}</div>
+      <div class="bike-info">
+        <p class="bike-brand">${brand.Country}</p>
+        <p class="bike-name">${brand.Brand}</p>
+      </div>
+    </a>`;
+}
+
+function buildCountrySection(country, brands) {
+  return `
+    <div class="country-section">
+      <div class="country-header">
+        <span class="country-badge">${country}</span>
+        <span class="country-count">${brands.length}</span>
+      </div>
+      <div class="country-grid">${brands.map(buildCard).join('')}</div>
+    </div>`;
+}
+
+function updateGrid() {
+  const search   = document.getElementById('search-bar').value.toLowerCase().trim();
+  let filtered   = allBrands.filter(b =>
+    !search ||
+    (b.Brand || '').toLowerCase().includes(search) ||
+    (b.Country || '').toLowerCase().includes(search)
+  );
+  const grouped  = {};
+  filtered.forEach(b => {
+    const key = b.Country || 'Unknown';
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(b);
+  });
+  document.getElementById('brand-grid').innerHTML = Object.keys(grouped).sort()
+    .map(country => buildCountrySection(country, grouped[country])).join('');
+}
+
+function showError(msg) {
+  document.getElementById('brand-grid').innerHTML = `<div class="loading-state">${msg}</div>`;
+}
+
+document.getElementById('search-bar').addEventListener('input', updateGrid);
+fetchBrands();
+</script>
+
+</body>
+</html>

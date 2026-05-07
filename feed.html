@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Feed — Bike & Butter</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    .feed-shell {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    /* ── Filter bar ── */
+    .feed-filter-bar {
+      display: flex;
+      gap: 6px;
+      padding: 18px 0 16px;
+      border-bottom: 1px solid #eee;
+    }
+
+    /* ── Feed list ── */
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 16px;
+    }
+
+    /* ── Each item is a grey bubble card ── */
+    .feed-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: #f5f5f5;
+      border-radius: 14px;
+      font-size: 0.875rem;
+      line-height: 1.45;
+      transition: background .15s;
+    }
+
+    .feed-item:hover { background: #efefef; }
+
+    /* ── Avatar bubble ── */
+    .feed-avatar {
+      flex-shrink: 0;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #ddd;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #888;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      text-decoration: none;
+    }
+
+    .feed-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ── Text block ── */
+    .feed-item-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .feed-text {
+      margin: 0;
+      color: #111;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    .feed-user-link {
+      font-weight: 700;
+      color: #111;
+      text-decoration: none;
+    }
+    .feed-user-link:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+    .feed-action-word { color: #999; font-weight: 400; margin: 0 3px; }
+
+    .feed-bike-link { color: #111; text-decoration: none; font-weight: 500; }
+    .feed-bike-link:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+    .feed-meta { margin: 2px 0 0; font-size: 0.72rem; color: #bbb; letter-spacing: .01em; }
+
+    /* ── Action icon ── */
+    .feed-action-icon {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feed-action-icon svg { display: block; }
+
+    .icon-fav      { background: #fff3e0; }
+    .icon-ridden   { background: #e8f5e9; }
+    .icon-wishlist { background: #f3e5f5; }
+
+    /* ── Bike thumbnail ── */
+    .feed-bike-thumb {
+      flex-shrink: 0;
+      width: 72px;
+      height: 48px;
+      border-radius: 8px;
+      background: #ebebeb;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      padding: 4px;
+      box-sizing: border-box;
+    }
+
+    .feed-bike-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .feed-bike-thumb-placeholder {
+      font-size: 18px;
+      opacity: .3;
+    }
+
+    /* ── Loading / empty ── */
+    .loading-state {
+      padding: 40px 0;
+      text-align: center;
+      font-size: 0.875rem;
+      color: #aaa;
+    }
+
+    /* ── Header row ── */
+    .feed-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 0 0;
+    }
+
+    .feed-header-row h2 {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin: 0;
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #22c55e;
+    }
+
+    .live-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: .5; transform: scale(1.3); }
+    }
+
+    .refresh-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.75rem; color: #aaa;
+      padding: 2px 6px; border-radius: 4px;
+      transition: color .15s; font-family: inherit;
+    }
+    .refresh-btn:hover { color: #111; }
+
+    /* ── Soft sign-in nudge ── */
+    .signin-nudge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #f5f5f5;
+      border-radius: 12px;
+      margin-top: 14px;
+    }
+
+    .nudge-text {
+      flex: 1;
+      font-size: 0.8rem;
+      color: #888;
+      margin: 0;
+    }
+
+    .btn-google-small {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color .15s, box-shadow .15s;
+      color: #111;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .btn-google-small:hover { border-color: #aaa; box-shadow: 0 2px 8px rgba(0,0,0,.07); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <a href="home.html" class="logo-link">
+      <div class="logo-icon">B</div>
+      Bike &amp; Butter
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="index.html">Bikes</a>
+      <a href="brands.html">Brands</a>
+      <a href="community.html">Community</a>
+      <a href="feed.html" class="active">Feed</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <div id="auth-area"></div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <p class="page-header-sub">Activity</p>
+  <h1 class="page-header-title">Feed</h1>
+  <p class="page-header-tagline">What the community has been up to</p>
+</div>
+
+<main>
+  <div class="feed-shell">
+
+    <div id="feed-wrap">
+      <div class="feed-header-row">
+        <h2>Community Activity</h2>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="refresh-btn" onclick="loadFeed()">↻ Refresh</button>
+          <span class="live-badge"><span class="live-dot"></span>Live</span>
+        </div>
+      </div>
+
+      <div class="feed-filter-bar">
+        <button class="filter-btn active" onclick="filterFeed('all', this)">All</button>
+        <button class="filter-btn" onclick="filterFeed('fav', this)">Favourited</button>
+        <button class="filter-btn" onclick="filterFeed('ridden', this)">Ridden</button>
+        <button class="filter-btn" onclick="filterFeed('wishlist', this)">Wishlist</button>
+      </div>
+
+      <!-- soft nudge for logged-out users -->
+      <div id="signin-nudge" class="signin-nudge" style="display:none;">
+        <p class="nudge-text">Sign in so your activity also appears in the feed.</p>
+        <button class="btn-google-small" onclick="signIn()">
+          <svg width="14" height="14" viewBox="0 0 48 48">
+            <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 2.9l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/>
+            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 16 19 12 24 12c3.1 0 5.8 1.1 7.9 2.9l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+            <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.4 35.5 26.8 36 24 36c-5.3 0-9.7-3.2-11.3-7.8l-6.6 5.1C9.6 39.6 16.3 44 24 44z"/>
+            <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.3 4.1-4.2 5.4l6.2 5.2C37 38 44 32.8 44 24c0-1.3-.1-2.6-.4-3.9z"/>
+          </svg>
+          Sign in
+        </button>
+      </div>
+
+      <div class="feed-list" id="feed-list">
+        <div class="loading-state">Loading feed…</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="auth.js"></script>
+<script>
+let allFeedItems     = [];
+let activeFilter     = 'all';
+let autoRefreshTimer = null;
+
+/* ── Relative timestamp ─────────────────────────────────────────── */
+function timeAgo(isoString) {
+  if (!isoString) return '';
+  const diff = Math.floor((Date.now() - new Date(isoString).getTime()) / 1000); // seconds ago
+  if (diff < 60)     return 'just now';
+  if (diff < 3600)  { const m = Math.floor(diff / 60);    return m + ' minute'  + (m === 1 ? '' : 's') + ' ago'; }
+  if (diff < 86400) { const h = Math.floor(diff / 3600);  return h + ' hour'    + (h === 1 ? '' : 's') + ' ago'; }
+  if (diff < 604800){ const d = Math.floor(diff / 86400); return d + ' day'     + (d === 1 ? '' : 's') + ' ago'; }
+  const w = Math.floor(diff / 604800);                    return w + ' week'    + (w === 1 ? '' : 's') + ' ago';
+}
+
+/* ── Action icons (star / check / box) ─────────────────────────── */
+const ACTION_ICON = {
+  fav: `<span class="feed-action-icon icon-fav" title="Favourited">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="#e67700" stroke="none">
+      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+    </svg>
+  </span>`,
+  ridden: `<span class="feed-action-icon icon-ridden" title="Marked as ridden">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </span>`,
+  wishlist: `<span class="feed-action-icon icon-wishlist" title="Wishlisted">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7b1fa2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+    </svg>
+  </span>`,
+};
+
+const ACTION_WORD = {
+  wishlist: 'wishlisted',
+  ridden:   'marked as ridden',
+  fav:      'favourited',
+};
+
+/* ── Fetch feed ─────────────────────────────────────────────────── */
+async function loadFeed() {
+  const list = document.getElementById('feed-list');
+  list.innerHTML = '<div class="loading-state">Loading feed…</div>';
+  try {
+    const res    = await fetch(`${APPS_SCRIPT_URL}?action=getFeed&limit=200`);
+    const text   = await res.text();
+    allFeedItems = JSON.parse(text);
+  } catch(e) {
+    list.innerHTML = '<div class="loading-state">Could not load feed — try refreshing.</div>';
+    return;
+  }
+  renderFeed();
+  clearTimeout(autoRefreshTimer);
+  autoRefreshTimer = setTimeout(loadFeed, 60000);
+}
+
+/* ── Filter ─────────────────────────────────────────────────────── */
+function filterFeed(action, btn) {
+  activeFilter = action;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFeed();
+}
+
+/* ── Render ─────────────────────────────────────────────────────── */
+function renderFeed() {
+  const list  = document.getElementById('feed-list');
+  const items = activeFilter === 'all'
+    ? allFeedItems
+    : allFeedItems.filter(i => i.action === activeFilter);
+
+  if (!items.length) {
+    list.innerHTML = '<div class="loading-state">No activity yet — start interacting with bikes!</div>';
+    return;
+  }
+
+  list.innerHTML = items.map(item => {
+    const initial = sanitize(item.userName || '?').charAt(0).toUpperCase();
+
+    // userPhoto = Google profile picture URL from the Photo column
+    const avatarInner = item.userPhoto
+      ? `<img src="${sanitize(item.userPhoto)}" alt="${sanitize(item.userName)}"
+             onerror="this.style.display='none';this.parentElement.textContent='${initial}'">`
+      : initial;
+
+    // bikeImage = joined from Bikes sheet by Apps Script
+    const thumbInner = item.bikeImage
+      ? `<img src="${sanitize(item.bikeImage)}" alt="${sanitize(item.bikeName)}"
+             onerror="this.style.display='none'">`
+      : `<span class="feed-bike-thumb-placeholder">🚲</span>`;
+
+    const icon = ACTION_ICON[item.action] || '';
+
+    return `
+      <div class="feed-item">
+        <a href="profile.html?uid=${encodeURIComponent(item.userId)}"
+           class="feed-avatar" title="@${sanitize(item.userName)}">
+          ${avatarInner}
+        </a>
+        <div class="feed-item-body">
+          <p class="feed-text">
+            <a href="profile.html?uid=${encodeURIComponent(item.userId)}"
+               class="feed-user-link">@${sanitize(item.userName)}</a>
+            <span class="feed-action-word">${ACTION_WORD[item.action] || sanitize(item.action)}</span>
+            <a href="bike.html?id=${sanitize(item.bikeId)}"
+               class="feed-bike-link">${sanitize(item.bikeName)}</a>
+          </p>
+          <p class="feed-meta">${timeAgo(item.ts)}</p>
+        </div>
+        ${icon}
+        <a href="bike.html?id=${sanitize(item.bikeId)}" class="feed-bike-thumb"
+           title="${sanitize(item.bikeName)}">
+          ${thumbInner}
+        </a>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ── Sanitise ───────────────────────────────────────────────────── */
+function sanitize(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* ── Auth nudge (non-blocking) ──────────────────────────────────── */
+function updateNudge() {
+  const nudge = document.getElementById('signin-nudge');
+  if (nudge) nudge.style.display = window.currentUser ? 'none' : 'flex';
+}
+
+window.addEventListener('bb-auth-change', updateNudge);
+document.addEventListener('DOMContentLoaded', () => {
+  updateNudge();
+  loadFeed();
+});
+</script>
+
+</body>
+</html>

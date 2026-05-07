@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bike & Butter</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <a href="home.html" class="logo-link">
+      <div class="logo-icon">B</div>
+      Bike &amp; Butter
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="index.html">Bikes</a>
+      <a href="brands.html">Brands</a>
+      <a href="community.html">Community</a>
+      <a href="feed.html">Feed</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="contact.html">Contact Us</a>
+    </div>
+    <div id="auth-area"></div>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <a href="index.html">Bikes</a>
+  <span>›</span>
+  <span id="breadcrumb-brand">—</span>
+  <span>›</span>
+  <span id="breadcrumb-name">Loading...</span>
+</div>
+
+<div class="product-layout">
+  <div class="left-column">
+    <div class="photo-section">
+      <div class="product-img-main">
+        <img id="main-photo" src="https://placehold.co/600x400?text=Loading..." />
+      </div>
+    </div>
+    <div class="description-section">
+      <div class="description-box">
+        <p class="table-heading">DESCRIPTION</p>
+        <p id="bike-description">Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-column">
+    <div class="product-identity">
+      <div class="identity-top">
+        <span class="product-brand-label" id="product-brand">—</span>
+        <span class="product-tag" id="product-tag">—</span>
+      </div>
+      <h1 class="product-name" id="product-name">Loading...</h1>
+      <p class="product-meta">
+        <span id="meta-category">—</span> ·
+        <span id="meta-year">—</span> ·
+        <span id="meta-country">—</span>
+      </p>
+      <p class="product-price" id="product-price">—</p>
+      <div class="product-actions">
+        <button class="action-btn" id="btn-fav" onclick="handleAction('fav')">☆ Favourite</button>
+        <button class="action-btn" id="btn-ridden" onclick="handleAction('ridden')">✓ Ridden</button>
+        <button class="action-btn" id="btn-wishlist" onclick="handleAction('wishlist')">▢ Wishlist</button>
+      </div>
+    </div>
+
+    <div class="info-block">
+      <table class="neat-table">
+        <thead><tr><td colspan="2">Specifications</td></tr></thead>
+        <tbody>
+          <tr><td>Frame</td><td id="spec-frame">—</td></tr>
+          <tr><td>Groupset</td><td id="spec-groupset">—</td></tr>
+          <tr><td>Wheelset</td><td id="spec-wheelset">—</td></tr>
+          <tr><td>Brakes</td><td id="spec-brakes">—</td></tr>
+          <tr><td>Weight</td><td id="spec-weight">—</td></tr>
+          <tr><td>Sizes</td><td id="spec-sizes">—</td></tr>
+          <tr><td>Year</td><td id="spec-year">—</td></tr>
+          <tr><td>Country</td><td id="spec-country">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-block">
+      <table class="neat-table">
+        <thead><tr><td colspan="2">Pricing</td></tr></thead>
+        <tbody>
+          <tr><td>Retail Price</td><td id="price-retail">—</td></tr>
+          <tr><td>Street Price</td><td id="price-street">—</td></tr>
+          <tr><td>Currency</td><td id="price-currency">—</td></tr>
+          <tr><td>Availability</td><td id="price-avail">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="auth.js"></script>
+<script>
+const SHEET_ID = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
+const API_KEY  = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
+const RANGE    = 'Database!B2:W';
+
+let currentBikeId   = null;
+let currentBikeName = null;
+
+function setField(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val || '—';
+}
+
+function getBikeId() {
+  return new URLSearchParams(window.location.search).get('id');
+}
+
+function handleAction(action) {
+  authGuard(
+    () => {
+      const btn = document.getElementById(
+        action === 'fav' ? 'btn-fav' : action === 'ridden' ? 'btn-ridden' : 'btn-wishlist'
+      );
+      const nextState = !btn.classList.contains('active');
+      btn.classList.toggle('active', nextState);
+      if (nextState) writeFeedEntry(action, currentBikeId, currentBikeName);
+      window.toggleAction(currentBikeId, currentBikeName, action);
+    },
+    'Sign in to save bikes',
+    'Sign in with Google to wishlist, favourite, and mark bikes as ridden.'
+  );
+}
+
+function hydrateButtons() {
+  if (!window.currentUser || !currentBikeId) return;
+  const actions     = window.getUserActions();
+  const bikeActions = actions[currentBikeId];
+  if (!bikeActions) return;
+  document.getElementById('btn-fav')?.classList.toggle('active', !!bikeActions.fav);
+  document.getElementById('btn-ridden')?.classList.toggle('active', !!bikeActions.ridden);
+  document.getElementById('btn-wishlist')?.classList.toggle('active', !!bikeActions.wishlist);
+}
+
+function populatePage(bike) {
+  const name = bike['Name'] || 'Unnamed Bike';
+  document.title = `${name} — Bike & Butter`;
+  setField('breadcrumb-brand', bike['Brand']);
+  setField('breadcrumb-name',  name);
+  setField('product-brand',    bike['Brand']?.toUpperCase());
+  setField('product-tag',      bike['Category']);
+  setField('product-name',     name);
+  setField('meta-category',    bike['Category']);
+  setField('meta-year',        bike['Year']);
+  setField('meta-country',     bike['Country']);
+  setField('product-price', bike['Retail_Price'] ? `${bike['Currency'] || ''} ${bike['Retail_Price']}` : '—');
+  setField('spec-frame',    bike['Frame_Material']);
+  setField('spec-groupset', bike['Groupset']);
+  setField('spec-wheelset', bike['Wheelset']);
+  setField('spec-brakes',   bike['Brakes']);
+  setField('spec-weight',   bike['Weight']);
+  setField('spec-sizes',    bike['Sizes']);
+  setField('spec-year',     bike['Year']);
+  setField('spec-country',  bike['Country']);
+  setField('bike-description', bike['Description']);
+  setField('price-retail',   bike['Retail_Price']);
+  setField('price-street',   bike['Street_Price']);
+  setField('price-currency', bike['Currency']);
+  setField('price-avail',    bike['Availability']);
+  document.getElementById('main-photo').src = bike['Photo_1'] || 'https://placehold.co/600x400?text=No+Photo';
+}
+
+async function loadBike() {
+  currentBikeId = getBikeId();
+  if (!currentBikeId) return;
+  const url  = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+  const res  = await fetch(url);
+  const data = await res.json();
+  const rows    = data.values || [];
+  const headers = rows[0];
+  const idIndex = headers.indexOf('ID');
+  const row = rows.slice(1).find(r => String(r[idIndex]) === String(currentBikeId));
+  if (!row) return;
+  const bike = {};
+  headers.forEach((h, i) => bike[h] = row[i]);
+  currentBikeName = bike['Name'];
+  populatePage(bike);
+  hydrateButtons();
+}
+
+function writeFeedEntry(action, bikeId, bikeName) {
+  if (!window.currentUser || !bikeId || !bikeName) return;
+  const user = window.currentUser;
+  syncToSheet({
+    action: 'feedEntry', uid: user.uid,
+    userName: user.name || user.email?.split('@')[0] || 'Anonymous',
+    photoURL: user.picture || '', stat: action,
+    bikeId: String(bikeId), bikeName
+  });
+}
+
+loadBike();
+window.addEventListener('bb-auth-change', hydrateButtons);
+</script>
+
+<style>
+.product-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.action-btn {
+  background: none;
+  border: 1px solid #eee;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  color: #999;
+  border-radius: 10px;
+  transition: all 0.15s ease;
+}
+
+.action-btn:hover {
+  color: #111;
+  border-color: #ddd;
+  background: rgba(0,0,0,0.02);
+  transform: translateY(-1px);
+}
+
+/* keep active stronger than hover */
+.action-btn.active:hover {
+  color: #a80000;
+  border-color: rgba(255, 60, 60, 0.35);
+  background: rgba(255, 60, 60, 0.12);
+}
+
+/* ACTIVE (new style) */
+.action-btn.active {
+  color: #c40000;
+  border-color: rgba(255, 60, 60, 0.25);
+  background: rgba(255, 60, 60, 0.08);
+}
+  
+</style>
+
+</body>
+</html>
