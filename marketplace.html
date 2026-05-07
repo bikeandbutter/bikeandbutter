@@ -206,6 +206,17 @@
       border-color: #ddd;
     }
 
+    /* Sold card styling */
+    .mp-card.is-sold {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .mp-card.is-sold:hover {
+      box-shadow: none;
+      border-color: #ebebeb;
+    }
+
     .mp-card-img {
       width: 220px;
       height: 150px;
@@ -220,6 +231,29 @@
       object-fit: contain;
       display: block;
       background: #fafafa;
+    }
+
+    /* SOLD overlay on image */
+    .sold-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sold-overlay-text {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      color: #fff;
+      text-transform: uppercase;
+      border: 6px solid #fff;
+      padding: 4px 14px;
+      border-radius: 4px;
+      line-height: 1.2;
+      opacity: 0.95;
     }
 
     .mp-card-badge {
@@ -237,7 +271,6 @@
     }
 
     .mp-card-badge.used    { background: #555; }
-    .mp-card-badge.vintage { background: #8a6a2e; }
     .mp-card-badge.parts   { background: #2e5c8a; }
 
     .mp-card-body {
@@ -276,7 +309,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
 
-      /* FIX: silence linter warning */
       line-clamp: 2;
     }
 
@@ -566,7 +598,6 @@
 <body>
 
   <!-- NAVIGATION -->
-<!-- NAV -->
 <nav>
   <div class="nav-logo">
     <a href="index.html" class="logo-link">
@@ -601,12 +632,16 @@
       </p>
       <div class="mp-hero-stats">
         <div>
-          <div class="mp-stat-num" id="stat-listings">—</div>
+          <div class="mp-stat-num" id="stat-active">—</div>
           <div class="mp-stat-label">Active listings</div>
         </div>
         <div>
-          <div class="mp-stat-num" id="stat-categories">—</div>
-          <div class="mp-stat-label">Categories</div>
+          <div class="mp-stat-num" id="stat-total">—</div>
+          <div class="mp-stat-label">Total listings</div>
+        </div>
+        <div>
+          <div class="mp-stat-num" id="stat-sold">—</div>
+          <div class="mp-stat-label">Sold</div>
         </div>
       </div>
     </div>
@@ -627,7 +662,6 @@
         <button class="filter-btn" data-filter="Complete Bike">Complete Bikes</button>
         <button class="filter-btn" data-filter="Parts">Parts</button>
         <button class="filter-btn" data-filter="Accessories">Accessories</button>
-        <button class="filter-btn" data-filter="Vintage">Vintage</button>
       </div>
     </div>
     <div class="mp-filter-right">
@@ -648,164 +682,6 @@
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
-  <!-- ===================== ENQUIRY / OFFER MODAL ===================== -->
-  <div class="modal-overlay" id="enquiry-modal">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="modal-title" id="modal-title">Make an Offer</div>
-          <div class="modal-subtitle" id="modal-subtitle"></div>
-        </div>
-        <button class="modal-close" onclick="closeModal('enquiry-modal')">✕</button>
-      </div>
-      <div class="modal-body" id="modal-body">
-
-        <div class="modal-listing-preview">
-          <img id="modal-preview-img" src="" alt="" />
-          <div>
-            <div class="modal-listing-name" id="modal-preview-name">—</div>
-            <div class="modal-listing-price" id="modal-preview-price">—</div>
-          </div>
-        </div>
-
-        <div class="filters" id="modal-tabs" style="gap:6px;">
-          <button class="filter-btn active" onclick="setModalMode('offer', this)">Make an Offer</button>
-          <button class="filter-btn" onclick="setModalMode('message', this)">Send a Message</button>
-        </div>
-
-        <!-- OFFER form -->
-        <div id="offer-form">
-          <div style="display:flex;flex-direction:column;gap:12px;">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Your Name</label>
-                <input type="text" id="offer-name" placeholder="e.g. Alex" />
-              </div>
-              <div class="form-group">
-                <label>Your Offer (SGD)</label>
-                <input type="number" id="offer-price" placeholder="e.g. 2500" />
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Email or Phone</label>
-              <input type="text" id="offer-contact" placeholder="So we can reach you" />
-            </div>
-            <div class="form-group">
-              <label>Notes (optional)</label>
-              <textarea id="offer-notes" placeholder="Size, trade-in, pickup preference…"></textarea>
-            </div>
-            <button class="form-submit" onclick="submitOffer()">Send Offer →</button>
-            <div class="modal-divider">or contact us directly</div>
-            <a class="whatsapp-btn" id="offer-whatsapp" href="#" target="_blank">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-              WhatsApp Us
-            </a>
-          </div>
-        </div>
-
-        <!-- MESSAGE form -->
-        <div id="message-form" style="display:none;">
-          <div style="display:flex;flex-direction:column;gap:12px;">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Your Name</label>
-                <input type="text" id="msg-name" placeholder="e.g. Alex" />
-              </div>
-              <div class="form-group">
-                <label>Email or Phone</label>
-                <input type="text" id="msg-contact" placeholder="So we can reach you" />
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Your Message</label>
-              <textarea id="msg-body" placeholder="Ask about size, condition, availability, trade-ins…" style="min-height:110px;"></textarea>
-            </div>
-            <button class="form-submit" onclick="submitMessage()">Send Message →</button>
-            <div class="modal-divider">or contact us directly</div>
-            <a class="whatsapp-btn" id="msg-whatsapp" href="#" target="_blank">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-              WhatsApp Us
-            </a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- ===================== SELL / LIST AN ITEM MODAL ===================== -->
-  <div class="modal-overlay" id="sell-modal">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="modal-title">List an Item</div>
-          <div class="modal-subtitle">We'll review and publish your listing within 24 hours</div>
-        </div>
-        <button class="modal-close" onclick="closeModal('sell-modal')">✕</button>
-      </div>
-      <div class="modal-body" id="sell-modal-body">
-        <div class="form-group">
-          <label>Item Name</label>
-          <input type="text" id="sell-name" placeholder="e.g. Colnago C68 Frameset" />
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Category</label>
-            <select id="sell-category">
-              <option value="">Select…</option>
-              <option>Complete Bike</option>
-              <option>Parts</option>
-              <option>Accessories</option>
-              <option>Vintage</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Asking Price (SGD)</label>
-            <input type="number" id="sell-price" placeholder="e.g. 4500" />
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Condition</label>
-            <select id="sell-condition">
-              <option value="">Select…</option>
-              <option>New</option>
-              <option>Like New</option>
-              <option>Good</option>
-              <option>Fair</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Open to Offers?</label>
-            <select id="sell-negotiable">
-              <option value="Yes">Yes, negotiable</option>
-              <option value="No">Fixed price</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Description</label>
-          <textarea id="sell-desc" placeholder="Brand, model, specs, size, mileage, any upgrades or damage…" style="min-height:90px;"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Photo Links (optional)</label>
-          <input type="text" id="sell-photos" placeholder="Google Drive / Dropbox link to your photos" />
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Your Name</label>
-            <input type="text" id="sell-seller-name" placeholder="e.g. Alex" />
-          </div>
-          <div class="form-group">
-            <label>Contact (Email or Phone)</label>
-            <input type="text" id="sell-contact" placeholder="How we reach you" />
-          </div>
-        </div>
-        <button class="form-submit" onclick="submitListing()">Submit for Review →</button>
-      </div>
-    </div>
-  </div>
-
   <script src="auth.js"></script>
 
 <script>
@@ -817,7 +693,6 @@ const MP_RANGE = 'Marketplace!B2:W';
 
 let allListings = [];
 let activeFilter = 'All';
-let activeItem = null;
 
 // ================= FETCH =================
 async function fetchListings() {
@@ -840,28 +715,39 @@ async function fetchListings() {
         obj[h] = row[i] || '';
       });
 
-      // 🔥 NORMALISE DATA HERE
       return {
-        id: obj['ID'] || '',
-        name: obj['Name'] || '',
-        brand: obj['Brand'] || '',
-        category: obj['Category'] || '',
-        price: obj['Price'] || '',
-        currency: obj['Currency'] || 'SGD',
-        condition: obj['Condition'] || '',
+        id:          obj['ID']          || '',
+        name:        obj['Name']        || '',
+        brand:       obj['Brand']       || '',
+        category:    obj['Category']    || '',
+        price:       obj['Price']       || '',
+        currency:    obj['Currency']    || 'SGD',
+        condition:   obj['Condition']   || '',
         description: obj['Description'] || '',
-        photo: obj['Photo_1'] || '',
-        seller: 'Bike & Butter', // fallback
+        photo:       obj['Photo_1']     || '',
+        status:      (obj['Status']     || 'Active').trim(), // 'Active' or 'Sold'
+        seller:      'Bike & Butter',
       };
     });
 
-    updateStats(allListings.length);
+    updateStats();
     renderListings();
 
   } catch (err) {
     console.error(err);
     showEmpty('Error loading listings.');
   }
+}
+
+// ================= STATS =================
+function updateStats() {
+  const total  = allListings.length;
+  const sold   = allListings.filter(i => i.status.toLowerCase() === 'sold').length;
+  const active = total - sold;
+
+  document.getElementById('stat-active').textContent = active;
+  document.getElementById('stat-total').textContent  = total;
+  document.getElementById('stat-sold').textContent   = sold;
 }
 
 // ================= RENDER =================
@@ -882,6 +768,31 @@ function renderListings() {
     return matchFilter && matchSearch;
   });
 
+  // Sort: active listings first, sold pushed to bottom
+  filtered.sort((a, b) => {
+    const aActive = a.status.toLowerCase() !== 'sold' ? 0 : 1;
+    const bActive = b.status.toLowerCase() !== 'sold' ? 0 : 1;
+    return aActive - bActive;
+  });
+
+  const sortMode = document.getElementById('mp-sort').value;
+  if (sortMode === 'price-asc') {
+    filtered.sort((a, b) => {
+      // Keep sold at bottom even within sort
+      const aS = a.status.toLowerCase() === 'sold' ? 1 : 0;
+      const bS = b.status.toLowerCase() === 'sold' ? 1 : 0;
+      if (aS !== bS) return aS - bS;
+      return (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0);
+    });
+  } else if (sortMode === 'price-desc') {
+    filtered.sort((a, b) => {
+      const aS = a.status.toLowerCase() === 'sold' ? 1 : 0;
+      const bS = b.status.toLowerCase() === 'sold' ? 1 : 0;
+      if (aS !== bS) return aS - bS;
+      return (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0);
+    });
+  }
+
   const container = document.getElementById('mp-listings');
 
   if (!filtered.length) {
@@ -895,18 +806,42 @@ function renderListings() {
 
 // ================= CARD =================
 function buildCard(item) {
+  const isSold = item.status.toLowerCase() === 'sold';
+
   const price = item.price
-  ? `${item.currency || ''} ${String(item.price)}`
-  : 'POA';
+    ? `${item.currency || ''} ${String(item.price)}`
+    : 'POA';
 
   const img = item.photo
     ? item.photo
     : 'https://placehold.co/220x150?text=No+Photo';
 
+  const soldOverlay = isSold
+    ? `<div class="sold-overlay"><div class="sold-overlay-text">Sold</div></div>`
+    : '';
+
+  // Sold cards: no clickable actions, no navigation on click
+  const cardClick  = isSold ? '' : `onclick="goToProduct('${item.id}')"`;
+  const cardClass  = isSold ? 'mp-card is-sold' : 'mp-card';
+
+  const actionsHtml = isSold
+    ? `<div class="mp-card-price-note" style="font-size:12px;color:#aaa;">This item has been sold</div>`
+    : `<div class="mp-card-actions">
+        <button class="mp-btn primary"
+          onclick='event.stopPropagation(); handleOffer(${JSON.stringify(item.name)})'>
+          Offer
+        </button>
+        <button class="mp-btn"
+          onclick='event.stopPropagation(); handleMessage(${JSON.stringify(item.name)})'>
+          Message
+        </button>
+      </div>`;
+
   return `
-    <div class="mp-card" onclick="goToProduct('${item.id}')">
+    <div class="${cardClass}" ${cardClick}>
       <div class="mp-card-img">
-        <img src="${img}">
+        <img src="${img}" alt="${item.name}" />
+        ${soldOverlay}
       </div>
 
       <div class="mp-card-body">
@@ -916,48 +851,31 @@ function buildCard(item) {
       </div>
 
       <div class="mp-card-right">
-        <div class="mp-card-price">${price}</div>
-
-        <div class="mp-card-actions">
-          <button class="mp-btn primary"
-            onclick='event.stopPropagation(); openEnquiryModal(${JSON.stringify(item)}, "offer")'>
-            Offer
-          </button>
-
-          <button class="mp-btn"
-            onclick='event.stopPropagation(); openEnquiryModal(${JSON.stringify(item)}, "message")'>
-            Message
-          </button>
+        <div>
+          <div class="mp-card-price">${price}</div>
         </div>
+        ${actionsHtml}
       </div>
     </div>
   `;
 }
 
-// ================= MODAL =================
-function openEnquiryModal(item, mode = 'offer') {
-  activeItem = item;
-
-  document.getElementById('modal-title').textContent =
-    mode === 'offer' ? 'Make an Offer' : 'Send Message';
-
-  document.getElementById('modal-preview-name').textContent = item.name;
-  document.getElementById('modal-preview-price').textContent =
-    item.price ? `${item.currency} ${item.price}` : 'POA';
-
-  document.getElementById('modal-preview-img').src =
-    item.photo || 'https://placehold.co/60x42';
-
-  document.getElementById('enquiry-modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
+// ================= AUTH-GATED ACTIONS =================
+// Mirrors exactly how product.html handles these buttons via authGuard()
+function handleOffer(itemName) {
+  authGuard(
+    () => window.location.href = 'contact.html?type=Make%20an%20Offer&bike=' + encodeURIComponent(itemName),
+    'Sign in to make an offer',
+    'You need to be signed in to make an offer.'
+  );
 }
 
-// ================= STATS =================
-function updateStats(total) {
-  document.getElementById('stat-listings').textContent = total;
-
-  const cats = new Set(allListings.map(i => i.category));
-  document.getElementById('stat-categories').textContent = cats.size;
+function handleMessage(itemName) {
+  authGuard(
+    () => window.location.href = 'contact.html?type=Ask%20a%20Question&bike=' + encodeURIComponent(itemName),
+    'Sign in to ask a question',
+    'You need to be signed in to send a message.'
+  );
 }
 
 // ================= EMPTY =================
@@ -977,14 +895,10 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 });
 
 document.getElementById('mp-search').addEventListener('input', renderListings);
+document.getElementById('mp-sort').addEventListener('change', renderListings);
 
 // ================= INIT =================
 fetchListings();
-
-window.addEventListener('bb-auth-change', () => {
-  // optional: refresh UI if needed later
-  console.log('Auth state changed');
-});
 
 function goToProduct(id) {
   window.location.href = `product.html?id=${id}`;

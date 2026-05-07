@@ -29,48 +29,69 @@
   </div>
 </nav>
 
+<!-- CHANGE 3: Updated page header copy to match site theme -->
 <div class="page-header">
-  <p class="page-header-sub">Bike & Butter</p>
+  <p class="page-header-sub">The Bike & Butter Community</p>
   <h1 class="page-header-title">Community</h1>
-  <p class="page-header-tagline">See who's been exploring the most bikes</p>
+  <p class="page-header-tagline">Every ride leaves a mark — see who's been out there logging miles, collecting favourites, and building their wishlist.</p>
 </div>
 
 <main>
-  <div class="community-stats">
-    <div class="stat-pill"><span id="stat-members">—</span> members</div>
-    <div class="stat-pill"><span id="stat-actions">—</span> total actions</div>
-    <div class="stat-pill"><span id="stat-wishlists">—</span> wishlists</div>
-    <div class="stat-pill"><span id="stat-ridden">—</span> ridden</div>
-    <div class="stat-pill"><span id="stat-favs">—</span> favourites</div>
-  </div>
 
-  <div class="signin-gate" id="signin-gate">
-    <div class="gate-inner">
-      <p class="gate-title">Join the community</p>
-      <p class="gate-sub">Sign in with Google to wishlist, mark as ridden, and favourite bikes.</p>
+  <!-- CHANGE 9: Stats as clean stat blocks, not pill buttons -->
+  <div class="community-stats-bar">
+    <div class="stat-block">
+      <span class="stat-num" id="stat-members">—</span>
+      <span class="stat-label">members</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-block">
+      <span class="stat-num" id="stat-actions">—</span>
+      <span class="stat-label">actions</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-block">
+      <span class="stat-num" id="stat-wishlists">—</span>
+      <span class="stat-label">wishlisted</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-block">
+      <span class="stat-num" id="stat-ridden">—</span>
+      <span class="stat-label">ridden</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-block">
+      <span class="stat-num" id="stat-favs">—</span>
+      <span class="stat-label">favourited</span>
     </div>
   </div>
 
+  <!-- Sign-in nudge (styled like feed.html, shown only when logged out) -->
+  <div id="signin-gate" class="comm-signin-nudge" style="display:none;">
+    <p class="nudge-text">Sign in so your rides, favourites and wishlist appear here.</p>
+    <button class="btn-google-small" id="gate-google-btn" onclick="window.__bbSignIn && window.__bbSignIn()">
+      <svg width="14" height="14" viewBox="0 0 48 48">
+        <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 2.9l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/>
+        <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 16 19 12 24 12c3.1 0 5.8 1.1 7.9 2.9l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+        <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.4 35.5 26.8 36 24 36c-5.3 0-9.7-3.2-11.3-7.8l-6.6 5.1C9.6 39.6 16.3 44 24 44z"/>
+        <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.3 4.1-4.2 5.4l6.2 5.2C37 38 44 32.8 44 24c0-1.3-.1-2.6-.4-3.9z"/>
+      </svg>
+      Sign in with Google
+    </button>
+  </div>
+
+  <!-- CHANGE 5: Tab order changed to Collectors, Most Favourited, Most Ridden, Most Wishlisted -->
   <div class="community-tabs">
     <button class="comm-tab active" data-tab="collectors">Collectors</button>
-    <button class="comm-tab" data-tab="ridden">Most Ridden</button>
     <button class="comm-tab" data-tab="favourited">Most Favourited</button>
+    <button class="comm-tab" data-tab="ridden">Most Ridden</button>
     <button class="comm-tab" data-tab="wishlisted">Most Wishlisted</button>
   </div>
 
+  <!-- CHANGE 1: Leaderboard as individual cards, narrower layout -->
   <div class="tab-panel" id="tab-collectors">
-    <div class="leaderboard-wrap">
-      <table class="leaderboard-table">
-        <thead>
-          <tr>
-            <th>#</th><th>Member</th><th>Wishlisted</th>
-            <th>Ridden</th><th>Favourites</th><th>Total</th>
-          </tr>
-        </thead>
-        <tbody id="leaderboard-body">
-          <tr><td colspan="6" class="comm-loading">Loading community...</td></tr>
-        </tbody>
-      </table>
+    <div class="leaderboard-cards" id="leaderboard-body">
+      <div class="comm-loading">Loading community...</div>
     </div>
   </div>
 
@@ -83,6 +104,7 @@
   <div class="tab-panel hidden" id="tab-wishlisted">
     <div class="bike-rank-list" id="list-wishlisted"><div class="comm-loading">Loading...</div></div>
   </div>
+
 </main>
 
 <div class="toast" id="toast"></div>
@@ -95,6 +117,7 @@ const DB_RANGE    = "Database!B2:Z";
 
 let allBikes = [];
 
+// Tab switching
 document.querySelectorAll(".comm-tab").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".comm-tab").forEach(b => b.classList.remove("active"));
@@ -108,31 +131,50 @@ async function loadLeaderboard() {
   try {
     const res   = await fetch(BACKEND_URL + "?action=leaderboard");
     const users = await res.json();
+
     document.getElementById("stat-members").textContent   = users.length;
     document.getElementById("stat-actions").textContent   = users.reduce((s, u) => s + (u.total || 0), 0);
     document.getElementById("stat-wishlists").textContent = users.reduce((s, u) => s + (u.wishlist || 0), 0);
     document.getElementById("stat-ridden").textContent    = users.reduce((s, u) => s + (u.ridden || 0), 0);
     document.getElementById("stat-favs").textContent      = users.reduce((s, u) => s + (u.fav || 0), 0);
+
     const sorted = [...users].sort((a, b) => (b.total || 0) - (a.total || 0));
+    // Debug: log first user's keys so you can see what field names the backend sends
+    if (sorted.length > 0) console.log("[B&B leaderboard] first user fields:", Object.keys(sorted[0]), sorted[0]);
+
+    // CHANGE 1+2+6+7+8: Individual cards, plain numbers, avatar image, profile link, inline stats
     document.getElementById("leaderboard-body").innerHTML = sorted.map((u, i) => {
-      const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1;
-      const isMe  = window.currentUser && window.currentUser.uid === u.uid;
+      const isMe = window.currentUser && window.currentUser.uid === u.uid;
+
+      // Try every field name the Apps Script might send for the profile photo (column E in Users sheet)
+      const photoSrc = u.picture || u.photoURL || u.photo || u.Photo || u.image || u.avatar || "";
+      const initial  = (u.name ? u.name[0] : "?").toUpperCase();
+      const avatarContent = photoSrc
+        ? `<img src="${photoSrc}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.style.display='none'">`
+        : `<span class="lb-avatar-initial" style="background:${u.color || '#555'}">${initial}</span>`;
+
+      // CHANGE 8: Three stats side by side with small labels below
+      const ridden    = u.ridden   || 0;
+      const fav       = u.fav      || 0;
+      const wishlist  = u.wishlist || 0;
+
       return `
-        <tr class="${isMe ? "lb-me" : ""}">
-          <td>${medal}</td>
-          <td><div class="lb-user">
-            <div class="lb-avatar" style="background:${u.color || '#333'}">${(u.name?.[0] || "?").toUpperCase()}</div>
-            ${u.name}${isMe ? " <span class='you-badge'>you</span>" : ""}
-          </div></td>
-          <td>${u.wishlist || 0}</td>
-          <td>${u.ridden || 0}</td>
-          <td>${u.fav || 0}</td>
-          <td><strong>${u.total || 0}</strong></td>
-        </tr>`;
+        <div class="lb-card ${isMe ? "lb-me" : ""}">
+          <div class="lb-rank">${i + 1}</div>
+          <div class="lb-avatar-wrap">${avatarContent}</div>
+          <div class="lb-info">
+            <a class="lb-name" href="profile.html?uid=${u.uid}">${u.name}${isMe ? " <span class='you-badge'>you</span>" : ""}</a>
+          </div>
+          <div class="lb-mini-stats">
+            <div class="lb-mini-stat"><span class="lb-mini-num">${ridden}</span><span class="lb-mini-label">rode</span></div>
+            <div class="lb-mini-stat"><span class="lb-mini-num">${fav}</span><span class="lb-mini-label">favourited</span></div>
+            <div class="lb-mini-stat"><span class="lb-mini-num">${wishlist}</span><span class="lb-mini-label">wishlisted</span></div>
+          </div>
+        </div>`;
     }).join("");
   } catch (err) {
     document.getElementById("leaderboard-body").innerHTML =
-      `<tr><td colspan="6" class="comm-loading">Could not load leaderboard.</td></tr>`;
+      `<div class="comm-loading">Could not load leaderboard.</div>`;
   }
 }
 
@@ -194,7 +236,9 @@ async function renderBikeRank(containerId, countKey, label) {
 }
 
 async function updateUI() {
-  document.getElementById("signin-gate").style.display = window.currentUser ? "none" : "flex";
+  const gate = document.getElementById("signin-gate");
+  gate.style.display = window.currentUser ? "none" : "flex";
+
   loadLeaderboard();
   await fetchBikes();
   renderBikeRank("list-ridden",     "Ridden_Count",  "ride");
@@ -205,6 +249,243 @@ async function updateUI() {
 window.addEventListener("bb-auth-change", updateUI);
 document.addEventListener("DOMContentLoaded", updateUI);
 </script>
+
+<style>
+/* ── Page-wide column — everything constrained to this width ──── */
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ── Community Stats Bar ──────────────────────────────────────── */
+.community-stats-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 0 0 2rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--border, #e5e5e5);
+  border-bottom: 1px solid var(--border, #e5e5e5);
+}
+
+.stat-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0 1.2rem;
+  flex: 1;
+}
+
+.stat-num {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.stat-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.45;
+  white-space: nowrap;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 2rem;
+  background: var(--border, #e5e5e5);
+  flex-shrink: 0;
+}
+
+/* ── Sign-in nudge (inline, matching feed.html style) ─────────── */
+.comm-signin-nudge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #f5f5f5;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.comm-signin-nudge .nudge-text {
+  flex: 1;
+  font-size: 0.8rem;
+  color: #888;
+  margin: 0;
+}
+
+.btn-google-small {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s;
+  color: #111;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.btn-google-small:hover { border-color: #aaa; box-shadow: 0 2px 8px rgba(0,0,0,.07); }
+
+/* ── Tabs ─────────────────────────────────────────────────────── */
+.community-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1.25rem;   /* space between tabs and first card */
+  flex-wrap: wrap;
+}
+
+/* ── Leaderboard Cards ────────────────────────────────────────── */
+.leaderboard-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;              /* space between cards */
+  padding-top: 0.25rem;
+}
+
+.lb-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.9rem 1rem;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e5e5e5);
+  border-radius: 10px;
+  transition: box-shadow 0.15s;
+}
+
+.lb-card:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.lb-card.lb-me {
+  border-color: var(--accent, #111);
+  background: var(--accent-soft, #f7f7f7);
+}
+
+/* Rank number */
+.lb-rank {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted, #bbb);
+  width: 1.2rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Avatar — real image or initial fallback */
+.lb-avatar-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eee;
+}
+
+.lb-avatar-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lb-avatar-initial {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+/* Name — left side, takes remaining space */
+.lb-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.lb-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: inherit;
+  text-decoration: none;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lb-name:hover { text-decoration: underline; }
+
+/* Stats — right side, 3 columns */
+.lb-mini-stats {
+  display: flex;
+  gap: 1.1rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.lb-mini-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.lb-mini-num {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.lb-mini-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  opacity: 0.4;
+  line-height: 1.3;
+}
+
+/* you badge */
+.you-badge {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: #111;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 4px;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .community-stats-bar { overflow-x: auto; }
+  .stat-block { padding: 0 0.8rem; }
+  .lb-mini-stats { gap: 0.75rem; }
+  .lb-mini-num { font-size: 0.9rem; }
+}
+</style>
 
 </body>
 </html>

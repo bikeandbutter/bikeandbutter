@@ -18,7 +18,19 @@
     .sell-header-desc { font-size: 13px; color: #999; line-height: 1.6; }
 
     .steps-bar { display: flex; gap: 0; margin-bottom: 36px; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; }
-    .step { flex: 1; padding: 10px 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: #bbb; text-align: center; border-right: 1px solid #e0e0e0; transition: all 0.2s; }
+    .step {
+      flex: 1;
+      padding: 10px 12px;
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      color: #bbb; text-align: center;
+      border-right: 1px solid #e0e0e0;
+      transition: all 0.2s;
+      /* Fix vertical alignment */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     .step:last-child { border-right: none; }
     .step.active { background: #111; color: #fff; }
     .step.done { background: #f5f5f5; color: #999; }
@@ -34,6 +46,7 @@
       border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px 12px;
       font-size: 13px; font-family: inherit; color: #111; background: #fafafa;
       outline: none; transition: border-color 0.15s, background 0.15s; width: 100%;
+      box-sizing: border-box;
     }
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #111; background: #fff; }
     .form-group input::placeholder, .form-group textarea::placeholder { color: #bbb; }
@@ -48,6 +61,16 @@
     .photo-upload-icon { font-size: 24px; margin-bottom: 8px; }
     .photo-upload-title { font-size: 13px; font-weight: 600; color: #111; margin-bottom: 4px; }
     .photo-upload-sub { font-size: 11px; color: #bbb; }
+    .photo-upload-limit {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 11px;
+      color: #c0854a;
+      background: #fff8f3;
+      border: 1px solid #f0dac8;
+      border-radius: 5px;
+      padding: 4px 10px;
+    }
     #photo-input { display: none; }
 
     .photo-previews { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
@@ -82,9 +105,14 @@
     .success-desc { font-size: 13px; color: #999; line-height: 1.6; }
     .success-back { display: inline-block; margin-top: 20px; font-size: 12px; color: #555; text-decoration: underline; cursor: pointer; }
 
-    .review-box { background: #f5f5f5; border-radius: 8px; padding: 16px; font-size: 13px; color: #555; line-height: 2; }
+    .review-box {
+      background: #f5f5f5; border-radius: 8px; padding: 16px;
+      font-size: 13px; color: #555; line-height: 2;
+      /* Fix top-alignment issue: use a proper block layout */
+      display: block;
+    }
     .review-box strong { color: #111; font-weight: 600; }
-    .review-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: #bbb; margin-bottom: 8px; }
+    .review-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: #bbb; margin-bottom: 8px; margin-top: 4px; }
 
     /* Auth gate shown before form */
     .sell-gate {
@@ -237,6 +265,7 @@
           <div class="photo-upload-icon">📷</div>
           <div class="photo-upload-title">Click to add photos</div>
           <div class="photo-upload-sub">JPG or PNG · Max 5 photos · Each resized automatically</div>
+          <span class="photo-upload-limit">⚠ Total size of all photos must be under 25 MB</span>
         </div>
         <input type="file" id="photo-input" accept="image/jpeg,image/png" multiple />
         <div class="photo-previews" id="photo-previews"></div>
@@ -256,14 +285,14 @@
         <strong>Email:</strong> <span id="review-email"></span><br>
         <strong>Phone:</strong> <span id="review-phone"></span>
       </div>
-      <p class="review-section-title" style="margin-top:8px">Item Info</p>
+      <p class="review-section-title">Item Info</p>
       <div class="review-box">
         <strong>Category:</strong> <span id="review-category"></span><br>
         <strong>Condition:</strong> <span id="review-condition"></span><br>
         <strong>Asking Price:</strong> SGD <span id="review-price"></span><br>
         <strong>Description:</strong> <span id="review-description"></span>
       </div>
-      <p class="review-section-title" style="margin-top:8px">Photos</p>
+      <p class="review-section-title">Photos</p>
       <div class="review-box"><span id="review-photos"></span> photo(s) attached</div>
 
       <div class="upload-progress" id="upload-progress">
