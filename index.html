@@ -2,330 +2,283 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bike & Butter</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="home.css" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <meta http-equiv="refresh" content="0; url=home.html">
+  <style>
+    img {
+      -webkit-user-drag: none;
+      user-select: none;
+      pointer-events: none;
+    }
+    body { 
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none; 
+    }
+
+    /* User chip styles for home page (home.css doesn't include these) */
+    .user-chip {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 10px;
+      border: 1px solid #e5e5e5;
+      border-radius: 999px;
+      background: #fff;
+      cursor: pointer;
+    }
+    .user-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #111;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .user-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: #111;
+      white-space: nowrap;
+    }
+    .user-menu {
+      position: absolute;
+      top: 42px;
+      right: 0;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 6px;
+      min-width: 120px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      display: none;
+      z-index: 200;
+    }
+    .user-chip.open .user-menu { display: block; }
+    .user-menu a {
+      display: block;
+      font-size: 12px;
+      color: #d33;
+      padding: 6px 8px;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+    .user-menu a:hover { background: #f6f6f6; }
+
+    /* Auth modal for home page */
+    .auth-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .auth-modal-overlay.open { display: flex; }
+    .auth-modal {
+      background: #fff;
+      border-radius: 14px;
+      width: 360px;
+      max-width: 95vw;
+      padding: 36px 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+    .auth-modal-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 11px 20px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      color: #111;
+      margin-bottom: 10px;
+    }
+    .auth-modal-cancel {
+      font-size: 12px;
+      color: #bbb;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+    }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: #111;
+      color: #fff;
+      font-size: 13px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.2s;
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
 </head>
 <body>
 
-  <!-- NAVIGATION -->
+<!-- NAV -->
 <nav>
   <div class="nav-logo">
-    <a href="home.html" class="logo-link">
+    <a href="index.html" class="logo-link">
       <div class="logo-icon">B</div>
       Bike &amp; Butter
     </a>
   </div>
-
   <div class="nav-right">
     <div class="nav-links">
-      <a href="index.html" class="active">Bikes</a>
+      <a href="bikeindex.html">Bikes</a>
       <a href="brands.html">Brands</a>
       <a href="community.html">Community</a>
       <a href="feed.html">Feed</a>
       <a href="marketplace.html">Marketplace</a>
       <a href="contact.html">Contact Us</a>
     </div>
-
-    <div id="auth-area"></div>
+    <div id="auth-area">
+      <a href="#" class="nav-signin" onclick="signIn(); return false;">Sign In</a>
+    </div>
   </div>
 </nav>
 
-  <!-- PAGE HEADER -->
-  <div class="page-header">
-    <p class="page-header-sub">The Road Bike Archive</p>
-    <h1 class="page-header-title">Bikes</h1>
-    <p class="page-header-tagline" id="header-tagline">Loading collection...</p>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-box">
+    <div class="hero-title">BIKE & BUTTER</div>
+    <div class="hero-sub">The Road Bike Archive</div>
+    <div class="hero-meta" id="hero-meta">Loading collection...</div>
+    <button class="enter-btn" onclick="window.location.href='bikeindex.html'">
+      Browse Collection
+    </button>
   </div>
+</div>
 
-  <!-- MAIN -->
-  <main>
+<!-- CANVAS -->
+<div class="canvas" id="canvas">
+  <div class="grid" id="grid"></div>
+</div>
 
-    <!-- FILTER BAR -->
-    <div class="filter-bar">
-      <div class="filter-top">
-        <div class="filter-left">
-          <span class="results-count" id="results-count">— bikes</span>
-          <div class="filters">
-          <button class="filter-btn active" data-filter="All">All</button>
-          <button class="filter-btn" data-filter="Road">Road</button>
-          <button class="filter-btn" data-filter="Gravel">Gravel</button>
-          <button class="filter-btn" data-filter="Triathlon">Triathlon</button>
-          <button class="filter-btn" data-filter="Time Trial">Time Trial</button>
-          <button class="filter-btn" data-filter="Track">Track</button>
-        </div>
-        </div>
-        <div class="filter-right">
-          <select id="sort-select">
-            <option value="newest">Newest</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-          </select>
-        </div>
-      </div>
-      <div class="filter-bottom">
-        <input type="text" class="search-bar" id="search-bar" placeholder="Search bikes, brands..." />
-      </div>
-    </div>
+<div class="toast" id="toast"></div>
+<script src="auth.js"></script>
+<script>
+const SHEET_ID = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
+const API_KEY  = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
+const RANGE    = 'Database!B2:W';
 
-    <!-- BIKE GRID -->
-    <div class="bike-grid" id="bike-grid">
-      <div class="loading-state" id="loading-state">Loading bikes...</div>
-    </div>
+const canvas = document.getElementById('canvas');
+const grid   = document.getElementById('grid');
 
-  </main>
+let offsetX = 0;
+let offsetY = 0;
 
-  <!-- TOAST (needed by auth.js) -->
-  <div class="toast" id="toast"></div>
+document.addEventListener('selectstart', (e) => {
+  if (isDragging) e.preventDefault();
+});
 
-  <!-- auth.js must come before the inline script -->
-  <script src="auth.js"></script>
-
-  <script>
-    // ================================================
-    // CONFIG
-    // ================================================
-    const SHEET_ID  = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
-    const API_KEY   = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
-    const RANGE     = 'Database!B2:W';
-    // ================================================
-
-    let allBikes = [];
-    let activeFilter = 'All';
-    let userActions  = {};  // { bikeId: { wishlist, ridden, fav } }
-
-    // Keep userActions in sync whenever an action fires on this or another page
-    window.addEventListener('bb-action-change', async () => {
-      userActions = await getUserActions();
-      updateGrid();
-    });
-
-    // Also refresh when user signs in/out
-    window.addEventListener('bb-auth-change', async () => {
-      userActions = await getUserActions();
-      updateGrid();
-    });
-
-    window.addEventListener('bb-auth-change', async () => {
-      userActions = await getUserActions();
-      updateGrid();
-    });
-
-    // --- FETCH FROM GOOGLE SHEETS ---
-    async function fetchBikes() {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
-      try {
-        const res  = await fetch(url);
-        const data = await res.json();
-        const rows = data.values || [];
-
-        if (rows.length < 2) { showError('No bikes found in the database yet.'); return; }
-
-        const headers = rows[0].map(h => h.trim());
-        allBikes = rows.slice(1).map(row => {
-          const bike = {};
-          headers.forEach((header, i) => { bike[header] = row[i] || ''; });
-          return bike;
-        });
-
-        // Load user's existing actions before first render
-        userActions = await getUserActions();
-
-        updateGrid();
-        updateCount(allBikes.length);
-        document.getElementById('header-tagline').textContent = 'Every bike has a story — from pro peloton weapons to everyday favourites. Browse the archive.';
-
-      } catch (err) {
-        showError('Could not load bikes. Check your API key and Sheet sharing settings.');
-        console.error(err);
-      }
-    }
-
-    // --- BUILD A SINGLE CARD ---
-    function buildCard(bike) {
-  const id       = bike['ID']           || '';
-  const name     = bike['Name']         || 'Unnamed Bike';
-  const brand    = bike['Brand']        || '';
-  const year     = bike['Year']         || '';
-  const category = bike['Category']     || '';
-  const retail   = bike['Retail_Price'] || '';
-  const currency = bike['Currency']     || '';
-  const photo    = bike['Photo_1']      || '';
-
-  const imgHtml = photo
-    ? `<img src="${photo}" alt="${brand} ${name}" loading="lazy" onerror="this.src='https://placehold.co/300x200?text=No+Photo'">`
-    : `<img src="https://placehold.co/300x200?text=No+Photo" alt="${name}">`;
-
-  const priceDisplay = retail ? `${currency ? currency + ' ' : ''}${retail}` : '—';
-  const tagHtml = category ? `<span class="bike-tag">${category}</span>` : '';
-
-  // user state
-  const a = userActions[id] || {};
-  const favClass      = a.fav      ? 'active' : '';
-  const riddenClass   = a.ridden   ? 'active' : '';
-  const wishlistClass = a.wishlist ? 'active' : '';
-
-  return `
-    <a href="bike.html?id=${id}" class="bike-card">
-      <div class="bike-img">
-        ${imgHtml}
-        ${tagHtml}
-      </div>
-      <div class="bike-info">
-        <p class="bike-brand">${brand}</p>
-        <p class="bike-name">${name}</p>
-        <p class="bike-category">${category}${year ? ' · ' + year : ''}</p>
-        <div class="bike-bottom">
-          <span class="bike-price">${priceDisplay}</span>
-
-          <div class="bike-icons">
-
-            <!-- Favourite -->
-            <button
-              class="icon-btn ${favClass}"
-              title="Favourite"
-              onclick="event.preventDefault(); handleAction('${id}', '${name.replace(/'/g,"\\'")}', 'fav', this)">
-              ☆
-            </button>
-
-            <!-- Ridden -->
-            <button
-              class="icon-btn ${riddenClass}"
-              title="Ridden"
-              onclick="event.preventDefault(); handleAction('${id}', '${name.replace(/'/g,"\\'")}', 'ridden', this)">
-              ✓
-            </button>
-
-            <!-- Wishlist -->
-            <button
-              class="icon-btn ${wishlistClass}"
-              title="Wishlist"
-              onclick="event.preventDefault(); handleAction('${id}', '${name.replace(/'/g,"\\'")}', 'wishlist', this)">
-              ▢
-            </button>
-
-          </div>
-        </div>
-      </div>
-    </a>`;
+function centerCanvas() {
+  requestAnimationFrame(() => {
+    const rect = grid.getBoundingClientRect();
+    offsetX = (window.innerWidth  - rect.width)  / 2;
+    offsetY = (window.innerHeight - rect.height) / 2;
+    canvas.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+  });
 }
 
-    // CHANGED: wrapper so the button can update its own visual state immediately
-    async function handleAction(bikeId, bikeName, action, btn) {
-      const newState = await toggleAction(bikeId, bikeName, action);
-      if (newState === true)  btn.classList.add('active');
-      if (newState === false) btn.classList.remove('active');
-      // Also update userActions cache
-      if (!userActions[bikeId]) userActions[bikeId] = {};
-      userActions[bikeId][action] = newState;
-    }
+window.addEventListener('resize', centerCanvas);
 
-    // --- FILTER + SEARCH + SORT + RENDER ---
-    function updateGrid() {
-      const searchTerm = document.getElementById('search-bar').value.toLowerCase().trim();
-      const sortVal    = document.getElementById('sort-select').value;
+async function loadHomeCards() {
+  const url  = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+  const res  = await fetch(url);
+  const data = await res.json();
+  const rows = data.values || [];
+  const headers  = rows[0].map(h => h.trim());
+  const dataRows = rows.slice(1);
 
-      let filtered = allBikes.filter(bike => {
-        const matchFilter = activeFilter === 'All' ||
-          (bike['Category'] || '').toLowerCase() === activeFilter.toLowerCase();
-        const matchSearch = !searchTerm ||
-          (bike['Name']     || '').toLowerCase().includes(searchTerm) ||
-          (bike['Brand']    || '').toLowerCase().includes(searchTerm) ||
-          (bike['Category'] || '').toLowerCase().includes(searchTerm);
-        return matchFilter && matchSearch;
-      });
+  const bikes = dataRows.map(row => {
+    const bike = {};
+    headers.forEach((h, i) => bike[h] = row[i] || '');
+    return bike;
+  });
 
-      if (sortVal === 'newest') {
-        filtered.sort((a, b) => parseInt(b['Year'] || 0) - parseInt(a['Year'] || 0));
-      } else if (sortVal === 'price-asc') {
-        filtered.sort((a, b) => parseFloat(a['Retail_Price'] || 0) - parseFloat(b['Retail_Price'] || 0));
-      } else if (sortVal === 'price-desc') {
-        filtered.sort((a, b) => parseFloat(b['Retail_Price'] || 0) - parseFloat(a['Retail_Price'] || 0));
-      }
+  document.getElementById('hero-meta').textContent =
+    `${new Set(bikes.map(b => b['Brand'])).size} brands · ${bikes.length} bikes`;
 
-      const grid = document.getElementById('bike-grid');
-      grid.innerHTML = filtered.length === 0
-        ? '<div class="loading-state">No bikes match your search.</div>'
-        : filtered.map(buildCard).join('');
+  const repeated = Array(6).fill(bikes).flat();
+  grid.innerHTML  = repeated.map(buildCard).join('');
 
-      updateCount(filtered.length);
-    }
+  setTimeout(centerCanvas, 60);
+}
 
-    function updateCount(n) {
-      document.getElementById('results-count').textContent = `${n} bike${n !== 1 ? 's' : ''}`;
-    }
+function buildCard(bike) {
+  const id    = bike['ID']     || '';
+  const name  = bike['Name']   || 'Unnamed';
+  const brand = bike['Brand']  || '';
+  const photo = bike['Photo_1']|| '';
+  const imgSrc = photo || `https://placehold.co/220x140?text=${brand}`;
+  return `
+    <div class="card" data-id="${id}">
+      <img src="${imgSrc}" loading="lazy" />
+      <div class="card-title">${name}</div>
+    </div>`;
+}
 
-    function showError(msg) {
-      document.getElementById('bike-grid').innerHTML = `<div class="loading-state">${msg}</div>`;
-      document.getElementById('header-tagline').textContent = 'Error loading collection';
-    }
+loadHomeCards();
 
-    // --- EVENT LISTENERS ---
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        activeFilter = btn.dataset.filter;
-        updateGrid();
-      });
-    });
+/* ── DRAG ── */
+let isDragging = false;
+let startX = 0, startY = 0, moved = false;
 
-    document.getElementById('search-bar').addEventListener('input', updateGrid);
-    document.getElementById('sort-select').addEventListener('change', updateGrid);
+document.addEventListener('pointerdown', (e) => {
+  isDragging = true;
+  moved      = false;
+  startX     = e.clientX - offsetX;
+  startY     = e.clientY - offsetY;
+  document.body.style.cursor = 'grabbing';
+});
 
-    // --- INIT ---
-    fetchBikes();
-  </script>
+document.addEventListener('pointerup', () => {
+  isDragging = false;
+  document.body.style.cursor = 'grab';
+});
 
-  <style>
-    .loading-state {
-      grid-column: 1 / -1;
-      padding: 60px 0;
-      text-align: center;
-      color: #bbb;
-      font-size: 13px;
-    }
+document.addEventListener('pointermove', (e) => {
+  if (!isDragging) return;
+  const dx = e.clientX - startX;
+  const dy = e.clientY - startY;
+  if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
+  offsetX = dx;
+  offsetY = dy;
+  canvas.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+});
 
-    /* CHANGED: active state for icon buttons */
-    .bike-icons {
-      display: flex;
-      gap: 6px;
-    }
-
-    .bike-icons .icon-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-
-      width: 24px;
-      height: 24px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      font-size: 16px;
-      line-height: 1;
-      color: #bbb;
-
-      transition: all 0.15s ease;
-    }
-
-    /* Hover */
-    .bike-icons .icon-btn:hover {
-      color: #111;
-      transform: translateY(-1px);
-    }
-
-    /* Active state */
-    .bike-icons .icon-btn.active {
-      color: #c40000;
-      background: rgba(196, 0, 0, 0.08);
-      border-radius: 6px;
-    }
-  </style>
+document.addEventListener('click', (e) => {
+  const card = e.target.closest('.card');
+  if (!card) return;
+  if (moved) { e.preventDefault(); e.stopPropagation(); return; }
+  const id = card.getAttribute('data-id');
+  if (id) window.location.href = `bike.html?id=${id}`;
+});
+</script>
 
 </body>
 </html>
