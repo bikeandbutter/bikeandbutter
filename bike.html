@@ -77,9 +77,7 @@
         <thead><tr><td colspan="2">Specifications</td></tr></thead>
         <tbody>
           <tr><td>Frame</td><td id="spec-frame">—</td></tr>
-          <tr><td>Groupset</td><td id="spec-groupset">—</td></tr>
-          <tr><td>Wheelset</td><td id="spec-wheelset">—</td></tr>
-          <tr><td>Brakes</td><td id="spec-brakes">—</td></tr>
+          <tr><td>Colour</td><td id="spec-colour">—</td></tr>
           <tr><td>Weight</td><td id="spec-weight">—</td></tr>
           <tr><td>Sizes</td><td id="spec-sizes">—</td></tr>
           <tr><td>Year</td><td id="spec-year">—</td></tr>
@@ -93,7 +91,6 @@
         <thead><tr><td colspan="2">Pricing</td></tr></thead>
         <tbody>
           <tr><td>Retail Price</td><td id="price-retail">—</td></tr>
-          <tr><td>Street Price</td><td id="price-street">—</td></tr>
           <tr><td>Currency</td><td id="price-currency">—</td></tr>
           <tr><td>Availability</td><td id="price-avail">—</td></tr>
         </tbody>
@@ -159,17 +156,14 @@ function populatePage(bike) {
   setField('meta-year',        bike['Year']);
   setField('meta-country',     bike['Country']);
   setField('product-price', bike['Retail_Price'] ? `${bike['Currency'] || ''} ${bike['Retail_Price']}` : '—');
-  setField('spec-frame',    bike['Frame_Material']);
-  setField('spec-groupset', bike['Groupset']);
-  setField('spec-wheelset', bike['Wheelset']);
-  setField('spec-brakes',   bike['Brakes']);
-  setField('spec-weight',   bike['Weight']);
-  setField('spec-sizes',    bike['Sizes']);
-  setField('spec-year',     bike['Year']);
-  setField('spec-country',  bike['Country']);
+  setField('spec-frame',   bike['Frame_Material']);
+  setField('spec-colour',  bike['Colour']);
+  setField('spec-weight',  bike['Weight']);
+  setField('spec-sizes',   bike['Sizes']);
+  setField('spec-year',    bike['Year']);
+  setField('spec-country', bike['Country']);
   setField('bike-description', bike['Description']);
   setField('price-retail',   bike['Retail_Price']);
-  setField('price-street',   bike['Street_Price']);
   setField('price-currency', bike['Currency']);
   setField('price-avail',    bike['Availability']);
   document.getElementById('main-photo').src = bike['Photo_1'] || 'https://placehold.co/600x400?text=No+Photo';
@@ -234,20 +228,17 @@ window.addEventListener('bb-auth-change', hydrateButtons);
   transform: translateY(-1px);
 }
 
-/* keep active stronger than hover */
 .action-btn.active:hover {
   color: #a80000;
   border-color: rgba(255, 60, 60, 0.35);
   background: rgba(255, 60, 60, 0.12);
 }
 
-/* ACTIVE (new style) */
 .action-btn.active {
   color: #c40000;
   border-color: rgba(255, 60, 60, 0.25);
   background: rgba(255, 60, 60, 0.08);
 }
-  
 </style>
 
 </body>
