@@ -39,9 +39,13 @@
 
 <div class="product-layout">
   <div class="left-column">
+    <!-- Photo gallery -->
     <div class="photo-section">
-      <div class="product-img-main">
-        <img id="main-photo" src="https://placehold.co/600x400?text=Loading..." />
+      <div class="pb-gallery" id="pb-gallery">
+        <div class="pb-gallery-track" id="gallery-track"></div>
+        <div class="gallery-dots" id="gallery-dots"></div>
+        <button class="gallery-arrow prev" id="gallery-prev" onclick="galleryMove(-1)">&#8249;</button>
+        <button class="gallery-arrow next" id="gallery-next" onclick="galleryMove(1)">&#8250;</button>
       </div>
     </div>
     <div class="description-section">
@@ -106,6 +110,38 @@ const SHEET_ID = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
 const API_KEY  = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
 const RANGE    = 'Database!B2:W';
 
+
+// Gallery
+let galleryPhotos = [];
+let galleryIndex  = 0;
+
+function buildGallery(photos) {
+  galleryPhotos = photos.filter(Boolean);
+  if (!galleryPhotos.length) galleryPhotos = ['https://placehold.co/600x400?text=No+Photo'];
+  const track = document.getElementById('gallery-track');
+  const dots  = document.getElementById('gallery-dots');
+  track.innerHTML = galleryPhotos.map(src =>
+    '<div class="pb-gallery-slide"><img src="' + src + '" loading="lazy" /></div>'
+  ).join('');
+  dots.innerHTML = galleryPhotos.map((_, i) =>
+    '<button class="gallery-dot' + (i === 0 ? ' active' : '') + '" onclick="galleryGoto(' + i + ')"></button>'
+  ).join('');
+  const single = galleryPhotos.length < 2;
+  document.getElementById('gallery-prev').style.display = single ? 'none' : '';
+  document.getElementById('gallery-next').style.display = single ? 'none' : '';
+  dots.style.display = single ? 'none' : '';
+  galleryIndex = 0;
+  updateGallery();
+}
+function galleryMove(dir) {
+  galleryIndex = (galleryIndex + dir + galleryPhotos.length) % galleryPhotos.length;
+  updateGallery();
+}
+function galleryGoto(i) { galleryIndex = i; updateGallery(); }
+function updateGallery() {
+  document.getElementById('gallery-track').style.transform = 'translateX(-' + (galleryIndex * 100) + '%)';
+  document.querySelectorAll('.gallery-dot').forEach((d, i) => d.classList.toggle('active', i === galleryIndex));
+}
 let currentBikeId   = null;
 let currentBikeName = null;
 
@@ -166,7 +202,10 @@ function populatePage(bike) {
   setField('price-retail',   bike['Retail_Price']);
   setField('price-currency', bike['Currency']);
   setField('price-avail',    bike['Availability']);
-  document.getElementById('main-photo').src = bike['Photo_1'] || 'https://placehold.co/600x400?text=No+Photo';
+  buildGallery([
+    bike['Photo_1'], bike['Photo_2'], bike['Photo_3'],
+    bike['Photo_4'], bike['Photo_5']
+  ]);
 }
 
 async function loadBike() {
@@ -203,6 +242,75 @@ window.addEventListener('bb-auth-change', hydrateButtons);
 </script>
 
 <style>
+    /* ===================== PHOTO GALLERY ===================== */
+    .pb-gallery {
+      position: relative;
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #f0f0f0;
+      user-select: none;
+    }
+    .pb-gallery-track {
+      display: flex;
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .pb-gallery-slide {
+      min-width: 100%;
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      overflow: hidden;
+    }
+    .pb-gallery-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .gallery-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.9);
+      border: 1px solid #e0e0e0;
+      border-radius: 50%;
+      width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      color: #333;
+      z-index: 10;
+      transition: background 0.15s, border-color 0.15s;
+      line-height: 1;
+      padding: 0;
+    }
+    .gallery-arrow:hover { background: #fff; border-color: #111; color: #111; }
+    .gallery-arrow.prev  { left: 10px; }
+    .gallery-arrow.next  { right: 10px; }
+    .gallery-dots {
+      position: absolute;
+      bottom: 10px;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      z-index: 10;
+    }
+    .gallery-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.25);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      border: none;
+      padding: 0;
+    }
+    .gallery-dot.active { background: #111; transform: scale(1.25); }
+
 .product-actions {
   display: flex;
   gap: 10px;
