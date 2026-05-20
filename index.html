@@ -216,6 +216,13 @@ function toggleMobileMenu() {
       Browse Collection
     </button>
   </div>
+  <div class="mobile-splash-links">
+    <a href="brands.html">Brands</a>
+    <a href="community.html">Community</a>
+    <a href="feed.html">Feed</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="contact.html">Contact Us</a>
+  </div>
 </div>
 
 <!-- INFINITE CANVAS -->
@@ -280,7 +287,8 @@ async function loadData() {
     `${brandCount} brands · ${bikes.length} bikes`;
 
   if (isMobile) {
-    initVirtualCanvas();
+    // Mobile: no canvas, no image loading — hero splash only
+    document.getElementById('canvas-viewport').style.display = 'none';
   } else {
     buildGrid();
   }

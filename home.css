@@ -274,3 +274,93 @@ nav {
   .nav-hamburger { display: none; }
   .mobile-menu { display: none !important; }
 }
+
+/* =========================== MOBILE SPLASH (replaces canvas) =========================== */
+@media (max-width: 768px) {
+
+  /* Body no longer needs overflow:hidden since there's no canvas to contain */
+  body { overflow: auto; }
+
+  /* Hero fills the whole screen below the nav */
+  .hero {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    padding: 24px;
+    pointer-events: auto;
+  }
+
+  /* Remove the frosted glass box look — just clean text on white */
+  .hero-box {
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .hero-title {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: #111;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .hero-sub {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 6px;
+    margin-top: 0;
+  }
+
+  .hero-meta {
+    font-size: 12px;
+    color: #bbb;
+    margin-bottom: 32px;
+  }
+
+  .enter-btn {
+    display: block;
+    width: 100%;
+    padding: 14px 20px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.2px;
+  }
+
+  /* Nav links below the button */
+  .mobile-splash-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 20px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #f0f0f0;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .mobile-splash-links a {
+    font-size: 13px;
+    color: #555;
+    text-decoration: none;
+  }
+
+  .mobile-splash-links a:hover { color: #111; }
+
+}
