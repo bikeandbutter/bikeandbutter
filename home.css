@@ -109,7 +109,7 @@ nav {
   z-index: 10;
 }
 
-/* 🔥 NEW WHITE BOX */
+/* WHITE BOX */
 .hero-box {
   background: rgba(255,255,255,0.9);
   padding: 40px 60px;
@@ -194,18 +194,17 @@ nav {
   border-radius: 12px;
 }
 
-/* NEW: title below image */
+/* title below image */
 .card-title {
   margin-top: 8px;
   font-size: 13px;
   text-align: center;
   color: #111;
 }
-/* =========================== MOBILE (max-width: 768px) =========================== */
 
+/* =========================== MOBILE NAV (max-width: 768px) =========================== */
 @media (max-width: 768px) {
 
-  /* Nav hamburger */
   .nav-links { display: none; }
   .nav-right > #auth-area { display: none; }
 
@@ -260,31 +259,13 @@ nav {
     cursor: pointer;
   }
 
-  /* Hero box — shrink padding on small screens */
-  .hero-box {
-    padding: 28px 24px;
-    margin: 0 16px;
-  }
-  .hero-title { font-size: 36px; }
-  .hero-sub { font-size: 13px; }
-
-}
-
-@media (min-width: 769px) {
-  .nav-hamburger { display: none; }
-  .mobile-menu { display: none !important; }
-}
-
-/* =========================== MOBILE SPLASH (replaces canvas) =========================== */
-@media (max-width: 768px) {
-
-  /* Body no longer needs overflow:hidden since there's no canvas to contain */
+  /* =========================== MOBILE SPLASH =========================== */
   body { overflow: auto; }
 
-  /* Hero fills the whole screen below the nav */
   .hero {
     position: fixed;
-    inset: 0;
+    top: 57px;
+    left: 0; right: 0; bottom: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -292,11 +273,9 @@ nav {
     background: #fff;
     padding: 24px;
     pointer-events: auto;
-    z-index: 5;        /* below nav (z-index:100) but above canvas (z-index:0) */
-    top: 57px;         /* push below the fixed nav bar */
+    z-index: 5;
   }
 
-  /* Remove the frosted glass box look — just clean text on white */
   .hero-box {
     background: transparent;
     box-shadow: none;
@@ -342,9 +321,9 @@ nav {
     font-weight: 600;
     cursor: pointer;
     letter-spacing: 0.2px;
+    margin-top: 0;
   }
 
-  /* Nav links below the button */
   .mobile-splash-links {
     display: flex;
     flex-wrap: wrap;
@@ -365,4 +344,11 @@ nav {
 
   .mobile-splash-links a:hover { color: #111; }
 
+}
+
+/* Hide mobile-only elements on desktop */
+@media (min-width: 769px) {
+  .nav-hamburger { display: none; }
+  .mobile-menu { display: none !important; }
+  .mobile-splash-links { display: none; }
 }
