@@ -815,3 +815,128 @@ nav {
 @media (max-width: 1100px) {
   .product-layout { padding-left: 20px; padding-right: 20px; }
 }
+/* =========================== MOBILE (max-width: 768px) =========================== */
+/* All rules below are additive — desktop is completely unaffected */
+
+@media (max-width: 768px) {
+
+  /* --- NAV --- */
+  /* Hide the link row and auth area; show hamburger instead */
+  .nav-links { display: none; }
+  .nav-right > #auth-area { display: none; }
+
+  /* Hamburger button — invisible on desktop (see below) */
+  .nav-hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    margin-left: 12px;
+  }
+  .nav-hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #111;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  /* Mobile dropdown menu */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 57px; /* just below nav */
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-bottom: 1px solid #ebebeb;
+    z-index: 99;
+    padding: 12px 0 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .mobile-menu.open { display: block; }
+
+  .mobile-menu a {
+    display: block;
+    padding: 12px 24px;
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .mobile-menu a:last-child { border-bottom: none; }
+  .mobile-menu a.active { font-weight: 600; color: #111; }
+  .mobile-menu a:hover { background: #fafafa; }
+
+  .mobile-menu-signin {
+    display: block;
+    padding: 12px 24px;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid #f5f5f5;
+    cursor: pointer;
+  }
+
+  /* --- PAGE HEADER --- */
+  .page-header { padding: 24px 16px 20px; }
+  .page-header-title { font-size: 26px; }
+
+  /* --- FILTER BAR --- */
+  .filter-bar { padding: 12px 16px; }
+  .filter-top { flex-wrap: wrap; gap: 8px; }
+  .filter-left { flex-wrap: wrap; gap: 8px; }
+  .filters { flex-wrap: wrap; gap: 6px; }
+  .search-bar { width: 100%; }
+
+  /* --- BIKE GRID --- */
+  .bike-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 12px 12px;
+  }
+
+  /* --- BIKE CARD --- */
+  .bike-info { padding: 8px 10px 10px; }
+  .bike-name { font-size: 12px; }
+  .bike-price { font-size: 12px; }
+  .bike-category { font-size: 11px; margin-bottom: 6px; }
+
+  /* --- BRAND GRID --- */
+  .country-grid { grid-template-columns: repeat(2, 1fr); padding: 0 12px; }
+  .country-header { margin: 14px 12px 8px; }
+
+  /* --- BRAND HERO (solobrand page) --- */
+  .brand-hero { padding: 20px 16px; gap: 16px; flex-direction: column; }
+  .brand-main h1 { font-size: 24px; }
+  .brand-stats { text-align: left; }
+  .brand-count { font-size: 36px; }
+
+  /* --- PRODUCT / BIKE PAGE --- */
+  .product-layout { padding: 16px; }
+  .product-name { font-size: 24px; }
+  .product-price { font-size: 20px; }
+  .product-actions { flex-wrap: wrap; }
+
+  /* --- BREADCRUMB --- */
+  .breadcrumb { padding: 10px 16px; }
+
+  /* --- COMMUNITY LEADERBOARD --- */
+  .leaderboard-wrap { padding: 12px 12px; }
+  .leaderboard-table { font-size: 12px; }
+  .community-stats { padding: 12px 16px; }
+
+  /* --- PROFILE PAGE --- */
+  .profile-layout { padding: 0 12px; }
+
+}
+
+/* Hide hamburger on desktop */
+@media (min-width: 769px) {
+  .nav-hamburger { display: none; }
+  .mobile-menu { display: none !important; }
+}

@@ -30,7 +30,23 @@
 
     <div id="auth-area"></div>
   </div>
+  <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="bikeindex.html" class="active">Bikes</a>
+  <a href="brands.html">Brands</a>
+  <a href="community.html">Community</a>
+  <a href="feed.html">Feed</a>
+  <a href="marketplace.html">Marketplace</a>
+  <a href="contact.html">Contact Us</a>
+</div>
+<script>
+function toggleMobileMenu() {
+  document.getElementById('mobile-menu').classList.toggle('open');
+}
+</script>
 
   <!-- PAGE HEADER -->
   <div class="page-header">

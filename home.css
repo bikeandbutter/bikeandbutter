@@ -201,3 +201,76 @@ nav {
   text-align: center;
   color: #111;
 }
+/* =========================== MOBILE (max-width: 768px) =========================== */
+
+@media (max-width: 768px) {
+
+  /* Nav hamburger */
+  .nav-links { display: none; }
+  .nav-right > #auth-area { display: none; }
+
+  .nav-hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    margin-left: 12px;
+  }
+  .nav-hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #111;
+    border-radius: 2px;
+  }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 57px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-bottom: 1px solid #ebebeb;
+    z-index: 99;
+    padding: 12px 0 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .mobile-menu.open { display: block; }
+  .mobile-menu a {
+    display: block;
+    padding: 12px 24px;
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .mobile-menu a:last-child { border-bottom: none; }
+  .mobile-menu a:hover { background: #fafafa; }
+  .mobile-menu-signin {
+    display: block;
+    padding: 12px 24px;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid #f5f5f5;
+    cursor: pointer;
+  }
+
+  /* Hero box — shrink padding on small screens */
+  .hero-box {
+    padding: 28px 24px;
+    margin: 0 16px;
+  }
+  .hero-title { font-size: 36px; }
+  .hero-sub { font-size: 13px; }
+
+}
+
+@media (min-width: 769px) {
+  .nav-hamburger { display: none; }
+  .mobile-menu { display: none !important; }
+}
