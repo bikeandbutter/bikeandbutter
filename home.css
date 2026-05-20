@@ -292,6 +292,8 @@ nav {
     background: #fff;
     padding: 24px;
     pointer-events: auto;
+    z-index: 5;        /* below nav (z-index:100) but above canvas (z-index:0) */
+    top: 57px;         /* push below the fixed nav bar */
   }
 
   /* Remove the frosted glass box look — just clean text on white */
