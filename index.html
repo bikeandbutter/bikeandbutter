@@ -241,17 +241,16 @@ const GAP      = 12;
 const CELL     = CARD_W + GAP;  // 212
 const CELL_H   = CARD_H + GAP;  // 165
 
-// How many columns/rows to generate — large fixed grid, hard edges
-// Mobile gets a smaller grid (400 cards) for fast load; desktop keeps full 3600
+// ── Device detect ─────────────────────────────────────────────────
 const isMobile = window.innerWidth <= 768;
-const GRID_COLS = isMobile ? 20 : 60;
-const GRID_ROWS = isMobile ? 20 : 60;
 
-let bikes      = [];
-let planeW     = 0;
-let planeH     = 0;
+// ── Desktop grid constants (unchanged) ────────────────────────────
+const GRID_COLS = 60;
+const GRID_ROWS = 60;
 
-// Current translation of the plane
+let bikes  = [];
+let planeW = 0;
+let planeH = 0;
 let tx = 0, ty = 0;
 
 // ── Load data ─────────────────────────────────────────────────────
@@ -266,7 +265,7 @@ async function loadData() {
 
   const rows    = bikeData.values || [];
   const headers = rows[0].map(h => h.trim());
-  const dataRows= rows.slice(1);
+  const dataRows = rows.slice(1);
 
   bikes = dataRows.map(row => {
     const bike = {};
@@ -280,29 +279,27 @@ async function loadData() {
   document.getElementById('hero-meta').textContent =
     `${brandCount} brands · ${bikes.length} bikes`;
 
-  buildGrid();
+  if (isMobile) {
+    initVirtualCanvas();
+  } else {
+    buildGrid();
+  }
 }
 
-// ── Build the fixed large grid ────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+//  DESKTOP — original fixed grid (completely unchanged)
+// ══════════════════════════════════════════════════════════════════
 function buildGrid() {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
-
   const totalCells = GRID_COLS * GRID_ROWS;
-
-  // Tile the bike list to fill all cells
   const tiled = [];
   while (tiled.length < totalCells) tiled.push(...bikes);
   const cells = tiled.slice(0, totalCells);
-
   grid.style.gridTemplateColumns = `repeat(${GRID_COLS}, ${CARD_W}px)`;
   grid.innerHTML = cells.map(buildCard).join('');
-
-  // Plane dimensions
   planeW = GRID_COLS * CELL + GAP;
   planeH = GRID_ROWS * CELL_H + GAP;
-
-  // Start centred in viewport
   tx = (vw - planeW) / 2;
   ty = (vh - planeH) / 2;
   applyTransform();
@@ -313,7 +310,6 @@ function buildCard(bike) {
   const name  = bike['Name']    || 'Unnamed';
   const brand = bike['Brand']   || '';
   const photo = bike['Photo_1'] || '';
-  // Request 2× resolution placeholder for retina sharpness
   const imgSrc = photo || `https://placehold.co/400x267?text=${encodeURIComponent(brand)}`;
   return `<div class="card" data-id="${id}">
     <img src="${imgSrc}" loading="lazy" decoding="async" />
@@ -321,40 +317,135 @@ function buildCard(bike) {
   </div>`;
 }
 
-// ── Transform ─────────────────────────────────────────────────────
+// ── Transform (shared) ────────────────────────────────────────────
 function applyTransform() {
   plane.style.transform = `translate3d(${Math.round(tx)}px, ${Math.round(ty)}px, 0)`;
 }
 
-// ── Hard clamp — no bounce, no wrap ──────────────────────────────
-// The plane must never show whitespace: clamp so the grid always
-// covers the full viewport on every side.
 function clamp() {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
-
-  // Right edge: plane left edge can't go past 0 (would show white on left)
-  const maxTx = 0;
-  // Left edge: plane right edge must stay at least at viewport right
-  const minTx = vw - planeW;
-
-  // Bottom edge: plane top can't go past 0
-  const maxTy = 0;
-  // Top edge: plane bottom must stay at least at viewport bottom
-  const minTy = vh - planeH;
-
-  tx = Math.min(maxTx, Math.max(minTx, tx));
-  ty = Math.min(maxTy, Math.max(minTy, ty));
+  tx = Math.min(0, Math.max(vw - planeW, tx));
+  ty = Math.min(0, Math.max(vh - planeH, ty));
 }
 
-// ── Drag ──────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+//  MOBILE — virtual canvas
+//  Only ~30 real DOM nodes exist at any time. As you drag, cards
+//  that leave the viewport get recycled onto newly-visible cells
+//  with a fresh image. The browser never holds more than ~30 images
+//  in memory, so load is near-instant and scrolling stays smooth.
+// ══════════════════════════════════════════════════════════════════
+const VCOLS   = 30;   // logical world columns
+const VROWS   = 30;   // logical world rows
+const BUFFER  = 1;    // cells to pre-render just outside viewport
+
+function initVirtualCanvas() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  planeW = VCOLS * CELL + GAP;
+  planeH = VROWS * CELL_H + GAP;
+
+  // Start near centre of world
+  tx = (vw - planeW) / 2;
+  ty = (vh - planeH) / 2;
+
+  // Switch grid to absolute-position mode
+  grid.style.gridTemplateColumns = '';
+  grid.style.position = 'relative';
+  grid.style.width    = planeW + 'px';
+  grid.style.height   = planeH + 'px';
+  grid.innerHTML = '';
+
+  // Build the DOM pool — only as many cards as can fit on screen + buffer
+  const colsVisible = Math.ceil(vw / CELL) + BUFFER * 2 + 1;
+  const rowsVisible = Math.ceil(vh / CELL_H) + BUFFER * 2 + 1;
+  const poolSize    = colsVisible * rowsVisible;
+
+  for (let i = 0; i < poolSize; i++) {
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.style.cssText = `position:absolute;width:${CARD_W}px`;
+    el.innerHTML = `<img decoding="async" style="width:100%;aspect-ratio:3/2;object-fit:cover;display:block;border-radius:8px 8px 0 0">
+      <div class="card-title"></div>`;
+    el.dataset.assignedCol = '-999';
+    el.dataset.assignedRow = '-999';
+    grid.appendChild(el);
+  }
+
+  applyTransform();
+  renderVisibleCells();
+}
+
+// Stable bike assignment per cell — same cell always shows same bike
+const cellBikeIndex = {};
+function bikeForCell(col, row) {
+  const key = col + ',' + row;
+  if (cellBikeIndex[key] === undefined) {
+    cellBikeIndex[key] = ((col * 37 + row * 17 + col * row) % bikes.length + bikes.length) % bikes.length;
+  }
+  return bikes[cellBikeIndex[key]];
+}
+
+function renderVisibleCells() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  const colStart = Math.max(0, Math.floor(-tx / CELL) - BUFFER);
+  const colEnd   = Math.min(VCOLS - 1, Math.ceil((-tx + vw) / CELL) + BUFFER);
+  const rowStart = Math.max(0, Math.floor(-ty / CELL_H) - BUFFER);
+  const rowEnd   = Math.min(VROWS - 1, Math.ceil((-ty + vh) / CELL_H) + BUFFER);
+
+  // Build set of cells that should be visible
+  const needed = new Set();
+  for (let c = colStart; c <= colEnd; c++)
+    for (let r = rowStart; r <= rowEnd; r++)
+      needed.add(c + ',' + r);
+
+  const pool = Array.from(grid.children);
+
+  // Mark cards already showing the right cell
+  const usedKeys = new Set();
+  for (const el of pool) {
+    const key = el.dataset.assignedCol + ',' + el.dataset.assignedRow;
+    if (needed.has(key)) usedKeys.add(key);
+  }
+
+  // Collect free cards (off-screen, available for recycling)
+  const free = pool.filter(el => !needed.has(el.dataset.assignedCol + ',' + el.dataset.assignedRow));
+  let fi = 0;
+
+  for (const key of needed) {
+    if (usedKeys.has(key)) continue;  // already rendered
+    const el = free[fi++];
+    if (!el) continue;
+
+    const [c, r] = key.split(',').map(Number);
+    const bike   = bikeForCell(c, r);
+    const x = c * CELL + GAP;
+    const y = r * CELL_H + GAP;
+
+    el.style.left = x + 'px';
+    el.style.top  = y + 'px';
+    el.dataset.assignedCol = c;
+    el.dataset.assignedRow = r;
+    el.dataset.id = bike['ID'] || '';
+
+    const img    = el.querySelector('img');
+    const newSrc = bike['Photo_1'] || `https://placehold.co/400x267?text=${encodeURIComponent(bike['Brand'] || '')}`;
+    if (img.src !== newSrc) img.src = newSrc;
+    el.querySelector('.card-title').textContent = bike['Name'] || '';
+  }
+}
+
+// ── Shared drag + momentum ────────────────────────────────────────
 let isDragging = false;
 let lastX = 0, lastY = 0;
 let dragStartX = 0, dragStartY = 0;
 let hasMoved = false;
 const DRAG_THRESHOLD = 4;
 
-// ── Momentum (mobile only) ─────────────────────────────────────────
 let velX = 0, velY = 0;
 let lastMoveTime = 0;
 let momentumRAF = null;
@@ -365,12 +456,11 @@ function cancelMomentum() {
 
 function runMomentum() {
   if (Math.abs(velX) < 0.5 && Math.abs(velY) < 0.5) return;
-  tx += velX;
-  ty += velY;
-  velX *= 0.92;   // friction — lower = stops faster, higher = glides longer
-  velY *= 0.92;
+  tx += velX; ty += velY;
+  velX *= 0.93; velY *= 0.93;
   clamp();
   applyTransform();
+  if (isMobile) renderVisibleCells();
   momentumRAF = requestAnimationFrame(runMomentum);
 }
 
@@ -378,12 +468,9 @@ document.addEventListener('selectstart', e => { if (isDragging) e.preventDefault
 
 document.addEventListener('pointerdown', e => {
   cancelMomentum();
-  isDragging  = true;
-  hasMoved    = false;
-  lastX       = e.clientX;
-  lastY       = e.clientY;
-  dragStartX  = e.clientX;
-  dragStartY  = e.clientY;
+  isDragging = true; hasMoved = false;
+  lastX = e.clientX; lastY = e.clientY;
+  dragStartX = e.clientX; dragStartY = e.clientY;
   velX = 0; velY = 0;
   lastMoveTime = Date.now();
   document.body.style.cursor = 'grabbing';
@@ -392,10 +479,8 @@ document.addEventListener('pointerdown', e => {
 document.addEventListener('pointerup', () => {
   isDragging = false;
   document.body.style.cursor = 'grab';
-  // Only apply momentum on mobile — desktop keeps instant-stop feel
-  if (isMobile && (Math.abs(velX) > 1 || Math.abs(velY) > 1)) {
+  if (isMobile && (Math.abs(velX) > 1 || Math.abs(velY) > 1))
     momentumRAF = requestAnimationFrame(runMomentum);
-  }
 });
 
 document.addEventListener('pointermove', e => {
@@ -404,23 +489,19 @@ document.addEventListener('pointermove', e => {
   const dy = e.clientY - lastY;
 
   if (Math.abs(e.clientX - dragStartX) > DRAG_THRESHOLD ||
-      Math.abs(e.clientY - dragStartY) > DRAG_THRESHOLD) {
-    hasMoved = true;
-  }
+      Math.abs(e.clientY - dragStartY) > DRAG_THRESHOLD) hasMoved = true;
 
-  // Track velocity for momentum
   const now = Date.now();
   const dt  = Math.max(1, now - lastMoveTime);
-  velX = dx / dt * 16;   // normalise to ~60fps frame
+  velX = dx / dt * 16;
   velY = dy / dt * 16;
   lastMoveTime = now;
 
-  lastX = e.clientX;
-  lastY = e.clientY;
-  tx += dx;
-  ty += dy;
+  lastX = e.clientX; lastY = e.clientY;
+  tx += dx; ty += dy;
   clamp();
   applyTransform();
+  if (isMobile) renderVisibleCells();
 });
 
 // Click only fires if user didn't drag
