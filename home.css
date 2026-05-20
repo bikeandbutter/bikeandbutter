@@ -277,10 +277,10 @@ nav {
   }
 
   .hero-box {
-    background: transparent;
+    background: #fff;
     box-shadow: none;
     backdrop-filter: none;
-    padding: 0;
+    padding: 36px 32px;
     margin: 0;
     text-align: center;
     width: 100%;
@@ -288,6 +288,8 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: center;
+    border: 1px solid #ebebeb;
+    border-radius: 16px;
   }
 
   /* Logo icon above the title */
