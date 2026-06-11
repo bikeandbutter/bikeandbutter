@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bike &amp; Butter x 8LIEN — Official Singapore Distributor</title>
+  <meta name="description" content="8LIEN carbon spoke wheelsets — Singapore's official distributor. UCI certified. AETHER, L-Series and Triathlon wheelsets." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://bikeandbutter.com/8lien" />
+  <meta property="og:title" content="Bike &amp; Butter x 8LIEN — Official Singapore Distributor" />
+  <meta property="og:description" content="Singapore's official distributor for 8LIEN carbon spoke wheelsets." />
+  <meta property="og:image" content="https://bikeandbutter.com/og-image.png" />
+  <meta property="og:url" content="https://bikeandbutter.com/8lien" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Bike &amp; Butter x 8LIEN" />
+  <meta name="twitter:image" content="https://bikeandbutter.com/og-image.png" />
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZQJRHN886Z');
+  </script>
+
+  <link rel="stylesheet" href="8lien.css" />
+
+  <style>
+    /* ════════════════════════════════════════════════════════════
+       TICKER
+    ════════════════════════════════════════════════════════════ */
+    .ticker-wrap {
+      overflow: hidden;
+      background: var(--black-2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 11px 0;
+      white-space: nowrap;
+    }
+    .ticker-track { display: inline-flex; animation: ticker 32s linear infinite; }
+    .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-item {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-family: var(--font-head); font-size: 11px; font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--white-dim); padding: 0 28px;
+    }
+    .ticker-dot { width:5px; height:5px; border-radius:50%; background:var(--pink); flex-shrink:0; }
+    .ticker-item .hl { color: var(--pink); }
+
+    /* ════════════════════════════════════════════════════════════
+       SERIES SELECTOR — prominent full-width cards, not a thin bar
+    ════════════════════════════════════════════════════════════ */
+
+    /* Intro label above the selector */
+    .series-intro {
+      background: var(--black-2);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 60px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .series-intro-label {
+      font-family: var(--font-head);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--pink);
+      white-space: nowrap;
+    }
+    .series-intro-rule { flex: 1; height: 1px; background: var(--border); }
+    .series-intro-hint {
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+      white-space: nowrap;
+      font-family: var(--font-body);
+    }
+
+    /* The three selector cards */
+    .series-bar {
+      position: sticky;
+      top: 57px;
+      z-index: 90;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border); /* gap colour */
+    }
+    .series-tab {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 24px 28px;
+      cursor: pointer;
+      border: none;
+      background: var(--black-2);
+      color: var(--white-dim);
+      text-align: left;
+      transition: background 0.2s;
+      min-height: 100px;
+    }
+    /* Subtle background image per tab */
+    .series-tab::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.12;
+      transition: opacity 0.3s;
+    }
+    .series-tab[data-series="aether"]::before {
+      background-image: url('photos/8lien_hero.jpg');
+    }
+    .series-tab[data-series="lseries"]::before {
+      background-image: url('photos/lseries_panel_hero.jpg');
+    }
+    .series-tab[data-series="tri"]::before {
+      background-image: url('photos/tri_panel_hero.jpg');
+    }
+    .series-tab:hover::before { opacity: 0.22; }
+    .series-tab.active::before { opacity: 0.28; }
+
+    /* Active state: coloured left border + bright background */
+    .series-tab.active {
+      background: var(--black-3);
+      color: var(--white);
+    }
+    .series-tab[data-series="aether"].active  { box-shadow: inset 4px 0 0 var(--pink); }
+    .series-tab[data-series="lseries"].active { box-shadow: inset 4px 0 0 #5b8fff; }
+    .series-tab[data-series="tri"].active     { box-shadow: inset 4px 0 0 #f5a623; }
+
+    /* Hover glow */
+    .series-tab[data-series="aether"]:hover  { background: rgba(255,103,126,0.06); }
+    .series-tab[data-series="lseries"]:hover { background: rgba(91,143,255,0.06); }
+    .series-tab[data-series="tri"]:hover     { background: rgba(245,166,35,0.06); }
+
+    .series-tab-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      width: fit-content;
+      border: 1px solid;
+    }
+    .series-tab[data-series="aether"]  .series-tab-badge { color: var(--pink);   border-color: var(--pink-glow);           background: var(--pink-dim); }
+    .series-tab[data-series="lseries"] .series-tab-badge { color: #5b8fff; border-color: rgba(91,143,255,0.3);  background: rgba(91,143,255,0.1); }
+    .series-tab[data-series="tri"]     .series-tab-badge { color: #f5a623; border-color: rgba(245,166,35,0.3);  background: rgba(245,166,35,0.1); }
+
+    .series-tab-name {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+      line-height: 1;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .series-tab-sub {
+      font-size: 12px;
+      color: var(--white-dim);
+      font-family: var(--font-body);
+      font-weight: 300;
+    }
+    .series-tab.active .series-tab-sub { color: rgba(255,255,255,0.6); }
+
+    /* Arrow indicator */
+    .series-tab-arrow {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      font-size: 20px;
+      opacity: 0;
+      transition: opacity 0.2s, right 0.2s;
+    }
+    .series-tab.active .series-tab-arrow,
+    .series-tab:hover  .series-tab-arrow { opacity: 1; }
+    .series-tab:hover  .series-tab-arrow { right: 16px; }
+    .series-tab[data-series="aether"]  .series-tab-arrow { color: var(--pink); }
+    .series-tab[data-series="lseries"] .series-tab-arrow { color: #5b8fff; }
+    .series-tab[data-series="tri"]     .series-tab-arrow { color: #f5a623; }
+
+    /* ════════════════════════════════════════════════════════════
+       SERIES PANELS (the swappable content blocks)
+    ════════════════════════════════════════════════════════════ */
+    .series-panel { display: none; }
+    .series-panel.active { display: block; }
+
+    /* ── Panel hero banner ───────────────────────────────────── */
+    .panel-hero {
+      position: relative;
+      height: 340px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+    .panel-hero-bg {
+      position: absolute; inset: 0;
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.03);
+      transition: transform 6s ease-out;
+    }
+    .panel-hero-bg.loaded { transform: scale(1); }
+    .panel-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(8,8,8,0.95) 0%, rgba(8,8,8,0.4) 60%, rgba(8,8,8,0.1) 100%);
+    }
+    .panel-hero-content {
+      position: relative; z-index: 2;
+      padding: 0 60px 40px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      width: 100%;
+      gap: 40px;
+    }
+    .panel-hero-left {}
+    .panel-hero-eyebrow {
+      font-size: 10px; font-weight: 500; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--pink);
+      margin-bottom: 8px;
+    }
+    .panel-hero-title {
+      font-family: var(--font-head);
+      font-size: clamp(40px, 5vw, 68px);
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 0.92;
+      letter-spacing: -0.5px;
+    }
+    .panel-hero-desc {
+      font-size: 13px; font-weight: 300; color: var(--white-dim);
+      max-width: 420px; margin-top: 16px; line-height: 1.7;
+    }
+    .panel-hero-stats {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .panel-stat {
+      background: rgba(8,8,8,0.7);
+      border: 1px solid var(--border);
+      padding: 16px 20px;
+      text-align: center;
+      min-width: 80px;
+    }
+    .panel-stat-val {
+      font-family: var(--font-head);
+      font-size: 24px; font-weight: 900;
+      color: var(--pink); line-height: 1;
+    }
+    .panel-stat-label {
+      font-size: 9px; font-weight: 500; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--white-dim);
+      margin-top: 4px;
+    }
+
+    /* ── Product grid inside panels ─────────────────────────── */
+    .panel-products { padding: 60px 60px; background: var(--black-2); border-top: 1px solid var(--border); }
+    .panel-products-header { margin-bottom: 40px; }
+    .panel-products-header .section-label { margin-bottom: 8px; }
+    .panel-products-header h3 {
+      font-family: var(--font-head); font-size: 36px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: -0.3px; line-height: 1;
+    }
+
+    /* ── Spec table inside panels ───────────────────────────── */
+    .panel-specs { padding: 60px 60px; border-top: 1px solid var(--border); }
+    .spec-table-wrap { margin-top: 40px; overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+    .spec-table { width:100%; border-collapse:collapse; font-family:var(--font-body); }
+    .spec-table thead tr { background: var(--black-3); }
+    .spec-table thead th {
+      padding: 16px 20px; text-align: left;
+      font-family: var(--font-head); font-size: 12px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase; color: var(--white);
+      border-bottom: 1px solid var(--border);
+    }
+    .spec-table thead th:first-child { color:var(--white-dim); font-weight:400; font-size:11px; }
+    .spec-table thead th.th-pink { color: var(--pink); }
+    .spec-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+    .spec-table tbody tr:last-child { border-bottom:none; }
+    .spec-table tbody tr:hover { background: var(--white-faint); }
+    .spec-table td { padding:13px 20px; font-size:13px; color:var(--white-dim); vertical-align:middle; }
+    .spec-table td:first-child { font-size:11px; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.3); white-space:nowrap; }
+    .td-val { font-family:var(--font-head); font-size:15px; font-weight:700; color:var(--white); }
+    .td-pink { font-family:var(--font-head); font-size:15px; font-weight:700; color:var(--pink); }
+    .spec-pill {
+      display:inline-block; background:var(--pink-dim); border:1px solid var(--pink-glow);
+      color:var(--pink); font-family:var(--font-head); font-size:9px; font-weight:700;
+      letter-spacing:1.5px; text-transform:uppercase; padding:2px 8px; border-radius:20px;
+      margin-left:6px; vertical-align:middle;
+    }
+    .spec-note { margin-top:14px; font-size:11px; color:rgba(255,255,255,0.22); letter-spacing:0.3px; }
+
+    /* ── Tech features inside panels ────────────────────────── */
+    .panel-tech { padding: 60px 60px; border-top: 1px solid var(--border); }
+
+    /* ── Product card tweaks ─────────────────────────────────── */
+    .product-card-price-val {
+      font-family: var(--font-head); font-size: 22px; font-weight: 900; color: var(--white);
+    }
+    .product-card-price-val span { font-size: 12px; font-weight: 400; color: var(--white-dim); font-family: var(--font-body); }
+
+    /* ── Image fallback ─────────────────────────────────────── */
+    .img-gone {
+      background: var(--black-4); display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:8px;
+      aspect-ratio:3/2; width:100%; padding:24px; text-align:center;
+    }
+    .img-gone-icon { font-size:26px; opacity:0.3; }
+    .img-gone-title { font-family:var(--font-head); font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.2); }
+    .img-gone-sub { font-size:10px; color:rgba(255,255,255,0.13); }
+
+    /* ════════════════════════════════════════════════════════════
+       AETHER panel accent — warm white/silver feel
+    ════════════════════════════════════════════════════════════ */
+    #panel-aether .panel-hero { border-bottom: 2px solid var(--pink); }
+
+    /* ════════════════════════════════════════════════════════════
+       L-SERIES panel accent — cool blue-grey tint
+    ════════════════════════════════════════════════════════════ */
+    #panel-lseries {
+      --accent: #5b8fff;
+      --accent-dim: rgba(91,143,255,0.15);
+      --accent-glow: rgba(91,143,255,0.3);
+    }
+    #panel-lseries .panel-hero { border-bottom: 2px solid #5b8fff; }
+    #panel-lseries .panel-hero-eyebrow,
+    #panel-lseries .section-label,
+    #panel-lseries .cat-label,
+    #panel-lseries .product-card-cat,
+    #panel-lseries .product-enquire,
+    #panel-lseries .panel-stat-val { color: #5b8fff; }
+    #panel-lseries .spec-table thead th.th-blue { color: #5b8fff; }
+    #panel-lseries .td-accent { font-family:var(--font-head); font-size:15px; font-weight:700; color:#5b8fff; }
+    #panel-lseries .product-card:hover .product-card-overlay { opacity:1; }
+    #panel-lseries .product-card-overlay { background: rgba(91,143,255,0.08); }
+    #panel-lseries .feature-icon { background: rgba(91,143,255,0.12); border-color: rgba(91,143,255,0.3); color: #5b8fff; }
+    #panel-lseries .spec-pill { background: rgba(91,143,255,0.12); border-color: rgba(91,143,255,0.3); color: #5b8fff; }
+    #panel-lseries .series-bar-accent { background: #5b8fff; }
+    #panel-lseries .step-action,
+    #panel-lseries .howtobuy-step::after { color:#5b8fff; background:#5b8fff; }
+
+    /* ════════════════════════════════════════════════════════════
+       TRIATHLON panel accent — gold/amber
+    ════════════════════════════════════════════════════════════ */
+    #panel-tri {
+      --accent: #f5a623;
+      --accent-dim: rgba(245,166,35,0.12);
+      --accent-glow: rgba(245,166,35,0.3);
+    }
+    #panel-tri .panel-hero { border-bottom: 2px solid #f5a623; }
+    #panel-tri .panel-hero-eyebrow,
+    #panel-tri .section-label,
+    #panel-tri .product-card-cat,
+    #panel-tri .product-enquire,
+    #panel-tri .panel-stat-val { color: #f5a623; }
+    #panel-tri .spec-table thead th.th-gold { color: #f5a623; }
+    #panel-tri .td-accent { font-family:var(--font-head); font-size:15px; font-weight:700; color:#f5a623; }
+    #panel-tri .product-card-overlay { background: rgba(245,166,35,0.08); }
+    #panel-tri .feature-icon { background: rgba(245,166,35,0.1); border-color: rgba(245,166,35,0.3); color: #f5a623; }
+    #panel-tri .spec-pill { background: rgba(245,166,35,0.12); border-color: rgba(245,166,35,0.3); color: #f5a623; }
+
+    /* ════════════════════════════════════════════════════════════
+       HOW TO BUY
+    ════════════════════════════════════════════════════════════ */
+    .howtobuy-section { background:var(--black-2); border-top:1px solid var(--border); }
+    .howtobuy-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-top:56px; }
+    .howtobuy-step { background:var(--black-3); padding:48px 36px; position:relative; overflow:hidden; }
+    .howtobuy-step::after { content:''; position:absolute; top:0; left:0; width:3px; height:0; background:var(--pink); transition:height 0.4s ease; }
+    .howtobuy-step:hover::after { height:100%; }
+    .step-num { display:block; font-family:var(--font-head); font-size:72px; font-weight:900; line-height:1; color:rgba(255,103,126,0.07); margin-bottom:16px; transition:color 0.3s; }
+    .howtobuy-step:hover .step-num { color:rgba(255,103,126,0.14); }
+    .step-title { font-family:var(--font-head); font-size:22px; font-weight:800; text-transform:uppercase; letter-spacing:-0.2px; margin-bottom:10px; }
+    .step-body { font-size:14px; font-weight:300; color:var(--white-dim); line-height:1.75; }
+    .step-action { display:inline-flex; align-items:center; gap:6px; margin-top:18px; font-family:var(--font-head); font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--pink); transition:gap 0.2s; cursor:pointer; }
+    .howtobuy-step:hover .step-action { gap:10px; }
+
+    /* ════════════════════════════════════════════════════════════
+       SPOKE WHEEL CTA
+    ════════════════════════════════════════════════════════════ */
+    .spoke-bg { position:absolute; inset:0; pointer-events:none; overflow:hidden; opacity:0.035; }
+    .spoke-bg svg { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:700px; height:700px; animation:spoke-spin 80s linear infinite; }
+    @keyframes spoke-spin { from { transform:translate(-50%,-50%) rotate(0deg); } to { transform:translate(-50%,-50%) rotate(360deg); } }
+
+    /* ════════════════════════════════════════════════════════════
+       ENQUIRY MODAL — styled after contact.html
+    ════════════════════════════════════════════════════════════ */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: #111;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 40px;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute; top: 16px; right: 20px;
+      background: none; border: none; cursor: pointer;
+      color: var(--white-dim); font-size: 22px; line-height: 1;
+      transition: color 0.15s;
+    }
+    .modal-close:hover { color: var(--white); }
+
+    .modal-eyebrow {
+      font-size: 10px; font-weight: 500; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--pink); margin-bottom: 6px;
+    }
+    .modal-title {
+      font-family: var(--font-head); font-size: 28px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: -0.3px; margin-bottom: 6px;
+    }
+    .modal-desc {
+      font-size: 13px; color: var(--white-dim); line-height: 1.6; margin-bottom: 28px;
+    }
+
+    .modal-tabs {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px;
+    }
+    .modal-tab {
+      background: none; border: 1px solid var(--border); border-radius: 20px;
+      padding: 5px 14px; font-size: 12px; cursor: pointer;
+      color: var(--white-dim); font-family: var(--font-body);
+      transition: all 0.15s;
+    }
+    .modal-tab:hover { border-color: var(--white); color: var(--white); }
+    .modal-tab.active { background: var(--pink); color: var(--white); border-color: var(--pink); }
+
+    .modal-form { display: flex; flex-direction: column; gap: 14px; }
+    .modal-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .modal-field { display: flex; flex-direction: column; gap: 5px; }
+    .modal-field label {
+      font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+      text-transform: uppercase; color: rgba(255,255,255,0.35);
+    }
+    .modal-field input,
+    .modal-field select,
+    .modal-field textarea {
+      background: var(--black-3); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--white); font-family: var(--font-body); font-size: 13px;
+      padding: 10px 14px; outline: none; transition: border-color 0.15s; width: 100%;
+    }
+    .modal-field select { appearance: none; cursor: pointer; }
+    .modal-field input:focus,
+    .modal-field select:focus,
+    .modal-field textarea:focus { border-color: var(--pink); }
+    .modal-field input::placeholder,
+    .modal-field textarea::placeholder { color: rgba(255,255,255,0.2); }
+    .modal-field textarea { resize: vertical; min-height: 100px; }
+
+    .modal-submit {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--pink); color: var(--white); font-family: var(--font-head);
+      font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 14px; border-radius: 6px; border: none; cursor: pointer;
+      transition: all 0.2s; margin-top: 4px; width: 100%;
+    }
+    .modal-submit:hover { background: #ff4d67; transform: translateY(-1px); box-shadow: 0 8px 24px var(--pink-glow); }
+    .modal-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .modal-error { font-size: 11px; color: #ff6b6b; display: none; }
+    .modal-error.visible { display: block; }
+
+    .modal-success {
+      display: none; text-align: center; padding: 32px 16px;
+    }
+    .modal-success.visible { display: block; }
+    .modal-success-icon { font-size: 36px; margin-bottom: 12px; }
+    .modal-success-title { font-family: var(--font-head); font-size: 24px; font-weight: 900; text-transform: uppercase; margin-bottom: 8px; }
+    .modal-success-desc { font-size: 13px; color: var(--white-dim); line-height: 1.6; }
+    .modal-success-back { display: inline-block; margin-top: 20px; font-size: 12px; color: var(--white-dim); text-decoration: underline; cursor: pointer; }
+
+    .modal-note { font-size: 11px; color: rgba(255,255,255,0.2); text-align: center; margin-top: 6px; }
+
+    /* ════════════════════════════════════════════════════════════
+       MOBILE STICKY CTA
+    ════════════════════════════════════════════════════════════ */
+    .mobile-sticky-cta { display:none; position:fixed; bottom:0; left:0; right:0; padding:12px 16px; background:rgba(8,8,8,0.97); border-top:1px solid var(--border); backdrop-filter:blur(12px); z-index:998; }
+    .mobile-sticky-cta button { display:flex; align-items:center; justify-content:center; gap:8px; background:var(--pink); color:var(--white); font-family:var(--font-head); font-size:14px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; padding:15px; border-radius:6px; width:100%; border:none; cursor:pointer; }
+
+    /* ════════════════════════════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .series-tab-sub { display: none; }
+      .series-tab { padding: 14px 8px; }
+      .series-tab-name { font-size: 11px; letter-spacing: 1px; }
+      .panel-hero-content { flex-direction: column; align-items: flex-start; padding: 0 24px 32px; gap: 20px; }
+      .panel-hero-stats { gap: 2px; }
+      .panel-stat { padding: 12px 14px; min-width: 64px; }
+      .panel-stat-val { font-size: 18px; }
+      .panel-products, .panel-specs, .panel-tech { padding: 48px 24px; }
+      .products-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feature-row { grid-template-columns: 1fr; }
+      .feature-item.wide { flex-direction: column; gap: 16px; }
+      .howtobuy-steps { grid-template-columns: 1fr; }
+      .spec-table th, .spec-table td { padding: 10px 12px; font-size: 12px; }
+      .modal-box { padding: 28px 20px; }
+      .modal-form-row { grid-template-columns: 1fr; }
+      .cta-section { padding: 80px 24px; }
+      .mobile-sticky-cta { display: block; }
+      body { padding-bottom: 72px; }
+      .panel-hero { height: 260px; }
+      .panel-hero-title { font-size: 36px; }
+    }
+    @media (min-width: 769px) {
+      .mobile-sticky-cta { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ───────────────────────────────────────────────────────── -->
+  <nav class="partner-nav">
+    <div class="nav-logo">
+      <a href="../../index.html" class="logo-link">
+        <div class="logo-icon">B</div>
+        Bike &amp; Butter &nbsp;<span style="color:rgba(255,255,255,0.3);font-weight:300;">x</span>&nbsp;<span style="color:#ff677e;font-weight:700;">8LIEN</span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <div class="nav-links">
+        <div class="nav-partners-wrap">
+          <a href="#">Partners
+            <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <div class="nav-partners-dropdown">
+            <a href="8lien.html"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff677e;flex-shrink:0;margin-right:4px;"></span>8LIEN</a>
+            <a href="../RSTRI/RSTRI.html"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#f5c518;flex-shrink:0;margin-right:4px;"></span>RSTRI</a>
+            <a href="../EVR/EVR.html"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#F26522;flex-shrink:0;margin-right:4px;"></span>EVR</a>
+          </div>
+        </div>
+        <a href="../../marketplace.html">Marketplace</a>
+        <a href="../../bikeindex.html">Bikes</a>
+        <a href="../../community.html">Community</a>
+        <a href="../../feed.html">Feed</a>
+        <a href="../../contact.html">Contact Us</a>
+      </div>
+      <div id="auth-area"></div>
+      <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="8lien.html" style="color:#ff677e;font-weight:600;">8LIEN — Partner</a>
+    <a href="../RSTRI/RSTRI.html" style="color:#f5c518;font-weight:600;">RSTRI — Partner</a>
+    <a href="../EVR/EVR.html" style="color:#F26522;font-weight:600;">EVR — Partner</a>
+    <a href="../../marketplace.html">Marketplace</a>
+    <a href="../../bikeindex.html">Bikes</a>
+    <a href="../../community.html">Community</a>
+    <a href="../../feed.html">Feed</a>
+    <a href="../../contact.html">Contact Us</a>
+  </div>
+
+  <!-- ── Hero ──────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-bg" id="hero-bg" style="background-image:url('photos/8lien_hero.jpg');"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Official Singapore Distributor</div>
+      <h1 class="hero-title">Cut the <span>Weight.</span> Not the <span>Speed.</span></h1>
+      <p class="hero-sub">8LIEN builds carbon spoke wheelsets engineered for riders who demand every watt. Ultra-stiff, UCI certified, road-tested to the limit.</p>
+      <div class="hero-cta-row">
+        <a href="#series" class="btn-primary">
+          Explore Wheelsets
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <button onclick="openModal()" class="btn-ghost" style="background:none;border:1px solid var(--border);cursor:pointer;">Enquire Now</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Badge strip ───────────────────────────────────────────────── -->
+  <div class="badge-strip">
+    <div class="badge-strip-item">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 1l1.8 3.6L14 5.6l-3 2.9.7 4.1L8 10.5l-3.7 2.1.7-4.1L2 5.6l4.2-.9L8 1z"/></svg>
+      Official SG Distributor
+    </div>
+    <div class="badge-divider"></div>
+    <div class="badge-strip-item">UCI Competition Certified</div>
+    <div class="badge-divider"></div>
+    <div class="badge-strip-item">Local Warranty &amp; Support</div>
+    <div class="badge-divider"></div>
+    <div class="badge-strip-item">Test Ride Available</div>
+    <div class="badge-divider"></div>
+    <div class="badge-strip-item">3-Year Warranty · Lifetime Crash Replace</div>
+  </div>
+
+  <!-- ── Ticker ────────────────────────────────────────────────────── -->
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <div class="ticker-item"><span class="ticker-dot"></span>Carbon Spoke Technology</div>
+      <div class="ticker-item"><span class="ticker-dot"></span><span class="hl">UCI Certified</span></div>
+      <div class="ticker-item"><span class="ticker-dot"></span>From 980g</div>
+      <div class="ticker-item"><span class="ticker-dot"></span><span class="hl">Official SG Distributor</span></div>
+      <div class="ticker-item"><span class="ticker-dot"></span>T1100 + M40X Carbon Fusion</div>
+      <div class="ticker-item"><span class="ticker-dot"></span><span class="hl">Test Ride Available</span></div>
+      <div class="ticker-item"><span class="ticker-dot"></span>45T Ratchet Hub</div>
+      <div class="ticker-item"><span class="ticker-dot"></span><span class="hl">TPI Ceramic Bearings</span></div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Lifetime Crash Replacement</div>
+      <div class="ticker-item"><span class="ticker-dot"></span><span class="hl">Tubeless Ready</span></div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Road · Triathlon</div>
+      <div class="ticker-item"><span class="ticker-dot"></span><span class="hl">Shimano · SRAM · Campagnolo</span></div>
+      <!-- duplicate -->
+      <div class="ticker-item"><span class="ticker-dot"></span>Carbon Spoke Technology</div>
+      <div class="ticker-item"><span class="ticker-dot"></span><span class="hl">UCI Certified</span></div>
+      <div class="ticker-item"><span class="ticker-dot"></span>From 980g</div>
+      <div class="ticker-item"><span class="ticker-dot"></span><span class="hl">Official SG Distributor</span></div>
+      <div class="ticker-item"><span class="ticker-dot"></span>T1100 + M40X Carbon Fusion</div>
+      <div class="ticker-item"><span class="ticker-dot"></span><span class="hl">Test Ride Available</span></div>
+      <div class="ticker-item"><span class="ticker-dot"></span>45T Ratchet Hub</div>
+      <div class="ticker-item"><span class="ticker-dot"></span><span class="hl">TPI Ceramic Bearings</span></div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Lifetime Crash Replacement</div>
+      <div class="ticker-item"><span class="ticker-dot"></span><span class="hl">Tubeless Ready</span></div>
+      <div class="ticker-item"><span class="ticker-dot"></span>Road · Triathlon</div>
+      <div class="ticker-item"><span class="ticker-dot"></span><span class="hl">Shimano · SRAM · Campagnolo</span></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SERIES SWITCHER
+  ══════════════════════════════════════════════════════════════ -->
+  <div id="series">
+
+    <!-- Filter bar -->
+    <div class="series-bar" id="series-bar">
+      <button class="series-tab active" data-series="aether" onclick="switchSeries('aether')">
+        <span class="series-tab-name">AETHER</span>
+        <span class="series-tab-sub">Ultra Light · from SGD 2,099</span>
+      </button>
+      <button class="series-tab" data-series="lseries" onclick="switchSeries('lseries')">
+        <span class="series-tab-name">L-Series</span>
+        <span class="series-tab-sub">Road · SGD 1,550</span>
+      </button>
+      <button class="series-tab" data-series="tri" onclick="switchSeries('tri')">
+        <span class="series-tab-name">Triathlon</span>
+        <span class="series-tab-sub">Aero · SGD 1,700</span>
+      </button>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+         PANEL: AETHER  (accent: pink — default brand colour)
+    ══════════════════════════════════════════════════════════ -->
+    <div class="series-panel active" id="panel-aether">
+
+      <!-- Panel hero -->
+      <div class="panel-hero">
+        <div class="panel-hero-bg" style="background-image:url('photos/8lien_hero.jpg');"></div>
+        <div class="panel-hero-overlay"></div>
+        <div class="panel-hero-content">
+          <div class="panel-hero-left">
+            <div class="panel-hero-eyebrow">AETHER Series · Ultra Light Carbon</div>
+            <div class="panel-hero-title">Engineered<br>to Obsess.</div>
+            <p class="panel-hero-desc">T1100 + M40X carbon fusion. UCI certified. From 980g. Four depth options from climbing to full aero — all on the same carbon spoke platform.</p>
+          </div>
+          <div class="panel-hero-stats">
+            <div class="panel-stat"><div class="panel-stat-val">980g</div><div class="panel-stat-label">Lightest</div></div>
+            <div class="panel-stat"><div class="panel-stat-val">2g</div><div class="panel-stat-label">Per spoke</div></div>
+            <div class="panel-stat"><div class="panel-stat-val">90J</div><div class="panel-stat-label">Impact test</div></div>
+            <div class="panel-stat"><div class="panel-stat-val">45T</div><div class="panel-stat-label">Ratchet</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products -->
+      <div class="panel-products">
+        <div class="panel-products-header">
+          <p class="section-label">AETHER Series</p>
+          <h3>Four builds. One platform.</h3>
+        </div>
+        <div class="products-grid">
+
+          <div class="product-card">
+            <div class="product-card-overlay"></div>
+            <img class="product-card-img" src="photos/aether3.jpg" alt="AETHER 3" loading="lazy"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+            <div class="img-gone" style="display:none;"><div class="img-gone-icon">🛞</div><div class="img-gone-title">Image dropped on descent</div><div class="img-gone-sub">Still a great wheel though.</div></div>
+            <div class="product-card-body">
+              <div class="product-card-cat">Climbing · 980g · 30/35mm</div>
+              <div class="product-card-name">AETHER 3</div>
+              <p class="product-card-desc">Sub-1kg. Lightest build in the AETHER range. T1100+M40X carbon, UCI certified. For riders who live on the climbs.</p>
+              <div class="product-card-footer">
+                <div class="product-card-price-val">SGD 2,099<span> / set</span></div>
+                <button class="product-enquire" onclick="openModal('AETHER 3')">Enquire <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-card-overlay"></div>
+            <img class="product-card-img" src="photos/aether4.jpg" alt="AETHER 4" loading="lazy"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+            <div class="img-gone" style="display:none;"><div class="img-gone-icon">🛞</div><div class="img-gone-title">Image went on a solo break</div><div class="img-gone-sub">Enquire anyway — it's worth it.</div></div>
+            <div class="product-card-body">
+              <div class="product-card-cat">All-Round · 1,020g · 40/45mm</div>
+              <div class="product-card-name">AETHER 4</div>
+              <p class="product-card-desc">40/45mm front/rear. The versatile middle ground — aero enough for fast flats, light enough for the climbs. True every-ride wheel.</p>
+              <div class="product-card-footer">
+                <div class="product-card-price-val">SGD 2,099<span> / set</span></div>
+                <button class="product-enquire" onclick="openModal('AETHER 4')">Enquire <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-card-overlay"></div>
+            <img class="product-card-img" src="photos/aether5.jpg" alt="AETHER 5" loading="lazy"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+            <div class="img-gone" style="display:none;"><div class="img-gone-icon">🛞</div><div class="img-gone-title">Currently at 60km/h</div><div class="img-gone-sub">Unable to stop. Best seller regardless.</div></div>
+            <div class="product-card-body">
+              <div class="product-card-cat">All-Round · 1,040g · 45/50mm</div>
+              <div class="product-card-name">AETHER 5 &nbsp;<span class="spec-pill">Most Popular</span></div>
+              <p class="product-card-desc">45/50mm front/rear. The sweet spot. Fast on the flat, confident on climbs. UCI certified. Our best-selling AETHER build.</p>
+              <div class="product-card-footer">
+                <div class="product-card-price-val">SGD 2,099<span> / set</span></div>
+                <button class="product-enquire" onclick="openModal('AETHER 5')">Enquire <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <div class="product-card-overlay"></div>
+            <img class="product-card-img" src="photos/aether6.jpg" alt="AETHER 6" loading="lazy"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+            <div class="img-gone" style="display:none;"><div class="img-gone-icon">🛞</div><div class="img-gone-title">Gone full aero</div><div class="img-gone-sub">60mm deep. Too fast to photograph.</div></div>
+            <div class="product-card-body">
+              <div class="product-card-cat">Aero · 1,110g · 50/60mm</div>
+              <div class="product-card-name">AETHER 6</div>
+              <p class="product-card-desc">50/60mm front/rear. Maximum aero advantage. For flat roads, crits, and any effort where depth is everything.</p>
+              <div class="product-card-footer">
+                <div class="product-card-price-val">SGD 2,099<span> / set</span></div>
+                <button class="product-enquire" onclick="openModal('AETHER 6')">Enquire <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Spec table -->
+      <div class="panel-specs">
+        <p class="section-label">Compare Builds</p>
+        <h3 style="font-family:var(--font-head);font-size:36px;font-weight:900;text-transform:uppercase;letter-spacing:-0.3px;line-height:1;margin-bottom:0;">Pick Your Depth.</h3>
+        <div class="spec-table-wrap">
+          <table class="spec-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>AETHER 3</th>
+                <th>AETHER 4</th>
+                <th class="th-pink">AETHER 5 <span class="spec-pill">Popular</span></th>
+                <th>AETHER 6</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Best for</td><td class="td-val">Climbing</td><td class="td-val">All-round</td><td class="td-val">All-round</td><td class="td-val">Aero / Flat</td></tr>
+              <tr><td>Weight</td><td class="td-pink">980g</td><td class="td-val">1,020g</td><td class="td-val">1,040g</td><td class="td-val">1,110g</td></tr>
+              <tr><td>Front depth</td><td class="td-val">30mm</td><td class="td-val">40mm</td><td class="td-val">45mm</td><td class="td-val">50mm</td></tr>
+              <tr><td>Rear depth</td><td class="td-val">35mm</td><td class="td-val">45mm</td><td class="td-val">50mm</td><td class="td-val">60mm</td></tr>
+              <tr><td>Internal width</td><td class="td-val">25mm</td><td class="td-val">25mm</td><td class="td-val">25mm</td><td class="td-val">25mm</td></tr>
+              <tr><td>Rider limit</td><td class="td-val">90kg</td><td class="td-val">90kg</td><td class="td-val">100kg</td><td class="td-val">100kg</td></tr>
+              <tr><td>UCI certified</td><td class="td-pink">Yes</td><td class="td-pink">Yes</td><td class="td-pink">Yes</td><td class="td-pink">Yes</td></tr>
+              <tr><td>Price (SGD)</td><td class="td-val">2,099</td><td class="td-val">2,099</td><td class="td-val">2,099</td><td class="td-val">2,099</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="spec-note">All AETHER: Gen 4 carbon spokes (2g each), TPI ceramic bearings, disc brake centerlock, Shimano 10/11/12s / SRAM XDR / Campagnolo N3W freehub. Tubeless ready.</p>
+      </div>
+
+      <!-- Tech -->
+      <div class="panel-tech">
+        <p class="section-label">Technology</p>
+        <h3 style="font-family:var(--font-head);font-size:36px;font-weight:900;text-transform:uppercase;letter-spacing:-0.3px;line-height:1;margin-bottom:56px;">Why Carbon Spokes.</h3>
+        <div class="features-grid">
+          <div class="feature-row">
+            <div class="feature-item">
+              <div class="feature-icon">↑</div>
+              <div><div class="feature-text-title">Stiffness-to-Weight</div><p class="feature-text-body">At 2g per spoke, carbon delivers a stiffness-to-weight ratio impossible with steel or alloy. Every watt goes to the road — no flex, no loss.</p></div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">∞</div>
+              <div><div class="feature-text-title">Fatigue Resistance</div><p class="feature-text-body">Carbon doesn't accumulate stress fatigue over thousands of kilometres. Year three rides the same as day one.</p></div>
+            </div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-item">
+              <div class="feature-icon">≋</div>
+              <div><div class="feature-text-title">Aero Profile</div><p class="feature-text-body">Blade-thin spokes slice through air rather than disrupting it. At 40 km/h the drag reduction is measurable — and felt the moment you accelerate.</p></div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">◈</div>
+              <div><div class="feature-text-title">Tubeless Ready</div><p class="feature-text-body">All AETHER rims are tubeless-compatible out of the box. Lower pressures, less rolling resistance, zero pinch flats.</p></div>
+            </div>
+          </div>
+          <div class="feature-item wide">
+            <div class="feature-icon" style="width:56px;height:56px;font-size:22px;">⬡</div>
+            <div>
+              <div class="feature-text-title">T1100 + M40X Carbon Fusion</div>
+              <p class="feature-text-body">T1100 handles toughness across all conditions. M40X reinforces critical zones — spoke holes and rim walls — for sharp acceleration and cornering confidence. Tested to 90 joules: more than double the UCI standard.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /panel-aether -->
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         PANEL: L-SERIES  (accent: blue #5b8fff)
+    ══════════════════════════════════════════════════════════ -->
+    <div class="series-panel" id="panel-lseries">
+
+      <div class="panel-hero">
+        <div class="panel-hero-bg" style="background-image:url('photos/lseries_panel_hero.jpg');"></div>
+        <div class="panel-hero-overlay" style="background:linear-gradient(to top, rgba(8,8,8,1) 0%, rgba(8,8,8,0.45) 55%, rgba(8,8,8,0.1) 100%);"></div>
+        <div class="panel-hero-content">
+          <div class="panel-hero-left">
+            <div class="panel-hero-eyebrow">L-Series · Wide Carbon · 25mm Internal</div>
+            <div class="panel-hero-title" style="color:#fff;">Stripped.<br><span style="color:#5b8fff;">Raw. Fast.</span></div>
+            <p class="panel-hero-desc">No paint. No coating. Pure carbon finish. Three depths, all with 25mm internal width — the L-series is built for riders who want more tyre, more grip, and more control without giving up any speed.</p>
+          </div>
+          <div class="panel-hero-stats">
+            <div class="panel-stat"><div class="panel-stat-val" style="color:#5b8fff;">25mm</div><div class="panel-stat-label">Internal width</div></div>
+            <div class="panel-stat"><div class="panel-stat-val" style="color:#5b8fff;">3</div><div class="panel-stat-label">Depth options</div></div>
+            <div class="panel-stat"><div class="panel-stat-val" style="color:#5b8fff;">Raw</div><div class="panel-stat-label">Carbon finish</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-products">
+        <div class="panel-products-header">
+          <p class="section-label" style="color:#5b8fff;">L-Series</p>
+          <h3>Three depths. Zero coating.</h3>
+        </div>
+        <div class="products-grid">
+
+          <!-- L3W -->
+          <div class="product-card">
+            <div class="product-card-overlay"></div>
+            <img class="product-card-img" src="photos/l3w.jpg" alt="8LIEN L3W" loading="lazy"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+            <div class="img-gone" style="display:none;"><div class="img-gone-icon">🛞</div><div class="img-gone-title">Image took a wrong turn</div><div class="img-gone-sub">GPS recalculating. Wheel is still excellent.</div></div>
+            <div class="product-card-body">
+              <div class="product-card-cat" style="color:#5b8fff;">Climbing · 30/35mm · 25mm Int</div>
+              <div class="product-card-name">L3W</div>
+              <p class="product-card-desc">The lightest L-series build. Shallow 30/35mm depth for pure climbing — coating-free raw carbon, 25mm internal width, ceramic bearings, 45T star ratchet hub.</p>
+              <div class="product-card-footer">
+                <div class="product-card-price-val">SGD 1,550<span> / set</span></div>
+                <button class="product-enquire" style="color:#5b8fff;" onclick="openModal('L3W')">Enquire <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- L5W -->
+          <div class="product-card">
+            <div class="product-card-overlay"></div>
+            <img class="product-card-img" src="photos/l5w.jpg" alt="8LIEN L5W" loading="lazy"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+            <div class="img-gone" style="display:none;"><div class="img-gone-icon">🛞</div><div class="img-gone-title">Wheel has rolled out</div><div class="img-gone-sub">Probably faster than your last ride.</div></div>
+            <div class="product-card-body">
+              <div class="product-card-cat" style="color:#5b8fff;">All-Round · 45/50mm · 25mm Int &nbsp;<span class="spec-pill" style="background:rgba(91,143,255,0.12);border-color:rgba(91,143,255,0.3);color:#5b8fff;">Most Popular</span></div>
+              <div class="product-card-name">L5W</div>
+              <p class="product-card-desc">The sweet spot. 45/50mm depth hits the all-round mark — aero on the flat, capable on the climbs. Raw carbon finish, 25mm internal, tubeless ready.</p>
+              <div class="product-card-footer">
+                <div class="product-card-price-val">SGD 1,550<span> / set</span></div>
+                <button class="product-enquire" style="color:#5b8fff;" onclick="openModal('L5W')">Enquire <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- L6W -->
+          <div class="product-card">
+            <div class="product-card-overlay"></div>
+            <img class="product-card-img" src="photos/l6w.jpg" alt="8LIEN L6W" loading="lazy"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+            <div class="img-gone" style="display:none;"><div class="img-gone-icon">🛞</div><div class="img-gone-title">Gone full aero</div><div class="img-gone-sub">50/60mm deep. Too fast to photograph.</div></div>
+            <div class="product-card-body">
+              <div class="product-card-cat" style="color:#5b8fff;">Aero · 50/60mm · 25mm Int</div>
+              <div class="product-card-name">L6W</div>
+              <p class="product-card-desc">Maximum aero depth in the L-series. 50/60mm front/rear, raw carbon finish, 25mm internal width. For flat roads, crits, and every effort where depth pays off.</p>
+              <div class="product-card-footer">
+                <div class="product-card-price-val">SGD 1,550<span> / set</span></div>
+                <button class="product-enquire" style="color:#5b8fff;" onclick="openModal('L6W')">Enquire <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Spec table -->
+      <div class="panel-specs">
+        <p class="section-label" style="color:#5b8fff;">Compare Builds</p>
+        <h3 style="font-family:var(--font-head);font-size:36px;font-weight:900;text-transform:uppercase;letter-spacing:-0.3px;line-height:1;margin-bottom:0;">Pick Your Depth.</h3>
+        <div class="spec-table-wrap">
+          <table class="spec-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>L3W</th>
+                <th class="th-blue">L5W <span class="spec-pill" style="background:rgba(91,143,255,0.12);border-color:rgba(91,143,255,0.3);color:#5b8fff;">Popular</span></th>
+                <th>L6W</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Best for</td><td class="td-val">Climbing</td><td class="td-val">All-round / Aero</td><td class="td-val">Aero / Flat</td></tr>
+              <tr><td>Front depth</td><td class="td-accent">30mm</td><td class="td-val">45mm</td><td class="td-val">50mm</td></tr>
+              <tr><td>Rear depth</td><td class="td-val">35mm</td><td class="td-val">50mm</td><td class="td-val">60mm</td></tr>
+              <tr><td>Internal width</td><td class="td-accent">25mm</td><td class="td-accent">25mm</td><td class="td-accent">25mm</td></tr>
+              <tr><td>Finish</td><td class="td-val">Raw carbon</td><td class="td-val">Raw carbon</td><td class="td-val">Raw carbon</td></tr>
+              <tr><td>Tubeless</td><td class="td-accent">Yes</td><td class="td-accent">Yes</td><td class="td-accent">Yes</td></tr>
+              <tr><td>Price (SGD)</td><td class="td-val">1,550</td><td class="td-val">1,550</td><td class="td-val">1,550</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="spec-note">All L-series: carbon spokes, TPI ceramic bearings, 45T star ratchet hub, disc brake centerlock, 25mm internal width. Shimano / SRAM XDR / Campagnolo N3W freehub options.</p>
+      </div>
+
+      <!-- Tech -->
+      <div class="panel-tech">
+        <p class="section-label" style="color:#5b8fff;">What makes L-Series different</p>
+        <h3 style="font-family:var(--font-head);font-size:36px;font-weight:900;text-transform:uppercase;letter-spacing:-0.3px;line-height:1;margin-bottom:56px;">No Paint. No Excuses.</h3>
+        <div class="features-grid">
+          <div class="feature-row">
+            <div class="feature-item">
+              <div class="feature-icon" style="background:rgba(91,143,255,0.12);border-color:rgba(91,143,255,0.3);color:#5b8fff;">◻</div>
+              <div><div class="feature-text-title">Coating-Free Finish</div><p class="feature-text-body">No paint, no lacquer. The L-series exposes raw carbon — saving weight and giving each wheelset a distinctly honest, industrial look that stands out on any build.</p></div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon" style="background:rgba(91,143,255,0.12);border-color:rgba(91,143,255,0.3);color:#5b8fff;">↔</div>
+              <div><div class="feature-text-title">25mm Internal Width</div><p class="feature-text-body">All three builds run 25mm internal — optimised for 28–32mm tyres. Better air volume, improved cornering confidence, lower optimal pressures without sacrificing any stiffness.</p></div>
+            </div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-item">
+              <div class="feature-icon" style="background:rgba(91,143,255,0.12);border-color:rgba(91,143,255,0.3);color:#5b8fff;">⚙</div>
+              <div><div class="feature-text-title">45T Star Ratchet Hub</div><p class="feature-text-body">45T star ratchet engagement. Instant power transfer with near-zero dead band. You put the power in — it goes straight out.</p></div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon" style="background:rgba(91,143,255,0.12);border-color:rgba(91,143,255,0.3);color:#5b8fff;">◈</div>
+              <div><div class="feature-text-title">TPI Ceramic Bearings</div><p class="feature-text-body">Lower rolling resistance, higher durability. Ceramic bearings spin with noticeably less drag than steel — measurable in watts, felt in every pedal stroke.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /panel-lseries -->
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         PANEL: TRIATHLON  (accent: gold #f5a623)
+    ══════════════════════════════════════════════════════════ -->
+    <div class="series-panel" id="panel-tri">
+
+      <div class="panel-hero">
+        <div class="panel-hero-bg" style="background-image:url('photos/tri_panel_hero.jpg');"></div>
+        <div class="panel-hero-overlay" style="background:linear-gradient(to top, rgba(8,8,8,1) 0%, rgba(8,8,8,0.4) 55%, rgba(8,8,8,0.08) 100%);"></div>
+        <div class="panel-hero-content">
+          <div class="panel-hero-left">
+            <div class="panel-hero-eyebrow" style="color:#f5a623;">Triathlon · Full Disc · T1000 Carbon</div>
+            <div class="panel-hero-title">Built for<br><span style="color:#f5a623;">Race Day.</span></div>
+            <p class="panel-hero-desc">From T1 to the finish line. The 8LIEN Aero X8 is a full-carbon disc rear wheel built for sustained speed — T1000 carbon construction and the aero profile to hold your watts all the way home.</p>
+          </div>
+          <div class="panel-hero-stats">
+            <div class="panel-stat"><div class="panel-stat-val" style="color:#f5a623;">950g</div><div class="panel-stat-label">Disc weight</div></div>
+            <div class="panel-stat"><div class="panel-stat-val" style="color:#f5a623;">T1000</div><div class="panel-stat-label">Carbon grade</div></div>
+            <div class="panel-stat"><div class="panel-stat-val" style="color:#f5a623;">Full</div><div class="panel-stat-label">Disc profile</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-products">
+        <div class="panel-products-header">
+          <p class="section-label" style="color:#f5a623;">Triathlon Range</p>
+          <h3>Swim. Bike. Win.</h3>
+        </div>
+        <div class="products-grid" style="grid-template-columns:repeat(1,1fr);max-width:480px;">
+
+          <div class="product-card">
+            <div class="product-card-overlay"></div>
+            <img class="product-card-img" src="photos/aero_x8.jpg" alt="8LIEN Aero X8 Disc Wheel" loading="lazy"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+            <div class="img-gone" style="display:none;"><div class="img-gone-icon">🏊</div><div class="img-gone-title">Image is still in T1</div><div class="img-gone-sub">Transitioned out before we could photograph it.</div></div>
+            <div class="product-card-body">
+              <div class="product-card-cat" style="color:#f5a623;">Full Disc Rear Wheel · 950g &nbsp;<span class="spec-pill" style="background:rgba(245,166,35,0.12);border-color:rgba(245,166,35,0.3);color:#f5a623;">T1000 Carbon</span></div>
+              <div class="product-card-name">Aero X8</div>
+              <p class="product-card-desc">950g full-carbon disc rear wheel. 21mm internal / 27mm external width. T1000 carbon construction — the highest grade in commercial production. Built for swim-to-bike transitions and holding watts all the way to the finish line.</p>
+              <div class="product-card-footer">
+                <div class="product-card-price-val">SGD 1,700<span> / wheel</span></div>
+                <button class="product-enquire" style="color:#f5a623;" onclick="openModal('Aero X8')">Enquire <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Spec table -->
+      <div class="panel-specs">
+        <p class="section-label" style="color:#f5a623;">Specifications</p>
+        <h3 style="font-family:var(--font-head);font-size:36px;font-weight:900;text-transform:uppercase;letter-spacing:-0.3px;line-height:1;margin-bottom:0;">Aero X8 — Full Disc.</h3>
+        <div class="spec-table-wrap">
+          <table class="spec-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th class="th-gold">Aero X8</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Type</td><td class="td-accent">Full disc rear wheel</td></tr>
+              <tr><td>Weight</td><td class="td-accent">950g</td></tr>
+              <tr><td>Profile</td><td class="td-val">Full disc</td></tr>
+              <tr><td>Internal width</td><td class="td-val">21mm</td></tr>
+              <tr><td>External width</td><td class="td-val">27mm</td></tr>
+              <tr><td>Carbon grade</td><td class="td-accent">T1000</td></tr>
+              <tr><td>Tubeless</td><td class="td-accent">Yes</td></tr>
+              <tr><td>Best for</td><td class="td-val">TT / Triathlon bike leg</td></tr>
+              <tr><td>Price (SGD)</td><td class="td-val">1,700 / wheel</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="spec-note">Aero X8: TPI ceramic bearings, disc brake centerlock, Shimano / SRAM XDR / Campagnolo N3W freehub options. Sold as a single rear wheel.</p>
+      </div>
+
+      <!-- Tech -->
+      <div class="panel-tech">
+        <p class="section-label" style="color:#f5a623;">Race engineering</p>
+        <h3 style="font-family:var(--font-head);font-size:36px;font-weight:900;text-transform:uppercase;letter-spacing:-0.3px;line-height:1;margin-bottom:56px;">Built for the Bike Leg.</h3>
+        <div class="features-grid">
+          <div class="feature-row">
+            <div class="feature-item">
+              <div class="feature-icon" style="background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.3);color:#f5a623;">◉</div>
+              <div><div class="feature-text-title">T1000 Carbon</div><p class="feature-text-body">T1000 is the highest-grade carbon in commercial production. Lighter, stiffer, and more impact-resistant than T700 or T800. The Aero X8 uses it throughout the disc structure.</p></div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon" style="background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.3);color:#f5a623;">⬛</div>
+              <div><div class="feature-text-title">Full Disc Advantage</div><p class="feature-text-body">A full disc eliminates spoke drag entirely. In TT and triathlon conditions, a rear disc is one of the single highest-return aero upgrades available — and at 950g it costs you nothing in weight.</p></div>
+            </div>
+          </div>
+          <div class="feature-row">
+            <div class="feature-item">
+              <div class="feature-icon" style="background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.3);color:#f5a623;">↑</div>
+              <div><div class="feature-text-title">Sustained Aero</div><p class="feature-text-body">Disc wheels become more efficient the faster you ride. At triathlon pace — typically 35–45 km/h — the Aero X8 is in its element. Every watt saved on a 90km bike leg adds up.</p></div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon" style="background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.3);color:#f5a623;">◈</div>
+              <div><div class="feature-text-title">TPI Ceramic Bearings</div><p class="feature-text-body">Lower rolling resistance across the entire race duration. Ceramic bearings spin with noticeably less drag than steel — measurable in watts, felt across every kilometre of the bike leg.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /panel-tri -->
+
+  </div><!-- /series -->
+
+  <!-- ── Gallery ───────────────────────────────────────────────────── -->
+  <section class="gallery-section">
+    <div class="gallery-grid">
+      <div class="gallery-item tall">
+        <img src="photos/gallery_1.jpg" alt="8LIEN on road" loading="lazy" onerror="this.style.display='none';" />
+      </div>
+      <div class="gallery-item">
+        <img src="photos/tri_panel_hero.jpg" alt="8LIEN wheel detail" loading="lazy" onerror="this.style.display='none';" />
+      </div>
+      <div class="gallery-item">
+        <img src="photos/gallery_4.jpg" alt="8LIEN hub" loading="lazy" onerror="this.style.display='none';" />
+      </div>
+      <div class="gallery-item">
+        <img src="photos/gallery_3.jpg" alt="8LIEN rim profile" loading="lazy" onerror="this.style.display='none';" />
+      </div>
+      <div class="gallery-item">
+        <img src="photos/gallery_2.jpg" alt="8LIEN full wheelset" loading="lazy" onerror="this.style.display='none';" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How to Buy ─────────────────────────────────────────────────── -->
+  <section class="section howtobuy-section">
+    <p class="section-label">The Process</p>
+    <h2 class="section-title">How It Works.</h2>
+    <p class="section-body">No add-to-cart. We match you to the right build. Three steps from here to riding.</p>
+    <div class="howtobuy-steps">
+      <div class="howtobuy-step">
+        <span class="step-num">01</span>
+        <div class="step-title">Enquire</div>
+        <p class="step-body">Hit Enquire on any product. Tell us your bike setup, riding style, and which model caught your eye. We'll reply with a recommendation within 24 hours.</p>
+        <span class="step-action" onclick="openModal()">Open enquiry form <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+      <div class="howtobuy-step">
+        <span class="step-num">02</span>
+        <div class="step-title">Test Ride</div>
+        <p class="step-body">Singapore-based? Come test a set before you commit. Carbon spokes are something you need to experience — not just read about.</p>
+        <span class="step-action" onclick="openModal('Test Ride Request')">Book a ride <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+      <div class="howtobuy-step">
+        <span class="step-num">03</span>
+        <div class="step-title">Order</div>
+        <p class="step-body">Choose your freehub (Shimano, SRAM XDR, Campagnolo N3W) and decal colour. We handle the order, warranty registration, and local delivery.</p>
+        <span class="step-action" onclick="openModal()">Place an order <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ───────────────────────────────────────────────────────── -->
+  <section class="cta-section">
+    <div class="spoke-bg">
+      <svg viewBox="0 0 700 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="350" cy="350" r="320" stroke="white" stroke-width="1"/>
+        <circle cx="350" cy="350" r="240" stroke="white" stroke-width="0.6"/>
+        <circle cx="350" cy="350" r="160" stroke="white" stroke-width="0.4"/>
+        <circle cx="350" cy="350" r="40"  stroke="white" stroke-width="1.5"/>
+        <line x1="350" y1="30" x2="350" y2="670" stroke="white" stroke-width="1"/>
+        <line x1="30" y1="350" x2="670" y2="350" stroke="white" stroke-width="1"/>
+        <line x1="124" y1="124" x2="576" y2="576" stroke="white" stroke-width="1"/>
+        <line x1="576" y1="124" x2="124" y2="576" stroke="white" stroke-width="1"/>
+        <line x1="350" y1="30" x2="350" y2="670" stroke="white" stroke-width="0.5" transform="rotate(22.5 350 350)"/>
+        <line x1="350" y1="30" x2="350" y2="670" stroke="white" stroke-width="0.5" transform="rotate(67.5 350 350)"/>
+        <line x1="350" y1="30" x2="350" y2="670" stroke="white" stroke-width="0.5" transform="rotate(112.5 350 350)"/>
+        <line x1="350" y1="30" x2="350" y2="670" stroke="white" stroke-width="0.5" transform="rotate(157.5 350 350)"/>
+        <circle cx="350" cy="30" r="5" fill="white"/><circle cx="670" cy="350" r="5" fill="white"/>
+        <circle cx="350" cy="670" r="5" fill="white"/><circle cx="30" cy="350" r="5" fill="white"/>
+        <circle cx="124" cy="124" r="5" fill="white"/><circle cx="576" cy="124" r="5" fill="white"/>
+        <circle cx="576" cy="576" r="5" fill="white"/><circle cx="124" cy="576" r="5" fill="white"/>
+      </svg>
+    </div>
+    <p class="section-label">Get in touch</p>
+    <h2 class="section-title">Ready to<br><span style="color:var(--pink);">Upgrade?</span></h2>
+    <p class="section-body">Drop us a message. Test rides available in Singapore — because carbon spokes need to be felt, not just read about.</p>
+    <div class="cta-row">
+      <button onclick="openModal()" class="btn-primary" style="border:none;cursor:pointer;">
+        Enquire Now
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <a href="../../contact.html" class="btn-ghost">Other enquiries</a>
+    </div>
+  </section>
+
+  <!-- ── Footer ────────────────────────────────────────────────────── -->
+  <footer class="partner-footer">
+    <div class="footer-brand">
+      <a href="8lien.html">8LIEN</a> x <a href="../../index.html">Bike &amp; Butter</a>
+      &nbsp;·&nbsp; Official Singapore Distributor
+    </div>
+    <div class="footer-links">
+      <a href="../../bikeindex.html">Bikes</a>
+      <a href="../../brands.html">Brands</a>
+      <a href="../../marketplace.html">Marketplace</a>
+      <a href="../../contact.html">Contact</a>
+    </div>
+  </footer>
+
+  <!-- ── Mobile sticky CTA ─────────────────────────────────────────── -->
+  <div class="mobile-sticky-cta">
+    <button onclick="openModal()">
+      Enquire Now — 8LIEN Wheelsets
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       ENQUIRY MODAL
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal-box" id="modal-box">
+      <button class="modal-close" onclick="closeModal()">×</button>
+
+      <div id="modal-form-content">
+        <div class="modal-eyebrow">8LIEN × Bike &amp; Butter</div>
+        <div class="modal-title" id="modal-title">Enquire</div>
+        <p class="modal-desc">Questions, test ride requests, or ready to order — we reply within 24 hours.</p>
+
+        <div class="modal-tabs">
+          <button class="modal-tab active" data-type="General Enquiry" onclick="setModalType(this)">General Enquiry</button>
+          <button class="modal-tab" data-type="Test Ride Request" onclick="setModalType(this)">Test Ride</button>
+          <button class="modal-tab" data-type="Place an Order" onclick="setModalType(this)">Place an Order</button>
+          <button class="modal-tab" data-type="Ask a Question" onclick="setModalType(this)">Ask a Question</button>
+        </div>
+
+        <div class="modal-form">
+          <div class="modal-form-row">
+            <div class="modal-field">
+              <label>Your Name *</label>
+              <input type="text" id="m-name" placeholder="Wei Ming Tan" />
+            </div>
+            <div class="modal-field">
+              <label>Email Address *</label>
+              <input type="email" id="m-email" placeholder="you@email.com" />
+            </div>
+          </div>
+          <div class="modal-field">
+            <label>Phone <span style="opacity:0.4;text-transform:none;letter-spacing:0;font-weight:400;">(optional)</span></label>
+            <input type="tel" id="m-phone" placeholder="+65 9123 4567" />
+          </div>
+          <div class="modal-field">
+            <label>Wheelset of Interest</label>
+            <select id="m-product">
+              <option value="">— Select a model —</option>
+              <optgroup label="AETHER Series (SGD 2,099)">
+                <option>AETHER 3 — Climbing · 980g · 30/35mm</option>
+                <option>AETHER 4 — All-Round · 1,020g · 40/45mm</option>
+                <option>AETHER 5 — All-Round · 1,040g · 45/50mm</option>
+                <option>AETHER 6 — Aero · 1,110g · 50/60mm</option>
+              </optgroup>
+              <optgroup label="L-Series (SGD 1,550)">
+                <option>L3W — Climbing · 30/35mm · 25mm Int</option>
+                <option>L5W — All-Round · 45/50mm · 25mm Int</option>
+                <option>L6W — Aero · 50/60mm · 25mm Int</option>
+              </optgroup>
+              <optgroup label="Triathlon (SGD 1,700)">
+                <option>Aero X8 — Full Disc Rear Wheel · 950g · T1000</option>
+              </optgroup>
+              <option value="not sure">Not sure — help me choose</option>
+            </select>
+          </div>
+          <div class="modal-field">
+            <label id="m-msg-label">Message *</label>
+            <textarea id="m-message" placeholder="Tell us about your bike, riding style, and any questions..."></textarea>
+          </div>
+          <span class="modal-error" id="m-error">Please fill in your name, email, and message.</span>
+          <button class="modal-submit" id="m-submit" onclick="submitModal()">
+            Send Enquiry
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <p class="modal-note">We reply within 24 hours. No spam, ever.</p>
+        </div>
+      </div>
+
+      <div class="modal-success" id="modal-success">
+        <div class="modal-success-icon">✓</div>
+        <div class="modal-success-title">Message Sent.</div>
+        <p class="modal-success-desc">Thanks for reaching out. We'll get back to you at your email address within 24 hours.</p>
+        <span class="modal-success-back" onclick="resetModal()">Send another message</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Scripts ───────────────────────────────────────────────────── -->
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyD5oir2beAnURC3hy56VCA4vIaJXuu6KoGlNmF03cyXEzqSwbAzqZOH9yiKdYGlEYQ/exec";
+
+    /* ── Hero bg entrance ─────────────────────────────────────── */
+    window.addEventListener('load', () => {
+      document.getElementById('hero-bg').classList.add('loaded');
+      document.querySelectorAll('.panel-hero-bg').forEach(el => el.classList.add('loaded'));
+    });
+
+    /* ── Mobile nav ───────────────────────────────────────────── */
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.toggle('open');
+    });
+    document.querySelectorAll('#mobile-menu a').forEach(a => {
+      a.addEventListener('click', () => document.getElementById('mobile-menu').classList.remove('open'));
+    });
+
+    /* ── Series switcher ──────────────────────────────────────── */
+    function switchSeries(id) {
+      document.querySelectorAll('.series-tab').forEach(t => t.classList.toggle('active', t.dataset.series === id));
+      document.querySelectorAll('.series-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + id));
+      // Trigger bg entrance on newly visible panel
+      document.querySelectorAll('#panel-' + id + ' .panel-hero-bg').forEach(el => {
+        el.classList.remove('loaded');
+        requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('loaded')));
+      });
+    }
+
+    /* ── Modal ────────────────────────────────────────────────── */
+    let modalActiveType = 'General Enquiry';
+
+    function openModal(productName) {
+      const overlay = document.getElementById('modal-overlay');
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      if (productName) {
+        const sel = document.getElementById('m-product');
+        for (let i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].text.startsWith(productName) || sel.options[i].value === productName) {
+            sel.selectedIndex = i;
+            break;
+          }
+        }
+        // If it's a test ride request from how-to-buy
+        if (productName === 'Test Ride Request') {
+          setModalTypeByName('Test Ride Request');
+        }
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('modal-overlay')) closeModal();
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    function setModalType(btn) {
+      setModalTypeByName(btn.dataset.type);
+    }
+
+    function setModalTypeByName(type) {
+      modalActiveType = type;
+      document.querySelectorAll('.modal-tab').forEach(t => t.classList.toggle('active', t.dataset.type === type));
+      const placeholders = {
+        'General Enquiry':   'Tell us what you\'re looking for...',
+        'Test Ride Request': 'Let us know your preferred date, time, and which model you\'d like to try...',
+        'Place an Order':    'Let us know your chosen model, freehub standard (Shimano/SRAM XDR/Campagnolo N3W), and decal colour preference...',
+        'Ask a Question':    'What would you like to know?',
+      };
+      document.getElementById('m-message').placeholder = placeholders[type] || '';
+      const labels = { 'Test Ride Request': 'Preferred Date & Time *', 'Place an Order': 'Order Details *' };
+      document.getElementById('m-msg-label').textContent = labels[type] || 'Message *';
+    }
+
+    async function submitModal() {
+      const name    = document.getElementById('m-name').value.trim();
+      const email   = document.getElementById('m-email').value.trim();
+      const phone   = document.getElementById('m-phone').value.trim();
+      const product = document.getElementById('m-product').value;
+      const message = document.getElementById('m-message').value.trim();
+      const errorEl = document.getElementById('m-error');
+      const btn     = document.getElementById('m-submit');
+
+      if (!name || !email || !message) {
+        errorEl.classList.add('visible');
+        return;
+      }
+      errorEl.classList.remove('visible');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      const timestamp = new Date().toLocaleString('en-SG', { timeZone: 'Asia/Singapore' });
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode:   'no-cors',
+          body:   JSON.stringify({
+            timestamp,
+            name, email, phone,
+            type: modalActiveType,
+            bike: product || '',
+            offer: '',
+            message: (product ? '[8LIEN ' + product + '] ' : '[8LIEN Enquiry] ') + message,
+            bikeId: ''
+          })
+        });
+      } catch(err) { console.error(err); }
+
+      document.getElementById('modal-form-content').style.display = 'none';
+      document.getElementById('modal-success').classList.add('visible');
+    }
+
+    function resetModal() {
+      document.getElementById('modal-form-content').style.display = '';
+      document.getElementById('modal-success').classList.remove('visible');
+      document.getElementById('m-name').value = '';
+      document.getElementById('m-email').value = '';
+      document.getElementById('m-phone').value = '';
+      document.getElementById('m-product').selectedIndex = 0;
+      document.getElementById('m-message').value = '';
+      document.getElementById('m-submit').disabled = false;
+      document.getElementById('m-submit').innerHTML = 'Send Enquiry <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      setModalTypeByName('General Enquiry');
+    }
+  </script>
+
+</body>
+</html>

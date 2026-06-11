@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -15,586 +14,70 @@
   <meta name="description" content="Buy and sell road bikes on the Bike & Butter marketplace. Find great deals from cyclists in the community." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://bikeandbutter.com/marketplace.html" />
-
-  <!-- Open Graph (WhatsApp, Telegram, Facebook previews) -->
   <meta property="og:type"        content="website" />
   <meta property="og:url"         content="https://bikeandbutter.com/marketplace.html" />
   <meta property="og:title"       content="Marketplace — Bike & Butter" />
-  <meta property="og:description" content="Buy and sell road bikes on the Bike & Butter marketplace. Find great deals from cyclists in the community." />
+  <meta property="og:description" content="Buy and sell road bikes on the Bike & Butter marketplace." />
   <meta property="og:image"       content="https://bikeandbutter.com/og-image.png" />
   <meta property="og:site_name"   content="Bike &amp; Butter" />
-
-  <!-- Twitter card -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:title"       content="Marketplace — Bike & Butter" />
-  <meta name="twitter:description" content="Buy and sell road bikes on the Bike & Butter marketplace. Find great deals from cyclists in the community." />
+  <meta name="twitter:description" content="Buy and sell road bikes on the Bike & Butter marketplace." />
   <meta name="twitter:image"       content="https://bikeandbutter.com/og-image.png" />
   <link rel="stylesheet" href="style.css" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-
-    /* ===================== MARKETPLACE PAGE HEADER ===================== */
-    .mp-hero {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 220px;
-      border-bottom: 1px solid #ebebeb;
-    }
-
-    .mp-hero-left {
-      padding: 44px 40px;
-      border-right: 1px solid #ebebeb;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .mp-hero-eyebrow {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      color: #bbb;
-    }
-
-    .mp-hero-title {
-      font-size: 52px;
-      font-weight: 700;
-      letter-spacing: -2px;
-      color: #111;
-      line-height: 1;
-      margin-top: 12px;
-    }
-
-    .mp-hero-right {
-      padding: 44px 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .mp-hero-desc {
-      font-size: 14px;
-      color: #666;
-      line-height: 1.6;
-      max-width: 380px;
-    }
-
-    .mp-hero-stats {
-      display: flex;
-      gap: 32px;
-    }
-
-    .mp-stat-num {
-      font-size: 28px;
-      font-weight: 700;
-      color: #111;
-      letter-spacing: -1px;
-    }
-
-    .mp-stat-label {
-      font-size: 11px;
-      color: #aaa;
-      margin-top: 2px;
-    }
-
-    /* ===================== SELL CTA BANNER ===================== */
-    .sell-banner {
-      background: #111;
-      color: #fff;
-      padding: 16px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #000;
-    }
-
-    .sell-banner p {
-      font-size: 13px;
-      color: #bbb;
-    }
-
-    .sell-banner strong {
-      color: #fff;
-    }
-
-    .sell-btn {
-      background: #fff;
-      color: #111;
-      border: none;
-      padding: 9px 20px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      letter-spacing: 0.3px;
-      transition: background 0.15s;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .sell-btn:hover {
-      background: #f0f0f0;
-    }
-
-    /* ===================== FILTER BAR ===================== */
-    .mp-filter-bar {
-      padding: 14px 40px;
-      border-bottom: 1px solid #ebebeb;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .mp-filter-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .mp-results-count {
-      font-size: 13px;
-      color: #aaa;
-      white-space: nowrap;
-      min-width: 80px;
-    }
-
-    .mp-filter-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .mp-search {
-      border: 1px solid #e0e0e0;
-      border-radius: 20px;
-      padding: 7px 16px;
-      font-size: 13px;
-      font-family: inherit;
-      color: #111;
-      outline: none;
-      width: 220px;
-      background: #fafafa;
-      transition: border-color 0.15s, background 0.15s;
-    }
-
+    .mp-hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 220px; border-bottom: 1px solid #ebebeb; }
+    .mp-hero-left { padding: 44px 40px; border-right: 1px solid #ebebeb; display: flex; flex-direction: column; justify-content: space-between; }
+    .mp-hero-eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #bbb; }
+    .mp-hero-title { font-size: 52px; font-weight: 700; letter-spacing: -2px; color: #111; line-height: 1; margin-top: 12px; }
+    .mp-hero-right { padding: 44px 40px; display: flex; flex-direction: column; justify-content: space-between; }
+    .mp-hero-desc { font-size: 14px; color: #666; line-height: 1.6; max-width: 380px; }
+    .mp-hero-stats { display: flex; gap: 32px; }
+    .mp-stat-num { font-size: 28px; font-weight: 700; color: #111; letter-spacing: -1px; }
+    .mp-stat-label { font-size: 11px; color: #aaa; margin-top: 2px; }
+    .sell-banner { background: #111; color: #fff; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #000; }
+    .sell-banner p { font-size: 13px; color: #bbb; }
+    .sell-banner strong { color: #fff; }
+    .sell-btn { background: #fff; color: #111; border: none; padding: 9px 20px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; letter-spacing: 0.3px; transition: background 0.15s; white-space: nowrap; flex-shrink: 0; }
+    .sell-btn:hover { background: #f0f0f0; }
+    .mp-filter-bar { padding: 14px 40px; border-bottom: 1px solid #ebebeb; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .mp-filter-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .mp-results-count { font-size: 13px; color: #aaa; white-space: nowrap; min-width: 80px; }
+    .mp-filter-right { display: flex; align-items: center; gap: 10px; }
+    .mp-search { border: 1px solid #e0e0e0; border-radius: 20px; padding: 7px 16px; font-size: 13px; font-family: inherit; color: #111; outline: none; width: 220px; background: #fafafa; transition: border-color 0.15s, background 0.15s; }
     .mp-search::placeholder { color: #bbb; }
     .mp-search:focus { border-color: #111; background: #fff; }
-
-    .mp-sort {
-      border: 1px solid #e0e0e0;
-      border-radius: 6px;
-      padding: 6px 10px;
-      font-size: 12px;
-      color: #555;
-      font-family: inherit;
-      background: #fff;
-      cursor: pointer;
-      outline: none;
-    }
-
+    .mp-sort { border: 1px solid #e0e0e0; border-radius: 6px; padding: 6px 10px; font-size: 12px; color: #555; font-family: inherit; background: #fff; cursor: pointer; outline: none; }
     .mp-sort:hover { border-color: #111; }
-
-    /* ===================== LISTINGS ===================== */
-    .mp-listings {
-      padding: 24px 40px 60px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .mp-loading {
-      padding: 60px 0;
-      text-align: center;
-      color: #bbb;
-      font-size: 13px;
-    }
-
-    /* ===================== LISTING CARD ===================== */
-    .mp-card {
-      display: grid;
-      grid-template-columns: 220px 1fr auto;
-      border: 1px solid #ebebeb;
-      border-radius: 12px;
-      overflow: hidden;
-      transition: box-shadow 0.2s;
-      background: #fff;
-      cursor: pointer;
-      color: inherit;
-    }
-
-    .mp-card:hover {
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      border-color: #ddd;
-    }
-
-    /* Sold card styling */
-    .mp-card.is-sold {
-      opacity: 0.6;
-      cursor: default;
-    }
-
-    .mp-card.is-sold:hover {
-      box-shadow: none;
-      border-color: #ebebeb;
-    }
-
-    .mp-card-img {
-      width: 220px;
-      height: 150px;
-      overflow: hidden;
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .mp-card-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-      background: #fafafa;
-    }
-
-    /* SOLD overlay on image */
-    .sold-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .sold-overlay-text {
-      font-size: 40px;
-      font-weight: 800;
-      letter-spacing: 4px;
-      color: #fff;
-      text-transform: uppercase;
-      border: 6px solid #fff;
-      padding: 4px 14px;
-      border-radius: 4px;
-      line-height: 1.2;
-      opacity: 0.95;
-    }
-
-    .mp-card-badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: #111;
-      color: #fff;
-      font-size: 9px;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 3px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    .mp-card-badge.used    { background: #555; }
-    .mp-card-badge.parts   { background: #2e5c8a; }
-
-    .mp-card-body {
-      padding: 20px 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-width: 0;
-    }
-
-    .mp-card-meta {
-      font-size: 11px;
-      color: #aaa;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 4px;
-    }
-
-    .mp-card-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: #111;
-      margin-bottom: 4px;
-      line-height: 1.3;
-    }
-
-    .mp-card-desc {
-      font-size: 12px;
-      color: #888;
-      line-height: 1.5;
-
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-
-      overflow: hidden;
-      text-overflow: ellipsis;
-
-      line-clamp: 2;
-    }
-
-    .mp-card-footer {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-top: 12px;
-    }
-
+    .mp-listings { padding: 24px 40px 60px; display: flex; flex-direction: column; gap: 14px; }
+    .mp-loading { padding: 60px 0; text-align: center; color: #bbb; font-size: 13px; }
+    .mp-card { display: grid; grid-template-columns: 220px 1fr auto; border: 1px solid #ebebeb; border-radius: 12px; overflow: hidden; transition: box-shadow 0.2s; background: #fff; cursor: pointer; color: inherit; }
+    .mp-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-color: #ddd; }
+    .mp-card.is-sold { opacity: 0.6; cursor: default; }
+    .mp-card.is-sold:hover { box-shadow: none; border-color: #ebebeb; }
+    .mp-card-img { width: 220px; height: 150px; overflow: hidden; position: relative; flex-shrink: 0; }
+    .mp-card-img img { width: 100%; height: 100%; object-fit: contain; display: block; background: #fafafa; }
+    .sold-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; }
+    .sold-overlay-text { font-size: 40px; font-weight: 800; letter-spacing: 4px; color: #fff; text-transform: uppercase; border: 6px solid #fff; padding: 4px 14px; border-radius: 4px; line-height: 1.2; opacity: 0.95; }
+    .mp-card-badge { position: absolute; top: 10px; left: 10px; background: #111; color: #fff; font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 3px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .mp-card-badge.used { background: #555; }
+    .mp-card-badge.parts { background: #2e5c8a; }
+    .mp-card-body { padding: 20px 24px; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+    .mp-card-meta { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+    .mp-card-name { font-size: 16px; font-weight: 600; color: #111; margin-bottom: 4px; line-height: 1.3; }
+    .mp-card-desc { font-size: 12px; color: #888; line-height: 1.5; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; text-overflow: ellipsis; }
+    .mp-card-footer { display: flex; align-items: center; gap: 16px; margin-top: 12px; }
     .mp-card-seller { font-size: 11px; color: #bbb; }
     .mp-card-seller span { color: #777; font-weight: 500; }
-    .mp-card-condition { font-size: 11px; color: #bbb; }
-    .mp-card-condition span { color: #777; }
-
-    .mp-card-right {
-      padding: 20px 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      justify-content: space-between;
-      border-left: 1px solid #f0f0f0;
-      min-width: 180px;
-    }
-
-    .mp-card-price {
-      font-size: 20px;
-      font-weight: 700;
-      color: #111;
-      letter-spacing: -0.5px;
-      text-align: right;
-    }
-
-    .mp-card-price-note {
-      font-size: 11px;
-      color: #bbb;
-      text-align: right;
-      margin-top: 2px;
-    }
-
-    .mp-card-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      width: 100%;
-    }
-
-    .mp-btn {
-      width: 100%;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      font-family: inherit;
-      border: 1px solid #e0e0e0;
-      background: #fff;
-      color: #111;
-      transition: all 0.15s;
-      text-align: center;
-    }
-
+    .mp-card-right { padding: 20px 24px; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; border-left: 1px solid #f0f0f0; min-width: 180px; }
+    .mp-card-price { font-size: 20px; font-weight: 700; color: #111; letter-spacing: -0.5px; text-align: right; }
+    .mp-card-price-note { font-size: 11px; color: #bbb; text-align: right; margin-top: 2px; }
+    .mp-card-actions { display: flex; flex-direction: column; gap: 7px; width: 100%; }
+    .mp-btn { width: 100%; padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; border: 1px solid #e0e0e0; background: #fff; color: #111; transition: all 0.15s; text-align: center; }
     .mp-btn:hover { border-color: #111; }
-
-    .mp-btn.primary {
-      background: #111;
-      color: #fff;
-      border-color: #111;
-    }
-
+    .mp-btn.primary { background: #111; color: #fff; border-color: #111; }
     .mp-btn.primary:hover { background: #333; }
-
-    /* ===================== MODAL ===================== */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 500;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-overlay.open { display: flex; }
-
-    .modal {
-      background: #fff;
-      border-radius: 14px;
-      width: 480px;
-      max-width: 95vw;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-    }
-
-    .modal-header {
-      padding: 24px 28px 0;
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .modal-title {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: #111;
-    }
-
-    .modal-subtitle { font-size: 12px; color: #aaa; margin-top: 2px; }
-
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 20px;
-      color: #bbb;
-      cursor: pointer;
-      padding: 0;
-      line-height: 1;
-      flex-shrink: 0;
-    }
-
-    .modal-close:hover { color: #111; }
-
-    .modal-body {
-      padding: 20px 28px 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .modal-listing-preview {
-      background: #f7f7f7;
-      border-radius: 8px;
-      padding: 12px 14px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .modal-listing-preview img {
-      width: 60px;
-      height: 42px;
-      object-fit: contain;
-      border-radius: 4px;
-      background: #fff;
-    }
-
-    .modal-listing-name { font-size: 13px; font-weight: 600; color: #111; }
-    .modal-listing-price { font-size: 12px; color: #888; }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .form-group label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #555;
-    }
-
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 13px;
-      font-family: inherit;
-      color: #111;
-      outline: none;
-      background: #fff;
-      transition: border-color 0.15s;
-      resize: none;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus { border-color: #111; }
-
-    .form-group textarea { min-height: 90px; }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .form-submit {
-      background: #111;
-      color: #fff;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background 0.15s;
-      margin-top: 4px;
-    }
-
-    .form-submit:hover { background: #333; }
-    .form-submit:disabled { background: #ccc; cursor: not-allowed; }
-
-    .whatsapp-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: #25d366;
-      color: #fff;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.15s;
-    }
-
-    .whatsapp-btn:hover { background: #1ebe5d; }
-
-    .modal-divider {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #ddd;
-      font-size: 11px;
-    }
-
-    .modal-divider::before,
-    .modal-divider::after {
-      content: '';
-      flex: 1;
-      border-top: 1px solid #ebebeb;
-    }
-
-    .modal-success {
-      text-align: center;
-      padding: 32px 28px;
-    }
-
-    .modal-success-icon { font-size: 40px; margin-bottom: 12px; }
-
-    .modal-success h3 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .modal-success p { font-size: 13px; color: #888; line-height: 1.5; }
-
-    /* ===================== RESPONSIVE ===================== */
     @media (max-width: 768px) {
       .mp-hero { grid-template-columns: 1fr; }
       .mp-hero-left { border-right: none; border-bottom: 1px solid #ebebeb; padding: 28px 20px; }
@@ -606,23 +89,14 @@
       .mp-listings { padding: 16px 20px 40px; }
       .mp-card { grid-template-columns: 1fr; }
       .mp-card-img { width: 100%; height: 200px; }
-      .mp-card-right {
-        border-left: none;
-        border-top: 1px solid #f0f0f0;
-        flex-direction: row;
-        align-items: center;
-        min-width: unset;
-        padding: 14px 20px;
-      }
+      .mp-card-right { border-left: none; border-top: 1px solid #f0f0f0; flex-direction: row; align-items: center; min-width: unset; padding: 14px 20px; }
       .mp-card-actions { flex-direction: row; width: auto; }
       .mp-btn { width: auto; white-space: nowrap; }
-      .form-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAVIGATION -->
 <nav>
   <div class="nav-logo">
     <a href="index.html" class="logo-link">
@@ -630,71 +104,75 @@
       Bike &amp; Butter
     </a>
   </div>
-
   <div class="nav-right">
     <div class="nav-links">
+      <div class="nav-partners-wrap">
+        <a href="#" class="nav-partners-trigger">Partners
+          <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" width="10" height="10">
+            <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <div class="nav-partners-dropdown">
+          <a href="partners/8lien/8lien.html"><span class="nav-partner-dot" style="background:#ff677e;"></span>8LIEN</a>
+          <a href="partners/RSTRI/RSTRI.html"><span class="nav-partner-dot" style="background:#f5c518;"></span>RSTRI</a>
+          <a href="partners/EVR/EVR.html"><span class="nav-partner-dot" style="background:#F26522;"></span>EVR</a>
+        </div>
+      </div>
+      <a href="marketplace.html" class="active">Marketplace</a>
       <a href="bikeindex.html">Bikes</a>
-      <a href="brands.html">Brands</a>
       <a href="community.html">Community</a>
       <a href="feed.html">Feed</a>
-      <a href="marketplace.html" class="active">Marketplace</a>
       <a href="contact.html">Contact Us</a>
     </div>
-
     <div id="auth-area"></div>
   </div>
-  <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
+
 <div class="mobile-menu" id="mobile-menu">
+  <a href="partners/8lien/8lien.html" style="color:#ff677e;font-weight:600;">8LIEN — Partner</a>
+  <a href="partners/RSTRI/RSTRI.html" style="color:#f5c518;font-weight:600;">RSTRI — Partner</a>
+  <a href="partners/EVR/EVR.html" style="color:#F26522;font-weight:600;">EVR — Partner</a>
+  <a href="marketplace.html" class="active">Marketplace</a>
   <a href="bikeindex.html">Bikes</a>
-  <a href="brands.html">Brands</a>
   <a href="community.html">Community</a>
   <a href="feed.html">Feed</a>
-  <a href="marketplace.html" class="active">Marketplace</a>
   <a href="contact.html">Contact Us</a>
 </div>
+
 <script>
-function toggleMobileMenu() {
+document.getElementById('nav-hamburger').addEventListener('click', function() {
   document.getElementById('mobile-menu').classList.toggle('open');
-}
+});
+document.querySelectorAll('#mobile-menu a').forEach(function(a) {
+  a.addEventListener('click', function() {
+    document.getElementById('mobile-menu').classList.remove('open');
+  });
+});
 </script>
 
-  <!-- HERO -->
   <div class="mp-hero">
     <div class="mp-hero-left">
       <p class="mp-hero-eyebrow">Bike &amp; Butter</p>
       <h1 class="mp-hero-title">Market&shy;place</h1>
     </div>
     <div class="mp-hero-right">
-      <p class="mp-hero-desc">
-        Buy and sell complete bikes, parts, and gear — sourced directly from our community and the shop floor. Every listing is verified by the Bike &amp; Butter team.
-      </p>
+      <p class="mp-hero-desc">Buy and sell complete bikes, parts, and gear — sourced directly from our community and the shop floor. Every listing is verified by the Bike &amp; Butter team.</p>
       <div class="mp-hero-stats">
-        <div>
-          <div class="mp-stat-num" id="stat-active">—</div>
-          <div class="mp-stat-label">Active listings</div>
-        </div>
-        <div>
-          <div class="mp-stat-num" id="stat-total">—</div>
-          <div class="mp-stat-label">Total listings</div>
-        </div>
-        <div>
-          <div class="mp-stat-num" id="stat-sold">—</div>
-          <div class="mp-stat-label">Sold</div>
-        </div>
+        <div><div class="mp-stat-num" id="stat-active">—</div><div class="mp-stat-label">Active listings</div></div>
+        <div><div class="mp-stat-num" id="stat-total">—</div><div class="mp-stat-label">Total listings</div></div>
+        <div><div class="mp-stat-num" id="stat-sold">—</div><div class="mp-stat-label">Sold</div></div>
       </div>
     </div>
   </div>
 
-  <!-- SELL CTA BANNER -->
   <div class="sell-banner">
     <p><strong>Got something to sell?</strong> &nbsp;Drop it with us — we'll list it, handle enquiries, and help you close the deal.</p>
     <button class="sell-btn" onclick="window.location.href='sell.html'">List an Item →</button>
   </div>
 
-  <!-- FILTER BAR -->
   <div class="mp-filter-bar">
     <div class="mp-filter-left">
       <span class="mp-results-count" id="results-count">— listings</span>
@@ -715,236 +193,111 @@ function toggleMobileMenu() {
     </div>
   </div>
 
-  <!-- LISTINGS -->
   <div class="mp-listings" id="mp-listings">
     <div class="mp-loading">Loading listings…</div>
   </div>
 
-  <!-- TOAST -->
   <div class="toast" id="toast"></div>
-
   <script src="auth.js"></script>
-
-<script>
+  <script>
 const SHEET_ID = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
 const API_KEY  = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
 const WA_NUMBER = '6591234567';
-
 const MP_RANGE = 'Marketplace!B2:W';
-
 let allListings = [];
 let activeFilter = 'All';
 
-// ================= FETCH =================
 async function fetchListings() {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${MP_RANGE}?key=${API_KEY}`;
-
   try {
     const res = await fetch(url);
     const data = await res.json();
-
-    if (!data.values || data.values.length < 2) {
-      showEmpty('No listings yet.');
-      return;
-    }
-
+    if (!data.values || data.values.length < 2) { showEmpty('No listings yet.'); return; }
     const headers = data.values[0].map(h => h.trim());
-
     allListings = data.values.slice(1).map(row => {
       let obj = {};
-      headers.forEach((h, i) => {
-        obj[h] = row[i] || '';
-      });
-
+      headers.forEach((h, i) => { obj[h] = row[i] || ''; });
       return {
-        id:          obj['ID']          || '',
-        name:        obj['Name']        || '',
-        brand:       obj['Brand']       || '',
-        category:    obj['Category']    || '',
-        price:       obj['Price']       || '',
-        currency:    obj['Currency']    || 'SGD',
-        condition:   obj['Condition']   || '',
-        description: obj['Description'] || '',
-        photo:       obj['Photo_1']     || '',
-        status:      (obj['Status']     || 'Active').trim(), // 'Active' or 'Sold'
-        seller:      'Bike & Butter',
+        id: obj['ID'] || '', name: obj['Name'] || '', brand: obj['Brand'] || '',
+        category: obj['Category'] || '', price: obj['Price'] || '', currency: obj['Currency'] || 'SGD',
+        condition: obj['Condition'] || '', description: obj['Description'] || '',
+        photo: obj['Photo_1'] || '', status: (obj['Status'] || 'Active').trim(), seller: 'Bike & Butter',
       };
     });
-
     updateStats();
     renderListings();
-
-  } catch (err) {
-    console.error(err);
-    showEmpty('Error loading listings.');
-  }
+  } catch (err) { console.error(err); showEmpty('Error loading listings.'); }
 }
 
-// ================= STATS =================
 function updateStats() {
-  const total  = allListings.length;
-  const sold   = allListings.filter(i => i.status.toLowerCase() === 'sold').length;
-  const active = total - sold;
-
-  document.getElementById('stat-active').textContent = active;
+  const total = allListings.length;
+  const sold  = allListings.filter(i => i.status.toLowerCase() === 'sold').length;
+  document.getElementById('stat-active').textContent = total - sold;
   document.getElementById('stat-total').textContent  = total;
   document.getElementById('stat-sold').textContent   = sold;
 }
 
-// ================= RENDER =================
 function renderListings() {
   const search = document.getElementById('mp-search').value.toLowerCase();
-
   let filtered = allListings.filter(item => {
-    const matchFilter =
-      activeFilter === 'All' ||
-      item.category.toLowerCase() === activeFilter.toLowerCase();
-
-    const matchSearch =
-      !search ||
-      item.name.toLowerCase().includes(search) ||
-      item.brand.toLowerCase().includes(search) ||
-      item.description.toLowerCase().includes(search);
-
+    const matchFilter = activeFilter === 'All' || item.category.toLowerCase() === activeFilter.toLowerCase();
+    const matchSearch = !search || item.name.toLowerCase().includes(search) || item.brand.toLowerCase().includes(search) || item.description.toLowerCase().includes(search);
     return matchFilter && matchSearch;
   });
-
-  // Sort: active listings first, sold pushed to bottom
-  filtered.sort((a, b) => {
-    const aActive = a.status.toLowerCase() !== 'sold' ? 0 : 1;
-    const bActive = b.status.toLowerCase() !== 'sold' ? 0 : 1;
-    return aActive - bActive;
-  });
-
+  filtered.sort((a, b) => (a.status.toLowerCase() !== 'sold' ? 0 : 1) - (b.status.toLowerCase() !== 'sold' ? 0 : 1));
   const sortMode = document.getElementById('mp-sort').value;
   if (sortMode === 'price-asc') {
-    filtered.sort((a, b) => {
-      // Keep sold at bottom even within sort
-      const aS = a.status.toLowerCase() === 'sold' ? 1 : 0;
-      const bS = b.status.toLowerCase() === 'sold' ? 1 : 0;
-      if (aS !== bS) return aS - bS;
-      return (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0);
-    });
+    filtered.sort((a, b) => { const aS = a.status.toLowerCase() === 'sold' ? 1 : 0, bS = b.status.toLowerCase() === 'sold' ? 1 : 0; if (aS !== bS) return aS - bS; return (parseFloat(a.price)||0)-(parseFloat(b.price)||0); });
   } else if (sortMode === 'price-desc') {
-    filtered.sort((a, b) => {
-      const aS = a.status.toLowerCase() === 'sold' ? 1 : 0;
-      const bS = b.status.toLowerCase() === 'sold' ? 1 : 0;
-      if (aS !== bS) return aS - bS;
-      return (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0);
-    });
+    filtered.sort((a, b) => { const aS = a.status.toLowerCase() === 'sold' ? 1 : 0, bS = b.status.toLowerCase() === 'sold' ? 1 : 0; if (aS !== bS) return aS - bS; return (parseFloat(b.price)||0)-(parseFloat(a.price)||0); });
   }
-
   const container = document.getElementById('mp-listings');
-
-  if (!filtered.length) {
-    container.innerHTML = '<div class="mp-loading">No results.</div>';
-    return;
-  }
-
+  if (!filtered.length) { container.innerHTML = '<div class="mp-loading">No results.</div>'; return; }
   container.innerHTML = filtered.map(buildCard).join('');
   document.getElementById('results-count').textContent = `${filtered.length} listings`;
 }
 
-// ================= CARD =================
 function buildCard(item) {
   const isSold = item.status.toLowerCase() === 'sold';
-
-  const price = item.price
-    ? `${item.currency || ''} ${String(item.price)}`
-    : 'POA';
-
-  const img = item.photo
-    ? item.photo
-    : 'https://placehold.co/220x150?text=No+Photo';
-
-  const soldOverlay = isSold
-    ? `<div class="sold-overlay"><div class="sold-overlay-text">Sold</div></div>`
-    : '';
-
-  // Sold cards: no clickable actions, no navigation on click
-  const cardClick  = isSold ? '' : `onclick="goToProduct('${item.id}')"`;
-  const cardClass  = isSold ? 'mp-card is-sold' : 'mp-card';
-
+  const price = item.price ? `${item.currency || ''} ${String(item.price)}` : 'POA';
+  const img = item.photo ? item.photo : 'https://placehold.co/220x150?text=No+Photo';
+  const soldOverlay = isSold ? `<div class="sold-overlay"><div class="sold-overlay-text">Sold</div></div>` : '';
+  const cardClick = isSold ? '' : `onclick="goToProduct('${item.id}')"`;
+  const cardClass = isSold ? 'mp-card is-sold' : 'mp-card';
   const actionsHtml = isSold
     ? `<div class="mp-card-price-note" style="font-size:12px;color:#aaa;">This item has been sold</div>`
     : `<div class="mp-card-actions">
-        <button class="mp-btn primary"
-          onclick='event.stopPropagation(); handleOffer(${JSON.stringify(item.name)})'>
-          Offer
-        </button>
-        <button class="mp-btn"
-          onclick='event.stopPropagation(); handleMessage(${JSON.stringify(item.name)})'>
-          Message
-        </button>
+        <button class="mp-btn primary" onclick='event.stopPropagation(); handleOffer(${JSON.stringify(item.name)})'>Offer</button>
+        <button class="mp-btn" onclick='event.stopPropagation(); handleMessage(${JSON.stringify(item.name)})'>Message</button>
       </div>`;
-
-  return `
-    <div class="${cardClass}" ${cardClick}>
-      <div class="mp-card-img">
-        <img src="${img}" alt="${item.name}" />
-        ${soldOverlay}
-      </div>
-
-      <div class="mp-card-body">
-        <p class="mp-card-meta">${item.brand} · ${item.condition}</p>
-        <p class="mp-card-name">${item.name}</p>
-        <p class="mp-card-desc">${item.description}</p>
-      </div>
-
-      <div class="mp-card-right">
-        <div>
-          <div class="mp-card-price">${price}</div>
-        </div>
-        ${actionsHtml}
-      </div>
+  return `<div class="${cardClass}" ${cardClick}>
+    <div class="mp-card-img"><img src="${img}" alt="${item.name}" />${soldOverlay}</div>
+    <div class="mp-card-body">
+      <p class="mp-card-meta">${item.brand} · ${item.condition}</p>
+      <p class="mp-card-name">${item.name}</p>
+      <p class="mp-card-desc">${item.description}</p>
     </div>
-  `;
+    <div class="mp-card-right">
+      <div><div class="mp-card-price">${price}</div></div>
+      ${actionsHtml}
+    </div>
+  </div>`;
 }
 
-// ================= AUTH-GATED ACTIONS =================
-// Mirrors exactly how product.html handles these buttons via authGuard()
 function handleOffer(itemName) {
-  authGuard(
-    () => window.location.href = 'contact.html?type=Make%20an%20Offer&bike=' + encodeURIComponent(itemName),
-    'Sign in to make an offer',
-    'You need to be signed in to make an offer.'
-  );
+  authGuard(() => window.location.href = 'contact.html?type=Make%20an%20Offer&bike=' + encodeURIComponent(itemName), 'Sign in to make an offer', 'You need to be signed in to make an offer.');
 }
-
 function handleMessage(itemName) {
-  authGuard(
-    () => window.location.href = 'contact.html?type=Ask%20a%20Question&bike=' + encodeURIComponent(itemName),
-    'Sign in to ask a question',
-    'You need to be signed in to send a message.'
-  );
+  authGuard(() => window.location.href = 'contact.html?type=Ask%20a%20Question&bike=' + encodeURIComponent(itemName), 'Sign in to ask a question', 'You need to be signed in to send a message.');
 }
-
-// ================= EMPTY =================
-function showEmpty(msg) {
-  document.getElementById('mp-listings').innerHTML =
-    `<div class="mp-loading">${msg}</div>`;
-}
-
-// ================= EVENTS =================
+function showEmpty(msg) { document.getElementById('mp-listings').innerHTML = `<div class="mp-loading">${msg}</div>`; }
 document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeFilter = btn.dataset.filter;
-    renderListings();
-  });
+  btn.addEventListener('click', () => { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); activeFilter = btn.dataset.filter; renderListings(); });
 });
-
 document.getElementById('mp-search').addEventListener('input', renderListings);
 document.getElementById('mp-sort').addEventListener('change', renderListings);
-
-// ================= INIT =================
 fetchListings();
-
-function goToProduct(id) {
-  window.location.href = `product.html?id=${id}`;
-}
-</script>
-
+function goToProduct(id) { window.location.href = `product.html?id=${id}`; }
+  </script>
 </body>
 </html>

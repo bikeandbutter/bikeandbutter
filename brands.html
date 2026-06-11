@@ -10,24 +10,24 @@
   gtag('config', 'G-ZQJRHN886Z');
 </script>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Brands — Bike & Butter</title>
-  <meta name="description" content="Discover the world's leading road bike brands in one place. Browse every manufacturer in the Bike & Butter collection." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bike & Butter</title>
+  <meta name="description" content="Full specs and details for this road bike in the Bike & Butter archive." />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://bikeandbutter.com/brands.html" />
+  <link rel="canonical" href="https://bikeandbutter.com/bike.html" />
 
   <!-- Open Graph (WhatsApp, Telegram, Facebook previews) -->
   <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://bikeandbutter.com/brands.html" />
-  <meta property="og:title"       content="Brands — Bike & Butter" />
-  <meta property="og:description" content="Discover the world's leading road bike brands in one place. Browse every manufacturer in the Bike & Butter collection." />
+  <meta property="og:url"         content="https://bikeandbutter.com/bike.html" />
+  <meta property="og:title"       content="Bike Details — Bike & Butter" />
+  <meta property="og:description" content="Full specs and details for this road bike in the Bike & Butter archive." />
   <meta property="og:image"       content="https://bikeandbutter.com/og-image.png" />
   <meta property="og:site_name"   content="Bike &amp; Butter" />
 
   <!-- Twitter card -->
   <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:title"       content="Brands — Bike & Butter" />
-  <meta name="twitter:description" content="Discover the world's leading road bike brands in one place. Browse every manufacturer in the Bike & Butter collection." />
+  <meta name="twitter:title"       content="Bike Details — Bike & Butter" />
+  <meta name="twitter:description" content="Full specs and details for this road bike in the Bike & Butter archive." />
   <meta name="twitter:image"       content="https://bikeandbutter.com/og-image.png" />
   <link rel="stylesheet" href="style.css" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -43,126 +43,372 @@
   </div>
   <div class="nav-right">
     <div class="nav-links">
-      <a href="bikeindex.html">Bikes</a>
-      <a href="brands.html" class="active">Brands</a>
+      <div class="nav-partners-wrap">
+        <a href="#" class="nav-partners-trigger">Partners
+          <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" width="10" height="10">
+            <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <div class="nav-partners-dropdown">
+          <a href="partners/8lien/8lien.html"><span class="nav-partner-dot" style="background:#ff677e;"></span>8LIEN</a>
+          <a href="partners/RSTRI/RSTRI.html"><span class="nav-partner-dot" style="background:#f5c518;"></span>RSTRI</a>
+          <a href="partners/EVR/EVR.html"><span class="nav-partner-dot" style="background:#F26522;"></span>EVR</a>
+        </div>
+      </div>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="bikeindex.html" class="active">Bikes</a>
       <a href="community.html">Community</a>
       <a href="feed.html">Feed</a>
-      <a href="marketplace.html">Marketplace</a>
       <a href="contact.html">Contact Us</a>
     </div>
     <div id="auth-area"></div>
   </div>
-  <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
+
 <div class="mobile-menu" id="mobile-menu">
-  <a href="bikeindex.html">Bikes</a>
-  <a href="brands.html" class="active">Brands</a>
-  <a href="community.html">Community</a>
-  <a href="feed.html">Feed</a>
-  <a href="marketplace.html">Marketplace</a>
-  <a href="contact.html">Contact Us</a>
+  <a href="partners/8lien/8lien.html" style="color:#ff677e;font-weight:600;">8LIEN — Partner</a>
+  <a href="partners/RSTRI/RSTRI.html" style="color:#f5c518;font-weight:600;">RSTRI — Partner</a>
+  <a href="partners/EVR/EVR.html" style="color:#F26522;font-weight:600;">EVR — Partner</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="bikeindex.html" class="active">Bikes</a>
+      <a href="community.html">Community</a>
+      <a href="feed.html">Feed</a>
+      <a href="contact.html">Contact Us</a>
 </div>
+
 <script>
-function toggleMobileMenu() {
+document.getElementById('nav-hamburger').addEventListener('click', function() {
   document.getElementById('mobile-menu').classList.toggle('open');
-}
+});
+document.querySelectorAll('#mobile-menu a').forEach(function(a) {
+  a.addEventListener('click', function() {
+    document.getElementById('mobile-menu').classList.remove('open');
+  });
+});
 </script>
 
-<div class="page-header">
-  <p class="page-header-sub">The Road Bike Archive</p>
-  <h1 class="page-header-title">Brands</h1>
-  <p class="page-header-tagline" id="header-tagline">Loading brands...</p>
+<div class="breadcrumb">
+  <a href="bikeindex.html">Bikes</a>
+  <span>›</span>
+  <span id="breadcrumb-brand">—</span>
+  <span>›</span>
+  <span id="breadcrumb-name">Loading...</span>
 </div>
 
-<main>
-  <div class="filter-bar">
-    <div class="filter-bottom">
-      <input type="text" class="search-bar" id="search-bar" placeholder="Search brands..." />
+<div class="product-layout">
+  <div class="left-column">
+    <!-- Photo gallery -->
+    <div class="photo-section">
+      <div class="pb-gallery" id="pb-gallery">
+        <div class="pb-gallery-track" id="gallery-track"></div>
+        <div class="gallery-dots" id="gallery-dots"></div>
+        <button class="gallery-arrow prev" id="gallery-prev" onclick="galleryMove(-1)">&#8249;</button>
+        <button class="gallery-arrow next" id="gallery-next" onclick="galleryMove(1)">&#8250;</button>
+      </div>
+    </div>
+    <div class="description-section">
+      <div class="description-box">
+        <p class="table-heading">DESCRIPTION</p>
+        <p id="bike-description">Loading...</p>
+      </div>
     </div>
   </div>
-  <div id="brand-grid">
-    <div class="loading-state">Loading brands...</div>
+
+  <div class="right-column">
+    <div class="product-identity">
+      <div class="identity-top">
+        <span class="product-brand-label" id="product-brand">—</span>
+        <span class="product-tag" id="product-tag">—</span>
+      </div>
+      <h1 class="product-name" id="product-name">Loading...</h1>
+      <p class="product-meta">
+        <span id="meta-category">—</span> ·
+        <span id="meta-year">—</span> ·
+        <span id="meta-country">—</span>
+      </p>
+      <p class="product-price" id="product-price">—</p>
+      <div class="product-actions">
+        <button class="action-btn" id="btn-fav" onclick="handleAction('fav')">☆ Favourite</button>
+        <button class="action-btn" id="btn-ridden" onclick="handleAction('ridden')">✓ Ridden</button>
+        <button class="action-btn" id="btn-wishlist" onclick="handleAction('wishlist')">▢ Wishlist</button>
+      </div>
+    </div>
+
+    <div class="info-block">
+      <table class="neat-table">
+        <thead><tr><td colspan="2">Specifications</td></tr></thead>
+        <tbody>
+          <tr><td>Frame</td><td id="spec-frame">—</td></tr>
+          <tr><td>Colour</td><td id="spec-colour">—</td></tr>
+          <tr><td>Weight</td><td id="spec-weight">—</td></tr>
+          <tr><td>Sizes</td><td id="spec-sizes">—</td></tr>
+          <tr><td>Year</td><td id="spec-year">—</td></tr>
+          <tr><td>Country</td><td id="spec-country">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-block">
+      <table class="neat-table">
+        <thead><tr><td colspan="2">Pricing</td></tr></thead>
+        <tbody>
+          <tr><td>Retail Price</td><td id="price-retail">—</td></tr>
+          <tr><td>Currency</td><td id="price-currency">—</td></tr>
+          <tr><td>Availability</td><td id="price-avail">—</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-</main>
+</div>
 
 <div class="toast" id="toast"></div>
 <script src="auth.js"></script>
 <script>
 const SHEET_ID = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
 const API_KEY  = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
-const RANGE    = 'Brands!A2:F';
+const RANGE    = 'Database!B2:W';
 
-let allBrands = [];
 
-async function fetchBrands() {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
-  try {
-    const res  = await fetch(url);
-    const data = await res.json();
-    const rows = data.values || [];
-    if (!rows.length) { showError("No brands found"); return; }
-    const headers = rows[0].map(h => h.trim());
-    allBrands = rows.slice(1).map(row => {
-      const obj = {};
-      headers.forEach((h, i) => { obj[h] = row[i] || ''; });
-      return obj;
-    });
-    updateGrid();
-    document.getElementById('header-tagline').textContent = 'From heritage manufacturers to modern disruptors — explore the brands shaping cycling today.';
-  } catch (err) { console.error(err); showError("Failed to load brands"); }
+// Gallery
+let galleryPhotos = [];
+let galleryIndex  = 0;
+
+function buildGallery(photos) {
+  galleryPhotos = photos.filter(Boolean);
+  if (!galleryPhotos.length) galleryPhotos = ['https://placehold.co/600x400?text=No+Photo'];
+  const track = document.getElementById('gallery-track');
+  const dots  = document.getElementById('gallery-dots');
+  track.innerHTML = galleryPhotos.map(src =>
+    '<div class="pb-gallery-slide"><img src="' + src + '" loading="lazy" /></div>'
+  ).join('');
+  dots.innerHTML = galleryPhotos.map((_, i) =>
+    '<button class="gallery-dot' + (i === 0 ? ' active' : '') + '" onclick="galleryGoto(' + i + ')"></button>'
+  ).join('');
+  const single = galleryPhotos.length < 2;
+  document.getElementById('gallery-prev').style.display = single ? 'none' : '';
+  document.getElementById('gallery-next').style.display = single ? 'none' : '';
+  dots.style.display = single ? 'none' : '';
+  galleryIndex = 0;
+  updateGallery();
+}
+function galleryMove(dir) {
+  galleryIndex = (galleryIndex + dir + galleryPhotos.length) % galleryPhotos.length;
+  updateGallery();
+}
+function galleryGoto(i) { galleryIndex = i; updateGallery(); }
+function updateGallery() {
+  document.getElementById('gallery-track').style.transform = 'translateX(-' + (galleryIndex * 100) + '%)';
+  document.querySelectorAll('.gallery-dot').forEach((d, i) => d.classList.toggle('active', i === galleryIndex));
+}
+let currentBikeId   = null;
+let currentBikeName = null;
+
+function setField(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val || '—';
 }
 
-function buildCard(brand) {
-  const img = brand.Logo
-    ? `<img src="${brand.Logo}" alt="${brand.Brand}" loading="lazy">`
-    : `<img src="https://placehold.co/200x120?text=No+Logo">`;
-  return `
-    <a href="solobrand.html?id=${brand.ID}" class="bike-card">
-      <div class="bike-img">${img}</div>
-      <div class="bike-info">
-        <p class="bike-brand">${brand.Country}</p>
-        <p class="bike-name">${brand.Brand}</p>
-      </div>
-    </a>`;
+function getBikeId() {
+  return new URLSearchParams(window.location.search).get('id');
 }
 
-function buildCountrySection(country, brands) {
-  return `
-    <div class="country-section">
-      <div class="country-header">
-        <span class="country-badge">${country}</span>
-        <span class="country-count">${brands.length}</span>
-      </div>
-      <div class="country-grid">${brands.map(buildCard).join('')}</div>
-    </div>`;
-}
-
-function updateGrid() {
-  const search   = document.getElementById('search-bar').value.toLowerCase().trim();
-  let filtered   = allBrands.filter(b =>
-    !search ||
-    (b.Brand || '').toLowerCase().includes(search) ||
-    (b.Country || '').toLowerCase().includes(search)
+function handleAction(action) {
+  authGuard(
+    () => {
+      const btn = document.getElementById(
+        action === 'fav' ? 'btn-fav' : action === 'ridden' ? 'btn-ridden' : 'btn-wishlist'
+      );
+      const nextState = !btn.classList.contains('active');
+      btn.classList.toggle('active', nextState);
+      if (nextState) writeFeedEntry(action, currentBikeId, currentBikeName);
+      window.toggleAction(currentBikeId, currentBikeName, action);
+    },
+    'Sign in to save bikes',
+    'Sign in with Google to wishlist, favourite, and mark bikes as ridden.'
   );
-  const grouped  = {};
-  filtered.forEach(b => {
-    const key = b.Country || 'Unknown';
-    if (!grouped[key]) grouped[key] = [];
-    grouped[key].push(b);
+}
+
+function hydrateButtons() {
+  if (!window.currentUser || !currentBikeId) return;
+  const actions     = window.getUserActions();
+  const bikeActions = actions[currentBikeId];
+  if (!bikeActions) return;
+  document.getElementById('btn-fav')?.classList.toggle('active', !!bikeActions.fav);
+  document.getElementById('btn-ridden')?.classList.toggle('active', !!bikeActions.ridden);
+  document.getElementById('btn-wishlist')?.classList.toggle('active', !!bikeActions.wishlist);
+}
+
+function populatePage(bike) {
+  const name = bike['Name'] || 'Unnamed Bike';
+  document.title = `${name} — Bike & Butter`;
+  setField('breadcrumb-brand', bike['Brand']);
+  setField('breadcrumb-name',  name);
+  setField('product-brand',    bike['Brand']?.toUpperCase());
+  setField('product-tag',      bike['Category']);
+  setField('product-name',     name);
+  setField('meta-category',    bike['Category']);
+  setField('meta-year',        bike['Year']);
+  setField('meta-country',     bike['Country']);
+  setField('product-price', bike['Retail_Price'] ? `${bike['Currency'] || ''} ${bike['Retail_Price']}` : '—');
+  setField('spec-frame',   bike['Frame_Material']);
+  setField('spec-colour',  bike['Colour']);
+  setField('spec-weight',  bike['Weight']);
+  setField('spec-sizes',   bike['Sizes']);
+  setField('spec-year',    bike['Year']);
+  setField('spec-country', bike['Country']);
+  setField('bike-description', bike['Description']);
+  setField('price-retail',   bike['Retail_Price']);
+  setField('price-currency', bike['Currency']);
+  setField('price-avail',    bike['Availability']);
+  buildGallery([
+    bike['Photo_1'], bike['Photo_2'], bike['Photo_3'],
+    bike['Photo_4'], bike['Photo_5']
+  ]);
+}
+
+async function loadBike() {
+  currentBikeId = getBikeId();
+  if (!currentBikeId) return;
+  const url  = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+  const res  = await fetch(url);
+  const data = await res.json();
+  const rows    = data.values || [];
+  const headers = rows[0];
+  const idIndex = headers.indexOf('ID');
+  const row = rows.slice(1).find(r => String(r[idIndex]) === String(currentBikeId));
+  if (!row) return;
+  const bike = {};
+  headers.forEach((h, i) => bike[h] = row[i]);
+  currentBikeName = bike['Name'];
+  populatePage(bike);
+  hydrateButtons();
+}
+
+function writeFeedEntry(action, bikeId, bikeName) {
+  if (!window.currentUser || !bikeId || !bikeName) return;
+  const user = window.currentUser;
+  syncToSheet({
+    action: 'feedEntry', uid: user.uid,
+    userName: user.name || user.email?.split('@')[0] || 'Anonymous',
+    photoURL: user.picture || '', stat: action,
+    bikeId: String(bikeId), bikeName
   });
-  document.getElementById('brand-grid').innerHTML = Object.keys(grouped).sort()
-    .map(country => buildCountrySection(country, grouped[country])).join('');
 }
 
-function showError(msg) {
-  document.getElementById('brand-grid').innerHTML = `<div class="loading-state">${msg}</div>`;
-}
-
-document.getElementById('search-bar').addEventListener('input', updateGrid);
-fetchBrands();
+loadBike();
+window.addEventListener('bb-auth-change', hydrateButtons);
 </script>
+
+<style>
+    /* ===================== PHOTO GALLERY ===================== */
+    .pb-gallery {
+      position: relative;
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #f0f0f0;
+      user-select: none;
+    }
+    .pb-gallery-track {
+      display: flex;
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .pb-gallery-slide {
+      min-width: 100%;
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      overflow: hidden;
+    }
+    .pb-gallery-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .gallery-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.9);
+      border: 1px solid #e0e0e0;
+      border-radius: 50%;
+      width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      color: #333;
+      z-index: 10;
+      transition: background 0.15s, border-color 0.15s;
+      line-height: 1;
+      padding: 0;
+    }
+    .gallery-arrow:hover { background: #fff; border-color: #111; color: #111; }
+    .gallery-arrow.prev  { left: 10px; }
+    .gallery-arrow.next  { right: 10px; }
+    .gallery-dots {
+      position: absolute;
+      bottom: 10px;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      z-index: 10;
+    }
+    .gallery-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.25);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      border: none;
+      padding: 0;
+    }
+    .gallery-dot.active { background: #111; transform: scale(1.25); }
+
+.product-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.action-btn {
+  background: none;
+  border: 1px solid #eee;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  color: #999;
+  border-radius: 10px;
+  transition: all 0.15s ease;
+}
+
+.action-btn:hover {
+  color: #111;
+  border-color: #ddd;
+  background: rgba(0,0,0,0.02);
+  transform: translateY(-1px);
+}
+
+.action-btn.active:hover {
+  color: #a80000;
+  border-color: rgba(255, 60, 60, 0.35);
+  background: rgba(255, 60, 60, 0.12);
+}
+
+.action-btn.active {
+  color: #c40000;
+  border-color: rgba(255, 60, 60, 0.25);
+  background: rgba(255, 60, 60, 0.08);
+}
+</style>
 
 </body>
 </html>

@@ -269,31 +269,51 @@
   </div>
   <div class="nav-right">
     <div class="nav-links">
+      <div class="nav-partners-wrap">
+        <a href="#" class="nav-partners-trigger">Partners
+          <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" width="10" height="10">
+            <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <div class="nav-partners-dropdown">
+          <a href="partners/8lien/8lien.html"><span class="nav-partner-dot" style="background:#ff677e;"></span>8LIEN</a>
+          <a href="partners/RSTRI/RSTRI.html"><span class="nav-partner-dot" style="background:#f5c518;"></span>RSTRI</a>
+          <a href="partners/EVR/EVR.html"><span class="nav-partner-dot" style="background:#F26522;"></span>EVR</a>
+        </div>
+      </div>
+      <a href="marketplace.html">Marketplace</a>
       <a href="bikeindex.html">Bikes</a>
-      <a href="brands.html">Brands</a>
       <a href="community.html">Community</a>
       <a href="feed.html" class="active">Feed</a>
-      <a href="marketplace.html">Marketplace</a>
       <a href="contact.html">Contact Us</a>
     </div>
     <div id="auth-area"></div>
   </div>
-  <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
+
 <div class="mobile-menu" id="mobile-menu">
-  <a href="bikeindex.html">Bikes</a>
-  <a href="brands.html">Brands</a>
-  <a href="community.html">Community</a>
-  <a href="feed.html" class="active">Feed</a>
-  <a href="marketplace.html">Marketplace</a>
-  <a href="contact.html">Contact Us</a>
+  <a href="partners/8lien/8lien.html" style="color:#ff677e;font-weight:600;">8LIEN — Partner</a>
+  <a href="partners/RSTRI/RSTRI.html" style="color:#f5c518;font-weight:600;">RSTRI — Partner</a>
+  <a href="partners/EVR/EVR.html" style="color:#F26522;font-weight:600;">EVR — Partner</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="bikeindex.html">Bikes</a>
+      <a href="community.html">Community</a>
+      <a href="feed.html" class="active">Feed</a>
+      <a href="contact.html">Contact Us</a>
 </div>
+
 <script>
-function toggleMobileMenu() {
+document.getElementById('nav-hamburger').addEventListener('click', function() {
   document.getElementById('mobile-menu').classList.toggle('open');
-}
+});
+document.querySelectorAll('#mobile-menu a').forEach(function(a) {
+  a.addEventListener('click', function() {
+    document.getElementById('mobile-menu').classList.remove('open');
+  });
+});
 </script>
 
 <div class="page-header">

@@ -11,29 +11,30 @@
 </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Community — Bike & Butter</title>
-  <meta name="description" content="Join the Bike & Butter community. Connect with fellow road cycling enthusiasts, share your rides and climb the leaderboard." />
+  <title>Bike & Butter</title>
+  <meta name="description" content="Search and filter hundreds of road bikes by brand, category and price. Find your next dream bike on Bike & Butter." />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://bikeandbutter.com/community.html" />
+  <link rel="canonical" href="https://bikeandbutter.com/bikeindex.html" />
 
   <!-- Open Graph (WhatsApp, Telegram, Facebook previews) -->
   <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://bikeandbutter.com/community.html" />
-  <meta property="og:title"       content="Community — Bike & Butter" />
-  <meta property="og:description" content="Join the Bike & Butter community. Connect with fellow road cycling enthusiasts, share your rides and climb the leaderboard." />
+  <meta property="og:url"         content="https://bikeandbutter.com/bikeindex.html" />
+  <meta property="og:title"       content="Browse Bikes — Bike & Butter" />
+  <meta property="og:description" content="Search and filter hundreds of road bikes by brand, category and price. Find your next dream bike on Bike & Butter." />
   <meta property="og:image"       content="https://bikeandbutter.com/og-image.png" />
   <meta property="og:site_name"   content="Bike &amp; Butter" />
 
   <!-- Twitter card -->
   <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:title"       content="Community — Bike & Butter" />
-  <meta name="twitter:description" content="Join the Bike & Butter community. Connect with fellow road cycling enthusiasts, share your rides and climb the leaderboard." />
+  <meta name="twitter:title"       content="Browse Bikes — Bike & Butter" />
+  <meta name="twitter:description" content="Search and filter hundreds of road bikes by brand, category and price. Find your next dream bike on Bike & Butter." />
   <meta name="twitter:image"       content="https://bikeandbutter.com/og-image.png" />
   <link rel="stylesheet" href="style.css" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
+  <!-- NAVIGATION -->
 <nav>
   <div class="nav-logo">
     <a href="index.html" class="logo-link">
@@ -43,490 +44,346 @@
   </div>
   <div class="nav-right">
     <div class="nav-links">
-      <a href="bikeindex.html">Bikes</a>
-      <a href="brands.html">Brands</a>
-      <a href="community.html" class="active">Community</a>
-      <a href="feed.html">Feed</a>
+      <div class="nav-partners-wrap">
+        <a href="#" class="nav-partners-trigger">Partners
+          <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" width="10" height="10">
+            <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <div class="nav-partners-dropdown">
+          <a href="partners/8lien/8lien.html"><span class="nav-partner-dot" style="background:#ff677e;"></span>8LIEN</a>
+          <a href="partners/RSTRI/RSTRI.html"><span class="nav-partner-dot" style="background:#f5c518;"></span>RSTRI</a>
+          <a href="partners/EVR/EVR.html"><span class="nav-partner-dot" style="background:#F26522;"></span>EVR</a>
+        </div>
+      </div>
       <a href="marketplace.html">Marketplace</a>
+      <a href="bikeindex.html" class="active">Bikes</a>
+      <a href="community.html">Community</a>
+      <a href="feed.html">Feed</a>
       <a href="contact.html">Contact Us</a>
     </div>
     <div id="auth-area"></div>
   </div>
-  <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </nav>
+
 <div class="mobile-menu" id="mobile-menu">
-  <a href="bikeindex.html">Bikes</a>
-  <a href="brands.html">Brands</a>
-  <a href="community.html" class="active">Community</a>
-  <a href="feed.html">Feed</a>
-  <a href="marketplace.html">Marketplace</a>
-  <a href="contact.html">Contact Us</a>
+  <a href="partners/8lien/8lien.html" style="color:#ff677e;font-weight:600;">8LIEN — Partner</a>
+  <a href="partners/RSTRI/RSTRI.html" style="color:#f5c518;font-weight:600;">RSTRI — Partner</a>
+  <a href="partners/EVR/EVR.html" style="color:#F26522;font-weight:600;">EVR — Partner</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="bikeindex.html" class="active">Bikes</a>
+      <a href="community.html">Community</a>
+      <a href="feed.html">Feed</a>
+      <a href="contact.html">Contact Us</a>
 </div>
+
 <script>
-function toggleMobileMenu() {
+document.getElementById('nav-hamburger').addEventListener('click', function() {
   document.getElementById('mobile-menu').classList.toggle('open');
-}
-</script>
-
-<!-- CHANGE 3: Updated page header copy to match site theme -->
-<div class="page-header">
-  <p class="page-header-sub">The Bike & Butter Community</p>
-  <h1 class="page-header-title">Community</h1>
-  <p class="page-header-tagline">Every ride leaves a mark — see who's been out there logging miles, collecting favourites, and building their wishlist.</p>
-</div>
-
-<main>
-
-  <!-- CHANGE 9: Stats as clean stat blocks, not pill buttons -->
-  <div class="community-stats-bar">
-    <div class="stat-block">
-      <span class="stat-num" id="stat-members">—</span>
-      <span class="stat-label">members</span>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat-block">
-      <span class="stat-num" id="stat-actions">—</span>
-      <span class="stat-label">actions</span>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat-block">
-      <span class="stat-num" id="stat-wishlists">—</span>
-      <span class="stat-label">wishlisted</span>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat-block">
-      <span class="stat-num" id="stat-ridden">—</span>
-      <span class="stat-label">ridden</span>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat-block">
-      <span class="stat-num" id="stat-favs">—</span>
-      <span class="stat-label">favourited</span>
-    </div>
-  </div>
-
-  <!-- Sign-in nudge (styled like feed.html, shown only when logged out) -->
-  <div id="signin-gate" class="comm-signin-nudge" style="display:none;">
-    <p class="nudge-text">Sign in so your rides, favourites and wishlist appear here.</p>
-    <button class="btn-google-small" id="gate-google-btn" onclick="window.__bbSignIn && window.__bbSignIn()">
-      <svg width="14" height="14" viewBox="0 0 48 48">
-        <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 2.9l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/>
-        <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 16 19 12 24 12c3.1 0 5.8 1.1 7.9 2.9l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-        <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.4 35.5 26.8 36 24 36c-5.3 0-9.7-3.2-11.3-7.8l-6.6 5.1C9.6 39.6 16.3 44 24 44z"/>
-        <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.3 4.1-4.2 5.4l6.2 5.2C37 38 44 32.8 44 24c0-1.3-.1-2.6-.4-3.9z"/>
-      </svg>
-      Sign in with Google
-    </button>
-  </div>
-
-  <!-- CHANGE 5: Tab order changed to Collectors, Most Favourited, Most Ridden, Most Wishlisted -->
-  <div class="community-tabs">
-    <button class="comm-tab active" data-tab="collectors">Collectors</button>
-    <button class="comm-tab" data-tab="favourited">Most Favourited</button>
-    <button class="comm-tab" data-tab="ridden">Most Ridden</button>
-    <button class="comm-tab" data-tab="wishlisted">Most Wishlisted</button>
-  </div>
-
-  <!-- CHANGE 1: Leaderboard as individual cards, narrower layout -->
-  <div class="tab-panel" id="tab-collectors">
-    <div class="leaderboard-cards" id="leaderboard-body">
-      <div class="comm-loading">Loading community...</div>
-    </div>
-  </div>
-
-  <div class="tab-panel hidden" id="tab-ridden">
-    <div class="bike-rank-list" id="list-ridden"><div class="comm-loading">Loading...</div></div>
-  </div>
-  <div class="tab-panel hidden" id="tab-favourited">
-    <div class="bike-rank-list" id="list-favourited"><div class="comm-loading">Loading...</div></div>
-  </div>
-  <div class="tab-panel hidden" id="tab-wishlisted">
-    <div class="bike-rank-list" id="list-wishlisted"><div class="comm-loading">Loading...</div></div>
-  </div>
-
-</main>
-
-<div class="toast" id="toast"></div>
-<script src="auth.js"></script>
-<script>
-const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyD5oir2beAnURC3hy56VCA4vIaJXuu6KoGlNmF03cyXEzqSwbAzqZOH9yiKdYGlEYQ/exec";
-const SHEET_ID    = "19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0";
-const API_KEY     = "AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8";
-const DB_RANGE    = "Database!B2:Z";
-
-let allBikes = [];
-
-// Tab switching
-document.querySelectorAll(".comm-tab").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".comm-tab").forEach(b => b.classList.remove("active"));
-    document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
-    btn.classList.add("active");
-    document.getElementById("tab-" + btn.dataset.tab).classList.remove("hidden");
+});
+document.querySelectorAll('#mobile-menu a').forEach(function(a) {
+  a.addEventListener('click', function() {
+    document.getElementById('mobile-menu').classList.remove('open');
   });
 });
-
-async function loadLeaderboard() {
-  try {
-    const res   = await fetch(BACKEND_URL + "?action=leaderboard");
-    const users = await res.json();
-
-    document.getElementById("stat-members").textContent   = users.length;
-    document.getElementById("stat-actions").textContent   = users.reduce((s, u) => s + (u.total || 0), 0);
-    document.getElementById("stat-wishlists").textContent = users.reduce((s, u) => s + (u.wishlist || 0), 0);
-    document.getElementById("stat-ridden").textContent    = users.reduce((s, u) => s + (u.ridden || 0), 0);
-    document.getElementById("stat-favs").textContent      = users.reduce((s, u) => s + (u.fav || 0), 0);
-
-    const sorted = [...users].sort((a, b) => (b.total || 0) - (a.total || 0));
-    // Debug: log first user's keys so you can see what field names the backend sends
-    if (sorted.length > 0) console.log("[B&B leaderboard] first user fields:", Object.keys(sorted[0]), sorted[0]);
-
-    // CHANGE 1+2+6+7+8: Individual cards, plain numbers, avatar image, profile link, inline stats
-    document.getElementById("leaderboard-body").innerHTML = sorted.map((u, i) => {
-      const isMe = window.currentUser && window.currentUser.uid === u.uid;
-
-      // Try every field name the Apps Script might send for the profile photo (column E in Users sheet)
-      const photoSrc = u.picture || u.photoURL || u.photo || u.Photo || u.image || u.avatar || "";
-      const initial  = (u.name ? u.name[0] : "?").toUpperCase();
-      const avatarContent = photoSrc
-        ? `<img src="${photoSrc}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.style.display='none'">`
-        : `<span class="lb-avatar-initial" style="background:${u.color || '#555'}">${initial}</span>`;
-
-      // CHANGE 8: Three stats side by side with small labels below
-      const ridden    = u.ridden   || 0;
-      const fav       = u.fav      || 0;
-      const wishlist  = u.wishlist || 0;
-
-      return `
-        <div class="lb-card ${isMe ? "lb-me" : ""}">
-          <div class="lb-rank">${i + 1}</div>
-          <div class="lb-avatar-wrap">${avatarContent}</div>
-          <div class="lb-info">
-            <a class="lb-name" href="profile.html?uid=${u.uid}">${u.name}${isMe ? " <span class='you-badge'>you</span>" : ""}</a>
-          </div>
-          <div class="lb-mini-stats">
-            <div class="lb-mini-stat"><span class="lb-mini-num">${ridden}</span><span class="lb-mini-label">rode</span></div>
-            <div class="lb-mini-stat"><span class="lb-mini-num">${fav}</span><span class="lb-mini-label">favourited</span></div>
-            <div class="lb-mini-stat"><span class="lb-mini-num">${wishlist}</span><span class="lb-mini-label">wishlisted</span></div>
-          </div>
-        </div>`;
-    }).join("");
-  } catch (err) {
-    document.getElementById("leaderboard-body").innerHTML =
-      `<div class="comm-loading">Could not load leaderboard.</div>`;
-  }
-}
-
-async function fetchBikes() {
-  if (allBikes.length > 0) return allBikes;
-  const url  = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${DB_RANGE}?key=${API_KEY}`;
-  const res  = await fetch(url);
-  const data = await res.json();
-  const rows = data.values || [];
-  if (rows.length < 2) return [];
-  const headers = rows[0].map(h => h.trim());
-  allBikes = rows.slice(1).map(row => {
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = row[i] || "");
-    return obj;
-  });
-  return allBikes;
-}
-
-async function renderBikeRank(containerId, countKey, label) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = `<div class="comm-loading">Loading...</div>`;
-  try {
-    const bikes  = await fetchBikes();
-    const sorted = bikes
-      .filter(b => parseInt(b[countKey] || 0) > 0)
-      .sort((a, b) => parseInt(b[countKey] || 0) - parseInt(a[countKey] || 0));
-    if (sorted.length === 0) {
-      container.innerHTML = `<div class="comm-loading">No data yet — be the first!</div>`;
-      return;
-    }
-    container.innerHTML = sorted.map((bike, i) => {
-      const count = parseInt(bike[countKey] || 0);
-      const photo = bike["Photo_1"] || "";
-      const name  = bike["Name"] || "Unnamed";
-      const brand = bike["Brand"] || "";
-      const id    = bike["ID"] || "";
-      return `
-        <a class="bike-rank-row" href="bike.html?id=${id}">
-          <div class="rank-pos">${i + 1}</div>
-          <div class="rank-img">
-            ${photo
-              ? `<img src="${photo}" alt="${name}" loading="lazy" onerror="this.src='https://placehold.co/72x48?text=—'">`
-              : `<img src="https://placehold.co/72x48?text=—">`}
-          </div>
-          <div class="rank-info">
-            <p class="rank-brand">${brand}</p>
-            <p class="rank-name">${name}</p>
-          </div>
-          <div class="rank-count">
-            <span class="rank-num">${count}</span>
-            <span class="rank-label">${count === 1 ? label : label + "s"}</span>
-          </div>
-        </a>`;
-    }).join("");
-  } catch (err) {
-    container.innerHTML = `<div class="comm-loading">Could not load data.</div>`;
-  }
-}
-
-async function updateUI() {
-  const gate = document.getElementById("signin-gate");
-  gate.style.display = window.currentUser ? "none" : "flex";
-
-  loadLeaderboard();
-  await fetchBikes();
-  renderBikeRank("list-ridden",     "Ridden_Count",  "ride");
-  renderBikeRank("list-favourited", "Fav_Count",     "favourite");
-  renderBikeRank("list-wishlisted", "Wishlist_Count","wishlist");
-}
-
-window.addEventListener("bb-auth-change", updateUI);
-document.addEventListener("DOMContentLoaded", updateUI);
 </script>
 
-<style>
-/* ── Page-wide column — everything constrained to this width ──── */
-main {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 0 20px 80px;
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <p class="page-header-sub">The Road Bike Archive</p>
+    <h1 class="page-header-title">Bikes</h1>
+    <p class="page-header-tagline" id="header-tagline">Loading collection...</p>
+  </div>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="filter-top">
+        <div class="filter-left">
+          <span class="results-count" id="results-count">— bikes</span>
+          <div class="filters">
+          <button class="filter-btn active" data-filter="All">All</button>
+          <button class="filter-btn" data-filter="Road">Road</button>
+          <button class="filter-btn" data-filter="Gravel">Gravel</button>
+          <button class="filter-btn" data-filter="Triathlon">Triathlon</button>
+          <button class="filter-btn" data-filter="Time Trial">Time Trial</button>
+          <button class="filter-btn" data-filter="Track">Track</button>
+        </div>
+        </div>
+        <div class="filter-right">
+          <select id="sort-select">
+            <option value="newest">Newest</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-bottom">
+        <input type="text" class="search-bar" id="search-bar" placeholder="Search bikes, brands..." />
+      </div>
+    </div>
+
+    <!-- BIKE GRID -->
+    <div class="bike-grid" id="bike-grid">
+      <div class="loading-state" id="loading-state">Loading bikes...</div>
+    </div>
+
+  </main>
+
+  <!-- TOAST (needed by auth.js) -->
+  <div class="toast" id="toast"></div>
+
+  <!-- auth.js must come before the inline script -->
+  <script src="auth.js"></script>
+
+  <script>
+    // ================================================
+    // CONFIG
+    // ================================================
+    const SHEET_ID  = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
+    const API_KEY   = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
+    const RANGE     = 'Database!B2:W';
+    // ================================================
+
+    let allBikes = [];
+    let activeFilter = 'All';
+    let userActions  = {};  // { bikeId: { wishlist, ridden, fav } }
+
+    // Keep userActions in sync whenever an action fires on this or another page
+    window.addEventListener('bb-action-change', async () => {
+      userActions = await getUserActions();
+      updateGrid();
+    });
+
+    // Also refresh when user signs in/out
+    window.addEventListener('bb-auth-change', async () => {
+      userActions = await getUserActions();
+      updateGrid();
+    });
+
+    window.addEventListener('bb-auth-change', async () => {
+      userActions = await getUserActions();
+      updateGrid();
+    });
+
+    // --- FETCH FROM GOOGLE SHEETS ---
+    async function fetchBikes() {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+      try {
+        const res  = await fetch(url);
+        const data = await res.json();
+        const rows = data.values || [];
+
+        if (rows.length < 2) { showError('No bikes found in the database yet.'); return; }
+
+        const headers = rows[0].map(h => h.trim());
+        allBikes = rows.slice(1).map(row => {
+          const bike = {};
+          headers.forEach((header, i) => { bike[header] = row[i] || ''; });
+          return bike;
+        });
+
+        // Load user's existing actions before first render
+        userActions = await getUserActions();
+
+        updateGrid();
+        updateCount(allBikes.length);
+        document.getElementById('header-tagline').textContent = 'Every bike has a story — from pro peloton weapons to everyday favourites. Browse the archive.';
+
+      } catch (err) {
+        showError('Could not load bikes. Check your API key and Sheet sharing settings.');
+        console.error(err);
+      }
+    }
+
+    // --- BUILD A SINGLE CARD ---
+    function buildCard(bike) {
+  const id       = bike['ID']           || '';
+  const name     = bike['Name']         || 'Unnamed Bike';
+  const brand    = bike['Brand']        || '';
+  const year     = bike['Year']         || '';
+  const category = bike['Category']     || '';
+  const retail   = bike['Retail_Price'] || '';
+  const currency = bike['Currency']     || '';
+  const photo    = bike['Photo_1']      || '';
+
+  const imgHtml = photo
+    ? `<img src="${photo}" alt="${brand} ${name}" loading="lazy" onerror="this.src='https://placehold.co/300x200?text=No+Photo'">`
+    : `<img src="https://placehold.co/300x200?text=No+Photo" alt="${name}">`;
+
+  const priceDisplay = retail ? `${currency ? currency + ' ' : ''}${retail}` : '—';
+  const tagHtml = category ? `<span class="bike-tag">${category}</span>` : '';
+
+  // user state
+  const a = userActions[id] || {};
+  const favClass      = a.fav      ? 'active' : '';
+  const riddenClass   = a.ridden   ? 'active' : '';
+  const wishlistClass = a.wishlist ? 'active' : '';
+
+  return `
+    <a href="bike.html?id=${id}" class="bike-card">
+      <div class="bike-img">
+        ${imgHtml}
+        ${tagHtml}
+      </div>
+      <div class="bike-info">
+        <p class="bike-brand">${brand}</p>
+        <p class="bike-name">${name}</p>
+        <p class="bike-category">${category}${year ? ' · ' + year : ''}</p>
+        <div class="bike-bottom">
+          <span class="bike-price">${priceDisplay}</span>
+
+          <div class="bike-icons">
+
+            <!-- Favourite -->
+            <button
+              class="icon-btn ${favClass}"
+              title="Favourite"
+              onclick="event.preventDefault(); handleAction('${id}', '${name.replace(/'/g,"\\'")}', 'fav', this)">
+              ☆
+            </button>
+
+            <!-- Ridden -->
+            <button
+              class="icon-btn ${riddenClass}"
+              title="Ridden"
+              onclick="event.preventDefault(); handleAction('${id}', '${name.replace(/'/g,"\\'")}', 'ridden', this)">
+              ✓
+            </button>
+
+            <!-- Wishlist -->
+            <button
+              class="icon-btn ${wishlistClass}"
+              title="Wishlist"
+              onclick="event.preventDefault(); handleAction('${id}', '${name.replace(/'/g,"\\'")}', 'wishlist', this)">
+              ▢
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </a>`;
 }
 
-/* ── Community Stats Bar ──────────────────────────────────────── */
-.community-stats-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  margin: 0 0 2rem;
-  padding: 1.25rem 0;
-  border-top: 1px solid var(--border, #e5e5e5);
-  border-bottom: 1px solid var(--border, #e5e5e5);
-}
+    // CHANGED: wrapper so the button can update its own visual state immediately
+    async function handleAction(bikeId, bikeName, action, btn) {
+      const newState = await toggleAction(bikeId, bikeName, action);
+      if (newState === true)  btn.classList.add('active');
+      if (newState === false) btn.classList.remove('active');
+      // Also update userActions cache
+      if (!userActions[bikeId]) userActions[bikeId] = {};
+      userActions[bikeId][action] = newState;
+    }
 
-.stat-block {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.2rem;
-  padding: 0 1.2rem;
-  flex: 1;
-}
+    // --- FILTER + SEARCH + SORT + RENDER ---
+    function updateGrid() {
+      const searchTerm = document.getElementById('search-bar').value.toLowerCase().trim();
+      const sortVal    = document.getElementById('sort-select').value;
 
-.stat-num {
-  font-size: 1.4rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
+      let filtered = allBikes.filter(bike => {
+        const matchFilter = activeFilter === 'All' ||
+          (bike['Category'] || '').toLowerCase() === activeFilter.toLowerCase();
+        const matchSearch = !searchTerm ||
+          (bike['Name']     || '').toLowerCase().includes(searchTerm) ||
+          (bike['Brand']    || '').toLowerCase().includes(searchTerm) ||
+          (bike['Category'] || '').toLowerCase().includes(searchTerm);
+        return matchFilter && matchSearch;
+      });
 
-.stat-label {
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  opacity: 0.45;
-  white-space: nowrap;
-}
+      if (sortVal === 'newest') {
+        filtered.sort((a, b) => parseInt(b['Year'] || 0) - parseInt(a['Year'] || 0));
+      } else if (sortVal === 'price-asc') {
+        filtered.sort((a, b) => parseFloat(a['Retail_Price'] || 0) - parseFloat(b['Retail_Price'] || 0));
+      } else if (sortVal === 'price-desc') {
+        filtered.sort((a, b) => parseFloat(b['Retail_Price'] || 0) - parseFloat(a['Retail_Price'] || 0));
+      }
 
-.stat-divider {
-  width: 1px;
-  height: 2rem;
-  background: var(--border, #e5e5e5);
-  flex-shrink: 0;
-}
+      const grid = document.getElementById('bike-grid');
+      grid.innerHTML = filtered.length === 0
+        ? '<div class="loading-state">No bikes match your search.</div>'
+        : filtered.map(buildCard).join('');
 
-/* ── Sign-in nudge (inline, matching feed.html style) ─────────── */
-.comm-signin-nudge {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: #f5f5f5;
-  border-radius: 12px;
-  margin-bottom: 1.5rem;
-}
+      updateCount(filtered.length);
+    }
 
-.comm-signin-nudge .nudge-text {
-  flex: 1;
-  font-size: 0.8rem;
-  color: #888;
-  margin: 0;
-}
+    function updateCount(n) {
+      document.getElementById('results-count').textContent = `${n} bike${n !== 1 ? 's' : ''}`;
+    }
 
-.btn-google-small {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 14px;
-  border: 1.5px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
-  font-size: 0.78rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: border-color .15s, box-shadow .15s;
-  color: #111;
-  font-family: inherit;
-  white-space: nowrap;
-}
-.btn-google-small:hover { border-color: #aaa; box-shadow: 0 2px 8px rgba(0,0,0,.07); }
+    function showError(msg) {
+      document.getElementById('bike-grid').innerHTML = `<div class="loading-state">${msg}</div>`;
+      document.getElementById('header-tagline').textContent = 'Error loading collection';
+    }
 
-/* ── Tabs ─────────────────────────────────────────────────────── */
-.community-tabs {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 1.25rem;   /* space between tabs and first card */
-  flex-wrap: wrap;
-}
+    // --- EVENT LISTENERS ---
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        updateGrid();
+      });
+    });
 
-/* ── Leaderboard Cards ────────────────────────────────────────── */
-.leaderboard-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;              /* space between cards */
-  padding-top: 0.25rem;
-}
+    document.getElementById('search-bar').addEventListener('input', updateGrid);
+    document.getElementById('sort-select').addEventListener('change', updateGrid);
 
-.lb-card {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  padding: 0.9rem 1rem;
-  background: var(--card-bg, #fff);
-  border: 1px solid var(--border, #e5e5e5);
-  border-radius: 10px;
-  transition: box-shadow 0.15s;
-}
+    // --- INIT ---
+    fetchBikes();
+  </script>
 
-.lb-card:hover {
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-}
+  <style>
+    .loading-state {
+      grid-column: 1 / -1;
+      padding: 60px 0;
+      text-align: center;
+      color: #bbb;
+      font-size: 13px;
+    }
 
-.lb-card.lb-me {
-  border-color: var(--accent, #111);
-  background: var(--accent-soft, #f7f7f7);
-}
+    /* CHANGED: active state for icon buttons */
+    .bike-icons {
+      display: flex;
+      gap: 6px;
+    }
 
-/* Rank number */
-.lb-rank {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-muted, #bbb);
-  width: 1.2rem;
-  text-align: center;
-  flex-shrink: 0;
-}
+    .bike-icons .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
 
-/* Avatar — real image or initial fallback */
-.lb-avatar-wrap {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  overflow: hidden;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #eee;
-}
+      width: 24px;
+      height: 24px;
 
-.lb-avatar-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-.lb-avatar-initial {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #fff;
-  flex-shrink: 0;
-}
+      font-size: 16px;
+      line-height: 1;
+      color: #bbb;
 
-/* Name — left side, takes remaining space */
-.lb-info {
-  flex: 1;
-  min-width: 0;
-}
+      transition: all 0.15s ease;
+    }
 
-.lb-name {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: inherit;
-  text-decoration: none;
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+    /* Hover */
+    .bike-icons .icon-btn:hover {
+      color: #111;
+      transform: translateY(-1px);
+    }
 
-.lb-name:hover { text-decoration: underline; }
-
-/* Stats — right side, 3 columns */
-.lb-mini-stats {
-  display: flex;
-  gap: 1.1rem;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.lb-mini-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-}
-
-.lb-mini-num {
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.1;
-}
-
-.lb-mini-label {
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  opacity: 0.4;
-  line-height: 1.3;
-}
-
-/* you badge */
-.you-badge {
-  font-size: 0.6rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  background: #111;
-  color: #fff;
-  padding: 1px 5px;
-  border-radius: 4px;
-  vertical-align: middle;
-  margin-left: 4px;
-}
-
-/* ── Responsive ──────────────────────────────────────────────── */
-@media (max-width: 600px) {
-  .community-stats-bar { overflow-x: auto; }
-  .stat-block { padding: 0 0.8rem; }
-  .lb-mini-stats { gap: 0.75rem; }
-  .lb-mini-num { font-size: 0.9rem; }
-}
-</style>
+    /* Active state */
+    .bike-icons .icon-btn.active {
+      color: #c40000;
+      background: rgba(196, 0, 0, 0.08);
+      border-radius: 6px;
+    }
+  </style>
 
 </body>
 </html>
