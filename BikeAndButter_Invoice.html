@@ -302,6 +302,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; background: #f0f0ee
       <button class="load-btn" onclick="loadInvoice()">Load</button>
     </div>
     <div id="loadStatus" style="font-size:11px;color:#666;margin-top:5px;min-height:13px;"></div>
+    <button class="load-btn" style="width:100%;margin-top:8px;height:auto;padding:8px;" onclick="newInvoice()">+ New Invoice</button>
   </div>
 
   <div class="section">
@@ -369,7 +370,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; background: #f0f0ee
 
 <script>
 // ── CONFIG ──
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyNMIV4GVtQh6QzXwELSxiCizyA2ZqvpBjlKV8i9UVd41ts2l9qlDW0hqhINrnxRF6Z/exec";
+const WEB_APP_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
 
 // ── STATE ──
 let items=[], invDiscs=[], uid=1, editorVisible=true, isRevision=false;
@@ -394,8 +395,14 @@ const HDR1=220, HDRCONT=50, TBL_HEAD=34, ROW_H=23, TOTALS_H=85, REM_BASE=36, REM
   } else {
     await fetchNextInvoiceNumber();
   }
-  ["invNum","invRev","invDate","custName","custAddr1","custAddr2","custPostal","remarks"]
+  ["invRev","invDate","custName","custAddr1","custAddr2","custPostal","remarks"]
     .forEach(id=>document.getElementById(id).addEventListener("input",renderInvoice));
+  // If user manually types in invNum, treat as fresh (not a loaded revision)
+  document.getElementById("invNum").addEventListener("input",()=>{
+    isRevision=false;
+    document.getElementById("invRev").value="";
+    renderInvoice();
+  });
   addItem();
   window.addEventListener("resize",()=>{ isMobile=window.innerWidth<=768; scaleInvoice(); });
   scaleInvoice();
@@ -448,9 +455,36 @@ async function fetchNextInvoiceNumber() {
   try {
     const r=await fetch(WEB_APP_URL+"?action=getNextNumber");
     const d=await r.json();
-    if(d.ok){ document.getElementById("invNum").value=d.invoiceNo; isRevision=false; renderInvoice(); setStatus("green","Connected — next: "+d.invoiceNo); }
-    else setStatus("red","Error: "+d.error);
+    if(d.ok){
+      document.getElementById("invNum").value=d.invoiceNo;
+      document.getElementById("invRev").value="";
+      isRevision=false;
+      renderInvoice();
+      setStatus("green","Connected — next: "+d.invoiceNo);
+    } else setStatus("red","Error: "+d.error);
   } catch(e){ setStatus("red","Cannot reach Google. Check URL."); }
+}
+
+// Call this to reset the form for a brand new invoice
+async function newInvoice() {
+  if(!confirm("Start a new invoice? Unsaved changes will be lost.")) return;
+  items=[]; invDiscs=[]; uid=1; isRevision=false;
+  document.getElementById("invRev").value="";
+  document.getElementById("invDate").value=new Date().toISOString().split("T")[0];
+  document.getElementById("custName").value="";
+  document.getElementById("custAddr1").value="";
+  document.getElementById("custAddr2").value="";
+  document.getElementById("custPostal").value="";
+  document.getElementById("remarks").value="";
+  document.getElementById("loadInvNo").value="";
+  document.getElementById("loadStatus").textContent="";
+  addItem();
+  const hasUrl=WEB_APP_URL&&!WEB_APP_URL.includes("PASTE");
+  if(hasUrl) await fetchNextInvoiceNumber();
+  else {
+    const now=new Date(), mm=String(now.getMonth()+1).padStart(2,"0"), yy=String(now.getFullYear()).slice(-2);
+    document.getElementById("invNum").value="INVBB"+mm+yy+"001";
+  }
 }
 
 async function loadInvoice() {
@@ -475,7 +509,8 @@ function populateFromInvoice(inv,storedInvNo) {
   document.getElementById("invNum").value=base;
   const er=storedInvNo.match(/-(\d+)$/);
   document.getElementById("invRev").value="-"+(er?String(parseInt(er[1])+1).padStart(2,"0"):"01");
-  document.getElementById("invDate").value=inv.rawDate||new Date().toISOString().split("T")[0];
+  // Always set date to TODAY when loading an old invoice for revision
+  document.getElementById("invDate").value=new Date().toISOString().split("T")[0];
   document.getElementById("custName").value=inv.customerName||"";
   document.getElementById("custAddr1").value=inv.addr1||"";
   document.getElementById("custAddr2").value=inv.addr2||"";
@@ -592,8 +627,14 @@ function lineGross(it){return it.qty*it.price;}
 function lineDiscount(it){return it.discs.reduce((s,d)=>s+discAmt(d,lineGross(it)),0);}
 function lineTotal(it){return Math.max(0,lineGross(it)-lineDiscount(it));}
 function calcGrand(){
-  let r=items.reduce((s,i)=>s+lineTotal(i),0);
-  invDiscs.forEach(d=>{r=Math.max(0,r-discAmt(d,r));});
+  const subtotal=items.reduce((s,i)=>s+lineTotal(i),0);
+  let r=subtotal;
+  invDiscs.forEach(d=>{
+    // For % discounts, always apply against the original subtotal (not running)
+    // For fixed discounts, subtract directly
+    const amt = d.type==="pct" ? subtotal*Math.min(100,d.value)/100 : Math.min(r,d.value);
+    r=Math.max(0,r-amt);
+  });
   return r;
 }
 
@@ -726,7 +767,7 @@ function renderInvoice(){
   const subtotal=items.reduce((s,i)=>s+lineTotal(i),0);
   let running=subtotal;let invDiscHTML="";
   invDiscs.forEach(d=>{
-    const amt=discAmt(d,running);running=Math.max(0,running-amt);
+    const amt=d.type==="pct"?subtotal*Math.min(100,d.value)/100:Math.min(running,d.value);running=Math.max(0,running-amt);
     const suffix=d.type==="pct"?` (${d.value}%)`:"";
     invDiscHTML+=`<div class="tot-row disc"><span>${esc(d.label)||"Discount"}${suffix}</span><span>- $ ${fmt(amt)}</span></div>`;
   });
