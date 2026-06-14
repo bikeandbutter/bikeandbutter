@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -15,16 +14,12 @@
   <meta name="description" content="Get in touch with the Bike & Butter team. We'd love to hear from you." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://bikeandbutter.com/contact.html" />
-
-  <!-- Open Graph (WhatsApp, Telegram, Facebook previews) -->
   <meta property="og:type"        content="website" />
   <meta property="og:url"         content="https://bikeandbutter.com/contact.html" />
   <meta property="og:title"       content="Contact Us — Bike & Butter" />
   <meta property="og:description" content="Get in touch with the Bike & Butter team. We'd love to hear from you." />
   <meta property="og:image"       content="https://bikeandbutter.com/og-image.png" />
   <meta property="og:site_name"   content="Bike &amp; Butter" />
-
-  <!-- Twitter card -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:title"       content="Contact Us — Bike & Butter" />
   <meta name="twitter:description" content="Get in touch with the Bike & Butter team. We'd love to hear from you." />
@@ -32,176 +27,41 @@
   <link rel="stylesheet" href="style.css" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    .contact-layout {
-      max-width: 560px;
-      margin: 0 auto;
-      padding: 48px 24px 80px;
-    }
-
+    .contact-layout { max-width: 560px; margin: 0 auto; padding: 48px 24px 80px; }
     .contact-header { margin-bottom: 36px; }
-
-    .contact-header-sub {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: #bbb;
-      margin-bottom: 10px;
-    }
-
-    .contact-header-title {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: #111;
-      margin-bottom: 8px;
-    }
-
-    .contact-header-desc {
-      font-size: 13px;
-      color: #999;
-      line-height: 1.6;
-    }
-
-    .enquiry-tabs {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 28px;
-    }
-
-    .enquiry-tab {
-      background: none;
-      border: 1px solid #e0e0e0;
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 12px;
-      cursor: pointer;
-      color: #555;
-      font-family: inherit;
-      transition: all 0.15s;
-    }
-
+    .contact-header-sub { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #bbb; margin-bottom: 10px; }
+    .contact-header-title { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; color: #111; margin-bottom: 8px; }
+    .contact-header-desc { font-size: 13px; color: #999; line-height: 1.6; }
+    .enquiry-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 28px; }
+    .enquiry-tab { background: none; border: 1px solid #e0e0e0; border-radius: 20px; padding: 6px 14px; font-size: 12px; cursor: pointer; color: #555; font-family: inherit; transition: all 0.15s; }
     .enquiry-tab:hover { border-color: #111; color: #111; }
     .enquiry-tab.active { background: #111; color: #fff; border-color: #111; }
-
-    .contact-form {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
+    .contact-form { display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
-
-    .form-group label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #999;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 13px;
-      font-family: inherit;
-      color: #111;
-      background: #fafafa;
-      outline: none;
-      transition: border-color 0.15s, background 0.15s;
-      width: 100%;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus { border-color: #111; background: #fff; }
-
-    .form-group input::placeholder,
-    .form-group textarea::placeholder { color: #bbb; }
-
+    .form-group label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: #999; }
+    .form-group input, .form-group select, .form-group textarea { border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px 12px; font-size: 13px; font-family: inherit; color: #111; background: #fafafa; outline: none; transition: border-color 0.15s, background 0.15s; width: 100%; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #111; background: #fff; }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: #bbb; }
     .form-group textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
-
     .offer-field { display: none; }
     .offer-field.visible { display: flex; }
     .bike-field { display: none; }
     .bike-field.visible { display: flex; }
-
-    .prefill-banner {
-      background: #f5f5f5;
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 12px;
-      color: #555;
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
+    .prefill-banner { background: #f5f5f5; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #555; display: none; align-items: center; justify-content: space-between; gap: 8px; }
     .prefill-banner.visible { display: flex; }
     .prefill-banner strong { color: #111; }
-
-    .prefill-clear {
-      background: none;
-      border: none;
-      font-size: 11px;
-      color: #bbb;
-      cursor: pointer;
-      padding: 0;
-      font-family: inherit;
-    }
-
+    .prefill-clear { background: none; border: none; font-size: 11px; color: #bbb; cursor: pointer; padding: 0; font-family: inherit; }
     .prefill-clear:hover { color: #111; }
-
-    .submit-btn {
-      background: #111;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 24px;
-      font-size: 13px;
-      font-family: inherit;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.15s;
-      margin-top: 4px;
-    }
-
+    .submit-btn { background: #111; color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 13px; font-family: inherit; font-weight: 600; cursor: pointer; transition: opacity 0.15s; margin-top: 4px; }
     .submit-btn:hover { opacity: 0.85; }
     .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .success-box {
-      display: none;
-      background: #f5f5f5;
-      border-radius: 12px;
-      padding: 40px 32px;
-      text-align: center;
-      margin-top: 24px;
-    }
-
+    .success-box { display: none; background: #f5f5f5; border-radius: 12px; padding: 40px 32px; text-align: center; margin-top: 24px; }
     .success-box.visible { display: block; }
     .success-icon { font-size: 28px; margin-bottom: 12px; }
     .success-title { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 6px; }
     .success-desc { font-size: 13px; color: #999; line-height: 1.6; }
-
-    .success-back {
-      display: inline-block;
-      margin-top: 20px;
-      font-size: 12px;
-      color: #555;
-      text-decoration: underline;
-      cursor: pointer;
-    }
-
+    .success-back { display: inline-block; margin-top: 20px; font-size: 12px; color: #555; text-decoration: underline; cursor: pointer; }
     .error-msg { font-size: 12px; color: #e00000; display: none; }
     .error-msg.visible { display: block; }
   </style>
@@ -243,7 +103,7 @@
 </nav>
 
 <div class="mobile-menu" id="mobile-menu">
-  <a href="partners/8lien/8lien.html" style="color:#ac9497;font-weight:600;">8LIEN — Partner</a>
+  <a href="partners/8lien/8lien.html" style="color:#ff677e;font-weight:600;">8LIEN — Partner</a>
   <a href="partners/RSTRI/RSTRI.html" style="color:#f5c518;font-weight:600;">RSTRI — Partner</a>
   <a href="partners/EVR/EVR.html" style="color:#F26522;font-weight:600;">EVR — Partner</a>
   <a href="marketplace.html">Marketplace</a>
@@ -271,14 +131,10 @@ document.querySelectorAll('#mobile-menu a').forEach(function(a) {
 </div>
 
 <div class="contact-layout">
-
   <div class="contact-header">
     <p class="contact-header-sub">Get in touch</p>
     <h1 class="contact-header-title">Contact Us</h1>
-    <p class="contact-header-desc">
-      Questions, offers, or just want to talk bikes — we're here.
-      We'll get back to you within 24 hours.
-    </p>
+    <p class="contact-header-desc">Questions, offers, or just want to talk bikes — we're here. We'll get back to you within 24 hours.</p>
   </div>
 
   <div class="prefill-banner" id="prefill-banner">
@@ -295,7 +151,6 @@ document.querySelectorAll('#mobile-menu a').forEach(function(a) {
 
   <div id="form-wrapper">
     <div class="contact-form" id="contact-form">
-
       <div class="form-row">
         <div class="form-group">
           <label>Your Name *</label>
@@ -306,45 +161,33 @@ document.querySelectorAll('#mobile-menu a').forEach(function(a) {
           <input type="email" id="field-email" placeholder="jane@email.com" />
         </div>
       </div>
-
       <div class="form-group">
         <label>Phone Number <span style="color:#bbb;font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
         <input type="tel" id="field-phone" placeholder="+65 9123 4567" />
       </div>
-
       <div class="form-group bike-field" id="bike-field">
         <label>Which Bike?</label>
         <input type="text" id="field-bike" placeholder="e.g. Specialized Tarmac SL8" />
       </div>
-
       <div class="form-group offer-field" id="offer-field">
         <label>Your Offer</label>
         <input type="text" id="field-offer" placeholder="e.g. SGD 8,500" />
       </div>
-
       <div class="form-group">
         <label id="message-label">Message *</label>
         <textarea id="field-message" placeholder="Tell us what you're looking for..."></textarea>
       </div>
-
       <span class="error-msg" id="error-msg">Please fill in all required fields.</span>
-
-      <button class="submit-btn" id="submit-btn" onclick="submitForm()">
-        Send Message
-      </button>
-
+      <button class="submit-btn" id="submit-btn" onclick="submitForm()">Send Message</button>
     </div>
 
     <div class="success-box" id="success-box">
       <div class="success-icon">✓</div>
       <div class="success-title">Message sent!</div>
-      <div class="success-desc">
-        Thanks for reaching out. We'll get back to you at your email address within 24 hours.
-      </div>
+      <div class="success-desc">Thanks for reaching out. We'll get back to you at your email address within 24 hours.</div>
       <span class="success-back" onclick="resetForm()">Send another message</span>
     </div>
   </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
@@ -355,7 +198,6 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyD5oir2beAnURC3hy56
 let activeType    = 'General Enquiry';
 let prefillBikeId = null;
 
-// Pre-fill name/email if user is signed in
 function prefillFromAuth() {
   if (!window.currentUser) return;
   const nameEl  = document.getElementById('field-name');
@@ -372,14 +214,12 @@ function readUrlParams() {
   const bikeName = params.get('bike');
   const bikeId   = params.get('id');
   const type     = params.get('type');
-
   if (bikeName) {
     document.getElementById('field-bike').value = decodeURIComponent(bikeName);
     document.getElementById('prefill-bike-name').textContent = decodeURIComponent(bikeName);
     document.getElementById('prefill-banner').classList.add('visible');
     prefillBikeId = bikeId || null;
   }
-
   if (type) setActiveType(decodeURIComponent(type));
 }
 
@@ -402,15 +242,13 @@ function setActiveType(type) {
   const showBike = ['Make an Offer', 'Ask a Question', 'Request a Viewing'].includes(type);
   document.getElementById('bike-field').classList.toggle('visible', showBike);
   document.getElementById('offer-field').classList.toggle('visible', type === 'Make an Offer');
-
   const placeholders = {
-    'General Enquiry':   'Tell us what you\'re looking for...',
+    'General Enquiry':   "Tell us what you're looking for...",
     'Make an Offer':     'Any additional details about your offer...',
     'Ask a Question':    'What would you like to know about this bike?',
     'Request a Viewing': 'Let us know your preferred date and time...',
   };
   document.getElementById('field-message').placeholder = placeholders[type] || '';
-
   const labels = {
     'Make an Offer':     'Additional Notes',
     'Request a Viewing': 'Preferred Date & Time *',
@@ -429,30 +267,17 @@ function submitForm() {
       const message = document.getElementById('field-message').value.trim();
       const errorEl = document.getElementById('error-msg');
       const btn     = document.getElementById('submit-btn');
-
-      if (!name || !email || !message) {
-        errorEl.classList.add('visible');
-        return;
-      }
-
+      if (!name || !email || !message) { errorEl.classList.add('visible'); return; }
       errorEl.classList.remove('visible');
       btn.disabled    = true;
       btn.textContent = 'Sending...';
-
       const timestamp = new Date().toLocaleString('en-SG', { timeZone: 'Asia/Singapore' });
-
       try {
         await fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode:   'no-cors',
-          body:   JSON.stringify({
-            timestamp, name, email, phone,
-            type: activeType, bike, offer, message,
-            bikeId: prefillBikeId || ''
-          })
+          method: 'POST', mode: 'no-cors',
+          body: JSON.stringify({ timestamp, name, email, phone, type: activeType, bike, offer, message, bikeId: prefillBikeId || '' })
         });
       } catch (err) { console.error(err); }
-
       document.getElementById('contact-form').style.display = 'none';
       document.getElementById('enquiry-tabs').style.display = 'none';
       document.getElementById('success-box').classList.add('visible');
@@ -463,7 +288,6 @@ function submitForm() {
 }
 
 function resetForm() { location.reload(); }
-
 readUrlParams();
 </script>
 

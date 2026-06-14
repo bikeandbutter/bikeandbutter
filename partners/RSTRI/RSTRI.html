@@ -74,6 +74,18 @@
   <a href="../../contact.html">Contact Us</a>
   </div>
 
+  <script src="../../auth.js"></script>
+  <script>
+  document.getElementById("hamburger").addEventListener("click", function() {
+    document.getElementById("mobile-menu").classList.toggle("open");
+  });
+  document.querySelectorAll("#mobile-menu a").forEach(function(a) {
+    a.addEventListener("click", function() {
+      document.getElementById("mobile-menu").classList.remove("open");
+    });
+  });
+  </script>
+
   <!-- ── Hero ──────────────────────────────────────────────────────── -->
   <section class="rs-hero">
     <div class="rs-hero-visual">
