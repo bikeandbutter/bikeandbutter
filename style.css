@@ -941,6 +941,7 @@ nav {
   .mobile-menu { display: none !important; }
 }
 
+.nav-links { align-items: center; }
 .nav-partners-wrap { position: relative; }
 .nav-partners-trigger { display:flex; align-items:center; gap:4px; font-size:13px; color:#555; cursor:pointer; padding-bottom:4px; transition:color 0.15s; }
 .nav-partners-trigger:hover { color:#111; }
