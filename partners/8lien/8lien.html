@@ -24,6 +24,9 @@
     gtag('config', 'G-ZQJRHN886Z');
   </script>
 
+  <!-- ADDED: Google Sign-In client (required by auth.js) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <link rel="stylesheet" href="8lien.css" />
 
   <style>
@@ -554,7 +557,7 @@
     <div class="nav-right">
       <div class="nav-links">
         <div class="nav-partners-wrap">
-          <a href="#">Partners
+          <a href="#">Our Brands
             <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -579,9 +582,9 @@
   </nav>
 
   <div class="mobile-menu" id="mobile-menu">
-    <a href="8lien.html" style="color:#ff677e;font-weight:600;">8LIEN — Partner</a>
-    <a href="../RSTRI/RSTRI.html" style="color:#f5c518;font-weight:600;">RSTRI — Partner</a>
-    <a href="../EVR/EVR.html" style="color:#F26522;font-weight:600;">EVR — Partner</a>
+    <a href="8lien.html" style="color:#ff677e;font-weight:600;">8LIEN 
+    <a href="../RSTRI/RSTRI.html" style="color:#f5c518;font-weight:600;">RSTRI 
+    <a href="../EVR/EVR.html" style="color:#F26522;font-weight:600;">EVR 
     <a href="../../marketplace.html">Marketplace</a>
     <a href="../../bikeindex.html">Bikes</a>
     <a href="../../community.html">Community</a>
@@ -1273,6 +1276,12 @@
 
     </div>
   </div>
+
+  <!-- Toast (used by auth.js for sign-in / action notifications) -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ADDED: auth.js — populates #auth-area with Sign In / user chip -->
+  <script src="../../auth.js"></script>
 
   <!-- ── Scripts ───────────────────────────────────────────────────── -->
   <script>
