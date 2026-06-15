@@ -373,7 +373,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; background: #f0f0ee
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyNMIV4GVtQh6QzXwELSxiCizyA2ZqvpBjlKV8i9UVd41ts2l9qlDW0hqhINrnxRF6Z/exec";
 
 // ── STATE ──
-let items=[], invDiscs=[], uid=1, editorVisible=true, isRevision=false;
+let items=[], invDiscs=[], uid=1, editorVisible=true, isRevision=false, savedInvoiceNo='';
 const ALPHA="abcdefghijklmnopqrstuvwxyz";
 let isMobile = window.innerWidth <= 768;
 let mobileView = "editor"; // "editor" or "preview"
@@ -468,7 +468,7 @@ async function fetchNextInvoiceNumber() {
 // Call this to reset the form for a brand new invoice
 async function newInvoice() {
   if(!confirm("Start a new invoice? Unsaved changes will be lost.")) return;
-  items=[]; invDiscs=[]; uid=1; isRevision=false;
+  items=[]; invDiscs=[]; uid=1; isRevision=false; savedInvoiceNo='';
   document.getElementById("invRev").value="";
   document.getElementById("invDate").value=new Date().toISOString().split("T")[0];
   document.getElementById("custName").value="";
@@ -506,6 +506,7 @@ async function loadInvoice() {
 function populateFromInvoice(inv,storedInvNo) {
   const base=(inv.invoiceNo||storedInvNo.replace(/-\d+$/,"")).trim();
   isRevision=true;
+  savedInvoiceNo=base; // mark as existing so server knows it's a revision
   document.getElementById("invNum").value=base;
   const er=storedInvNo.match(/-(\d+)$/);
   document.getElementById("invRev").value="-"+(er?String(parseInt(er[1])+1).padStart(2,"0"):"01");
@@ -528,7 +529,9 @@ async function callApi(body) {
 
 function buildPayload() {
   return {
-    invoiceNo:(document.getElementById("invNum").value||"").trim(),
+    // savedInvoiceNo is blank for new invoices, set after first successful save
+    // The server uses this to decide new vs revision — never trust the display field
+    savedInvoiceNo: savedInvoiceNo,
     revSuffix:(document.getElementById("invRev").value||"").trim(),
     isRevision, rawDate:document.getElementById("invDate").value,
     date:fmtDate(document.getElementById("invDate").value),
@@ -548,21 +551,13 @@ async function saveOnly() {
   try {
     const d=await callApi({action:"saveInvoice",invoice:buildPayload()});
     if(d.ok){
-      // Always update DOM with server-confirmed number
-      const assignedBase = d.invoiceNo.replace(/-.+$/,"");
-      document.getElementById("invNum").value = assignedBase;
-      // IMPORTANT: after saving, mark as revision so re-saving doesn't increment counter again
-      // But track separately whether THIS save was a new invoice or revision
-      const wasNewInvoice = !isRevision;
-      if(wasNewInvoice){
-        // New invoice was just created and assigned a number
-        // Set isRevision=true so subsequent saves of THIS invoice don't re-increment
-        isRevision = true;
-      }
+      // Server confirmed — store the assigned number as ground truth
+      savedInvoiceNo = d.invoiceNo.replace(/-.+$/,""); // e.g. "INVBB0626006"
+      isRevision = true; // prevent re-incrementing on subsequent saves
+      document.getElementById("invNum").value = savedInvoiceNo;
       renderInvoice();
       await new Promise(r=>setTimeout(r,200));
       setStatus("green","Saved: "+d.invoiceNo);
-      // Pass confirmed server number — never derive from DOM inside savePdfToDrive
       await savePdfToDrive(d.invoiceNo);
     } else setStatus("red","Save failed: "+d.error);
   } catch(e){setStatus("red","Network error saving.");}
