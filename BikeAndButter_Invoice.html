@@ -548,13 +548,19 @@ async function saveOnly() {
   try {
     const d=await callApi({action:"saveInvoice",invoice:buildPayload()});
     if(d.ok){
-      if(!isRevision){
-        // Update DOM with server-assigned number BEFORE saving PDF
-        document.getElementById("invNum").value=d.invoiceNo.replace(/-.+$/,"");
-        isRevision=true;
-        renderInvoice();
-        await new Promise(r=>setTimeout(r,200));
+      // Always update DOM with server-confirmed number
+      const assignedBase = d.invoiceNo.replace(/-.+$/,"");
+      document.getElementById("invNum").value = assignedBase;
+      // IMPORTANT: after saving, mark as revision so re-saving doesn't increment counter again
+      // But track separately whether THIS save was a new invoice or revision
+      const wasNewInvoice = !isRevision;
+      if(wasNewInvoice){
+        // New invoice was just created and assigned a number
+        // Set isRevision=true so subsequent saves of THIS invoice don't re-increment
+        isRevision = true;
       }
+      renderInvoice();
+      await new Promise(r=>setTimeout(r,200));
       setStatus("green","Saved: "+d.invoiceNo);
       // Pass confirmed server number — never derive from DOM inside savePdfToDrive
       await savePdfToDrive(d.invoiceNo);
@@ -595,11 +601,10 @@ async function savePdfToDrive(fullInvNo) {
       pdf.addImage(pageCanvas.toDataURL("image/jpeg",0.95),"JPEG",0,0,pdfW,pdfH);
     }
     const base64=pdf.output("datauristring").split(",")[1];
-    // Use the server-assigned fullInvNo passed in — never read from DOM here
-    // Strip revision suffix to get base for deletion (e.g. "INVBB0626003" from "INVBB0626003-01")
     const custName=(document.getElementById("custName").value||"Customer").trim();
     const filename=fullInvNo+" - "+custName+".pdf";
     const baseInvNo=fullInvNo.replace(/-\d+$/, "");
+    console.log("[PDF SAVE] fullInvNo:", fullInvNo, "filename:", filename, "baseInvNo:", baseInvNo);
     const result=await callApi({action:"savePdf",pdfBase64:base64,filename,baseInvNo});
     if(result.ok) setStatus("green","PDF saved to Drive: "+result.filename);
     else setStatus("red","Drive upload failed: "+result.error);
