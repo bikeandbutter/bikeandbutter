@@ -549,11 +549,14 @@ async function saveOnly() {
   if(!hasUrl){setStatus("yellow","Offline — Google not connected");return;}
   setStatus("spin","Saving to Google Sheet...");
   try {
-    const d=await callApi({action:"saveInvoice",invoice:buildPayload()});
+    const _p=buildPayload();
+    console.log("[SAVE] savedInvoiceNo=",_p.savedInvoiceNo,"isRevision=",_p.isRevision);
+    const d=await callApi({action:"saveInvoice",invoice:_p});
     if(d.ok){
-      // Server confirmed — store the assigned number as ground truth
-      savedInvoiceNo = d.invoiceNo.replace(/-.+$/,""); // e.g. "INVBB0626006"
-      isRevision = true; // prevent re-incrementing on subsequent saves
+      console.log("[SAVE] server returned:", d.invoiceNo);
+      savedInvoiceNo = d.invoiceNo.replace(/-.+$/, "");
+      console.log("[SAVE] savedInvoiceNo set to:", savedInvoiceNo);
+      isRevision = true;
       document.getElementById("invNum").value = savedInvoiceNo;
       renderInvoice();
       await new Promise(r=>setTimeout(r,200));
