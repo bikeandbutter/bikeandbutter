@@ -955,3 +955,13 @@ nav {
 .nav-partners-dropdown a:hover { background:#f5f5f5; color:#111; }
 .nav-partner-dot { display:inline-block; width:6px; height:6px; border-radius:50%; flex-shrink:0; }
 @media (max-width:768px) { .nav-partners-wrap { display:none; } }
+
+.nav-links a,
+.nav-signin,
+#auth-area a {
+  line-height: 1;
+}
+.nav-partners-trigger {
+  line-height: 1;
+  padding-bottom: 0;
+}

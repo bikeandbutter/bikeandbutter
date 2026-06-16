@@ -91,6 +91,7 @@ img { display: block; width: 100%; }
 
 .partner-nav .nav-links {
   display: flex;
+  align-items: center;
   gap: 24px;
 }
 
@@ -125,7 +126,6 @@ img { display: block; width: 100%; }
   color: var(--pink);
   font-weight: 600;
   cursor: pointer;
-  padding-bottom: 4px;
 }
 
 .nav-partners-wrap > a svg {
@@ -189,6 +189,72 @@ img { display: block; width: 100%; }
   background: var(--pink);
   flex-shrink: 0;
 }
+
+/* ── Nav vertical alignment fix ───────────────────────────────────
+   Normalizes line-height so "Our Brands", the other nav links, and
+   Sign In / user chip all sit on the same baseline.
+   ─────────────────────────────────────────────────────────────── */
+.partner-nav .nav-links a,
+.partner-nav .nav-signin,
+#auth-area a {
+  line-height: 1;
+}
+.nav-partners-wrap > a {
+  line-height: 1;
+}
+
+/* ── User chip (signed-in) — dark theme ─────────────────────────── */
+.user-chip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--black-2);
+  cursor: pointer;
+}
+.user-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+.user-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--white);
+  white-space: nowrap;
+}
+.user-menu {
+  position: absolute;
+  top: 42px;
+  right: 0;
+  background: var(--black-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px;
+  min-width: 120px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  display: none;
+  z-index: 200;
+}
+.user-chip.open .user-menu { display: block; }
+.user-menu a {
+  display: block;
+  font-size: 12px;
+  color: #ff8a8a;
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+.user-menu a:hover { background: var(--white-faint); }
 
 /* ── Hero ──────────────────────────────────────────────────────── */
 .hero {
@@ -328,14 +394,28 @@ img { display: block; width: 100%; }
   border-color: rgba(255,255,255,0.3);
 }
 
-/* ── Distributor badge strip ───────────────────────────────────── */
+/* ── Distributor badge strip (auto-scrolling) ──────────────────── */
 .badge-strip {
   background: var(--pink);
-  padding: 14px 60px;
-  display: flex;
+  overflow: hidden;
+  padding: 14px 0;
+}
+
+.badge-strip-track {
+  display: inline-flex;
   align-items: center;
   gap: 40px;
-  overflow-x: auto;
+  padding-left: 60px;
+  animation: badge-scroll 26s linear infinite;
+}
+
+.badge-strip:hover .badge-strip-track {
+  animation-play-state: paused;
+}
+
+@keyframes badge-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .badge-strip-item {
@@ -830,7 +910,7 @@ img { display: block; width: 100%; }
   .hero-content { padding: 0 24px 48px; }
   .hero-title { font-size: 56px; }
 
-  .badge-strip { padding: 12px 24px; }
+  .badge-strip-track { padding-left: 24px; }
 
   .section { padding: 64px 24px; }
 
