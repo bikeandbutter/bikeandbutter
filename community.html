@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Perf: preconnect -->
+  <link rel="preconnect" href="https://sheets.googleapis.com">
+  <link rel="preconnect" href="https://accounts.google.com">
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://www.googleapis.com">
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
 <script>
@@ -174,7 +179,7 @@ document.querySelectorAll('#mobile-menu a').forEach(function(a) {
 const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyD5oir2beAnURC3hy56VCA4vIaJXuu6KoGlNmF03cyXEzqSwbAzqZOH9yiKdYGlEYQ/exec";
 const SHEET_ID    = "19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0";
 const API_KEY     = "AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8";
-const DB_RANGE    = "Database!B2:Z";
+const DB_RANGE    = "Database!B2:I";
 
 let allBikes = [];
 

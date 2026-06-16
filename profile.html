@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Perf: preconnect -->
+  <link rel="preconnect" href="https://sheets.googleapis.com">
+  <link rel="preconnect" href="https://accounts.google.com">
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://www.googleapis.com">
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
 <script>
@@ -349,7 +354,7 @@ async function loadUserFeed() {
 
 async function loadBikeMeta() {
   try {
-    const url  = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Database!B2:Z?key=${API_KEY}`;
+    const url  = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Database!B2:I?key=${API_KEY}`;
     const res  = await fetch(url);
     const data = await res.json();
     const rows = data.values || [];
