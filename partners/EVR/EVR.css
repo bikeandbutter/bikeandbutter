@@ -670,8 +670,13 @@ img { display: block; width: 100%; }
   color: var(--orange); text-transform: uppercase;
 }
 .pad-hours {
-  display: inline-flex; align-items: center; gap: 4px;
   font-family: var(--font-mono); font-size: 10px; color: var(--orange);
+  font-weight: 600; letter-spacing: 0.5px; white-space: nowrap;
+  text-align: center;
+}
+.pad-table th:nth-child(5),
+.pad-table td:nth-child(5) {
+  text-align: center;
 }
 
 /* ── How to Order ──────────────────────────────────────────────── */
