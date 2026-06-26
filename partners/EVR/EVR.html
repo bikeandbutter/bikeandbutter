@@ -597,15 +597,14 @@
     // Add a SKU here once you've run prepare_images.py for it.
     // imgSrc(sku) returns the path to variation _1 (the card thumbnail).
     const SKUS_WITH_IMAGES = new Set([
-      '913', '905B', '2618', 'LX002', '2617', 'XT002', 'LX008',
-      '906', '912', 'LX007', 'KX1154', '2501', '905S', 'KXH2608',
-      '901', 'KXH2626', '902X6', '902', 'LX012', '2406', '8102',
-      '2510', '2405', '2511', '2521', 'EV1001', 'EH1001'
+      // populated automatically — add SKU strings as you upload batches
+      // e.g. '913', '905B', '2618' ...
     ]);
 
-    function imgSrc(sku) {
+    function imgSrc(sku, varIdx) {
       if (!SKUS_WITH_IMAGES.has(sku)) return null;
-      return `photos/${sku}_1.webp`;
+      const v = varIdx || 1;
+      return `photos/${sku}_${v}.webp`;
     }
 
     // ── Render grid ───────────────────────────────────────────────
@@ -724,11 +723,11 @@
       const swatch = document.getElementById('pdrawer-swatches');
       if (p.colours.length) {
         cBlock.style.display = '';
-        swatch.innerHTML = p.colours.map(c => 
+        swatch.innerHTML = p.colours.map((c, i) => 
           `<button class="pdrawer-swatch${c.label === selectedColour ? ' active' : ''}" 
             style="background:${c.hex}" 
             title="${c.label}"
-            onclick="selectColour('${c.label}', this)"></button>`
+            onclick="selectColour('${c.label}', ${i+1}, this)"></button>`
         ).join('');
         document.getElementById('pdrawer-colour-chosen').textContent = '— ' + selectedColour;
       } else { cBlock.style.display = 'none'; }
@@ -751,11 +750,21 @@
       document.body.style.overflow = 'hidden';
     }
 
-    function selectColour(label, btn) {
+    function selectColour(label, varIdx, btn) {
       selectedColour = label;
       document.querySelectorAll('.pdrawer-swatch').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById('pdrawer-colour-chosen').textContent = '— ' + label;
+
+      // Swap drawer image to the matching variation
+      const drawerImg = document.getElementById('pdrawer-img');
+      const drawerPh  = document.getElementById('pdrawer-img-ph');
+      const src = imgSrc(currentProduct.sku, varIdx);
+      if (src) {
+        drawerImg.src = src;
+        drawerImg.style.display = 'block';
+        drawerPh.style.display  = 'none';
+      }
     }
 
     function selectSize(size, btn) {
