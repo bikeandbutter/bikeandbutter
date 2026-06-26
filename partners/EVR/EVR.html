@@ -553,33 +553,115 @@
     // colours: array of {label, hex} — hex is display colour, label is the name
     // sizes: array of strings
     const PRODUCTS = [
-      { sku:'913',  name:'913 Aero Bottle',    cn:'913破风气动水壶',       range:'tech',     cat:'Bottle',      gender:null,   priceCNY:99,  colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Red',hex:'#e53935'},{label:'Blue',hex:'#1565c0'},{label:'Green',hex:'#2e7d32'},{label:'Orange',hex:'#f26522'},{label:'Yellow',hex:'#fbc02d'},{label:'Pink',hex:'#e91e8c'}], sizes:[] },
-      { sku:'905B', name:'905 Ice Bottle',      cn:'905保冰水壶',           range:'explore',  cat:'Bottle',      gender:null,   priceCNY:69,  colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Green',hex:'#2e7d32'},{label:'Red',hex:'#e53935'}], sizes:[] },
-      { sku:'2618', name:'You & Journey SS',    cn:'2618游由短袖女',         range:'discover', cat:'Jersey',      gender:'F',    priceCNY:278, colours:[{label:'Colourway A',hex:'#9c27b0'},{label:'Colourway B',hex:'#1565c0'},{label:'Colourway C',hex:'#2e7d32'}], sizes:['XS','S','M','L','XL'] },
-      { sku:'LX002',name:'LX002 Gloves',        cn:'LX002手套',             range:'explore',  cat:'Gloves',      gender:null,   priceCNY:99,  colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'},{label:'Green',hex:'#2e7d32'}], sizes:['S','M','L','XL'] },
-      { sku:'2617', name:'You & Journey SS',    cn:'2617游由短袖男',         range:'discover', cat:'Jersey',      gender:'M',    priceCNY:278, colours:[{label:'Colourway A',hex:'#9c27b0'},{label:'Colourway B',hex:'#1565c0'},{label:'Colourway C',hex:'#2e7d32'},{label:'Colourway D',hex:'#e53935'},{label:'Colourway E',hex:'#f26522'}], sizes:['XS','S','M','L','XL','XXL'] },
-      { sku:'XT002',name:'XT002 Shoe Cover',    cn:'XT002春秋鞋套',          range:'explore',  cat:'Shoe Cover',  gender:null,   priceCNY:139, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'}], sizes:['S/M','L/XL'] },
-      { sku:'LX008',name:'LX008 Gloves',        cn:'LX008手套',             range:'ascent',   cat:'Gloves',      gender:null,   priceCNY:99,  colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'}], sizes:['S','M','L','XL'] },
-      { sku:'906',  name:'Yarn Reflect Socks',  cn:'0906纱线反光袜',         range:'explore',  cat:'Socks',       gender:null,   priceCNY:49,  colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'}], sizes:['S (36-39)','L (40-44)'] },
-      { sku:'912',  name:'912 Bottle',          cn:'912骑行水壶',            range:'explore',  cat:'Bottle',      gender:null,   priceCNY:50,  colours:[{label:'Black A',hex:'#1a1a1a'},{label:'Black B',hex:'#2d2d2d'},{label:'White A',hex:'#f0f0f0'},{label:'White B',hex:'#e8e8e8'},{label:'Red',hex:'#e53935'},{label:'Blue',hex:'#1565c0'},{label:'Green',hex:'#2e7d32'},{label:'Orange',hex:'#f26522'},{label:'Purple',hex:'#6a1b9a'},{label:'Pink',hex:'#e91e8c'},{label:'Yellow',hex:'#fbc02d'},{label:'Teal',hex:'#00897b'},{label:'Navy',hex:'#1a237e'},{label:'Grey',hex:'#616161'},{label:'Brown',hex:'#795548'},{label:'Rose',hex:'#e91e63'}], sizes:[] },
-      { sku:'LX007',name:'LX007 Pro Gloves',    cn:'LX007手套',             range:'ultra',    cat:'Gloves',      gender:null,   priceCNY:249, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'}], sizes:['S','M','L','XL'] },
-      { sku:'KX1154',name:'Street Graffiti SS', cn:'KX1154街头涂鸦短袖男',   range:'explore',  cat:'Jersey',      gender:'M',    priceCNY:298, colours:[{label:'Colourway A',hex:'#e53935'},{label:'Colourway B',hex:'#1565c0'},{label:'Colourway C',hex:'#2e7d32'},{label:'Colourway D',hex:'#f26522'},{label:'Colourway E',hex:'#6a1b9a'}], sizes:['XS','S','M','L','XL','XXL'] },
-      { sku:'2501', name:'Gear Shift Bib',      cn:'2501变速短裤男',         range:'discover', cat:'Bib Shorts',  gender:'M',    priceCNY:269, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'}], sizes:['XS','S','M','L','XL','XXL'] },
-      { sku:'905S', name:'Aero Socks',          cn:'0905气动袜',             range:'explore',  cat:'Socks',       gender:null,   priceCNY:119, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'},{label:'Green',hex:'#2e7d32'}], sizes:['S (36-39)','L (40-44)'] },
-      { sku:'KXH2608', img:'photos/KXH2608_gold_seamless_bib.webp', name:'Gold Seamless Bib', cn:'镀金汗无痕短裤男',       range:'tech',     cat:'Bib Shorts',  gender:'M',    priceCNY:558, colours:[{label:'Black',hex:'#1a1a1a'},{label:'Gold',hex:'#c9a84c'}], sizes:['XS','S','M','L','XL','XXL'] },
-      { sku:'901',  name:'Cycling Socks',       cn:'0901骑行袜',             range:'explore',  cat:'Socks',       gender:null,   priceCNY:44,  colours:[{label:'Black A',hex:'#1a1a1a'},{label:'Black B',hex:'#2d2d2d'},{label:'White A',hex:'#f0f0f0'},{label:'White B',hex:'#e8e8e8'},{label:'Red',hex:'#e53935'},{label:'Blue',hex:'#1565c0'},{label:'Green',hex:'#2e7d32'}], sizes:['S (36-39)','L (40-44)'] },
-      { sku:'KXH2626',name:'Gold LS Jersey',    cn:'镀金长袖女',             range:'tech',     cat:'Jersey',      gender:'F',    priceCNY:398, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Gold',hex:'#c9a84c'},{label:'Rose',hex:'#e91e63'}], sizes:['XS','S','M','L','XL'] },
-      { sku:'902X6',name:'902X6 Socks',         cn:'902X6骑行袜',            range:'tech',     cat:'Socks',       gender:null,   priceCNY:49,  colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Red',hex:'#e53935'},{label:'Blue',hex:'#1565c0'},{label:'Green',hex:'#2e7d32'},{label:'Orange',hex:'#f26522'},{label:'Purple',hex:'#6a1b9a'},{label:'Pink',hex:'#e91e8c'},{label:'Yellow',hex:'#fbc02d'},{label:'Teal',hex:'#00897b'},{label:'Navy',hex:'#1a237e'},{label:'Grey',hex:'#616161'},{label:'Brown',hex:'#795548'}], sizes:['S (36-39)','L (40-44)'] },
-      { sku:'902',  img:'photos/902_bottle.webp', name:'902 Bottle',          cn:'902染水壶',              range:'explore',  cat:'Bottle',      gender:null,   priceCNY:42,  colours:[{label:'Design A',hex:'#e53935'},{label:'Design A Alt',hex:'#c62828'},{label:'Design B',hex:'#1565c0'},{label:'Design B Alt',hex:'#0d47a1'},{label:'Green',hex:'#2e7d32'},{label:'Orange',hex:'#f26522'},{label:'Purple',hex:'#6a1b9a'},{label:'Pink',hex:'#e91e8c'}], sizes:[] },
-      { sku:'LX012',name:'LX012 Ultra Gloves',  cn:'LX012手套',             range:'ultra',    cat:'Gloves',      gender:null,   priceCNY:418, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'}], sizes:['S','M','L','XL'] },
-      { sku:'2406', name:'Breeze Bib',          cn:'2406微风背带短裤男',     range:'discover', cat:'Bib Shorts',  gender:'M',    priceCNY:349, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'},{label:'Green',hex:'#2e7d32'}], sizes:['XS','S','M','L','XL','XXL'] },
-      { sku:'8102', img:'photos/8102_breeze_bib_tights_f.webp', name:'Breeze Bib Tights',   cn:'8102微风骑行背带长裤女', range:'discover', cat:'Bib Tights',  gender:'F',    priceCNY:398, colours:[{label:'Black',hex:'#1a1a1a'},{label:'Navy',hex:'#1a237e'},{label:'Purple',hex:'#6a1b9a'},{label:'Pink',hex:'#e91e8c'}], sizes:['XS','S','M','L','XL'] },
-      { sku:'2510', name:'Gear Shift SS',       cn:'2510变速短袖男',         range:'discover', cat:'Jersey',      gender:'M',    priceCNY:298, colours:[{label:'Colourway A',hex:'#e53935'},{label:'Colourway B',hex:'#1565c0'},{label:'Colourway C',hex:'#2e7d32'},{label:'Colourway D',hex:'#f26522'}], sizes:['XS','S','M','L','XL','XXL'] },
-      { sku:'2405', img:'photos/2405_breeze_bib_short_m.webp', name:'Breeze Bib Short',    cn:'2405微风短裤男',         range:'discover', cat:'Bib Shorts',  gender:'M',    priceCNY:298, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'},{label:'Green',hex:'#2e7d32'}], sizes:['XS','S','M','L','XL','XXL'] },
-      { sku:'2511', name:'Gear Shift SS',       cn:'2511变速短袖女',         range:'discover', cat:'Jersey',      gender:'F',    priceCNY:298, colours:[{label:'Colourway A',hex:'#e53935'},{label:'Colourway B',hex:'#1565c0'},{label:'Colourway C',hex:'#2e7d32'},{label:'Colourway D',hex:'#f26522'}], sizes:['XS','S','M','L','XL'] },
-      { sku:'2521', name:'Gear Shift Base Layer',cn:'2521变速排汗长袖男',    range:'discover', cat:'Base Layer',  gender:'M',    priceCNY:99,  colours:[{label:'White',hex:'#f0f0f0'}], sizes:['XS','S','M','L','XL','XXL'] },
-      { sku:'EV1001',name:'UV Face Gaiter',     cn:'ev1001防晒面巾',         range:'explore',  cat:'Accessories', gender:null,   priceCNY:58,  colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Pink',hex:'#e91e8c'}], sizes:['One Size'] },
-      { sku:'EH1001',name:'Cycling Cap',        cn:'eh1001时尚帽檐骑行小帽', range:'explore',  cat:'Cap',         gender:null,   priceCNY:68,  colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'},{label:'Green',hex:'#2e7d32'}], sizes:['One Size'] },
+      // 913 — Aero bottle: _1 Cream/White, _2 Orange-Yellow gradient, _3 Blue-Pink gradient, _4 Clear/White, _5 Dark Charcoal, _6 Grey, _7 White+Gold, _8 Black+Gold
+      { sku:'913',  name:'913 Aero Bottle', cn:'913破风气动水壶', range:'tech', cat:'Bottle', gender:null, priceCNY:99,
+        colours:[{label:'Cream White',hex:'#e8e4d9'},{label:'Orange-Yellow',hex:'#f26522'},{label:'Blue-Pink',hex:'#7b8fd4'},{label:'Clear White',hex:'#f0f0f0'},{label:'Charcoal',hex:'#2d2d2d'},{label:'Grey',hex:'#888888'},{label:'White Gold',hex:'#c9a84c'},{label:'Black Gold',hex:'#1a1a1a'}], sizes:[] },
+
+      // 905B — Ice bottle: _1 White/Silver, _2 White/Purple, _3 Black, _4 Light Blue, _5 Lime Green
+      { sku:'905B', name:'905 Ice Bottle', cn:'905保冰水壶', range:'explore', cat:'Bottle', gender:null, priceCNY:69,
+        colours:[{label:'White Silver',hex:'#e8e8e8'},{label:'White Purple',hex:'#9c27b0'},{label:'Black',hex:'#1a1a1a'},{label:'Light Blue',hex:'#90caf9'},{label:'Lime Green',hex:'#cddc39'}], sizes:[] },
+
+      // 2618 — You & Journey Jersey (F): _1 Blue-Purple checker, _2 Cream-Peach checker, _3 Pink
+      { sku:'2618', name:'You & Journey SS', cn:'2618游由短袖女', range:'discover', cat:'Jersey', gender:'F', priceCNY:278,
+        colours:[{label:'Blue Purple',hex:'#7b8fd4'},{label:'Cream Peach',hex:'#e8d5b0'},{label:'Pink',hex:'#f48fb1'}], sizes:['XS','S','M','L','XL'] },
+
+      // LX002 — Gloves: _1 Blue, _2 Grey, _3 White, _4 Green/Olive, _5 Navy
+      { sku:'LX002', name:'LX002 Gloves', cn:'LX002手套', range:'explore', cat:'Gloves', gender:null, priceCNY:99,
+        colours:[{label:'Blue',hex:'#1565c0'},{label:'Grey',hex:'#9e9e9e'},{label:'White',hex:'#f0f0f0'},{label:'Olive Green',hex:'#8bc34a'},{label:'Navy',hex:'#1a237e'}], sizes:['S','M','L','XL'] },
+
+      // 2617 — You & Journey Jersey (M): _1-2 same checker different angles (Brown-Grey), _3 front face (Brown), _4 Blue checker, _5 two colourways side by side
+      { sku:'2617', name:'You & Journey SS', cn:'2617游由短袖男', range:'discover', cat:'Jersey', gender:'M', priceCNY:278,
+        colours:[{label:'Brown Grey',hex:'#8d6e63'},{label:'Brown Grey Alt',hex:'#795548'},{label:'Brown',hex:'#6d4c41'},{label:'Blue Checker',hex:'#5c6bc0'},{label:'Multi',hex:'#90caf9'}], sizes:['XS','S','M','L','XL','XXL'] },
+
+      // XT002 — Shoe covers: _1 White, _2 Black
+      { sku:'XT002', name:'XT002 Shoe Cover', cn:'XT002春秋鞋套', range:'explore', cat:'Shoe Cover', gender:null, priceCNY:139,
+        colours:[{label:'White',hex:'#f0f0f0'},{label:'Black',hex:'#1a1a1a'}], sizes:['S/M','L/XL'] },
+
+      // LX008 — Gloves: _1 White, _2 Olive/Army Green, _3 Navy Blue, _4 Charcoal
+      { sku:'LX008', name:'LX008 Gloves', cn:'LX008手套', range:'ascent', cat:'Gloves', gender:null, priceCNY:99,
+        colours:[{label:'White',hex:'#f0f0f0'},{label:'Olive Green',hex:'#558b2f'},{label:'Navy Blue',hex:'#1a237e'},{label:'Charcoal',hex:'#37474f'}], sizes:['S','M','L','XL'] },
+
+      // 906 — Yarn Reflect Socks: _1 White+Orange stripe, _2 White+Pink stripe, _3 Black
+      { sku:'906', name:'Yarn Reflect Socks', cn:'0906纱线反光袜', range:'explore', cat:'Socks', gender:null, priceCNY:49,
+        colours:[{label:'White Orange',hex:'#f26522'},{label:'White Pink',hex:'#e91e8c'},{label:'Black',hex:'#1a1a1a'}], sizes:['S (36-39)','L (40-44)'] },
+
+      // 912 — Bottle 16 colours: gradient bottles hand-held
+      // _1 Green-Blue, _2 Pink-Purple, _3 Pink-White, _4 Purple-White, _5 Orange-Yellow, _6 Pink-Peach, _7 Blue-White, _8 Black
+      // _9 Lilac-Blue, _10 Pink-White alt, _11 Purple-Blue, _12 White-Clear, _13 Orange-Red, _14 Yellow-Orange, _15 Pink-White alt2, _16 Black (promo image)
+      { sku:'912', name:'912 Bottle', cn:'912骑行水壶', range:'explore', cat:'Bottle', gender:null, priceCNY:50,
+        colours:[{label:'Green Blue',hex:'#26a69a'},{label:'Pink Purple',hex:'#ce93d8'},{label:'Pink White',hex:'#f48fb1'},{label:'Purple White',hex:'#9575cd'},{label:'Orange Yellow',hex:'#ffa726'},{label:'Pink Peach',hex:'#f06292'},{label:'Blue White',hex:'#42a5f5'},{label:'Black',hex:'#1a1a1a'},{label:'Lilac Blue',hex:'#b39ddb'},{label:'Pink White II',hex:'#f8bbd9'},{label:'Purple Blue',hex:'#7e57c2'},{label:'Clear White',hex:'#eeeeee'},{label:'Orange Red',hex:'#ef5350'},{label:'Yellow Orange',hex:'#ffca28'},{label:'Rose White',hex:'#f48fb1'},{label:'Black Promo',hex:'#212121'}], sizes:[] },
+
+      // LX007 — Pro Gloves: _1 White/Light, _2 Black
+      { sku:'LX007', name:'LX007 Pro Gloves', cn:'LX007手套', range:'ultra', cat:'Gloves', gender:null, priceCNY:249,
+        colours:[{label:'White',hex:'#f0f0f0'},{label:'Black',hex:'#1a1a1a'}], sizes:['S','M','L','XL'] },
+
+      // KX1154 — Street Graffiti Jersey (M): _1 Grey, _2 Dark Navy, _3 Pink/Purple, _4 White, _5 Dark Teal
+      { sku:'KX1154', name:'Street Graffiti SS', cn:'KX1154街头涂鸦短袖男', range:'explore', cat:'Jersey', gender:'M', priceCNY:298,
+        colours:[{label:'Grey',hex:'#9e9e9e'},{label:'Dark Navy',hex:'#1a237e'},{label:'Pink Purple',hex:'#ce93d8'},{label:'White',hex:'#f0f0f0'},{label:'Dark Teal',hex:'#004d40'}], sizes:['XS','S','M','L','XL','XXL'] },
+
+      // 2501 — Gear Shift Bib (M): _1 Blue, _2 Dark Grey, _3 Light Grey/White, _4 Black
+      { sku:'2501', name:'Gear Shift Bib', cn:'2501变速短裤男', range:'discover', cat:'Bib Shorts', gender:'M', priceCNY:269,
+        colours:[{label:'Blue',hex:'#1565c0'},{label:'Dark Grey',hex:'#424242'},{label:'Light Grey',hex:'#bdbdbd'},{label:'Black',hex:'#1a1a1a'}], sizes:['XS','S','M','L','XL','XXL'] },
+
+      // 905S — Aero Socks: _1 White+Lime, _2 White+Pink, _3 Black+Pink, _4 White+Grey, _5 Dark Grey/Black
+      { sku:'905S', name:'Aero Socks', cn:'0905气动袜', range:'explore', cat:'Socks', gender:null, priceCNY:119,
+        colours:[{label:'White Lime',hex:'#cddc39'},{label:'White Pink',hex:'#f48fb1'},{label:'Black Pink',hex:'#1a1a1a'},{label:'White Grey',hex:'#e0e0e0'},{label:'Dark Grey',hex:'#424242'}], sizes:['S (36-39)','L (40-44)'] },
+
+      // KXH2608 — Gold Seamless Bib: _1 White+Gold, _2 Black+Gold
+      { sku:'KXH2608', name:'Gold Seamless Bib', cn:'镀金汗无痕短裤男', range:'tech', cat:'Bib Shorts', gender:'M', priceCNY:558,
+        colours:[{label:'White Gold',hex:'#f5f5f5'},{label:'Black Gold',hex:'#1a1a1a'}], sizes:['XS','S','M','L','XL','XXL'] },
+
+      // 901 — Cycling Socks: _1 Black, _2 White, _3 Green, _4 Teal/Blue, _5 Yellow/Gold, _6 White (alt), _7 Black (alt)
+      { sku:'901', name:'Cycling Socks', cn:'0901骑行袜', range:'explore', cat:'Socks', gender:null, priceCNY:44,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Green',hex:'#2e7d32'},{label:'Teal',hex:'#00838f'},{label:'Yellow',hex:'#f9a825'},{label:'White II',hex:'#eeeeee'},{label:'Black II',hex:'#212121'}], sizes:['S (36-39)','L (40-44)'] },
+
+      // KXH2626 — Gold LS Jersey (F): _1 Silver/Grey, _2 Olive/Gold, _3 White, _4 Black
+      { sku:'KXH2626', name:'Gold LS Jersey', cn:'镀金长袖女', range:'tech', cat:'Jersey', gender:'F', priceCNY:398,
+        colours:[{label:'Silver Grey',hex:'#b0bec5'},{label:'Olive Gold',hex:'#afb42b'},{label:'White',hex:'#f0f0f0'},{label:'Black',hex:'#1a1a1a'}], sizes:['XS','S','M','L','XL'] },
+
+      // 902X6 — Socks 13 colours: _1 Olive/Army, _2 Mint Green, _3 Light Blue, _4 Burgundy/Wine, _5 Grey, _6 Pink/Mauve, _7 Orange (promo sheet), _8 Navy, _9 White, _10 Pink (promo), _11 Black, _12 Yellow/Gold, _13 Black II
+      { sku:'902X6', name:'902X6 Socks', cn:'902X6骑行袜', range:'tech', cat:'Socks', gender:null, priceCNY:49,
+        colours:[{label:'Army Olive',hex:'#827717'},{label:'Mint Green',hex:'#a5d6a7'},{label:'Light Blue',hex:'#90caf9'},{label:'Wine',hex:'#880e4f'},{label:'Grey',hex:'#9e9e9e'},{label:'Mauve Pink',hex:'#f8bbd9'},{label:'Orange',hex:'#f26522'},{label:'Navy',hex:'#1a237e'},{label:'White',hex:'#f0f0f0'},{label:'Pink',hex:'#f06292'},{label:'Black',hex:'#1a1a1a'},{label:'Yellow Gold',hex:'#f9a825'},{label:'Black II',hex:'#212121'}], sizes:['S (36-39)','L (40-44)'] },
+
+      // 902 — Bottle 8: _1 Pink-White, _2 Teal-Navy gradient, _3 Black gradient, _4 Green-Pink gradient, _5 Silver/Clear, _6 Clear/Transparent, _7 White/Clear, _8 Black solid
+      { sku:'902', name:'902 Bottle', cn:'902染水壶', range:'explore', cat:'Bottle', gender:null, priceCNY:42,
+        colours:[{label:'Pink White',hex:'#f48fb1'},{label:'Teal Navy',hex:'#00838f'},{label:'Black Gradient',hex:'#1a1a1a'},{label:'Green Pink',hex:'#66bb6a'},{label:'Silver',hex:'#9e9e9e'},{label:'Clear',hex:'#e0e0e0'},{label:'White Clear',hex:'#f5f5f5'},{label:'Black',hex:'#212121'}], sizes:[] },
+
+      // LX012 — Ultra Gloves: _1 White/Light, _2 Black
+      { sku:'LX012', name:'LX012 Ultra Gloves', cn:'LX012手套', range:'ultra', cat:'Gloves', gender:null, priceCNY:418,
+        colours:[{label:'White',hex:'#f0f0f0'},{label:'Black',hex:'#1a1a1a'}], sizes:['S','M','L','XL'] },
+
+      // 2406 — Breeze Bib (M): _1 Orange, _2 Beige/Grey, _3 Navy, _4 Black, _5 Charcoal Grey
+      { sku:'2406', name:'Breeze Bib', cn:'2406微风背带短裤男', range:'discover', cat:'Bib Shorts', gender:'M', priceCNY:349,
+        colours:[{label:'Orange',hex:'#f26522'},{label:'Beige Grey',hex:'#cfd8dc'},{label:'Navy',hex:'#1a237e'},{label:'Black',hex:'#1a1a1a'},{label:'Charcoal Grey',hex:'#546e7a'}], sizes:['XS','S','M','L','XL','XXL'] },
+
+      // 8102 — Breeze Bib Tights (F): _1 Mauve/Pink-Brown, _2 Steel Blue, _3 Mid Grey, _4 Black
+      { sku:'8102', name:'Breeze Bib Tights', cn:'8102微风骑行背带长裤女', range:'discover', cat:'Bib Tights', gender:'F', priceCNY:398,
+        colours:[{label:'Mauve',hex:'#8d6e63'},{label:'Steel Blue',hex:'#607d8b'},{label:'Mid Grey',hex:'#757575'},{label:'Black',hex:'#1a1a1a'}], sizes:['XS','S','M','L','XL'] },
+
+      // 2510 — Gear Shift SS (M): _1 Teal-Green graphic, _2 Grey+Orange, _3 Purple graphic, _4 White-Black graphic
+      { sku:'2510', name:'Gear Shift SS', cn:'2510变速短袖男', range:'discover', cat:'Jersey', gender:'M', priceCNY:298,
+        colours:[{label:'Teal Green',hex:'#26a69a'},{label:'Grey Orange',hex:'#9e9e9e'},{label:'Purple',hex:'#7b1fa2'},{label:'White Black',hex:'#eeeeee'}], sizes:['XS','S','M','L','XL','XXL'] },
+
+      // 2405 — Breeze Bib Short (M): _1 Purple/Navy, _2 Blue, _3 Dark Charcoal+Grey, _4 White/Light Grey, _5 Black
+      { sku:'2405', name:'Breeze Bib Short', cn:'2405微风短裤男', range:'discover', cat:'Bib Shorts', gender:'M', priceCNY:298,
+        colours:[{label:'Purple Navy',hex:'#4527a0'},{label:'Blue',hex:'#1565c0'},{label:'Charcoal',hex:'#37474f'},{label:'Light Grey',hex:'#eceff1'},{label:'Black',hex:'#1a1a1a'}], sizes:['XS','S','M','L','XL','XXL'] },
+
+      // 2511 — Gear Shift SS (F): _1 Pink, _2 Cream/Off-White, _3 Lavender/Purple, _4 Baby Blue
+      { sku:'2511', name:'Gear Shift SS', cn:'2511变速短袖女', range:'discover', cat:'Jersey', gender:'F', priceCNY:298,
+        colours:[{label:'Pink',hex:'#f48fb1'},{label:'Cream',hex:'#fff8e1'},{label:'Lavender',hex:'#ce93d8'},{label:'Baby Blue',hex:'#b3e5fc'}], sizes:['XS','S','M','L','XL'] },
+
+      // 2521 — Base Layer (M): _1 White only
+      { sku:'2521', name:'Gear Shift Base Layer', cn:'2521变速排汗长袖男', range:'discover', cat:'Base Layer', gender:'M', priceCNY:99,
+        colours:[{label:'White',hex:'#f0f0f0'}], sizes:['XS','S','M','L','XL','XXL'] },
+
+      // EV1001 — UV Face Gaiter: _1 Pink, _2 White/Cream, _3 Light Grey, _4 Black/Dark
+      { sku:'EV1001', name:'UV Face Gaiter', cn:'ev1001防晒面巾', range:'explore', cat:'Accessories', gender:null, priceCNY:58,
+        colours:[{label:'Pink',hex:'#f48fb1'},{label:'White',hex:'#f5f5f5'},{label:'Light Grey',hex:'#cfd8dc'},{label:'Black',hex:'#1a1a1a'}], sizes:['One Size'] },
+
+      // EH1001 — Cycling Cap: _1 Pink stripe, _2 Maroon/Dark Red, _3 Multi-colour Fun, _4 Yellow Smiley, _5 Pink pattern
+      { sku:'EH1001', name:'Cycling Cap', cn:'eh1001时尚帽檐骑行小帽', range:'explore', cat:'Cap', gender:null, priceCNY:68,
+        colours:[{label:'Pink Stripe',hex:'#f48fb1'},{label:'Maroon',hex:'#880e4f'},{label:'Multi Fun',hex:'#42a5f5'},{label:'Yellow Smiley',hex:'#f9a825'},{label:'Pink Pattern',hex:'#ec407a'}], sizes:['One Size'] },
     ];
 
     const RANGE_META = {
