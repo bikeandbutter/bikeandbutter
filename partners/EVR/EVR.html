@@ -431,12 +431,12 @@
 
       <!-- Product detail view -->
       <div id="pdrawer-product" class="pdrawer-pane">
-        <div class="pdrawer-img-wrap">
+        <div class="pdrawer-img-wrap" id="pdrawer-img-wrap">
           <div class="pdrawer-img-ph" id="pdrawer-img-ph">
             <span class="pdrawer-img-ph-icon" id="pdrawer-ph-icon">🚴</span>
             <span class="pdrawer-img-ph-sku" id="pdrawer-ph-sku"></span>
           </div>
-          <img id="pdrawer-img" class="pdrawer-img" src="" alt="" style="display:none"/>
+          <img id="pdrawer-img" class="pdrawer-img" src="" alt="" style="display:none" loading="eager"/>
         </div>
         <div class="pdrawer-info">
           <div class="pdrawer-meta-row">
@@ -566,16 +566,16 @@
       { sku:'KX1154',name:'Street Graffiti SS', cn:'KX1154街头涂鸦短袖男',   range:'explore',  cat:'Jersey',      gender:'M',    priceCNY:298, colours:[{label:'Colourway A',hex:'#e53935'},{label:'Colourway B',hex:'#1565c0'},{label:'Colourway C',hex:'#2e7d32'},{label:'Colourway D',hex:'#f26522'},{label:'Colourway E',hex:'#6a1b9a'}], sizes:['XS','S','M','L','XL','XXL'] },
       { sku:'2501', name:'Gear Shift Bib',      cn:'2501变速短裤男',         range:'discover', cat:'Bib Shorts',  gender:'M',    priceCNY:269, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'}], sizes:['XS','S','M','L','XL','XXL'] },
       { sku:'905S', name:'Aero Socks',          cn:'0905气动袜',             range:'explore',  cat:'Socks',       gender:null,   priceCNY:119, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'},{label:'Green',hex:'#2e7d32'}], sizes:['S (36-39)','L (40-44)'] },
-      { sku:'KXH2608',name:'Gold Seamless Bib', cn:'镀金汗无痕短裤男',       range:'tech',     cat:'Bib Shorts',  gender:'M',    priceCNY:558, colours:[{label:'Black',hex:'#1a1a1a'},{label:'Gold',hex:'#c9a84c'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KXH2608', img:'photos/KXH2608_gold_seamless_bib.webp', name:'Gold Seamless Bib', cn:'镀金汗无痕短裤男',       range:'tech',     cat:'Bib Shorts',  gender:'M',    priceCNY:558, colours:[{label:'Black',hex:'#1a1a1a'},{label:'Gold',hex:'#c9a84c'}], sizes:['XS','S','M','L','XL','XXL'] },
       { sku:'901',  name:'Cycling Socks',       cn:'0901骑行袜',             range:'explore',  cat:'Socks',       gender:null,   priceCNY:44,  colours:[{label:'Black A',hex:'#1a1a1a'},{label:'Black B',hex:'#2d2d2d'},{label:'White A',hex:'#f0f0f0'},{label:'White B',hex:'#e8e8e8'},{label:'Red',hex:'#e53935'},{label:'Blue',hex:'#1565c0'},{label:'Green',hex:'#2e7d32'}], sizes:['S (36-39)','L (40-44)'] },
       { sku:'KXH2626',name:'Gold LS Jersey',    cn:'镀金长袖女',             range:'tech',     cat:'Jersey',      gender:'F',    priceCNY:398, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Gold',hex:'#c9a84c'},{label:'Rose',hex:'#e91e63'}], sizes:['XS','S','M','L','XL'] },
       { sku:'902X6',name:'902X6 Socks',         cn:'902X6骑行袜',            range:'tech',     cat:'Socks',       gender:null,   priceCNY:49,  colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Red',hex:'#e53935'},{label:'Blue',hex:'#1565c0'},{label:'Green',hex:'#2e7d32'},{label:'Orange',hex:'#f26522'},{label:'Purple',hex:'#6a1b9a'},{label:'Pink',hex:'#e91e8c'},{label:'Yellow',hex:'#fbc02d'},{label:'Teal',hex:'#00897b'},{label:'Navy',hex:'#1a237e'},{label:'Grey',hex:'#616161'},{label:'Brown',hex:'#795548'}], sizes:['S (36-39)','L (40-44)'] },
-      { sku:'902',  name:'902 Bottle',          cn:'902染水壶',              range:'explore',  cat:'Bottle',      gender:null,   priceCNY:42,  colours:[{label:'Design A',hex:'#e53935'},{label:'Design A Alt',hex:'#c62828'},{label:'Design B',hex:'#1565c0'},{label:'Design B Alt',hex:'#0d47a1'},{label:'Green',hex:'#2e7d32'},{label:'Orange',hex:'#f26522'},{label:'Purple',hex:'#6a1b9a'},{label:'Pink',hex:'#e91e8c'}], sizes:[] },
+      { sku:'902',  img:'photos/902_bottle.webp', name:'902 Bottle',          cn:'902染水壶',              range:'explore',  cat:'Bottle',      gender:null,   priceCNY:42,  colours:[{label:'Design A',hex:'#e53935'},{label:'Design A Alt',hex:'#c62828'},{label:'Design B',hex:'#1565c0'},{label:'Design B Alt',hex:'#0d47a1'},{label:'Green',hex:'#2e7d32'},{label:'Orange',hex:'#f26522'},{label:'Purple',hex:'#6a1b9a'},{label:'Pink',hex:'#e91e8c'}], sizes:[] },
       { sku:'LX012',name:'LX012 Ultra Gloves',  cn:'LX012手套',             range:'ultra',    cat:'Gloves',      gender:null,   priceCNY:418, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'}], sizes:['S','M','L','XL'] },
       { sku:'2406', name:'Breeze Bib',          cn:'2406微风背带短裤男',     range:'discover', cat:'Bib Shorts',  gender:'M',    priceCNY:349, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'},{label:'Green',hex:'#2e7d32'}], sizes:['XS','S','M','L','XL','XXL'] },
-      { sku:'8102', name:'Breeze Bib Tights',   cn:'8102微风骑行背带长裤女', range:'discover', cat:'Bib Tights',  gender:'F',    priceCNY:398, colours:[{label:'Black',hex:'#1a1a1a'},{label:'Navy',hex:'#1a237e'},{label:'Purple',hex:'#6a1b9a'},{label:'Pink',hex:'#e91e8c'}], sizes:['XS','S','M','L','XL'] },
+      { sku:'8102', img:'photos/8102_breeze_bib_tights_f.webp', name:'Breeze Bib Tights',   cn:'8102微风骑行背带长裤女', range:'discover', cat:'Bib Tights',  gender:'F',    priceCNY:398, colours:[{label:'Black',hex:'#1a1a1a'},{label:'Navy',hex:'#1a237e'},{label:'Purple',hex:'#6a1b9a'},{label:'Pink',hex:'#e91e8c'}], sizes:['XS','S','M','L','XL'] },
       { sku:'2510', name:'Gear Shift SS',       cn:'2510变速短袖男',         range:'discover', cat:'Jersey',      gender:'M',    priceCNY:298, colours:[{label:'Colourway A',hex:'#e53935'},{label:'Colourway B',hex:'#1565c0'},{label:'Colourway C',hex:'#2e7d32'},{label:'Colourway D',hex:'#f26522'}], sizes:['XS','S','M','L','XL','XXL'] },
-      { sku:'2405', name:'Breeze Bib Short',    cn:'2405微风短裤男',         range:'discover', cat:'Bib Shorts',  gender:'M',    priceCNY:298, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'},{label:'Green',hex:'#2e7d32'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'2405', img:'photos/2405_breeze_bib_short_m.webp', name:'Breeze Bib Short',    cn:'2405微风短裤男',         range:'discover', cat:'Bib Shorts',  gender:'M',    priceCNY:298, colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'},{label:'Green',hex:'#2e7d32'}], sizes:['XS','S','M','L','XL','XXL'] },
       { sku:'2511', name:'Gear Shift SS',       cn:'2511变速短袖女',         range:'discover', cat:'Jersey',      gender:'F',    priceCNY:298, colours:[{label:'Colourway A',hex:'#e53935'},{label:'Colourway B',hex:'#1565c0'},{label:'Colourway C',hex:'#2e7d32'},{label:'Colourway D',hex:'#f26522'}], sizes:['XS','S','M','L','XL'] },
       { sku:'2521', name:'Gear Shift Base Layer',cn:'2521变速排汗长袖男',    range:'discover', cat:'Base Layer',  gender:'M',    priceCNY:99,  colours:[{label:'White',hex:'#f0f0f0'}], sizes:['XS','S','M','L','XL','XXL'] },
       { sku:'EV1001',name:'UV Face Gaiter',     cn:'ev1001防晒面巾',         range:'explore',  cat:'Accessories', gender:null,   priceCNY:58,  colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Pink',hex:'#e91e8c'}], sizes:['One Size'] },
@@ -591,6 +591,22 @@
     };
 
     const CAT_ICON = { 'Jersey':'🧥','Bib Shorts':'🚴','Bib Tights':'🚴','Base Layer':'👕','Bottle':'🚰','Gloves':'🧤','Socks':'🧦','Shoe Cover':'👟','Cap':'🧢','Accessories':'🎽','default':'🚴' };
+
+    // ── Image auto-discovery ─────────────────────────────────────
+    // Lists every SKU that has at least one WebP in photos/.
+    // Add a SKU here once you've run prepare_images.py for it.
+    // imgSrc(sku) returns the path to variation _1 (the card thumbnail).
+    const SKUS_WITH_IMAGES = new Set([
+      '913', '905B', '2618', 'LX002', '2617', 'XT002', 'LX008',
+      '906', '912', 'LX007', 'KX1154', '2501', '905S', 'KXH2608',
+      '901', 'KXH2626', '902X6', '902', 'LX012', '2406', '8102',
+      '2510', '2405', '2511', '2521', 'EV1001', 'EH1001'
+    ]);
+
+    function imgSrc(sku) {
+      if (!SKUS_WITH_IMAGES.has(sku)) return null;
+      return `photos/${sku}_1.webp`;
+    }
 
     // ── Render grid ───────────────────────────────────────────────
     let activeRange = 'all';
@@ -641,10 +657,13 @@
           const sizeCount = p.sizes.length > 1 ? p.sizes.length + ' sizes' : (p.sizes.length === 1 ? p.sizes[0] : '');
           const varCount = [colourCount, sizeCount].filter(Boolean).join(' · ');
           return `<div class="sc-card" onclick="openDrawer('${p.sku}')">
-            <div class="sc-img-ph">
-              <span class="sc-img-ph-icon">${icon}</span>
-              <span class="sc-img-ph-sku">${p.sku}</span>
-            </div>
+            ${imgSrc(p.sku)
+              ? `<img class="sc-img" src="${imgSrc(p.sku)}" alt="${p.name}" loading="lazy" decoding="async">`
+              : `<div class="sc-img-ph">
+                <span class="sc-img-ph-icon">${icon}</span>
+                <span class="sc-img-ph-sku">${p.sku}</span>
+              </div>`
+            }
             <div class="sc-body">
               <div class="sc-range-row">
                 <span class="rs-range-badge ${rm2.badgeCls}"><span class="range-dot ${rm2.dotCls}"></span>${rm2.label}</span>${genderTag}
@@ -684,8 +703,20 @@
       document.getElementById('pdrawer-cat').textContent = p.cat + (p.gender ? (p.gender === 'M' ? ' — Men' : ' — Women') : '');
       document.getElementById('pdrawer-name').textContent = p.name;
       document.getElementById('pdrawer-cn').textContent = p.cn;
-      document.getElementById('pdrawer-ph-icon').textContent = CAT_ICON[p.cat] || '🚴';
-      document.getElementById('pdrawer-ph-sku').textContent = p.sku;
+      const drawerImg = document.getElementById('pdrawer-img');
+      const drawerPh  = document.getElementById('pdrawer-img-ph');
+      const firstImg  = imgSrc(p.sku);
+      if (firstImg) {
+        drawerImg.src = firstImg;
+        drawerImg.alt = p.name;
+        drawerImg.style.display = 'block';
+        drawerPh.style.display  = 'none';
+      } else {
+        drawerImg.style.display = 'none';
+        drawerPh.style.display  = 'flex';
+        document.getElementById('pdrawer-ph-icon').textContent = CAT_ICON[p.cat] || '🚴';
+        document.getElementById('pdrawer-ph-sku').textContent  = p.sku;
+      }
       document.getElementById('pdrawer-price').textContent = p.priceCNY ? '¥' + p.priceCNY + ' CNY  ·  SGD TBC' : 'Price TBC';
 
       // Colours
