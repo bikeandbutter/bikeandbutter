@@ -1202,3 +1202,119 @@ img { display: block; width: 100%; }
   #pdrawer-order { padding: 20px 20px 28px; }
   .pform-row-half { flex-direction: column; }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   FIX 1 — Auth modal & nav chip (shared auth.js styles)
+   ════════════════════════════════════════════════════════════════ */
+.auth-modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6); z-index: 2000;
+  align-items: center; justify-content: center;
+}
+.auth-modal-overlay.open { display: flex; }
+.auth-modal {
+  background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; width: 360px; max-width: 92vw;
+  padding: 36px 32px; text-align: center;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+}
+.auth-modal-icon { font-size: 26px; margin-bottom: 12px; }
+.auth-modal-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.auth-modal-sub { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.6; margin-bottom: 24px; }
+.auth-modal-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 11px 20px;
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 6px;
+  background: rgba(255,255,255,0.05); font-size: 13px; font-weight: 600;
+  font-family: inherit; cursor: pointer; color: #fff;
+  transition: background 0.15s, border-color 0.15s; margin-bottom: 10px;
+}
+.auth-modal-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+.auth-modal-cancel {
+  font-size: 12px; color: rgba(255,255,255,0.25); cursor: pointer;
+  background: none; border: none; font-family: inherit; margin-top: 4px;
+  transition: color 0.15s;
+}
+.auth-modal-cancel:hover { color: rgba(255,255,255,0.6); }
+
+/* Nav sign-in & user chip — dark-theme override */
+.nav-signin {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px;
+  color: rgba(255,255,255,0.4); text-decoration: none; text-transform: uppercase;
+  transition: color 0.15s;
+}
+.nav-signin:hover { color: var(--orange); }
+.user-chip {
+  position: relative; display: flex; align-items: center; gap: 8px;
+  padding: 4px 10px; border: 1px solid var(--border);
+  border-radius: 999px; background: var(--bg-2); cursor: pointer;
+}
+.user-avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #fff;
+}
+.user-name { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.7); white-space: nowrap; }
+.user-menu {
+  position: absolute; top: 40px; right: 0;
+  background: #1a1a1a; border: 1px solid var(--border);
+  border-radius: 6px; padding: 6px; min-width: 120px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4); display: none; z-index: 200;
+}
+.user-chip.open .user-menu { display: block; }
+.user-menu a {
+  display: block; font-size: 12px; color: #ef9a9a;
+  padding: 6px 8px; border-radius: 4px; text-decoration: none;
+}
+.user-menu a:hover { background: rgba(255,255,255,0.06); }
+
+/* ════════════════════════════════════════════════════════════════
+   FIX 2 — Brand section mid-range responsive
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .brand-wide { gap: 36px; padding: 40px 40px; }
+  .brand-pillar { padding: 32px 28px; }
+  .brand-pillar-letter { font-size: 64px; }
+}
+@media (max-width: 900px) {
+  .brand-wide {
+    flex-wrap: wrap; gap: 24px; padding: 32px 28px;
+  }
+  .brand-wide-stat { min-width: 80px; }
+  .brand-wide-divider { display: none; }
+  .brand-wide-body { width: 100%; flex-basis: 100%; }
+  .brand-grid { grid-template-columns: 1fr 1fr; }
+  .section { padding: 64px 40px; }
+}
+@media (max-width: 768px) {
+  .section { padding: 56px 24px; }
+  .brand-grid { grid-template-columns: 1fr; }
+  .brand-wide { flex-direction: column; gap: 20px; padding: 28px 20px; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   FIX 3 — Category section headers in shopee grid
+   ════════════════════════════════════════════════════════════════ */
+.sg-section-header {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; gap: 12px;
+  padding: 22px 4px 10px;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+.sg-section-header:first-child { border-top: none; margin-top: 0; padding-top: 14px; }
+.sg-section-range {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+}
+.sg-section-cat {
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+.sg-section-count {
+  font-family: var(--font-mono); font-size: 9px;
+  color: rgba(255,255,255,0.18); letter-spacing: 0.5px;
+  margin-left: auto;
+}
