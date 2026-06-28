@@ -181,6 +181,9 @@
         <button class="cat-tab" data-range="tech" onclick="filterRange('tech',this)"><span class="range-dot range-dot-tech"></span>TECH</button>
         <button class="cat-tab" data-range="ultra" onclick="filterRange('ultra',this)"><span class="range-dot range-dot-ultra"></span>ULTRA</button>
         <button class="cat-tab" data-range="ascent" onclick="filterRange('ascent',this)"><span class="range-dot range-dot-ascent"></span>ASCENT</button>
+        <button class="cat-tab" data-range="pro" onclick="filterRange('pro',this)"><span class="range-dot range-dot-pro"></span>PRO</button>
+        <button class="cat-tab" data-range="city" onclick="filterRange('city',this)"><span class="range-dot range-dot-city"></span>CITY</button>
+        <button class="cat-tab" data-range="joy" onclick="filterRange('joy',this)"><span class="range-dot range-dot-joy"></span>JOY</button>
       </div>
       <div class="catalogue-count" id="catalogue-count">27 products</div>
     </div>
@@ -662,14 +665,97 @@
       // EH1001 — Cycling Cap: _1 Pink stripe, _2 Maroon/Dark Red, _3 Multi-colour Fun, _4 Yellow Smiley, _5 Pink pattern
       { sku:'EH1001', name:'Cycling Cap', cn:'eh1001时尚帽檐骑行小帽', range:'explore', cat:'Cap', gender:null, priceCNY:68,
         colours:[{label:'Pink Stripe',hex:'#f48fb1'},{label:'Maroon',hex:'#880e4f'},{label:'Multi Fun',hex:'#42a5f5'},{label:'Yellow Smiley',hex:'#f9a825'},{label:'Pink Pattern',hex:'#ec407a'}], sizes:['One Size'] },
+
+      // ── CITY ─────────────────────────────────────────────────────────────
+      { sku:'KX2523', name:'CITY Tee', cn:'城市骑行T恤男', range:'city', cat:'Lifestyle T-Shirt', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Grey',hex:'#9e9e9e'}], sizes:['S','M','L','XL','XXL'] },
+      { sku:'KX2524', name:'CITY Tee', cn:'城市骑行T恤女', range:'city', cat:'Lifestyle T-Shirt', gender:'F', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Grey',hex:'#9e9e9e'}], sizes:['XS','S','M','L','XL'] },
+      { sku:'DZ12', name:'Base Jersey', cn:'定制基础款', range:'city', cat:'Jersey', gender:null, priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'}], sizes:['XS','S','M','L','XL','XXL'] },
+
+      // ── DISCOVER extras ───────────────────────────────────────────────────
+      { sku:'KX2519', name:'Gear Shift Base Layer', cn:'变速排汗背心男', range:'discover', cat:'Base Layer', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX2520', name:'Gear Shift Base Layer', cn:'变速排汗背心女', range:'discover', cat:'Base Layer', gender:'F', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'}], sizes:['XS','S','M','L','XL'] },
+
+      // ── EXPLORE extras ────────────────────────────────────────────────────
+      { sku:'KX2154', name:'Street Graffiti SS', cn:'街头涂鸦短袖女', range:'explore', cat:'Jersey', gender:'F', priceCNY:null,
+        colours:[{label:'Grey',hex:'#9e9e9e'},{label:'Dark Navy',hex:'#1a237e'},{label:'Pink Purple',hex:'#ce93d8'},{label:'White',hex:'#f0f0f0'},{label:'Dark Teal',hex:'#004d40'}], sizes:['XS','S','M','L','XL'] },
+      { sku:'KX3154', name:'Street Graffiti LS', cn:'街头涂鸦长袖男', range:'explore', cat:'Jersey', gender:'M', priceCNY:null,
+        colours:[{label:'Grey',hex:'#9e9e9e'},{label:'Dark Navy',hex:'#1a237e'},{label:'Pink Purple',hex:'#ce93d8'},{label:'White',hex:'#f0f0f0'},{label:'Dark Teal',hex:'#004d40'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX2512', name:'Woven Wild (Oriye)', cn:'织野短袖男', range:'explore', cat:'Jersey', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX2513', name:'Woven Wild (Oriye)', cn:'织野短袖女', range:'explore', cat:'Jersey', gender:'F', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'}], sizes:['XS','S','M','L','XL'] },
+      { sku:'KX2517', name:'Time Jersey', cn:'时光短袖男', range:'explore', cat:'Jersey', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX2516', name:'Time Jersey', cn:'时光短袖女', range:'explore', cat:'Jersey', gender:'F', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'}], sizes:['XS','S','M','L','XL'] },
+
+      // ── ASCENT ────────────────────────────────────────────────────────────
+      { sku:'KX2430', name:'Mystic Jersey', cn:'秘境短袖男', range:'ascent', cat:'Jersey', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX2431', name:'Mystic Jersey', cn:'秘境短袖女', range:'ascent', cat:'Jersey', gender:'F', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'}], sizes:['XS','S','M','L','XL'] },
+      { sku:'KX2535', name:'Breakthrough Jersey', cn:'破界短袖男', range:'ascent', cat:'Jersey', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Orange',hex:'#f26522'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX2537', name:'Breakthrough Jersey', cn:'破界短袖女', range:'ascent', cat:'Jersey', gender:'F', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Orange',hex:'#f26522'}], sizes:['XS','S','M','L','XL'] },
+      { sku:'KX2546', name:'Breakthrough LS Jersey', cn:'破界长袖男', range:'ascent', cat:'Jersey', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX2547', name:'Breakthrough LS Jersey', cn:'破界长袖女', range:'ascent', cat:'Jersey', gender:'F', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'}], sizes:['XS','S','M','L','XL'] },
+      { sku:'KX9109', name:'Windbreaker Bib', cn:'破风背带短裤男', range:'ascent', cat:'Bib Shorts', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX9403', name:'Breakthrough Bib', cn:'破界背带短裤男', range:'ascent', cat:'Bib Shorts', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX9503', name:'Breakthrough Bib', cn:'破界背带短裤女', range:'ascent', cat:'Bib Shorts', gender:'F', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'}], sizes:['XS','S','M','L','XL'] },
+      { sku:'KX2556', name:'Jumpsuit (Liu Ying)', cn:'流影连体服', range:'ascent', cat:'Speedsuit', gender:null, priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'}], sizes:['XS','S','M','L','XL'] },
+      { sku:'KX2543', name:'Warmth Jacket', cn:'暖行风衣男', range:'ascent', cat:'Jacket', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX2544', name:'Warmth Jacket', cn:'暖行风衣女', range:'ascent', cat:'Jacket', gender:'F', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'}], sizes:['XS','S','M','L','XL'] },
+      { sku:'KX2551', name:'Speed Pants', cn:'速感长裤男', range:'ascent', cat:'Training Pants', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'Grey',hex:'#9e9e9e'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX2552', name:'Speed Pants', cn:'速感长裤女', range:'ascent', cat:'Training Pants', gender:'F', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'Grey',hex:'#9e9e9e'}], sizes:['XS','S','M','L','XL'] },
+
+      // ── TECH extras ───────────────────────────────────────────────────────
+      { sku:'KX2407', name:'Race Suit', cn:'竞技版连体服', range:'tech', cat:'Speedsuit', gender:null, priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'}], sizes:['XS','S','M','L','XL'] },
+      { sku:'DZ07', name:'Light Wind Vest', cn:'风轻马甲', range:'tech', cat:'Wind Vest', gender:null, priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX2557', name:'Wind Motion Jacket', cn:'风动风衣', range:'tech', cat:'Jacket', gender:null, priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'}], sizes:['XS','S','M','L','XL','XXL'] },
+
+      // ── PRO ───────────────────────────────────────────────────────────────
+      { sku:'KX2430F', name:'Mystic Pro Jersey', cn:'秘境专业版', range:'pro', cat:'Jersey', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX9405', name:'Endurance Bib Tights', cn:'耐力背带长裤男', range:'pro', cat:'Bib Tights', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX9505', name:'Endurance Bib Tights', cn:'耐力背带长裤女', range:'pro', cat:'Bib Tights', gender:'F', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'}], sizes:['XS','S','M','L','XL'] },
+
+      // ── JOY ───────────────────────────────────────────────────────────────
+      { sku:'KX2514', name:'Joy Explore Jersey', cn:'寻野短袖男', range:'joy', cat:'Jersey', gender:'M', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'}], sizes:['XS','S','M','L','XL','XXL'] },
+      { sku:'KX2515', name:'Joy Explore Jersey', cn:'寻野短袖女', range:'joy', cat:'Jersey', gender:'F', priceCNY:null,
+        colours:[{label:'Black',hex:'#1a1a1a'},{label:'White',hex:'#f0f0f0'},{label:'Blue',hex:'#1565c0'},{label:'Red',hex:'#e53935'}], sizes:['XS','S','M','L','XL'] },
     ];
 
     const RANGE_META = {
+      city:     { label:'CITY',     badgeCls:'badge-city',     dotCls:'range-dot-city'     },
       discover: { label:'DISCOVER', badgeCls:'badge-discover', dotCls:'range-dot-discover' },
       explore:  { label:'EXPLORE',  badgeCls:'badge-explore',  dotCls:'range-dot-explore'  },
-      tech:     { label:'TECH',     badgeCls:'badge-tech',     dotCls:'range-dot-tech'     },
-      ultra:    { label:'ULTRA',    badgeCls:'badge-ultra',    dotCls:'range-dot-ultra'    },
       ascent:   { label:'ASCENT',   badgeCls:'badge-ascent',   dotCls:'range-dot-ascent'   },
+      tech:     { label:'TECH',     badgeCls:'badge-tech',     dotCls:'range-dot-tech'     },
+      pro:      { label:'PRO',      badgeCls:'badge-pro',      dotCls:'range-dot-pro'      },
+      ultra:    { label:'ULTRA',    badgeCls:'badge-ultra',    dotCls:'range-dot-ultra'    },
+      joy:      { label:'JOY',      badgeCls:'badge-joy',      dotCls:'range-dot-joy'      },
     };
 
     const CAT_ICON = { 'Jersey':'🧥','Bib Shorts':'🚴','Bib Tights':'🚴','Base Layer':'👕','Bottle':'🚰','Gloves':'🧤','Socks':'🧦','Shoe Cover':'👟','Cap':'🧢','Accessories':'🎽','default':'🚴' };
