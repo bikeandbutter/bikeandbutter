@@ -1323,3 +1323,17 @@ img { display: block; width: 100%; }
   color: rgba(255,255,255,0.18); letter-spacing: 0.5px;
   margin-left: auto;
 }
+
+/* ── Price on grid card ─────────────────────────────────────────── */
+.sc-price {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--orange);
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+/* Hide CN name div when empty */
+.pdrawer-cn:empty { display: none; }
+.sc-cn:empty { display: none; }
