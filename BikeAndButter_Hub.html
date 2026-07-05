@@ -3368,13 +3368,25 @@ function closeSidebar() { document.getElementById('sidebar').classList.remove('o
 // CURRENCY / FORMAT
 // ═══════════════════════════════════════════════════════════
 async function fetchCNYRate() {
-  try {
-    const r = await fetch('https://api.frankfurter.app/latest?from=CNY&to=SGD');
-    const d = await r.json();
-    if (d.rates?.SGD) { CNY_RATE = d.rates.SGD; localStorage.setItem(KEYS.rate, CNY_RATE); }
-  } catch(e) {}
+  // Try Apps Script proxy first (avoids CORS on custom domains)
+  if (WEB_APP_URL) {
+    try {
+      const r = await fetch(WEB_APP_URL + '?action=getCNYRate');
+      const d = await r.json();
+      if (d.ok && d.rate) {
+        CNY_RATE = d.rate;
+        localStorage.setItem(KEYS.rate, CNY_RATE);
+        _updateRateDisplay();
+        return;
+      }
+    } catch(e) {}
+  }
+  // Fallback: use cached rate (no direct API call — blocked by CORS on custom domains)
+  _updateRateDisplay();
+}
+function _updateRateDisplay() {
   const disp = CNY_RATE.toFixed(4);
-  const rd = document.getElementById('settings-rate-display'); if (rd) rd.value = disp;
+  const rd = document.getElementById('settings-rate-display'); if (rd) rd.value = disp + ' (cached)';
   const pr = document.getElementById('po-rate'); if (pr) pr.textContent = disp;
 }
 function toSGD(v, cur) { return cur === 'SGD' ? (parseFloat(v)||0) : (parseFloat(v)||0) * CNY_RATE; }
