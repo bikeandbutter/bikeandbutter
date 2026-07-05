@@ -3650,14 +3650,14 @@ function renderProductStats() {
 }
 
 function renderProductTable() {
-  const search = (document.getElementById('prod-search').value || '').toLowerCase();
-  const catF   = document.getElementById('prod-cat-filter').value;
-  const stF    = document.getElementById('prod-stock-filter').value;
+  const search   = (document.getElementById('prod-search').value || '').toLowerCase();
+  const catF     = document.getElementById('prod-cat-filter').value;
+  const stF      = document.getElementById('prod-stock-filter').value;
 
   let prods = DB.products.filter(p => {
     if (catF && p.category !== catF) return false;
     if (search && !p.name.toLowerCase().includes(search) && !p.sku.toLowerCase().includes(search) &&
-        !p.variants.some(v => v.sku.toLowerCase().includes(search))) return false;
+        !p.variants.some(v => v.sku.toLowerCase().includes(search) || v.name.toLowerCase().includes(search))) return false;
     if (stF === 'low'  && p.variants.every(v => v.qty > v.minQty)) return false;
     if (stF === 'ok'   && p.variants.some(v => v.qty <= v.minQty))  return false;
     return true;
@@ -3665,35 +3665,84 @@ function renderProductTable() {
 
   const tbody = document.getElementById('prod-table-body');
   if (!prods.length) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-title">No products found</div><div class="empty-sub">Add your first product above</div></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-title">No products found</div></div></td></tr>`;
     return;
   }
 
-  tbody.innerHTML = prods.map(p => {
-    const totalQty = p.variants.reduce((a,v) => a+v.qty, 0);
-    const stockVal = p.variants.reduce((a,v) => a + (v.wac || toSGD(v.cost,v.currency)) * v.qty, 0);
-    const hasLow   = p.variants.some(v => v.qty <= v.minQty);
-    const allOut   = p.variants.every(v => v.qty === 0);
+  let html = '';
+  prods.forEach(p => {
+    const totalQty  = p.variants.reduce((a,v) => a+v.qty, 0);
+    const stockVal  = p.variants.reduce((a,v) => a + (v.wac || toSGD(v.cost,v.currency)) * v.qty, 0);
+    const hasLow    = p.variants.some(v => v.qty <= v.minQty && v.minQty > 0);
+    const allOut    = p.variants.every(v => v.qty === 0);
     const statusBadge = allOut
-      ? '<span class="badge badge-red">Out of Stock</span>'
+      ? '<span class="badge badge-red">Out</span>'
       : hasLow
-      ? '<span class="badge badge-yellow">Low Stock</span>'
+      ? '<span class="badge badge-yellow">Low</span>'
       : '<span class="badge badge-green">OK</span>';
-    const varBadges = p.variants.slice(0,3).map(v =>
-      `<span class="badge badge-gray" style="font-size:10px;margin-right:2px">${v.name}</span>`
-    ).join('') + (p.variants.length > 3 ? `<span class="badge badge-gray" style="font-size:10px">+${p.variants.length-3}</span>` : '');
 
-    return `<tr>
-      <td class="tbl-mono">${p.sku}</td>
-      <td><div class="tbl-name">${p.name}</div><div style="margin-top:3px">${varBadges}</div></td>
-      <td><span class="badge badge-gray">${p.category||'—'}</span></td>
-      <td style="font-size:11px;color:var(--text3)">${p.variants.length} variant${p.variants.length!==1?'s':''}</td>
-      <td style="font-weight:600;color:${totalQty===0?'var(--red)':'var(--text)'}">${totalQty}</td>
-      <td class="tbl-amount">${fmt(stockVal)}</td>
+    // Parent row
+    html += `<tr style="background:var(--bg2);cursor:pointer" onclick="toggleVariants('${p.id}')">
+      <td class="tbl-mono" style="font-size:10px;color:var(--text3)">${p.sku}</td>
+      <td><div style="font-weight:600;color:var(--text);font-size:13px">${p.name}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px">${p.brand||''} ${p.supplier?'· '+p.supplier:''}</div></td>
+      <td><span class="badge badge-gray" style="font-size:10px">${(p.category||'').replace(' & ','/')}</span></td>
+      <td style="font-size:12px;color:var(--text3)">${p.variants.length} variant${p.variants.length!==1?'s':''}</td>
+      <td style="font-weight:700;font-size:14px;color:${totalQty===0?'var(--red)':'var(--text)'}">${totalQty}</td>
+      <td class="tbl-amount" style="font-weight:600">${fmt(stockVal)}</td>
       <td>${statusBadge}</td>
-      <td><button class="btn btn-ghost btn-xs" onclick="showProductForm('${p.id}')" style="margin-right:4px">Edit</button><button class="btn btn-danger btn-xs" onclick="deleteProduct('${p.id}')">Del</button></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();showProductForm('${p.id}')" style="margin-right:4px">Edit</button>
+        <button class="btn btn-danger btn-xs" onclick="event.stopPropagation();deleteProduct('${p.id}')">Del</button>
+      </td>
     </tr>`;
-  }).join('');
+
+    // Variant sub-rows (visible by default)
+    html += `<tr id="variants-${p.id}"><td colspan="8" style="padding:0;background:var(--bg3)">
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr style="background:var(--bg3)">
+            <th style="width:180px;padding:6px 14px 6px 32px;font-size:9px;color:var(--text3);text-align:left">VARIANT</th>
+            <th style="width:160px;padding:6px 10px;font-size:9px;color:var(--text3);text-align:left">SKU</th>
+            <th style="width:80px;padding:6px 10px;font-size:9px;color:var(--text3);text-align:left">CURRENCY</th>
+            <th style="width:90px;padding:6px 10px;font-size:9px;color:var(--text3);text-align:right">UNIT COST</th>
+            <th style="width:90px;padding:6px 10px;font-size:9px;color:var(--text3);text-align:right">WAC (SGD)</th>
+            <th style="width:70px;padding:6px 10px;font-size:9px;color:var(--text3);text-align:right">QTY</th>
+            <th style="width:100px;padding:6px 10px;font-size:9px;color:var(--text3);text-align:right">VALUE (SGD)</th>
+            <th style="padding:6px 10px;font-size:9px;color:var(--text3);text-align:left">STATUS</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+    p.variants.forEach(v => {
+      const wac    = v.wac || toSGD(v.cost, v.currency);
+      const val    = wac * v.qty;
+      const vTag   = v.qty === 0 ? '<span class="badge badge-red" style="font-size:9px">Out</span>'
+                   : v.qty <= v.minQty && v.minQty > 0 ? '<span class="badge badge-yellow" style="font-size:9px">Low</span>'
+                   : '<span class="badge badge-green" style="font-size:9px">OK</span>';
+      const costDisplay = v.cost > 0 ? fmtCur(v.cost, v.currency) : '—';
+      html += `<tr style="border-top:1px solid var(--border)">
+        <td style="padding:7px 10px 7px 32px;font-size:12px;color:var(--text2);font-weight:500">${v.name}</td>
+        <td style="padding:7px 10px;font-family:monospace;font-size:10px;color:var(--text3)">${v.sku}</td>
+        <td style="padding:7px 10px;font-size:11px;color:var(--text3)">${v.currency}</td>
+        <td style="padding:7px 10px;font-size:11px;color:var(--text2);text-align:right">${costDisplay}</td>
+        <td style="padding:7px 10px;font-size:11px;color:var(--accent);text-align:right;font-weight:600">${fmt(wac)}</td>
+        <td style="padding:7px 10px;font-size:13px;font-weight:700;color:${v.qty===0?'var(--red)':'var(--text)'};text-align:right">${v.qty}</td>
+        <td style="padding:7px 10px;font-size:11px;font-weight:600;text-align:right">${val > 0 ? fmt(val) : '—'}</td>
+        <td style="padding:7px 10px">${vTag}</td>
+      </tr>`;
+    });
+
+    html += `</tbody></table></td></tr>`;
+  });
+
+  tbody.innerHTML = html;
+}
+
+function toggleVariants(productId) {
+  const row = document.getElementById('variants-' + productId);
+  if (!row) return;
+  row.style.display = row.style.display === 'none' ? '' : 'none';
 }
 
 function updateLowBadge() {
