@@ -1119,11 +1119,7 @@ tbody tr:hover td { background: var(--bg); }
 </template>
 
 <script>
-// ── SEED DATA (from bb_hub_backup_2026-06-29.json) ──
-// PRE-LOADED DATA FROM bb_hub_backup_2026-06-29.json
-// Transformed to v3 schema with parent/variant structure
-
-// ── SEED DATA (final corrected — July 2026) ──
+// ── SEED DATA (final v2 — July 2026 with sell prices) ──
 const SEED_PRODUCTS  = [
   {
     "id": "prod_0",
@@ -1142,7 +1138,7 @@ const SEED_PRODUCTS  = [
         "cost": 320,
         "wac": 59.84,
         "wacQty": 6,
-        "sellSGD": 0,
+        "sellSGD": 55,
         "qty": 6,
         "minQty": 2
       },
@@ -1154,7 +1150,7 @@ const SEED_PRODUCTS  = [
         "cost": 320,
         "wac": 59.84,
         "wacQty": 6,
-        "sellSGD": 0,
+        "sellSGD": 55,
         "qty": 6,
         "minQty": 2
       }
@@ -1177,7 +1173,7 @@ const SEED_PRODUCTS  = [
         "cost": 420,
         "wac": 78.54,
         "wacQty": 6,
-        "sellSGD": 0,
+        "sellSGD": 69,
         "qty": 6,
         "minQty": 2
       },
@@ -1189,7 +1185,7 @@ const SEED_PRODUCTS  = [
         "cost": 420,
         "wac": 78.54,
         "wacQty": 6,
-        "sellSGD": 0,
+        "sellSGD": 69,
         "qty": 6,
         "minQty": 2
       }
@@ -1212,7 +1208,7 @@ const SEED_PRODUCTS  = [
         "cost": 65,
         "wac": 12.155,
         "wacQty": 12,
-        "sellSGD": 0,
+        "sellSGD": 23,
         "qty": 12,
         "minQty": 2
       }
@@ -1254,11 +1250,11 @@ const SEED_PRODUCTS  = [
         "id": "var_2_0",
         "name": "700x28c",
         "sku": "CONT-GP5000STR-28",
-        "currency": "CNY",
-        "cost": 0,
-        "wac": 0,
-        "wacQty": 0,
-        "sellSGD": 0,
+        "currency": "SGD",
+        "cost": 95,
+        "wac": 95,
+        "wacQty": 3,
+        "sellSGD": 95,
         "qty": 3,
         "minQty": 2
       },
@@ -1266,11 +1262,11 @@ const SEED_PRODUCTS  = [
         "id": "var_2_1",
         "name": "700x32c",
         "sku": "CONT-GP5000STR-32",
-        "currency": "CNY",
-        "cost": 0,
-        "wac": 0,
-        "wacQty": 0,
-        "sellSGD": 0,
+        "currency": "SGD",
+        "cost": 95,
+        "wac": 95,
+        "wacQty": 1,
+        "sellSGD": 95,
         "qty": 1,
         "minQty": 1
       }
@@ -1289,11 +1285,11 @@ const SEED_PRODUCTS  = [
         "id": "var_34_0",
         "name": "700x28c",
         "sku": "CONT-GP5000CLI-28",
-        "currency": "CNY",
-        "cost": 0,
-        "wac": 0,
-        "wacQty": 0,
-        "sellSGD": 0,
+        "currency": "SGD",
+        "cost": 95,
+        "wac": 95,
+        "wacQty": 4,
+        "sellSGD": 95,
         "qty": 4,
         "minQty": 2
       }
@@ -1316,7 +1312,7 @@ const SEED_PRODUCTS  = [
         "cost": 246,
         "wac": 46.002,
         "wacQty": 4,
-        "sellSGD": 0,
+        "sellSGD": 80,
         "qty": 4,
         "minQty": 2
       },
@@ -1328,7 +1324,7 @@ const SEED_PRODUCTS  = [
         "cost": 236,
         "wac": 44.132,
         "wacQty": 4,
-        "sellSGD": 0,
+        "sellSGD": 80,
         "qty": 4,
         "minQty": 2
       }
@@ -1351,7 +1347,7 @@ const SEED_PRODUCTS  = [
         "cost": 306,
         "wac": 57.222,
         "wacQty": 2,
-        "sellSGD": 0,
+        "sellSGD": 110,
         "qty": 2,
         "minQty": 2
       },
@@ -1363,7 +1359,7 @@ const SEED_PRODUCTS  = [
         "cost": 296,
         "wac": 55.352,
         "wacQty": 2,
-        "sellSGD": 0,
+        "sellSGD": 110,
         "qty": 2,
         "minQty": 2
       }
@@ -1382,11 +1378,11 @@ const SEED_PRODUCTS  = [
         "id": "var_17_0",
         "name": "700x30c",
         "sku": "CHAO-STORM-R1-30",
-        "currency": "CNY",
-        "cost": 0,
-        "wac": 0,
-        "wacQty": 0,
-        "sellSGD": 0,
+        "currency": "SGD",
+        "cost": 48,
+        "wac": 48,
+        "wacQty": 2,
+        "sellSGD": 48,
         "qty": 2,
         "minQty": 2
       }
@@ -1432,7 +1428,7 @@ const SEED_PRODUCTS  = [
         "cost": 47,
         "wac": 8.789,
         "wacQty": 16,
-        "sellSGD": 0,
+        "sellSGD": 15,
         "qty": 16,
         "minQty": 5
       },
@@ -1444,7 +1440,7 @@ const SEED_PRODUCTS  = [
         "cost": 7.245,
         "wac": 7.245,
         "wacQty": 20,
-        "sellSGD": 0,
+        "sellSGD": 15,
         "qty": 19,
         "minQty": 5
       },
@@ -1456,7 +1452,7 @@ const SEED_PRODUCTS  = [
         "cost": 7.246,
         "wac": 7.246,
         "wacQty": 10,
-        "sellSGD": 0,
+        "sellSGD": 15,
         "qty": 6,
         "minQty": 5
       },
@@ -1468,7 +1464,7 @@ const SEED_PRODUCTS  = [
         "cost": 7.246,
         "wac": 7.246,
         "wacQty": 10,
-        "sellSGD": 0,
+        "sellSGD": 15,
         "qty": 9,
         "minQty": 5
       },
@@ -1480,7 +1476,7 @@ const SEED_PRODUCTS  = [
         "cost": 7.246,
         "wac": 7.246,
         "wacQty": 10,
-        "sellSGD": 0,
+        "sellSGD": 15,
         "qty": 10,
         "minQty": 5
       }
@@ -1499,11 +1495,11 @@ const SEED_PRODUCTS  = [
         "id": "var_26_0",
         "name": "Standard",
         "sku": "SCHWA-CLIKVALVE",
-        "currency": "CNY",
-        "cost": 0,
-        "wac": 0,
-        "wacQty": 0,
-        "sellSGD": 0,
+        "currency": "SGD",
+        "cost": 39,
+        "wac": 39,
+        "wacQty": 2,
+        "sellSGD": 39,
         "qty": 2,
         "minQty": 2
       }
@@ -1526,7 +1522,7 @@ const SEED_PRODUCTS  = [
         "cost": 225,
         "wac": 42.075,
         "wacQty": 1,
-        "sellSGD": 0,
+        "sellSGD": 68,
         "qty": 1,
         "minQty": 2
       },
@@ -1538,7 +1534,7 @@ const SEED_PRODUCTS  = [
         "cost": 225,
         "wac": 42.075,
         "wacQty": 2,
-        "sellSGD": 0,
+        "sellSGD": 68,
         "qty": 2,
         "minQty": 2
       },
@@ -1550,7 +1546,7 @@ const SEED_PRODUCTS  = [
         "cost": 225,
         "wac": 42.075,
         "wacQty": 1,
-        "sellSGD": 0,
+        "sellSGD": 68,
         "qty": 1,
         "minQty": 1
       }
@@ -1573,7 +1569,7 @@ const SEED_PRODUCTS  = [
         "cost": 140,
         "wac": 26.18,
         "wacQty": 1,
-        "sellSGD": 0,
+        "sellSGD": 58,
         "qty": 1,
         "minQty": 2
       },
@@ -1585,7 +1581,7 @@ const SEED_PRODUCTS  = [
         "cost": 140,
         "wac": 26.18,
         "wacQty": 6,
-        "sellSGD": 0,
+        "sellSGD": 58,
         "qty": 6,
         "minQty": 2
       },
@@ -1597,7 +1593,7 @@ const SEED_PRODUCTS  = [
         "cost": 140,
         "wac": 26.18,
         "wacQty": 1,
-        "sellSGD": 0,
+        "sellSGD": 58,
         "qty": 1,
         "minQty": 1
       }
@@ -1620,7 +1616,7 @@ const SEED_PRODUCTS  = [
         "cost": 1194,
         "wac": 223.278,
         "wacQty": 0,
-        "sellSGD": 0,
+        "sellSGD": 375,
         "qty": 0,
         "minQty": 1
       },
@@ -1632,7 +1628,7 @@ const SEED_PRODUCTS  = [
         "cost": 1194,
         "wac": 223.278,
         "wacQty": 1,
-        "sellSGD": 0,
+        "sellSGD": 375,
         "qty": 1,
         "minQty": 1
       },
@@ -1644,7 +1640,7 @@ const SEED_PRODUCTS  = [
         "cost": 1194,
         "wac": 223.278,
         "wacQty": 0,
-        "sellSGD": 0,
+        "sellSGD": 375,
         "qty": 0,
         "minQty": 1
       }
@@ -1667,7 +1663,7 @@ const SEED_PRODUCTS  = [
         "cost": 0,
         "wac": 0,
         "wacQty": 0,
-        "sellSGD": 0,
+        "sellSGD": 95,
         "qty": 0,
         "minQty": 1
       },
@@ -1679,7 +1675,7 @@ const SEED_PRODUCTS  = [
         "cost": 0,
         "wac": 0,
         "wacQty": 0,
-        "sellSGD": 0,
+        "sellSGD": 95,
         "qty": 0,
         "minQty": 1
       },
@@ -1691,7 +1687,7 @@ const SEED_PRODUCTS  = [
         "cost": 0,
         "wac": 0,
         "wacQty": 0,
-        "sellSGD": 0,
+        "sellSGD": 95,
         "qty": 0,
         "minQty": 1
       }
@@ -1714,7 +1710,7 @@ const SEED_PRODUCTS  = [
         "cost": 342.56,
         "wac": 342.56,
         "wacQty": 1,
-        "sellSGD": 0,
+        "sellSGD": 519,
         "qty": 1,
         "minQty": 1
       },
@@ -1726,7 +1722,7 @@ const SEED_PRODUCTS  = [
         "cost": 342.56,
         "wac": 342.56,
         "wacQty": 1,
-        "sellSGD": 0,
+        "sellSGD": 519,
         "qty": 1,
         "minQty": 1
       }
@@ -1841,7 +1837,7 @@ const SEED_PRODUCTS  = [
         "cost": 174.73,
         "wac": 174.73,
         "wacQty": 1,
-        "sellSGD": 0,
+        "sellSGD": 350,
         "qty": 1,
         "minQty": 1
       }
@@ -1883,11 +1879,11 @@ const SEED_PRODUCTS  = [
         "id": "var_6_0",
         "name": "Standard",
         "sku": "SHINPRO-PRTA0057",
-        "currency": "CNY",
-        "cost": 0,
-        "wac": 0,
-        "wacQty": 0,
-        "sellSGD": 0,
+        "currency": "SGD",
+        "cost": 28,
+        "wac": 28,
+        "wacQty": 2,
+        "sellSGD": 28,
         "qty": 2,
         "minQty": 2
       }
@@ -1906,11 +1902,11 @@ const SEED_PRODUCTS  = [
         "id": "var_7_0",
         "name": "Standard",
         "sku": "SHINPRO-PRTA0001",
-        "currency": "CNY",
-        "cost": 0,
-        "wac": 0,
-        "wacQty": 0,
-        "sellSGD": 0,
+        "currency": "SGD",
+        "cost": 32,
+        "wac": 32,
+        "wacQty": 3,
+        "sellSGD": 32,
         "qty": 3,
         "minQty": 2
       }
@@ -1933,7 +1929,7 @@ const SEED_PRODUCTS  = [
         "cost": 0,
         "wac": 0,
         "wacQty": 0,
-        "sellSGD": 0,
+        "sellSGD": 18,
         "qty": 0,
         "minQty": 2
       }
@@ -2045,11 +2041,11 @@ const SEED_PRODUCTS  = [
         "id": "var_18_0",
         "name": "Standard",
         "sku": "MIXED-SADDLE-5D",
-        "currency": "CNY",
-        "cost": 0,
-        "wac": 0,
-        "wacQty": 0,
-        "sellSGD": 0,
+        "currency": "SGD",
+        "cost": 39,
+        "wac": 39,
+        "wacQty": 1,
+        "sellSGD": 39,
         "qty": 1,
         "minQty": 1
       }
@@ -2072,7 +2068,7 @@ const SEED_PRODUCTS  = [
         "cost": 0,
         "wac": 0,
         "wacQty": 0,
-        "sellSGD": 0,
+        "sellSGD": 39,
         "qty": 0,
         "minQty": 1
       }
@@ -2095,7 +2091,7 @@ const SEED_PRODUCTS  = [
         "cost": 174,
         "wac": 32.538,
         "wacQty": 2,
-        "sellSGD": 0,
+        "sellSGD": 39,
         "qty": 1,
         "minQty": 1
       }
@@ -2118,7 +2114,7 @@ const SEED_PRODUCTS  = [
         "cost": 0.9447,
         "wac": 0.9447,
         "wacQty": 300,
-        "sellSGD": 0,
+        "sellSGD": 2.2,
         "qty": 80,
         "minQty": 20
       },
@@ -2130,7 +2126,7 @@ const SEED_PRODUCTS  = [
         "cost": 0.9447,
         "wac": 0.9447,
         "wacQty": 150,
-        "sellSGD": 0,
+        "sellSGD": 2.2,
         "qty": 150,
         "minQty": 20
       },
@@ -2142,7 +2138,7 @@ const SEED_PRODUCTS  = [
         "cost": 0.9447,
         "wac": 0.9447,
         "wacQty": 150,
-        "sellSGD": 0,
+        "sellSGD": 2.2,
         "qty": 150,
         "minQty": 20
       }
@@ -2161,11 +2157,11 @@ const SEED_PRODUCTS  = [
         "id": "var_9_0",
         "name": "Lemon",
         "sku": "WINS-GUMMIES42-LEM",
-        "currency": "CNY",
-        "cost": 0,
-        "wac": 0,
-        "wacQty": 0,
-        "sellSGD": 0,
+        "currency": "SGD",
+        "cost": 22.0,
+        "wac": 22.0,
+        "wacQty": 30,
+        "sellSGD": 22.0,
         "qty": 30,
         "minQty": 10
       },
@@ -2173,11 +2169,11 @@ const SEED_PRODUCTS  = [
         "id": "var_9_1",
         "name": "White Grape",
         "sku": "WINS-GUMMIES42-WGR",
-        "currency": "CNY",
-        "cost": 0,
-        "wac": 0,
-        "wacQty": 0,
-        "sellSGD": 0,
+        "currency": "SGD",
+        "cost": 22.0,
+        "wac": 22.0,
+        "wacQty": 20,
+        "sellSGD": 22.0,
         "qty": 20,
         "minQty": 10
       }
@@ -2200,7 +2196,7 @@ const SEED_PRODUCTS  = [
         "cost": 36,
         "wac": 6.732,
         "wacQty": 5,
-        "sellSGD": 0,
+        "sellSGD": 22.0,
         "qty": 50,
         "minQty": 10
       }
@@ -2223,7 +2219,7 @@ const SEED_PRODUCTS  = [
         "cost": 30,
         "wac": 5.61,
         "wacQty": 12,
-        "sellSGD": 0,
+        "sellSGD": 10,
         "qty": 12,
         "minQty": 3
       }
@@ -2246,7 +2242,7 @@ const SEED_PRODUCTS  = [
         "cost": 3.3,
         "wac": 0.6171,
         "wacQty": 20,
-        "sellSGD": 0,
+        "sellSGD": 4.2,
         "qty": 19,
         "minQty": 5
       },
@@ -2258,7 +2254,7 @@ const SEED_PRODUCTS  = [
         "cost": 3.3,
         "wac": 0.6171,
         "wacQty": 20,
-        "sellSGD": 0,
+        "sellSGD": 4.7,
         "qty": 20,
         "minQty": 5
       }
@@ -3213,7 +3209,7 @@ const SEED_JOURNAL   = [
 // B&B HUB v3 — FULL JAVASCRIPT
 // ═══════════════════════════════════════════════════════════
 
-const KEYS = { url:'bb_hub_url', data:'bb_hub_v3_data_jul26', rate:'bb_cny_rate', queue:'bb_sync_queue' };
+const KEYS = { url:'bb_hub_url', data:'bb_hub_v3_data_jul26b', rate:'bb_cny_rate', queue:'bb_sync_queue' };
 let WEB_APP_URL = localStorage.getItem(KEYS.url) || '';
 let CNY_RATE = parseFloat(localStorage.getItem(KEYS.rate)) || 0.187;
 let analyticsPeriod = 'week';
@@ -3249,7 +3245,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // If the sheet came back empty but we have local seed data,
 // push everything up once so Sheets and the Hub start in sync.
-const SEED_PUSH_FLAG = 'bb_v3_seed_pushed_jul26';
+const SEED_PUSH_FLAG = 'bb_v3_seed_pushed_jul26b';
 async function maybePushInitialSeed() {
   if (!WEB_APP_URL) return;
   if (localStorage.getItem(SEED_PUSH_FLAG)) return;
