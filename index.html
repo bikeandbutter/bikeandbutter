@@ -16,8 +16,8 @@
 </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bike & Butter</title>
-  <meta name="description" content="Explore hundreds of road bikes from the world's finest brands. Bike & Butter is the definitive archive for road cycling enthusiasts." />
+  <title>Bike & Butter — Road Bike & Triathlon Shop in Singapore</title>
+  <meta name="description" content="Bike & Butter is a Singapore bicycle shop specializing in road cycling and triathlon. Bike builds, repairs, servicing, components, apparel, and nutrition." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://bikeandbutter.com/" />
 
@@ -36,6 +36,38 @@
   <meta name="twitter:image"       content="https://bikeandbutter.com/og-image.png" />
   <link rel="stylesheet" href="home.css" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!-- Structured data: tells Google this is a real local business, and helps -->
+  <!-- link this website to the Bike & Butter Google Business Profile listing -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BicycleStore",
+    "name": "Bike & Butter",
+    "image": "https://bikeandbutter.com/og-image.png",
+    "url": "https://bikeandbutter.com/",
+    "telephone": "+65 8722 2610",
+    "priceRange": "$$",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "491 Jurong West Avenue 1",
+      "addressLocality": "Jurong West",
+      "postalCode": "640491",
+      "addressCountry": "SG"
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "09:00",
+        "closes": "18:00"
+      }
+    ],
+    "sameAs": [
+      "https://www.instagram.com/bikeandbutter/"
+    ]
+  }
+  </script>
   <style>
     /* ── Static hero background ── */
     body {
@@ -146,7 +178,7 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo">
-    <a href="index.html" class="logo-link">
+    <a href="./" class="logo-link">
       <div class="logo-icon">B</div>
       Bike &amp; Butter
     </a>
@@ -160,16 +192,16 @@
           </svg>
         </a>
         <div class="nav-partners-dropdown">
-          <a href="partners/8lien/8lien.html"><span class="nav-partner-dot" style="background:#ff677e;"></span>8LIEN</a>
-          <a href="partners/RSTRI/RSTRI.html"><span class="nav-partner-dot" style="background:#f5c518;"></span>RSTRI</a>
-          <a href="partners/EVR/EVR.html"><span class="nav-partner-dot" style="background:#F26522;"></span>EVR</a>
+          <a href="8lien/"><span class="nav-partner-dot" style="background:#ff677e;"></span>8LIEN</a>
+          <a href="rstri/"><span class="nav-partner-dot" style="background:#f5c518;"></span>RSTRI</a>
+          <a href="evr/"><span class="nav-partner-dot" style="background:#F26522;"></span>EVR</a>
         </div>
       </div>
-      <a href="marketplace.html">Marketplace</a>
-      <a href="bikeindex.html">Bikes</a>
-      <a href="community.html">Community</a>
-      <a href="feed.html">Feed</a>
-      <a href="contact.html">Contact Us</a>
+      <a href="marketplace/">Marketplace</a>
+      <a href="bikeindex/">Bikes</a>
+      <a href="community/">Community</a>
+      <a href="feed/">Feed</a>
+      <a href="contact/">Contact Us</a>
     </div>
     <div id="auth-area"></div>
   </div>
@@ -179,14 +211,14 @@
 </nav>
 
 <div class="mobile-menu" id="mobile-menu">
-  <a href="partners/8lien/8lien.html" style="color:#ff677e;font-weight:600;">8LIEN 
-  <a href="partners/RSTRI/RSTRI.html" style="color:#f5c518;font-weight:600;">RSTRI 
-  <a href="partners/EVR/EVR.html" style="color:#F26522;font-weight:600;">EVR 
-  <a href="marketplace.html">Marketplace</a>
-  <a href="bikeindex.html">Bikes</a>
-  <a href="community.html">Community</a>
-  <a href="feed.html">Feed</a>
-  <a href="contact.html">Contact Us</a>
+  <a href="8lien/" style="color:#ff677e;font-weight:600;">8LIEN 
+  <a href="rstri/" style="color:#f5c518;font-weight:600;">RSTRI 
+  <a href="evr/" style="color:#F26522;font-weight:600;">EVR 
+  <a href="marketplace/">Marketplace</a>
+  <a href="bikeindex/">Bikes</a>
+  <a href="community/">Community</a>
+  <a href="feed/">Feed</a>
+  <a href="contact/">Contact Us</a>
 </div>
 
 <script>
@@ -209,16 +241,16 @@ document.querySelectorAll('#mobile-menu a').forEach(function(a) {
     <div class="hero-title">BIKE & BUTTER</div>
     <div class="hero-sub">The Road Bike Archive</div>
     <div class="hero-meta" id="hero-meta"></div>
-    <button class="enter-btn" onclick="window.location.href='bikeindex.html'">
+    <button class="enter-btn" onclick="window.location.href='bikeindex/'">
       Browse Collection
     </button>
   </div>
   <div class="mobile-splash-links">
-    <a href="brands.html">Brands</a>
-    <a href="community.html">Community</a>
-    <a href="feed.html">Feed</a>
-    <a href="marketplace.html">Marketplace</a>
-    <a href="contact.html">Contact Us</a>
+    <a href="brands/">Brands</a>
+    <a href="community/">Community</a>
+    <a href="feed/">Feed</a>
+    <a href="marketplace/">Marketplace</a>
+    <a href="contact/">Contact Us</a>
   </div>
 </div>
 

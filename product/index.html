@@ -19,11 +19,11 @@
   <title>Product — Bike & Butter</title>
   <meta name="description" content="View this road bike listing on the Bike & Butter marketplace." />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://bikeandbutter.com/product.html" />
+  <link rel="canonical" href="https://bikeandbutter.com/product/" />
 
   <!-- Open Graph (WhatsApp, Telegram, Facebook previews) -->
   <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://bikeandbutter.com/product.html" />
+  <meta property="og:url"         content="https://bikeandbutter.com/product/" />
   <meta property="og:title"       content="Listing — Bike & Butter Marketplace" />
   <meta property="og:description" content="View this road bike listing on the Bike & Butter marketplace." />
   <meta property="og:image"       content="https://bikeandbutter.com/og-image.png" />
@@ -34,7 +34,7 @@
   <meta name="twitter:title"       content="Listing — Bike & Butter Marketplace" />
   <meta name="twitter:description" content="View this road bike listing on the Bike & Butter marketplace." />
   <meta name="twitter:image"       content="https://bikeandbutter.com/og-image.png" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="../style.css" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
 
@@ -375,7 +375,7 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo">
-    <a href="index.html" class="logo-link">
+    <a href="../" class="logo-link">
       <div class="logo-icon">B</div>
       Bike &amp; Butter
     </a>
@@ -389,16 +389,16 @@
           </svg>
         </a>
         <div class="nav-partners-dropdown">
-          <a href="partners/8lien/8lien.html"><span class="nav-partner-dot" style="background:#ff677e;"></span>8LIEN</a>
-          <a href="partners/RSTRI/RSTRI.html"><span class="nav-partner-dot" style="background:#f5c518;"></span>RSTRI</a>
-          <a href="partners/EVR/EVR.html"><span class="nav-partner-dot" style="background:#F26522;"></span>EVR</a>
+          <a href="../8lien/"><span class="nav-partner-dot" style="background:#ff677e;"></span>8LIEN</a>
+          <a href="../rstri/"><span class="nav-partner-dot" style="background:#f5c518;"></span>RSTRI</a>
+          <a href="../evr/"><span class="nav-partner-dot" style="background:#F26522;"></span>EVR</a>
         </div>
       </div>
-      <a href="marketplace.html" class="active">Marketplace</a>
-      <a href="bikeindex.html">Bikes</a>
-      <a href="community.html">Community</a>
-      <a href="feed.html">Feed</a>
-      <a href="contact.html">Contact Us</a>
+      <a href="../marketplace/" class="active">Marketplace</a>
+      <a href="../bikeindex/">Bikes</a>
+      <a href="../community/">Community</a>
+      <a href="../feed/">Feed</a>
+      <a href="../contact/">Contact Us</a>
     </div>
     <div id="auth-area"></div>
   </div>
@@ -408,14 +408,14 @@
 </nav>
 
 <div class="mobile-menu" id="mobile-menu">
-  <a href="partners/8lien/8lien.html" style="color:#ff677e;font-weight:600;">8LIEN 
-  <a href="partners/RSTRI/RSTRI.html" style="color:#f5c518;font-weight:600;">RSTRI 
-  <a href="partners/EVR/EVR.html" style="color:#F26522;font-weight:600;">EVR 
-  <a href="marketplace.html" class="active">Marketplace</a>
-  <a href="bikeindex.html">Bikes</a>
-  <a href="community.html">Community</a>
-  <a href="feed.html">Feed</a>
-  <a href="contact.html">Contact Us</a>
+  <a href="../8lien/" style="color:#ff677e;font-weight:600;">8LIEN 
+  <a href="../rstri/" style="color:#f5c518;font-weight:600;">RSTRI 
+  <a href="../evr/" style="color:#F26522;font-weight:600;">EVR 
+  <a href="../marketplace/" class="active">Marketplace</a>
+  <a href="../bikeindex/">Bikes</a>
+  <a href="../community/">Community</a>
+  <a href="../feed/">Feed</a>
+  <a href="../contact/">Contact Us</a>
 </div>
 
 <script>
@@ -435,7 +435,7 @@ document.querySelectorAll('#mobile-menu a').forEach(function(a) {
   <!-- Left: eyebrow + big name -->
   <div class="product-hero-left">
     <div>
-      <p class="product-hero-eyebrow">Bike &amp; Butter &nbsp;·&nbsp; <a href="marketplace.html" style="color:inherit;text-decoration:none;">Marketplace</a></p>
+      <p class="product-hero-eyebrow">Bike &amp; Butter &nbsp;·&nbsp; <a href="../marketplace/" style="color:inherit;text-decoration:none;">Marketplace</a></p>
     </div>
     <h1 class="product-hero-title" id="product-name">Loading…</h1>
   </div>
@@ -458,14 +458,14 @@ document.querySelectorAll('#mobile-menu a').forEach(function(a) {
     <div class="hero-actions">
       <button class="hero-btn primary"
         onclick="authGuard(
-          () => window.location.href = 'contact.html?type=Make%20an%20Offer&bike=' + encodeURIComponent(currentProductName),
+          () => window.location.href = '../contact/?type=Make%20an%20Offer&bike=' + encodeURIComponent(currentProductName),
           'Sign in to make an offer',
           'You need to be signed in to make an offer.')">
         Make an Offer
       </button>
       <button class="hero-btn"
         onclick="authGuard(
-          () => window.location.href = 'contact.html?type=Ask%20a%20Question&bike=' + encodeURIComponent(currentProductName),
+          () => window.location.href = '../contact/?type=Ask%20a%20Question&bike=' + encodeURIComponent(currentProductName),
           'Sign in to ask a question',
           'You need to be signed in to send a message.')">
         Ask a Question
@@ -477,7 +477,7 @@ document.querySelectorAll('#mobile-menu a').forEach(function(a) {
 <!-- SELL BANNER -->
 <div class="sell-banner">
   <p><strong>Got something to sell?</strong> &nbsp;Drop it with us — we'll list it, handle enquiries, and help you close the deal.</p>
-  <button class="sell-btn" onclick="window.location.href='sell.html'">List an Item →</button>
+  <button class="sell-btn" onclick="window.location.href='../sell/'">List an Item →</button>
 </div>
 
 <!-- PRODUCT BODY -->
@@ -526,7 +526,7 @@ document.querySelectorAll('#mobile-menu a').forEach(function(a) {
 </div>
 
 <div class="toast" id="toast"></div>
-<script src="auth.js"></script>
+<script src="../auth.js"></script>
 <script>
 const SHEET_ID = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
 const API_KEY  = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';

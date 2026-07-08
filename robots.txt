@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /BikeAndButter_Hub.html
+Disallow: /BikeAndButter_Invoice.html
+Allow: /
+
+Sitemap: https://bikeandbutter.com/sitemap.xml
