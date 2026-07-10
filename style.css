@@ -259,6 +259,19 @@ nav {
   gap: 6px;
 }
 
+/* =========================== ACCESSIBILITY UTILITIES =========================== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* =========================== PAGE HEADER =========================== */
 .page-header {
   padding: 40px 24px 32px;
@@ -270,7 +283,7 @@ nav {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: #bbb;
+  color: #656565;
   margin-bottom: 10px;
 }
 
@@ -284,7 +297,7 @@ nav {
 
 .page-header-tagline {
   font-size: 13px;
-  color: #999;
+  color: #656565;
 }
 
 /* =========================== FILTER BAR =========================== */
@@ -310,7 +323,7 @@ nav {
 
 .results-count {
   font-size: 13px;
-  color: #aaa;
+  color: #656565;
   white-space: nowrap;
 }
 
@@ -416,7 +429,7 @@ nav {
 }
 
 .bike-info { padding: 12px 14px 14px; }
-.bike-brand { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 3px; }
+.bike-brand { font-size: 11px; color: #656565; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 3px; }
 .bike-name { font-size: 13px; font-weight: 600; color: #111; margin-bottom: 4px; line-height: 1.3; }
 .bike-category { font-size: 12px; color: #aaa; margin-bottom: 8px; }
 

@@ -16,6 +16,7 @@
 </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="../style.css" />
   <title>Browse Road Bikes — Bike & Butter</title>
   <meta name="description" content="Search and filter hundreds of road bikes by brand, category and price. Find your next dream bike on Bike & Butter." />
   <meta name="robots" content="index, follow" />
@@ -34,7 +35,6 @@
   <meta name="twitter:title"       content="Browse Bikes — Bike & Butter" />
   <meta name="twitter:description" content="Search and filter hundreds of road bikes by brand, category and price. Find your next dream bike on Bike & Butter." />
   <meta name="twitter:image"       content="https://bikeandbutter.com/og-image.png" />
-  <link rel="stylesheet" href="../style.css" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -121,6 +121,7 @@ document.querySelectorAll('#mobile-menu a').forEach(function(a) {
         </div>
         </div>
         <div class="filter-right">
+          <label for="sort-select" class="sr-only">Sort bikes</label>
           <select id="sort-select">
             <option value="newest">Newest</option>
             <option value="price-asc">Price: Low to High</option>

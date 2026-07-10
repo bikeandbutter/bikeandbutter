@@ -16,6 +16,7 @@
   --white-dim:  rgba(255,255,255,0.55);
   --white-faint:rgba(255,255,255,0.12);
   --pink:       #ff677e;
+  --pink-cta:   #c93655; /* darker pink used only where white text sits on the pink background, for WCAG AA contrast */
   --pink-dim:   rgba(255,103,126,0.15);
   --pink-glow:  rgba(255,103,126,0.35);
   --font-head:  'Barlow Condensed', sans-serif;
@@ -351,7 +352,7 @@ img { display: block; width: 100%; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--pink);
+  background: var(--pink-cta);
   color: var(--white);
   font-family: var(--font-head);
   font-size: 14px;
@@ -396,7 +397,7 @@ img { display: block; width: 100%; }
 
 /* ── Distributor badge strip (auto-scrolling) ──────────────────── */
 .badge-strip {
-  background: var(--pink);
+  background: var(--pink-cta);
   overflow: hidden;
   padding: 14px 0;
 }
@@ -842,7 +843,7 @@ img { display: block; width: 100%; }
   color: var(--white-dim);
 }
 
-.footer-brand a { color: var(--pink); }
+.footer-brand a { color: var(--pink); text-decoration: underline; text-underline-offset: 2px; }
 
 .footer-links {
   display: flex;

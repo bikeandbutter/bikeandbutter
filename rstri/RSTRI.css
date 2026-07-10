@@ -490,7 +490,7 @@ img { display: block; width: 100%; }
   font-family: var(--font-mono); font-size: 11px;
   letter-spacing: 1px; color: var(--white-dim);
 }
-.rs-footer-brand a { color: var(--yellow); }
+.rs-footer-brand a { color: var(--yellow); text-decoration: underline; text-underline-offset: 2px; }
 .rs-footer-links { display: flex; gap: 24px; }
 .rs-footer-links a { font-size: 12px; color: var(--white-dim); transition: color 0.15s; }
 .rs-footer-links a:hover { color: var(--white); }

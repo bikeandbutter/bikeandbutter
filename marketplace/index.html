@@ -15,6 +15,7 @@
 </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="../style.css" />
   <title>Marketplace — Bike & Butter</title>
   <meta name="description" content="Buy and sell road bikes on the Bike & Butter marketplace. Find great deals from cyclists in the community." />
   <meta name="robots" content="index, follow" />
@@ -29,18 +30,17 @@
   <meta name="twitter:title"       content="Marketplace — Bike & Butter" />
   <meta name="twitter:description" content="Buy and sell road bikes on the Bike & Butter marketplace." />
   <meta name="twitter:image"       content="https://bikeandbutter.com/og-image.png" />
-  <link rel="stylesheet" href="../style.css" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     .mp-hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 220px; border-bottom: 1px solid #ebebeb; }
     .mp-hero-left { padding: 44px 40px; border-right: 1px solid #ebebeb; display: flex; flex-direction: column; justify-content: space-between; }
-    .mp-hero-eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #bbb; }
+    .mp-hero-eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #656565; }
     .mp-hero-title { font-size: 52px; font-weight: 700; letter-spacing: -2px; color: #111; line-height: 1; margin-top: 12px; }
     .mp-hero-right { padding: 44px 40px; display: flex; flex-direction: column; justify-content: space-between; }
     .mp-hero-desc { font-size: 14px; color: #666; line-height: 1.6; max-width: 380px; }
     .mp-hero-stats { display: flex; gap: 32px; }
     .mp-stat-num { font-size: 28px; font-weight: 700; color: #111; letter-spacing: -1px; }
-    .mp-stat-label { font-size: 11px; color: #aaa; margin-top: 2px; }
+    .mp-stat-label { font-size: 11px; color: #656565; margin-top: 2px; }
     .sell-banner { background: #111; color: #fff; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #000; }
     .sell-banner p { font-size: 13px; color: #bbb; }
     .sell-banner strong { color: #fff; }
@@ -135,6 +135,7 @@
     <span></span><span></span><span></span>
   </button>
 </nav>
+<main>
 
 <div class="mobile-menu" id="mobile-menu">
   <a href="../8lien/" style="color:#ff677e;font-weight:600;">8LIEN 
@@ -190,6 +191,7 @@ document.querySelectorAll('#mobile-menu a').forEach(function(a) {
     </div>
     <div class="mp-filter-right">
       <input type="text" class="mp-search" id="mp-search" placeholder="Search listings…" />
+      <label for="mp-sort" class="sr-only">Sort listings</label>
       <select class="mp-sort" id="mp-sort">
         <option value="newest">Newest</option>
         <option value="price-asc">Price: Low → High</option>
@@ -304,5 +306,6 @@ document.getElementById('mp-sort').addEventListener('change', renderListings);
 fetchListings();
 function goToProduct(id) { window.location.href = `../product/?id=${id}`; }
   </script>
+</main>
 </body>
 </html>
