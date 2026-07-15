@@ -538,12 +538,67 @@
 
 
   <!-- ── Scripts ───────────────────────────────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyD5oir2beAnURC3hy56VCA4vIaJXuu6KoGlNmF03cyXEzqSwbAzqZOH9yiKdYGlEYQ/exec";
 
-    window.addEventListener('load', () => {
+    // ── Supabase connection ───────────────────────────────────────
+    const SUPABASE_URL = "https://aeszkgesbqxfqzuwintb.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_HLEeqpfnhWJ3kr_AHJIffA_9FOE0aHV";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Fetch products + their variants from Supabase and reshape them
+    // into the exact same shape the old hardcoded PRODUCTS array used,
+    // so renderGrid/getProductImg/etc below need zero changes.
+    async function loadProductsFromSupabase() {
+      const { data, error } = await supabase
+        .from('products')
+        .select('sku,name,range,category,gender,price_sgd,product_variants(colour,hex,size,image_path,created_at)')
+        .eq('active', true)
+        .order('name', { ascending: true });
+
+      if (error) {
+        console.error('Failed to load products from Supabase:', error);
+        return [];
+      }
+
+      return data.map(p => {
+        const variants = [...(p.product_variants || [])]
+          .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+        const sizes = [];
+        const coloursMap = new Map();
+
+        variants.forEach(v => {
+          if (!sizes.includes(v.size)) sizes.push(v.size);
+          if (!coloursMap.has(v.colour)) {
+            let varImg = null;
+            if (v.image_path) {
+              const m = v.image_path.match(/_(\d+)\.webp$/);
+              varImg = m ? parseInt(m[1], 10) : null;
+            }
+            coloursMap.set(v.colour, { label: v.colour, hex: v.hex, varImg });
+          }
+        });
+
+        return {
+          sku: p.sku,
+          name: p.name,
+          range: p.range,
+          cat: p.category,
+          gender: p.gender,
+          priceSGD: (p.price_sgd === 0 || p.price_sgd === null) ? 'Price TBA' : `S$${p.price_sgd}`,
+          sizes,
+          colours: Array.from(coloursMap.values())
+        };
+      });
+    }
+
+    window.addEventListener('load', async () => {
       const img = document.getElementById('hero-img');
       if (img) img.classList.add('loaded');
+
+      PRODUCTS = await loadProductsFromSupabase();
       renderGrid('all');
     });
 
@@ -557,399 +612,7 @@
     // ── Product data ─────────────────────────────────────────────
     // colours: array of {label, hex} — hex is display colour, label is the name
     // sizes: array of strings
-    const PRODUCTS = [
-
-      // ── TECH ─────────────────────────────────────────────────────────
-      { sku:'913',
-        name:'EVR TECH Aero Cycling Bottle',
-        range:'tech', cat:'Bottle', gender:null,
-        priceSGD: 'S$24',
-        sizes:['610ml'],
-        colours:[
-          {label:'Black Gold',     hex:'#1a1a1a',  varImg:1},
-          {label:'White Gold',     hex:'#f5f5f5',  varImg:7},
-          {label:'Translucent Grey', hex:'#888888',varImg:6},
-          {label:'Translucent Orange', hex:'#f26522',varImg:2},
-          {label:'Off-White',      hex:'#e8e4d9',  varImg:1},
-          {label:'Translucent Black', hex:'#2d2d2d',varImg:5},
-          {label:'Translucent White', hex:'#eeeeee',varImg:4},
-          {label:'Translucent Blue',  hex:'#7b8fd4',varImg:3},
-        ]},
-
-      { sku:'KXH2608',
-        name:'EVR TECH Gold Series Seamless Bib Shorts',
-        range:'tech', cat:'Bib Shorts', gender:'M',
-        priceSGD: 'S$134',
-        sizes:['XS','S','M','L','XL','2XL','3XL','4XL','5XL'],
-        colours:[
-          {label:'White Gold', hex:'#f5f5f5', varImg:1},
-          {label:'Black Gold', hex:'#1a1a1a', varImg:2},
-        ]},
-
-      { sku:'KXH2626',
-        name:'EVR TECH Gold Series Long Sleeve Jersey',
-        range:'tech', cat:'Jersey', gender:'F',
-        priceSGD: 'S$95',
-        sizes:['XS','S','M','L','XL','2XL','3XL'],
-        colours:[
-          {label:'Silver',  hex:'#b0bec5', varImg:1},
-          {label:'Yellow',  hex:'#afb42b', varImg:2},
-          {label:'White',   hex:'#f0f0f0', varImg:3},
-          {label:'Black',   hex:'#1a1a1a', varImg:4},
-        ]},
-
-      { sku:'902X6',
-        name:'EVR TECH Performance Cycling Socks',
-        range:'tech', cat:'Socks', gender:null,
-        priceSGD: 'S$13',
-        sizes:['One Size'],
-        colours:[
-          {label:'Army Olive',  hex:'#827717', varImg:1},
-          {label:'Mint Green',  hex:'#a5d6a7', varImg:2},
-          {label:'Light Blue',  hex:'#90caf9', varImg:3},
-          {label:'Maroon',      hex:'#880e4f', varImg:4},
-          {label:'Grey',        hex:'#9e9e9e', varImg:5},
-          {label:'Light Pink',  hex:'#f8bbd9', varImg:6},
-          {label:'Orange',      hex:'#f26522', varImg:7},
-          {label:'Dark Blue',   hex:'#1a237e', varImg:8},
-          {label:'White',       hex:'#f0f0f0', varImg:9},
-          {label:'Pink',        hex:'#f06292', varImg:10},
-          {label:'Black',       hex:'#1a1a1a', varImg:11},
-          {label:'Yellow',      hex:'#f9a825', varImg:12},
-          {label:'Neon',        hex:'#cddc39', varImg:13},
-        ]},
-
-      // ── EXPLORE ───────────────────────────────────────────────────────
-      { sku:'912',
-        name:'EVR EXPLORE Cycling Water Bottle',
-        range:'explore', cat:'Bottle', gender:null,
-        priceSGD: 'Price TBA',
-        sizes:['550ml','650ml'],
-        sizeImgOffset: {550:0, 650:8},
-        colours:[
-          {label:'Green Blue',   hex:'#26a69a', varImg:1},
-          {label:'Pink Purple',  hex:'#ce93d8', varImg:2},
-          {label:'Pink',         hex:'#f48fb1', varImg:3},
-          {label:'Purple',       hex:'#9575cd', varImg:4},
-          {label:'Orange',       hex:'#ffa726', varImg:5},
-          {label:'Pink Blue',    hex:'#f06292', varImg:6},
-          {label:'Blue',         hex:'#42a5f5', varImg:7},
-          {label:'Black White',  hex:'#1a1a1a', varImg:8},
-        ]},
-
-      { sku:'902T',
-        name:'EVR EXPLORE Colour Tint Cycling Bottle',
-        range:'explore', cat:'Bottle', gender:null,
-        priceSGD: 'S$12',
-        sizes:['620ml'],
-        colours:[
-          {label:'Pink Clear',  hex:'#f48fb1', varImg:1},
-          {label:'Blue',        hex:'#1565c0', varImg:2},
-          {label:'Black',       hex:'#1a1a1a', varImg:3},
-          {label:'Green',       hex:'#2e7d32', varImg:4},
-        ]},
-
-      { sku:'902B',
-        name:'EVR EXPLORE Cycling Bottle',
-        range:'explore', cat:'Bottle', gender:null,
-        priceSGD: 'S$12',
-        sizes:['620ml'],
-        colours:[
-          {label:'Translucent Grey', hex:'#9e9e9e', varImg:5},
-          {label:'Clear',            hex:'#e0e0e0', varImg:6},
-          {label:'White',            hex:'#f5f5f5', varImg:7},
-          {label:'Black',            hex:'#212121', varImg:8},
-        ]},
-
-      { sku:'905B',
-        name:'EVR EXPLORE Insulated Cycling Bottle',
-        range:'explore', cat:'Bottle', gender:null,
-        priceSGD: 'S$18',
-        sizes:['620ml'],
-        colours:[
-          {label:'White Black',  hex:'#e8e8e8', varImg:1},
-          {label:'Black Purple', hex:'#311b92', varImg:2},
-          {label:'Black',        hex:'#1a1a1a', varImg:3},
-          {label:'Blue Black',   hex:'#90caf9', varImg:4},
-          {label:'Green',        hex:'#cddc39', varImg:5},
-        ]},
-
-      { sku:'KX1154',
-        name:'EVR EXPLORE Street Art Cycling Jersey',
-        range:'explore', cat:'Jersey', gender:'M',
-        priceSGD: 'S$72',
-        sizes:['S','M','L','XL','2XL','3XL','4XL','5XL'],
-        colours:[
-          {label:'Grey',   hex:'#9e9e9e', varImg:1},
-          {label:'Black',  hex:'#1a1a1a', varImg:2},
-          {label:'Pink',   hex:'#ce93d8', varImg:3},
-          {label:'White',  hex:'#f0f0f0', varImg:4},
-          {label:'Green',  hex:'#004d40', varImg:5},
-        ]},
-
-      { sku:'905S',
-        name:'EVR EXPLORE Aero Cycling Socks',
-        range:'explore', cat:'Socks', gender:null,
-        priceSGD: 'S$29',
-        sizes:['One Size'],
-        colours:[
-          {label:'White Neon',  hex:'#cddc39', varImg:1},
-          {label:'White Pink',  hex:'#f48fb1', varImg:2},
-          {label:'Black Pink',  hex:'#1a1a1a', varImg:3},
-          {label:'White Black', hex:'#e0e0e0', varImg:4},
-          {label:'Black White', hex:'#424242', varImg:5},
-        ]},
-
-      { sku:'906',
-        name:'EVR EXPLORE Reflective Cycling Socks',
-        range:'explore', cat:'Socks', gender:null,
-        priceSGD: 'S$13',
-        sizes:['One Size'],
-        colours:[
-          {label:'White Orange', hex:'#f26522', varImg:1},
-          {label:'White Pink',   hex:'#e91e8c', varImg:2},
-          {label:'Black',        hex:'#1a1a1a', varImg:3},
-        ]},
-
-      { sku:'901',
-        name:'EVR EXPLORE Cycling Socks',
-        range:'explore', cat:'Socks', gender:null,
-        priceSGD: 'S$13',
-        priceSGD2: 'S$15',
-        sizes:['One Size'],
-        colours:[
-          {label:'Black',       hex:'#1a1a1a', varImg:1, price:'S$13'},
-          {label:'White',       hex:'#f0f0f0', varImg:2, price:'S$13'},
-          {label:'Green',       hex:'#2e7d32', varImg:3, price:'S$13'},
-          {label:'Blue',        hex:'#00838f', varImg:4, price:'S$13'},
-          {label:'Yellow',      hex:'#f9a825', varImg:5, price:'S$13'},
-          {label:'Black White', hex:'#37474f', varImg:6, price:'S$15'},
-          {label:'White Black', hex:'#eeeeee', varImg:7, price:'S$15'},
-        ]},
-
-      { sku:'LX002',
-        name:'EVR EXPLORE Cycling Gloves',
-        range:'explore', cat:'Gloves', gender:null,
-        priceSGD: 'S$24',
-        sizes:['S','M','L','XL'],
-        colours:[
-          {label:'Blue',  hex:'#1565c0', varImg:1},
-          {label:'Grey',  hex:'#9e9e9e', varImg:2},
-          {label:'White', hex:'#f0f0f0', varImg:3},
-          {label:'Green', hex:'#8bc34a', varImg:4},
-          {label:'Navy',  hex:'#1a237e', varImg:5},
-        ]},
-
-      { sku:'XT002',
-        name:'EVR EXPLORE Spring Autumn Shoe Cover',
-        range:'explore', cat:'Shoe Cover', gender:null,
-        priceSGD: 'S$34',
-        sizes:['S (37-39)','M (40-42)','L (43-45)'],
-        colours:[
-          {label:'White', hex:'#f0f0f0', varImg:1},
-          {label:'Black', hex:'#1a1a1a', varImg:2},
-        ]},
-
-      { sku:'EV1001',
-        name:'EVR EXPLORE UV Protection Face Gaiter',
-        range:'explore', cat:'Accessories', gender:null,
-        priceSGD: 'S$15',
-        sizes:['One Size'],
-        colours:[
-          {label:'Pink',  hex:'#f48fb1', varImg:1},
-          {label:'White', hex:'#f5f5f5', varImg:2},
-          {label:'Grey',  hex:'#cfd8dc', varImg:3},
-          {label:'Black', hex:'#1a1a1a', varImg:4},
-        ]},
-
-      { sku:'EH1001',
-        name:'EVR EXPLORE Cycling Cap',
-        range:'explore', cat:'Cap', gender:null,
-        priceSGD: 'S$17',
-        sizes:['One Size'],
-        colours:[
-          {label:'Pink',   hex:'#f48fb1', varImg:1},
-          {label:'Wine',   hex:'#880e4f', varImg:2},
-          {label:'Black',  hex:'#1a1a1a', varImg:3},
-          {label:'Yellow', hex:'#f9a825', varImg:4},
-          {label:'White',  hex:'#ec407a', varImg:5},
-        ]},
-
-      // ── DISCOVER ──────────────────────────────────────────────────────
-      { sku:'2618',
-        name:'EVR DISCOVER Short Sleeve Cycling Jersey',
-        range:'discover', cat:'Jersey', gender:'F',
-        priceSGD: 'S$67',
-        sizes:['XS','S','M','L','XL','2XL'],
-        colours:[
-          {label:'Purple', hex:'#7b8fd4', varImg:1},
-          {label:'Yellow', hex:'#e8d5b0', varImg:2},
-          {label:'Pink',   hex:'#f48fb1', varImg:3},
-        ]},
-
-      { sku:'2617',
-        name:'EVR DISCOVER Short Sleeve Cycling Jersey',
-        range:'discover', cat:'Jersey', gender:'M',
-        priceSGD: 'S$67',
-        sizes:['S','M','L','XL','2XL','3XL'],
-        colours:[
-          {label:'Blue',   hex:'#5c6bc0', varImg:1},
-          {label:'Grey',   hex:'#8d6e63', varImg:3},
-          {label:'Purple', hex:'#4527a0', varImg:4},
-        ]},
-
-      { sku:'2510',
-        name:'EVR DISCOVER Short Sleeve Cycling Jersey',
-        range:'discover', cat:'Jersey', gender:'M',
-        priceSGD: 'S$72',
-        sizes:['S','M','L','XL','2XL','3XL'],
-        colours:[
-          {label:'Light Blue',    hex:'#26a69a', varImg:1},
-          {label:'White Orange',  hex:'#9e9e9e', varImg:2},
-          {label:'Purple',        hex:'#7b1fa2', varImg:3},
-          {label:'Black',         hex:'#eeeeee', varImg:4},
-        ]},
-
-      { sku:'2511',
-        name:'EVR DISCOVER Short Sleeve Cycling Jersey',
-        range:'discover', cat:'Jersey', gender:'F',
-        priceSGD: 'S$72',
-        sizes:['XS','S','M','L','XL','2XL','3XL'],
-        colours:[
-          {label:'Pink',   hex:'#f48fb1', varImg:1},
-          {label:'Yellow', hex:'#fff8e1', varImg:2},
-          {label:'Purple', hex:'#ce93d8', varImg:3},
-          {label:'Blue',   hex:'#b3e5fc', varImg:4},
-        ]},
-
-      { sku:'2501',
-        name:'EVR DISCOVER Cycling Bib Shorts',
-        range:'discover', cat:'Bib Shorts', gender:'M',
-        priceSGD: 'S$65',
-        sizes:['S','M','L','XL','2XL','3XL','4XL'],
-        colours:[
-          {label:'Blue',  hex:'#1565c0', varImg:1},
-          {label:'Grey',  hex:'#424242', varImg:2},
-          {label:'White', hex:'#bdbdbd', varImg:3},
-          {label:'Black', hex:'#1a1a1a', varImg:4},
-        ]},
-
-      { sku:'2406',
-        name:'EVR DISCOVER Breeze Cycling Bib Shorts',
-        range:'discover', cat:'Bib Shorts', gender:'M',
-        priceSGD: 'S$84',
-        sizes:['S','M','L','XL','2XL','3XL'],
-        colours:[
-          {label:'Orange',     hex:'#f26522', varImg:1},
-          {label:'Grey',       hex:'#cfd8dc', varImg:2},
-          {label:'Blue',       hex:'#1a237e', varImg:3},
-          {label:'Black',      hex:'#1a1a1a', varImg:4},
-          {label:'Charcoal',   hex:'#546e7a', varImg:5},
-        ]},
-
-      { sku:'2405',
-        name:'EVR DISCOVER Breeze Cycling Shorts',
-        range:'discover', cat:'Bib Shorts', gender:'M',
-        priceSGD: 'S$72',
-        sizes:['S','M','L','XL','2XL','3XL','4XL'],
-        colours:[
-          {label:'Dark Blue',  hex:'#4527a0', varImg:1},
-          {label:'Blue',       hex:'#1565c0', varImg:2},
-          {label:'Grey',       hex:'#37474f', varImg:3},
-          {label:'Light Blue', hex:'#eceff1', varImg:4},
-          {label:'Black',      hex:'#1a1a1a', varImg:5},
-        ]},
-
-      { sku:'8102',
-        name:'EVR DISCOVER Breeze Cycling Bib Pants',
-        range:'discover', cat:'Bib Tights', gender:'F',
-        priceSGD: 'S$95',
-        sizes:['XS','S','M','L','XL','2XL','3XL'],
-        colours:[
-          {label:'Mauve',      hex:'#8d6e63', varImg:1},
-          {label:'Steel Blue', hex:'#607d8b', varImg:2},
-          {label:'Mid Grey',   hex:'#757575', varImg:3},
-          {label:'Black',      hex:'#1a1a1a', varImg:4},
-        ]},
-
-      { sku:'2521',
-        name:'EVR DISCOVER Sweat-Wicking Long Sleeve Base Layer',
-        range:'discover', cat:'Base Layer', gender:'M',
-        priceSGD: 'S$24',
-        sizes:['S','M','L','XL','2XL','3XL'],
-        colours:[
-          {label:'White', hex:'#f0f0f0', varImg:1},
-        ]},
-
-      // ── ULTRA ─────────────────────────────────────────────────────────
-      { sku:'LX007',
-        name:'EVR ULTRA Performance Cycling Gloves',
-        range:'ultra', cat:'Gloves', gender:null,
-        priceSGD: 'S$60',
-        sizes:['S','M','L','XL'],
-        colours:[
-          {label:'White', hex:'#f0f0f0', varImg:1},
-          {label:'Black', hex:'#1a1a1a', varImg:2},
-        ]},
-
-      { sku:'LX012',
-        name:'EVR ULTRA Premium Cycling Gloves',
-        range:'ultra', cat:'Gloves', gender:null,
-        priceSGD: 'S$100',
-        sizes:['S','M','L','XL'],
-        colours:[
-          {label:'White', hex:'#f0f0f0', varImg:1},
-          {label:'Black', hex:'#1a1a1a', varImg:2},
-        ]},
-
-      // ── ASCENT ────────────────────────────────────────────────────────
-      { sku:'LX008',
-        name:'EVR ASCENT Performance Cycling Gloves',
-        range:'ascent', cat:'Gloves', gender:null,
-        priceSGD: 'S$24',
-        sizes:['S','M','L','XL'],
-        colours:[
-          {label:'White', hex:'#f0f0f0', varImg:1},
-          {label:'Green', hex:'#558b2f', varImg:2},
-          {label:'Navy',  hex:'#1a237e', varImg:3},
-          {label:'Grey',  hex:'#37474f', varImg:4},
-        ]},
-
-      // ── CITY / DISCOVER / EXPLORE / ASCENT / TECH / PRO / JOY (no images yet)
-      { sku:'KX2523', name:'EVR CITY Lifestyle Tee', range:'city', cat:'Lifestyle T-Shirt', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Grey',hex:'#9e9e9e',varImg:null}] },
-      { sku:'KX2524', name:'EVR CITY Lifestyle Tee', range:'city', cat:'Lifestyle T-Shirt', gender:'F', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Grey',hex:'#9e9e9e',varImg:null}] },
-      { sku:'DZ12', name:'EVR CITY Base Jersey', range:'city', cat:'Jersey', gender:null, priceSGD:'Price TBA', sizes:['XS','S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null}] },
-      { sku:'KX2519', name:'EVR DISCOVER Sweat-Wicking Base Layer', range:'discover', cat:'Base Layer', gender:'M', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null}] },
-      { sku:'KX2520', name:'EVR DISCOVER Sweat-Wicking Base Layer', range:'discover', cat:'Base Layer', gender:'F', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null}] },
-      { sku:'KX2154', name:'EVR EXPLORE Street Art Cycling Jersey', range:'explore', cat:'Jersey', gender:'F', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Grey',hex:'#9e9e9e',varImg:null},{label:'Navy',hex:'#1a237e',varImg:null},{label:'Pink',hex:'#ce93d8',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Teal',hex:'#004d40',varImg:null}] },
-      { sku:'KX3154', name:'EVR EXPLORE Street Art Long Sleeve Jersey', range:'explore', cat:'Jersey', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Grey',hex:'#9e9e9e',varImg:null},{label:'Navy',hex:'#1a237e',varImg:null},{label:'Pink',hex:'#ce93d8',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Teal',hex:'#004d40',varImg:null}] },
-      { sku:'KX2512', name:'EVR EXPLORE Woven Wild Jersey', range:'explore', cat:'Jersey', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null},{label:'Red',hex:'#e53935',varImg:null}] },
-      { sku:'KX2513', name:'EVR EXPLORE Woven Wild Jersey', range:'explore', cat:'Jersey', gender:'F', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null},{label:'Red',hex:'#e53935',varImg:null}] },
-      { sku:'KX2517', name:'EVR EXPLORE Time Jersey', range:'explore', cat:'Jersey', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null}] },
-      { sku:'KX2516', name:'EVR EXPLORE Time Jersey', range:'explore', cat:'Jersey', gender:'F', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null}] },
-      { sku:'KX2430', name:'EVR ASCENT Mystic Jersey', range:'ascent', cat:'Jersey', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null},{label:'Red',hex:'#e53935',varImg:null}] },
-      { sku:'KX2431', name:'EVR ASCENT Mystic Jersey', range:'ascent', cat:'Jersey', gender:'F', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null},{label:'Red',hex:'#e53935',varImg:null}] },
-      { sku:'KX2535', name:'EVR ASCENT Breakthrough Jersey', range:'ascent', cat:'Jersey', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null},{label:'Orange',hex:'#f26522',varImg:null}] },
-      { sku:'KX2537', name:'EVR ASCENT Breakthrough Jersey', range:'ascent', cat:'Jersey', gender:'F', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null},{label:'Orange',hex:'#f26522',varImg:null}] },
-      { sku:'KX2546', name:'EVR ASCENT Breakthrough Long Sleeve Jersey', range:'ascent', cat:'Jersey', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null}] },
-      { sku:'KX2547', name:'EVR ASCENT Breakthrough Long Sleeve Jersey', range:'ascent', cat:'Jersey', gender:'F', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null}] },
-      { sku:'KX9109', name:'EVR ASCENT Windbreaker Bib Shorts', range:'ascent', cat:'Bib Shorts', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null}] },
-      { sku:'KX9403', name:'EVR ASCENT Breakthrough Bib Shorts', range:'ascent', cat:'Bib Shorts', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null}] },
-      { sku:'KX9503', name:'EVR ASCENT Breakthrough Bib Shorts', range:'ascent', cat:'Bib Shorts', gender:'F', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null}] },
-      { sku:'KX2556', name:'EVR ASCENT Liu Ying Speedsuit', range:'ascent', cat:'Speedsuit', gender:null, priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null}] },
-      { sku:'KX2543', name:'EVR ASCENT Warmth Wind Jacket', range:'ascent', cat:'Jacket', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null}] },
-      { sku:'KX2544', name:'EVR ASCENT Warmth Wind Jacket', range:'ascent', cat:'Jacket', gender:'F', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null}] },
-      { sku:'KX2551', name:'EVR ASCENT Speed Training Pants', range:'ascent', cat:'Training Pants', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'Grey',hex:'#9e9e9e',varImg:null}] },
-      { sku:'KX2552', name:'EVR ASCENT Speed Training Pants', range:'ascent', cat:'Training Pants', gender:'F', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'Grey',hex:'#9e9e9e',varImg:null}] },
-      { sku:'KX2407', name:'EVR TECH Race Suit', range:'tech', cat:'Speedsuit', gender:null, priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null}] },
-      { sku:'DZ07', name:'EVR TECH Light Wind Vest', range:'tech', cat:'Wind Vest', gender:null, priceSGD:'Price TBA', sizes:['XS','S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null}] },
-      { sku:'KX2557', name:'EVR TECH Wind Motion Jacket', range:'tech', cat:'Jacket', gender:null, priceSGD:'Price TBA', sizes:['XS','S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null}] },
-      { sku:'KX2430F', name:'EVR PRO Mystic Pro Jersey', range:'pro', cat:'Jersey', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null}] },
-      { sku:'KX9405', name:'EVR PRO Endurance Bib Tights', range:'pro', cat:'Bib Tights', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null}] },
-      { sku:'KX9505', name:'EVR PRO Endurance Bib Tights', range:'pro', cat:'Bib Tights', gender:'F', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null}] },
-      { sku:'KX2514', name:'EVR JOY Explore Jersey', range:'joy', cat:'Jersey', gender:'M', priceSGD:'Price TBA', sizes:['S','M','L','XL','2XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null},{label:'Red',hex:'#e53935',varImg:null}] },
-      { sku:'KX2515', name:'EVR JOY Explore Jersey', range:'joy', cat:'Jersey', gender:'F', priceSGD:'Price TBA', sizes:['XS','S','M','L','XL'], colours:[{label:'Black',hex:'#1a1a1a',varImg:null},{label:'White',hex:'#f0f0f0',varImg:null},{label:'Blue',hex:'#1565c0',varImg:null},{label:'Red',hex:'#e53935',varImg:null}] },
-    ];
+    let PRODUCTS = []; // populated at runtime by loadProductsFromSupabase()
 
     const RANGE_META = {
       city:     { label:'CITY',     badgeCls:'badge-city',     dotCls:'range-dot-city'     },
