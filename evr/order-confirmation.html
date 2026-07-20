@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Order Confirmation — EVR × Bike and Butter</title>
+<link rel="stylesheet" href="EVR.css" />
+<style>
+  body{background:#0a0a0a;color:#fff;font-family:'Inter',system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+  .confirm-box{max-width:440px;padding:40px;text-align:center;}
+  .icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:26px;}
+  .icon.success{background:rgba(102,187,106,0.15);color:#66bb6a;}
+  .icon.pending{background:rgba(255,193,7,0.15);color:#ffc107;}
+  .icon.failed{background:rgba(239,83,80,0.15);color:#ef5350;}
+  h1{font-size:20px;margin-bottom:10px;}
+  p{color:rgba(255,255,255,0.6);font-size:14px;line-height:1.6;margin-bottom:24px;}
+  .order-ref{font-family:monospace;background:rgba(255,255,255,0.06);padding:10px 16px;border-radius:6px;font-size:13px;display:inline-block;margin-bottom:24px;}
+  a.back-link{color:#F26522;text-decoration:none;font-size:13px;font-weight:600;}
+</style>
+</head>
+<body>
+  <div class="confirm-box">
+    <div id="status-icon" class="icon pending">⏳</div>
+    <h1 id="status-title">Checking your order…</h1>
+    <p id="status-desc">One moment while we confirm your payment status.</p>
+    <div class="order-ref" id="order-ref" style="display:none"></div>
+    <br/>
+    <a href="/evr/" class="back-link">← Back to EVR shop</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const orderNumber = params.get('order');
+    const status = params.get('status'); // HitPay appends this: e.g. "completed", "failed"
+
+    if (orderNumber) {
+      document.getElementById('order-ref').textContent = orderNumber;
+      document.getElementById('order-ref').style.display = 'inline-block';
+    }
+
+    const iconEl = document.getElementById('status-icon');
+    const titleEl = document.getElementById('status-title');
+    const descEl = document.getElementById('status-desc');
+
+    if (status === 'completed') {
+      iconEl.className = 'icon success';
+      iconEl.textContent = '✓';
+      titleEl.textContent = 'Payment received!';
+      descEl.textContent = "This is a demo site — no real order was placed, no payment was actually charged, and nothing will be shipped. This page is for testing the checkout flow only.";
+    } else if (status === 'failed' || status === 'cancelled') {
+      iconEl.className = 'icon failed';
+      iconEl.textContent = '✕';
+      titleEl.textContent = 'Payment not completed';
+      descEl.textContent = "It looks like the payment didn't go through. Your order is saved, but not yet confirmed — you can try paying again or contact us for help.";
+    } else {
+      iconEl.className = 'icon pending';
+      iconEl.textContent = '⏳';
+      titleEl.textContent = 'Order received';
+      descEl.textContent = "We're confirming your payment status now. You'll receive an email confirmation shortly once it's processed.";
+    }
+  </script>
+</body>
+</html>

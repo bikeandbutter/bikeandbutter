@@ -33,35 +33,38 @@
 </head>
 <body>
 
+  <!-- ── Announcement bar ──────────────────────────────────────────── -->
+  <div class="demo-bar">DEMO SITE — this store is in testing. No orders placed here will be processed, charged, or fulfilled.</div>
+
   <!-- ── Nav ───────────────────────────────────────────────────────── -->
   <nav class="rs-nav">
-    <div class="nav-logo">
-      <a href="../" class="logo-link">
-        <div class="logo-icon">B</div>
-        Bike &amp; Butter &nbsp;<span style="color:rgba(255,255,255,0.3);font-weight:300;">x</span>&nbsp;<span style="color:#F26522;font-weight:700;">EVR</span>
-      </a>
+    <div class="nav-left-group">
+      <div class="nav-left-icons">
+        <button class="nav-icon-btn" onclick="history.back()" aria-label="Go back">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M12 4l-6 6 6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <a class="nav-icon-btn" href="../" aria-label="Home">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 9l7-6 7 6v8a1 1 0 0 1-1 1h-4v-6H8v6H4a1 1 0 0 1-1-1V9z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <div class="nav-logo">
+        <a href="../" class="logo-link">
+          <img src="photos/bikeandbutter_logo.png" alt="Bike and Butter" class="nav-logo-img nav-logo-img-bb"/>
+          <span class="logo-x">×</span>
+          <img src="photos/evr_logo.png" alt="EVR" class="nav-logo-img nav-logo-img-evr"/>
+        </a>
+      </div>
     </div>
     <div class="nav-right">
       <div class="nav-links">
-        <div class="nav-partners-wrap">
-          <a href="#">Our Brands
-            <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-          <div class="nav-partners-dropdown">
-            <a href="../8lien/"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff677e;flex-shrink:0;margin-right:4px;"></span>8LIEN</a>
-            <a href="../rstri/"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#f5c518;flex-shrink:0;margin-right:4px;"></span>RSTRI</a>
-            <a href="./"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#F26522;flex-shrink:0;margin-right:4px;"></span>EVR</a>
-          </div>
-        </div>
-        <a href="../marketplace/">Marketplace</a>
-        <a href="../bikeindex/">Bikes</a>
-        <a href="../community/">Community</a>
-        <a href="../feed/">Feed</a>
-        <a href="../contact/">Contact Us</a>
+        <a href="#products">Shop</a>
+        <a href="#brand">The Brand</a>
+        <a href="../contact/">Contact</a>
       </div>
-      <div id="auth-area"></div>
+      <button class="nav-cart-btn" id="cart-btn" onclick="openCart()" aria-label="Open cart">
+        <svg width="19" height="19" viewBox="0 0 20 20" fill="none"><path d="M2 2h2l1.6 9.6a2 2 0 0 0 2 1.7h7a2 2 0 0 0 2-1.6L18 6H5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="17" r="1.3" fill="currentColor"/><circle cx="15" cy="17" r="1.3" fill="currentColor"/></svg>
+        <span class="nav-cart-badge" id="nav-cart-badge" style="display:none">0</span>
+      </button>
       <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
@@ -70,17 +73,11 @@
 <main>
 
   <div class="mobile-menu" id="mobile-menu">
-  <a href="../8lien/" style="color:#ff677e;font-weight:600;">8LIEN 
-  <a href="../rstri/" style="color:#f5c518;font-weight:600;">RSTRI 
-  <a href="./" style="color:#F26522;font-weight:600;">EVR 
-  <a href="../marketplace/">Marketplace</a>
-  <a href="../bikeindex/">Bikes</a>
-  <a href="../community/">Community</a>
-  <a href="../feed/">Feed</a>
-  <a href="../contact/">Contact Us</a>
+    <a href="#products">Shop</a>
+    <a href="#brand">The Brand</a>
+    <a href="../contact/">Contact</a>
   </div>
 
-  <script src="../auth.js"></script>
   <script>
   document.getElementById("hamburger").addEventListener("click", function() {
     document.getElementById("mobile-menu").classList.toggle("open");
@@ -92,322 +89,166 @@
   });
   </script>
 
-  <!-- ── Hero ──────────────────────────────────────────────────────── -->
-  <section class="rs-hero">
-    <div class="rs-hero-visual">
-      <img id="hero-img"
-        src="photos/evr_hero.jpg"
-        alt="EVR cycling apparel"
-      />
-      <div class="rs-hero-visual-overlay"></div>
+  <!-- ── Hero: image carousel ──────────────────────────────────────── -->
+  <section class="hero-carousel" id="hero-carousel">
+    <div class="hero-slide active" data-slide="0">
+      <img src="photos/evr_hero_1.jpg" alt="EVR cycling apparel" id="hero-img">
+      <div class="hero-slide-overlay"></div>
+      <div class="hero-slide-content">
+        <div class="hero-slide-title">Elevation. Velocity. Revolution.<br>EVR S/S Collection</div>
+        <a href="#products" class="hero-slide-cta">Shop the Range</a>
+      </div>
     </div>
-    <div class="rs-hero-content">
-      <div class="rs-hero-eyebrow">Official Singapore Distributor</div>
-      <div class="rs-hero-title">
-        Ride.<br>Further. <span class="accent">Faster.</span>
+    <div class="hero-slide" data-slide="1">
+      <img src="photos/evr_hero_2.jpg" alt="EVR cycling apparel">
+      <div class="hero-slide-overlay"></div>
+      <div class="hero-slide-content">
+        <div class="hero-slide-title">Race-tuned fits.<br>Italian chamois pads.</div>
+        <a href="#products" class="hero-slide-cta">Shop the Range</a>
       </div>
-      <div class="rs-hero-subtitle">EVR — Elevation · Velocity · Revolution</div>
-      <p class="rs-hero-desc">Performance cycling apparel engineered for riders who refuse to compromise. Italian-sourced chamois pads, technical fabrics, and race-tuned fits — built for Singapore's heat and your next PB.</p>
-      <div class="rs-hero-tags">
-        <div class="rs-tag">Italian Chamois Pads</div>
-        <div class="rs-tag">UPF50+</div>
-        <div class="rs-tag">YKK Zippers</div>
-        <div class="rs-tag">Reflective Details</div>
-        <div class="rs-tag">M &amp; F Cuts</div>
-        <div class="rs-tag">SG Distributor</div>
+    </div>
+    <div class="hero-slide" data-slide="2">
+      <img src="photos/evr_hero_3.jpg" alt="EVR cycling apparel">
+      <div class="hero-slide-overlay"></div>
+      <div class="hero-slide-content">
+        <div class="hero-slide-title">Official Singapore<br>Distributor</div>
+        <a href="#products" class="hero-slide-cta">Shop the Range</a>
       </div>
-      <div class="rs-hero-cta">
-        <button onclick="openModal()" class="btn-orange">
-          Enquire Now
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7 3l3 3.5-3 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <a href="#products" class="btn-ghost">View Products</a>
-      </div>
-      <div class="rs-hero-specbar">
-        <div class="rs-spec-cell">
-          <div class="rs-spec-val">35</div>
-          <div class="rs-spec-label">Products</div>
-        </div>
-        <div class="rs-spec-cell">
-          <div class="rs-spec-val">IT</div>
-          <div class="rs-spec-label">Pads</div>
-        </div>
-        <div class="rs-spec-cell">
-          <div class="rs-spec-val">8hr</div>
-          <div class="rs-spec-label">Max Endurance</div>
-        </div>
-        <div class="rs-spec-cell">
-          <div class="rs-spec-val">SG</div>
-          <div class="rs-spec-label">Distributor</div>
-        </div>
-      </div>
+    </div>
+    <button class="hero-arrow hero-arrow-prev" onclick="heroPrev()" aria-label="Previous slide">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M12 4l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="hero-arrow hero-arrow-next" onclick="heroNext()" aria-label="Next slide">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M8 4l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="hero-dots" id="hero-dots">
+      <button class="hero-dot active" onclick="heroGoTo(0)" aria-label="Slide 1"></button>
+      <button class="hero-dot" onclick="heroGoTo(1)" aria-label="Slide 2"></button>
+      <button class="hero-dot" onclick="heroGoTo(2)" aria-label="Slide 3"></button>
     </div>
   </section>
 
-  <!-- ── Ticker ────────────────────────────────────────────────────── -->
-  <div class="ticker-wrap">
-    <div class="ticker-track">
-      <div class="ticker-item"><span class="ticker-sep">//</span><span class="hi">Elevation · Velocity · Revolution</span></div>
-      <div class="ticker-item"><span class="ticker-sep">//</span>Italian Chamois Pads</div>
-      <div class="ticker-item"><span class="ticker-sep">//</span><span class="hi">Race-Ready Bibs</span></div>
-      <div class="ticker-item"><span class="ticker-sep">//</span>YKK Zippers Throughout</div>
-      <div class="ticker-item"><span class="ticker-sep">//</span><span class="hi">UPF50+ Protection</span></div>
-      <div class="ticker-item"><span class="ticker-sep">//</span>Men &amp; Women Cuts</div>
-      <div class="ticker-item"><span class="ticker-sep">//</span><span class="hi">Official SG Distributor</span></div>
-      <div class="ticker-item"><span class="ticker-sep">//</span>Bio-Based Fabrics</div>
-      <div class="ticker-item"><span class="ticker-sep">//</span><span class="hi">Up to 8hr Endurance</span></div>
-      <div class="ticker-item"><span class="ticker-sep">//</span>Reflective · Fast · Breathable</div>
-      <!-- duplicate -->
-      <div class="ticker-item"><span class="ticker-sep">//</span><span class="hi">Elevation · Velocity · Revolution</span></div>
-      <div class="ticker-item"><span class="ticker-sep">//</span>Italian Chamois Pads</div>
-      <div class="ticker-item"><span class="ticker-sep">//</span><span class="hi">Race-Ready Bibs</span></div>
-      <div class="ticker-item"><span class="ticker-sep">//</span>YKK Zippers Throughout</div>
-      <div class="ticker-item"><span class="ticker-sep">//</span><span class="hi">UPF50+ Protection</span></div>
-      <div class="ticker-item"><span class="ticker-sep">//</span>Men &amp; Women Cuts</div>
-      <div class="ticker-item"><span class="ticker-sep">//</span><span class="hi">Official SG Distributor</span></div>
-      <div class="ticker-item"><span class="ticker-sep">//</span>Bio-Based Fabrics</div>
-      <div class="ticker-item"><span class="ticker-sep">//</span><span class="hi">Up to 8hr Endurance</span></div>
-      <div class="ticker-item"><span class="ticker-sep">//</span>Reflective · Fast · Breathable</div>
-    </div>
-  </div>
+  <script>
+    let heroIndex = 0;
+    const heroSlides = document.querySelectorAll('.hero-slide');
+    const heroDots = document.querySelectorAll('.hero-dot');
+    let heroTimer = null;
+
+    function heroShow(i) {
+      heroIndex = (i + heroSlides.length) % heroSlides.length;
+      heroSlides.forEach((s, idx) => s.classList.toggle('active', idx === heroIndex));
+      heroDots.forEach((d, idx) => d.classList.toggle('active', idx === heroIndex));
+    }
+    function heroNext() { heroShow(heroIndex + 1); resetHeroTimer(); }
+    function heroPrev() { heroShow(heroIndex - 1); resetHeroTimer(); }
+    function heroGoTo(i) { heroShow(i); resetHeroTimer(); }
+    function resetHeroTimer() {
+      clearInterval(heroTimer);
+      heroTimer = setInterval(() => heroShow(heroIndex + 1), 6000);
+    }
+    resetHeroTimer();
+  </script>
 
   <!-- ── Products ──────────────────────────────────────────────────── -->
-  <div class="catalogue-toolbar" id="catalogue-toolbar">
-    <div class="catalogue-inner">
-      <div class="cat-tabs" id="cat-tabs">
-        <button class="cat-tab active" data-range="all" onclick="filterRange('all',this)">All</button>
-        <div class="cat-divider"></div>
-        <button class="cat-tab" data-range="discover" onclick="filterRange('discover',this)"><span class="range-dot range-dot-discover"></span>DISCOVER</button>
-        <button class="cat-tab" data-range="explore" onclick="filterRange('explore',this)"><span class="range-dot range-dot-explore"></span>EXPLORE</button>
-        <button class="cat-tab" data-range="tech" onclick="filterRange('tech',this)"><span class="range-dot range-dot-tech"></span>TECH</button>
-        <button class="cat-tab" data-range="ultra" onclick="filterRange('ultra',this)"><span class="range-dot range-dot-ultra"></span>ULTRA</button>
-        <button class="cat-tab" data-range="ascent" onclick="filterRange('ascent',this)"><span class="range-dot range-dot-ascent"></span>ASCENT</button>
-        <button class="cat-tab" data-range="pro" onclick="filterRange('pro',this)"><span class="range-dot range-dot-pro"></span>PRO</button>
-        <button class="cat-tab" data-range="city" onclick="filterRange('city',this)"><span class="range-dot range-dot-city"></span>CITY</button>
-        <button class="cat-tab" data-range="joy" onclick="filterRange('joy',this)"><span class="range-dot range-dot-joy"></span>JOY</button>
-      </div>
-      <div class="catalogue-count" id="catalogue-count">27 products</div>
-    </div>
-  </div>
-
   <section class="catalogue-section" id="products">
-    <div class="shopee-grid" id="shopee-grid">
-      <!-- cards injected by JS -->
+    <div class="catalogue-layout">
+
+      <aside class="filter-sidebar">
+        <div class="filter-header">
+          <span id="catalogue-count">27 products</span>
+          <button class="filter-clear" onclick="clearFilters()">Clear all</button>
+        </div>
+        <button class="filter-toggle" id="filter-toggle-btn" onclick="toggleFilterPanel()">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M8 4l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Filters
+        </button>
+        <div class="filter-sidebar-panel" id="filter-sidebar-panel">
+          <div class="filter-sidebar-inner">
+            <div class="filter-group">
+              <h3>Series</h3>
+              <div id="filter-series"></div>
+            </div>
+            <div class="filter-group">
+              <h3>Category</h3>
+              <div id="filter-category"></div>
+            </div>
+            <div class="filter-group">
+              <h3>Size</h3>
+              <div id="filter-size"></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <div class="catalogue-main">
+        <div class="shopee-grid" id="shopee-grid">
+          <!-- cards injected by JS -->
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- ── Brand Story ────────────────────────────────────────────────── -->
   <section class="section brand-section" id="brand">
-    <p class="section-label">// the brand</p>
-    <h2 class="section-title">What EVR<br>Stands For.</h2>
-    <div class="brand-grid">
-
-      <div class="brand-pillar">
-        <span class="brand-pillar-letter">E</span>
-        <div class="brand-pillar-word">Elevation</div>
-        <p class="brand-pillar-body">Every ride is a chance to push higher — literally and metaphorically. EVR designs apparel that performs at altitude and attitude, built for riders who treat every climb as personal.</p>
-      </div>
-
-      <div class="brand-pillar">
-        <span class="brand-pillar-letter">V</span>
-        <div class="brand-pillar-word">Velocity</div>
-        <p class="brand-pillar-body">Speed starts with fit. EVR's technical fabrics — Italian sourced, aerodynamically considered — work with your body rather than against it. Less drag, more watts to the road.</p>
-      </div>
-
-      <div class="brand-pillar">
-        <span class="brand-pillar-letter">R</span>
-        <div class="brand-pillar-word">Revolution</div>
-        <p class="brand-pillar-body">Cycling's next chapter is being written by athletes who refuse the status quo. EVR backs that energy — challenging conventions in design, material sourcing, and what performance wear can look like.</p>
-      </div>
-
-      <div class="brand-pillar">
-        <span class="brand-pillar-letter">×</span>
-        <div class="brand-pillar-word">B&amp;B x EVR</div>
-        <p class="brand-pillar-body">EVR is still finding its footing in Singapore's market. We're bringing them in because we believe in what they're building — and we want riders here to have access to a fresh, serious alternative.</p>
-      </div>
-
-    </div>
-
-    <div class="brand-wide">
-      <div class="brand-wide-stat">
-        <div class="brand-wide-stat-val">IT</div>
-        <div class="brand-wide-stat-label">Sourced Pads</div>
-      </div>
-      <div class="brand-wide-divider"></div>
-      <div class="brand-wide-stat">
-        <div class="brand-wide-stat-val">8h</div>
-        <div class="brand-wide-stat-label">Max Endurance</div>
-      </div>
-      <div class="brand-wide-divider"></div>
-      <div class="brand-wide-stat">
-        <div class="brand-wide-stat-val">18</div>
-        <div class="brand-wide-stat-label">Products 2026</div>
-      </div>
-      <div class="brand-wide-divider"></div>
-      <p class="brand-wide-body">EVR sources their chamois pads from Italian manufacturers — the same supply chain used by premium European apparel brands. The bio-based material options reflect a real commitment to sustainable performance, not greenwashing. This is a brand built on substance.</p>
-    </div>
+    <p class="section-label">The Brand</p>
+    <h2 class="section-title">Built for riders who<br>refuse to compromise.</h2>
+    <p class="section-body">EVR — Elevation, Velocity, Revolution — designs performance cycling apparel around Italian-sourced chamois pads and technical fabrics engineered for real heat and real distance. Bike &amp; Butter brings the range to Singapore as its official distributor, backing a brand still finding its footing here because we believe riders deserve a serious alternative.</p>
   </section>
 
-  <!-- ── Tech & Materials ───────────────────────────────────────────── -->
-  <section class="section tech-section" id="tech">
-    <p class="section-label">// materials &amp; construction</p>
-    <h2 class="section-title">Built to<br>Perform.</h2>
-
-    <div class="tech-grid">
-      <div class="tech-row">
-        <div class="tech-item">
-          <div class="tech-icon">🇮🇹</div>
-          <div>
-            <div class="tech-title">Italian-Sourced Chamois</div>
-            <p class="tech-body">All EVR bibs and shorts use Italian-manufactured chamois pads. The range spans 70-density comfort pads for shorter rides through to 120-density performance foam and graphene-treated bio-based materials for 8-hour endurance.</p>
-          </div>
-        </div>
-        <div class="tech-item">
-          <div class="tech-icon">◈</div>
-          <div>
-            <div class="tech-title">Full Moon &amp; SiTiP Fabrics</div>
-            <p class="tech-body">EVR's premium jersey and bib ranges use Italian Full Moon fabric and SiTiP construction — both known for their four-way stretch, low-friction surface feel, and moisture management properties in hot conditions.</p>
-          </div>
-        </div>
+  <!-- ── Materials ─────────────────────────────────────────────────── -->
+  <section class="section materials-section">
+    <p class="section-label">Materials</p>
+    <h2 class="section-title">Details that hold up<br>to distance.</h2>
+    <div class="materials-row">
+      <div class="material-item">
+        <h3>Italian Chamois</h3>
+        <p>Pads sourced from Italian manufacturers, spanning entry-level comfort foam through to graphene-treated bio-based options rated for 8-hour endurance rides.</p>
       </div>
-      <div class="tech-row">
-        <div class="tech-item">
-          <div class="tech-icon">☀</div>
-          <div>
-            <div class="tech-title">UPF50+ Sun Protection</div>
-            <p class="tech-body">The Breakthrough jersey line carries UPF50+ sun protection — critical for Singapore's year-round UV exposure. Lycra antibacterial treatment keeps the fabric fresh across back-to-back training days.</p>
-          </div>
-        </div>
-        <div class="tech-item">
-          <div class="tech-icon">♻</div>
-          <div>
-            <div class="tech-title">Bio-Based Materials</div>
-            <p class="tech-body">EVR's Double-Arrow 120 Eco pad uses bio-based perforated polyurethane foam. The CITY lifestyle tee is made from Sorona Agile — a bio-based fibre from DuPont. Performance without compromise on sourcing.</p>
-          </div>
-        </div>
+      <div class="material-item">
+        <h3>Technical Fabrics</h3>
+        <p>Full Moon and SiTiP fabric construction — four-way stretch, low-friction surface feel, built for Singapore's heat and humidity.</p>
       </div>
-
-      <!-- Pad spec table -->
-      <div class="pad-table-wrap">
-        <p class="section-label" style="margin-bottom:20px;">// chamois pad specifications</p>
-        <table class="pad-table">
-          <thead>
-            <tr>
-              <th>Pad Model</th>
-              <th>Density</th>
-              <th>Core Material</th>
-              <th>Thickness</th>
-              <th>Endurance Rating</th>
-              <th>Best For</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="pad-name">DOLOMITI</td>
-              <td>120</td>
-              <td>POLYGOM MAX Foam</td>
-              <td>10mm</td>
-              <td class="pad-hours">5hr</td>
-              <td>Training, Entry-Level</td>
-            </tr>
-            <tr>
-              <td class="pad-name">Italian Double-Arrow 70</td>
-              <td>70</td>
-              <td>Polyurethane Foam</td>
-              <td>11mm</td>
-              <td class="pad-hours">Short Rides</td>
-              <td>Comfort, Short Rides</td>
-            </tr>
-            <tr>
-              <td class="pad-name">Italian Double-Arrow 120</td>
-              <td>120</td>
-              <td>Perforated PU Foam</td>
-              <td>11mm</td>
-              <td class="pad-hours">5hr</td>
-              <td>Training, All-Rounder</td>
-            </tr>
-            <tr>
-              <td class="pad-name">Double-Arrow 120 Eco</td>
-              <td>120</td>
-              <td>Bio-Based Perforated PU</td>
-              <td>13mm</td>
-              <td class="pad-hours">7hr</td>
-              <td>Long Rides, Gravel</td>
-            </tr>
-            <tr>
-              <td class="pad-name">Air Floating Premium</td>
-              <td>—</td>
-              <td>Bio-Based + Graphene Surface</td>
-              <td>—</td>
-              <td class="pad-hours" style="color:var(--orange);font-weight:600;">8hr+</td>
-              <td>Endurance, Ultra</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="material-item">
+        <h3>UPF50+ Protection</h3>
+        <p>Sun protection built into the Breakthrough jersey line, with antibacterial treatment to keep fabric fresh across back-to-back training days.</p>
       </div>
-
     </div>
   </section>
 
   <!-- ── How to Order ───────────────────────────────────────────────── -->
   <section class="section order-section" id="order">
-    <p class="section-label">// how it works</p>
-    <h2 class="section-title">How to Order.</h2>
-    <p class="section-body">EVR is new to Singapore — we're keeping ordering simple while we get the full range established. Reach out, we'll guide you.</p>
+    <p class="section-label">How It Works</p>
+    <h2 class="section-title">Ordering, simplified.</h2>
     <div class="order-steps">
       <div class="order-step">
         <span class="order-step-num">01</span>
-        <div class="order-step-title">Tell Us What You Want</div>
-        <p class="order-step-body">Enquire with the product name and code, your sizing, and any preferences on colour or gender cut. We'll confirm availability and current pricing.</p>
-        <button class="order-step-action" onclick="openModal()">
-          Send enquiry
-          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5h7M5.5 2.5l3 3-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <div class="order-step-title">Add to Cart</div>
+        <p class="order-step-body">Pick your colour, size, and quantity from the range. Add as many items as you like before checking out.</p>
       </div>
       <div class="order-step">
         <span class="order-step-num">02</span>
-        <div class="order-step-title">Confirm &amp; Pay</div>
-        <p class="order-step-body">We'll come back with confirmed pricing in SGD and an estimated delivery window. Payment via PayNow or bank transfer. No surprises.</p>
-        <button class="order-step-action" onclick="openModal()">
-          Check availability
-          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5h7M5.5 2.5l3 3-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <div class="order-step-title">Pay Securely</div>
+        <p class="order-step-body">Checkout with your delivery details and pay by card or PayNow. Your order is confirmed the moment payment clears.</p>
       </div>
       <div class="order-step">
         <span class="order-step-num">03</span>
         <div class="order-step-title">Ride in It</div>
-        <p class="order-step-body">Items delivered to you in Singapore. We're available for any sizing or fit questions — and we'll happily help you put together a matching jersey and bib kit.</p>
-        <button class="order-step-action" onclick="openModal()">
-          Place an order
-          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5h7M5.5 2.5l3 3-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <p class="order-step-body">Pre-orders ship in from our China warehouse in around 10 working days. We'll keep you posted the whole way.</p>
       </div>
     </div>
   </section>
 
   <!-- ── CTA ───────────────────────────────────────────────────────── -->
   <section class="rs-cta">
-    <div class="grid-bg"></div>
-    <div class="rs-cta-glow"></div>
-    <p class="section-label">// enquire</p>
-    <h2 class="section-title" style="position:relative;">
-      Gear Up.<br><span style="color:var(--orange);">Ride More.</span>
-    </h2>
-    <p class="section-body" style="position:relative;">Prices coming soon. Reach out now to express interest, check sizing, or ask anything about the EVR range.</p>
-    <div class="rs-cta-row">
-      <button onclick="openModal()" class="btn-orange">
-        Enquire Now
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7 3l3 3.5-3 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <a href="../contact/" class="btn-ghost">Other enquiries</a>
-    </div>
+    <h2 class="section-title">Gear up. Ride more.</h2>
+    <p class="section-body">Browse the full EVR range and find your next kit.</p>
+    <a href="#products" class="btn-orange">Shop the Range</a>
   </section>
 
   <!-- ── Footer ────────────────────────────────────────────────────── -->
   </main>
 <footer class="rs-footer">
     <div class="rs-footer-brand">
-      <a href="./">EVR</a> x <a href="../">Bike &amp; Butter</a>
+      <a href="./">EVR</a> × <a href="../">Bike &amp; Butter</a>
       &nbsp;·&nbsp; Official Singapore Distributor
     </div>
     <div class="rs-footer-links">
@@ -426,7 +267,16 @@
     </button>
   </div>
 
-  <!-- ── Modal ─────────────────────────────────────────────────────── -->
+  <!-- ── Back to top ───────────────────────────────────────────────── -->
+  <button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+    <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M4 12l6-6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <script>
+    window.addEventListener('scroll', () => {
+      document.getElementById('back-to-top').classList.toggle('visible', window.scrollY > 500);
+    });
+  </script>
+
   <!-- ── Product Drawer ─────────────────────────────────────────────── -->
   <div class="pdrawer-overlay" id="pdrawer-overlay" onclick="handleDrawerOverlay(event)">
     <div class="pdrawer" id="pdrawer">
@@ -436,102 +286,124 @@
 
       <!-- Product detail view -->
       <div id="pdrawer-product" class="pdrawer-pane">
-        <div class="pdrawer-img-wrap" id="pdrawer-img-wrap">
-          <div class="pdrawer-img-ph" id="pdrawer-img-ph">
-            <span class="pdrawer-img-ph-icon" id="pdrawer-ph-icon">🚴</span>
-            <span class="pdrawer-img-ph-sku" id="pdrawer-ph-sku"></span>
+        <div class="pdrawer-gallery">
+          <div class="pdrawer-img-wrap" id="pdrawer-img-wrap">
+            <div class="pdrawer-img-ph" id="pdrawer-img-ph">
+              <span class="pdrawer-img-ph-icon" id="pdrawer-ph-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.3"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M21 15l-5-5-11 11" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></span>
+              <span class="pdrawer-img-ph-sku" id="pdrawer-ph-sku"></span>
+            </div>
+            <img id="pdrawer-img" class="pdrawer-img" src="" alt="" style="display:none" loading="eager"/>
           </div>
-          <img id="pdrawer-img" class="pdrawer-img" src="" alt="" style="display:none" loading="eager"/>
+          <div class="pdrawer-thumbs" id="pdrawer-thumbs"></div>
         </div>
+
         <div class="pdrawer-info">
           <div class="pdrawer-meta-row">
             <span class="rs-range-badge" id="pdrawer-badge"></span>
             <span class="pdrawer-cat" id="pdrawer-cat"></span>
           </div>
           <h2 class="pdrawer-name" id="pdrawer-name">Product details</h2>
-          <div class="pdrawer-cn" id="pdrawer-cn"></div>
           <div class="pdrawer-price-row">
-            <span class="pdrawer-price-label">Price (SGD)</span>
             <span class="pdrawer-price" id="pdrawer-price"></span>
           </div>
 
-          <!-- Colour swatches -->
+          <!-- Colour selector -->
           <div class="pdrawer-var-block" id="pdrawer-colours-block">
-            <div class="pdrawer-var-label">Colour <span class="pdrawer-var-chosen" id="pdrawer-colour-chosen"></span></div>
-            <div class="pdrawer-swatches" id="pdrawer-swatches"></div>
+            <label class="pdrawer-select-label">Colour</label>
+            <select class="pdrawer-select" id="pdrawer-colour-select" onchange="selectColourFromDropdown(this.value)"></select>
           </div>
 
-          <!-- Size buttons -->
+          <!-- Size selector -->
           <div class="pdrawer-var-block" id="pdrawer-sizes-block">
-            <div class="pdrawer-var-label">Size <span class="pdrawer-var-chosen" id="pdrawer-size-chosen"></span></div>
-            <div class="pdrawer-sizes" id="pdrawer-sizes"></div>
+            <label class="pdrawer-select-label">Size</label>
+            <select class="pdrawer-select" id="pdrawer-size-select" onchange="selectSizeFromDropdown(this.value)"></select>
           </div>
 
-          <button class="pdrawer-order-btn" id="pdrawer-order-btn" onclick="goToOrder()">
-            Place Order
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7 3l3 3.5-3 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <p class="pdrawer-note">Orders are fulfilled by Bike &amp; Butter SG. We will confirm stock, pricing in SGD and arrange delivery after your order is received.</p>
+          <div class="pdrawer-var-block">
+            <div class="pdrawer-var-label">Quantity</div>
+            <div class="pform-qty-wrap">
+              <button class="pform-qty-btn" onclick="changeDrawerQty(-1)">−</button>
+              <input class="pform-input pform-qty" id="pdrawer-qty" type="number" value="1" min="1" max="99"/>
+              <button class="pform-qty-btn" onclick="changeDrawerQty(1)">+</button>
+            </div>
+          </div>
+
+          <div class="pdrawer-shipping-note">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M2 5h9v7H2V5zM11 8h4l3 3v1h-7V8z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><circle cx="6" cy="15" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="15" cy="15" r="1.5" stroke="currentColor" stroke-width="1.3"/></svg>
+            <span>Pre-order — ships from our China warehouse in ~10 working days.</span>
+          </div>
+
+          <div class="pdrawer-cta-row">
+            <button class="pdrawer-btn-secondary" id="pdrawer-order-btn" onclick="addToCart()">Add to Cart</button>
+            <button class="pdrawer-btn-primary" onclick="buyNow()">Buy Now</button>
+          </div>
+          <div id="pdrawer-added-msg" class="pform-success" style="display:none">✓ Added to cart</div>
+
+          <div class="pdrawer-accordion">
+            <div class="accordion-item">
+              <button class="accordion-head" onclick="toggleAccordion(this)">
+                Payment Information
+                <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="accordion-body"><p>Secure payment via card or PayNow through HitPay. Your order is confirmed the moment payment clears — nothing is charged before that.</p></div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-head" onclick="toggleAccordion(this)">
+                Shipping Information
+                <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="accordion-body"><p>This is a pre-order. Once confirmed, we place your order with our China warehouse, with delivery to Singapore in approximately 10 working days.</p></div>
+            </div>
+            <div class="accordion-item">
+              <button class="accordion-head" onclick="toggleAccordion(this)">
+                Exchange &amp; Returns
+                <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="accordion-body"><p>If an item can't be fulfilled once we place the order with China, we'll refund that portion in full. For sizing exchanges, reach out to us directly after delivery.</p></div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Order form view -->
-      <div id="pdrawer-order" class="pdrawer-pane" style="display:none">
-        <button class="pdrawer-back" onclick="goToProduct()">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 1L3 6l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Back
-        </button>
-        <div class="pdrawer-order-eyebrow">// Order via Bike &amp; Butter</div>
-        <h3 class="pdrawer-order-title">Complete Your Order</h3>
-        <div class="pdrawer-order-summary" id="pdrawer-order-summary"></div>
+    </div>
+  </div>
 
-        <div class="pform">
-          <div class="pform-row">
-            <label class="pform-label">Full Name *</label>
-            <input class="pform-input" id="of-name" type="text" placeholder="Your name" required/>
-          </div>
-          <div class="pform-row">
-            <label class="pform-label">Email *</label>
-            <input class="pform-input" id="of-email" type="email" placeholder="your@email.com" required/>
-          </div>
-          <div class="pform-row">
-            <label class="pform-label">Phone / WhatsApp</label>
-            <input class="pform-input" id="of-phone" type="tel" placeholder="+65 9xxx xxxx"/>
-          </div>
-          <div class="pform-row pform-row-half">
-            <div>
-              <label class="pform-label">Quantity *</label>
-              <div class="pform-qty-wrap">
-                <button class="pform-qty-btn" onclick="changeQty(-1)">−</button>
-                <input class="pform-input pform-qty" id="of-qty" type="number" value="1" min="1" max="99"/>
-                <button class="pform-qty-btn" onclick="changeQty(1)">+</button>
+  <!-- ── Cart Drawer ───────────────────────────────────────────────── -->
+  <div class="pdrawer-overlay" id="cart-overlay" onclick="handleCartOverlay(event)">
+    <div class="pdrawer pdrawer-wide" id="cart-drawer">
+      <button class="pdrawer-close" onclick="closeCart()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+
+      <!-- Cart list view -->
+      <div id="cart-list-pane" class="pdrawer-pane">
+        <h3 class="cart-page-title" id="cart-title">Shopping Cart</h3>
+        <div id="cart-empty-msg" style="display:none;color:var(--white-dim);padding:24px 0;">Your cart is empty. Browse the catalogue and add something you like.</div>
+
+        <div class="cart-layout" id="cart-layout">
+          <div class="cart-items-col" id="cart-items-list"></div>
+          <div class="cart-summary-col" id="cart-totals" style="display:none;">
+            <div class="cart-summary-box">
+              <h4>Order Summary</h4>
+              <div class="cart-summary-row">
+                <span>Total product amount</span>
+                <span id="cart-subtotal">S$0</span>
               </div>
+              <div class="cart-summary-row">
+                <span>Shipping</span>
+                <span id="cart-shipping-amt">Calculated at checkout</span>
+              </div>
+              <div class="cart-summary-row cart-summary-row-final">
+                <span>Expected payment amount</span>
+                <span id="cart-expected-total">S$0</span>
+              </div>
+              <a href="checkout.html" class="pdrawer-btn-primary" style="width:100%;margin-top:16px;text-align:center;text-decoration:none;display:block;">
+                Checkout →
+              </a>
             </div>
-            <div>
-              <label class="pform-label">Delivery</label>
-              <select class="pform-input pform-select" id="of-delivery">
-                <option value="pickup">Self-collect (TBC)</option>
-                <option value="delivery">Delivery (+fee TBC)</option>
-              </select>
-            </div>
-          </div>
-          <div class="pform-row">
-            <label class="pform-label">Remarks</label>
-            <textarea class="pform-input pform-textarea" id="of-remarks" placeholder="Any notes, sizing questions…"></textarea>
-          </div>
-          <button class="pdrawer-order-btn" id="of-submit" onclick="submitOrder()">
-            Send Order
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7 3l3 3.5-3 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <div id="of-success" class="pform-success" style="display:none">
-            ✓ Order received! We'll be in touch within 1–2 business days to confirm stock and pricing.
-          </div>
-          <div id="of-error" class="pform-error" style="display:none">
-            Something went wrong — please try again or email us directly.
           </div>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -545,13 +417,13 @@
     // ── Supabase connection ───────────────────────────────────────
     const SUPABASE_URL = "https://aeszkgesbqxfqzuwintb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_HLEeqpfnhWJ3kr_AHJIffA_9FOE0aHV";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     // Fetch products + their variants from Supabase and reshape them
     // into the exact same shape the old hardcoded PRODUCTS array used,
     // so renderGrid/getProductImg/etc below need zero changes.
     async function loadProductsFromSupabase() {
-      const { data, error } = await supabase
+      const { data, error } = await sb
         .from('products')
         .select('sku,name,range,category,gender,price_sgd,product_variants(colour,hex,size,image_path,created_at)')
         .eq('active', true)
@@ -597,10 +469,32 @@
     window.addEventListener('load', async () => {
       const img = document.getElementById('hero-img');
       if (img) img.classList.add('loaded');
+      document.body.classList.add('loaded');
+
+      // Scroll-reveal for static sections (product cards are handled
+      // separately in renderGrid, since they're rendered dynamically)
+      document.querySelectorAll('.section, .rs-cta').forEach(el => el.classList.add('reveal'));
+      setupRevealObserver();
 
       PRODUCTS = await loadProductsFromSupabase();
-      renderGrid('all');
+      buildFilterSidebar();
+      renderGrid();
     });
+
+    let revealObserver = null;
+    function setupRevealObserver() {
+      if (revealObserver) revealObserver.disconnect();
+      revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.reveal:not(.in-view)').forEach(el => revealObserver.observe(el));
+    }
 
     document.getElementById('hamburger').addEventListener('click', () => {
       document.getElementById('mobile-menu').classList.toggle('open');
@@ -625,7 +519,7 @@
       joy:      { label:'JOY',      badgeCls:'badge-joy',      dotCls:'range-dot-joy'      },
     };
 
-    const CAT_ICON = { 'Jersey':'🧥','Bib Shorts':'🚴','Bib Tights':'🚴','Base Layer':'👕','Bottle':'🚰','Gloves':'🧤','Socks':'🧦','Shoe Cover':'👟','Cap':'🧢','Accessories':'🎽','default':'🚴' };
+    const CAT_ICON = {}; // emoji icons removed — placeholder now uses a neutral SVG instead
 
     // ── Image auto-discovery ─────────────────────────────────────
     // Lists every SKU that has at least one WebP in photos/.
@@ -660,16 +554,79 @@
       return imgSrc(p.sku, c.varImg);
     }
 
-    // ── Render grid ───────────────────────────────────────────────
-    let activeRange = 'all';
+    // ── Filters (sidebar: series, category, size — all combinable) ──
+    const activeFilters = { series: new Set(), category: new Set(), size: new Set() };
+    const SIZE_ORDER = ['XXS','XS','S','M','L','XL','2XL','3XL'];
 
+    function sortSizes(sizes) {
+      return [...sizes].sort((a, b) => {
+        const ai = SIZE_ORDER.indexOf(a), bi = SIZE_ORDER.indexOf(b);
+        if (ai !== -1 && bi !== -1) return ai - bi;
+        if (ai !== -1) return -1;
+        if (bi !== -1) return 1;
+        return a.localeCompare(b);
+      });
+    }
+
+    function buildFilterSidebar() {
+      const seriesPresent = [...new Set(PRODUCTS.map(p => p.range))].filter(Boolean);
+      const catsPresent = [...new Set(PRODUCTS.map(p => p.cat))].filter(Boolean);
+      const sizesPresent = sortSizes([...new Set(PRODUCTS.flatMap(p => p.sizes || []))]);
+
+      const seriesOrder = Object.keys(RANGE_META).filter(r => seriesPresent.includes(r));
+      const catsOrder = CAT_ORDER.filter(c => catsPresent.includes(c))
+        .concat(catsPresent.filter(c => !CAT_ORDER.includes(c)));
+
+      document.getElementById('filter-series').innerHTML = seriesOrder.map(r => `
+        <label class="filter-check">
+          <input type="checkbox" onchange="toggleFilter('series','${r}')">
+          <span class="range-dot ${RANGE_META[r].dotCls}"></span>${RANGE_META[r].label}
+        </label>`).join('');
+
+      document.getElementById('filter-category').innerHTML = catsOrder.map(c => `
+        <label class="filter-check">
+          <input type="checkbox" onchange="toggleFilter('category','${c}')">${c}
+        </label>`).join('');
+
+      document.getElementById('filter-size').innerHTML = sizesPresent.map(s => `
+        <label class="filter-check">
+          <input type="checkbox" onchange="toggleFilter('size','${s}')">${s}
+        </label>`).join('');
+    }
+
+    function toggleFilter(type, value) {
+      if (activeFilters[type].has(value)) activeFilters[type].delete(value);
+      else activeFilters[type].add(value);
+      renderGrid();
+    }
+
+    function toggleFilterPanel() {
+      document.getElementById('filter-sidebar-panel').classList.toggle('open');
+      document.getElementById('filter-toggle-btn').classList.toggle('open');
+    }
+
+    function clearFilters() {
+      activeFilters.series.clear();
+      activeFilters.category.clear();
+      activeFilters.size.clear();
+      document.querySelectorAll('.filter-check input').forEach(cb => cb.checked = false);
+      renderGrid();
+    }
+
+    function passesFilters(p) {
+      if (activeFilters.series.size && !activeFilters.series.has(p.range)) return false;
+      if (activeFilters.category.size && !activeFilters.category.has(p.cat)) return false;
+      if (activeFilters.size.size && !(p.sizes || []).some(s => activeFilters.size.has(s))) return false;
+      return true;
+    }
+
+    // ── Render grid ───────────────────────────────────────────────
     // Category display order & labels
     const CAT_ORDER = ['Jersey','Bib Shorts','Bib Tights','Base Layer','Gloves','Socks','Shoe Cover','Cap','Accessories','Bottle'];
 
-    function renderGrid(range) {
-      activeRange = range;
+    function renderGrid() {
       const grid = document.getElementById('shopee-grid');
-      const filtered = range === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.range === range);
+      const filtered = PRODUCTS.filter(passesFilters);
       document.getElementById('catalogue-count').textContent = filtered.length + ' product' + (filtered.length !== 1 ? 's' : '');
 
       // Group by category (in defined order)
@@ -686,29 +643,21 @@
         const items = grouped[cat];
         if (!items || !items.length) continue;
 
-        // Section header
-        const rm = range !== 'all' ? RANGE_META[range] : null;
-        const badgeCls = rm ? rm.badgeCls : 'badge-explore';
-        const dotCls   = rm ? rm.dotCls   : 'range-dot-explore';
-        const rangeHtml = rm
-          ? `<span class="sg-section-range"><span class="range-dot ${dotCls}"></span>${rm.label}</span>`
-          : '';
         html += `<div class="sg-section-header${firstGroup ? ' sg-first' : ''}">
-          ${rangeHtml}
           <span class="sg-section-cat">${cat}</span>
           <span class="sg-section-count">${items.length} item${items.length !== 1 ? 's' : ''}</span>
         </div>`;
         firstGroup = false;
 
         // Cards
-        html += items.map(p => {
+        html += items.map((p, idx) => {
           const rm2 = RANGE_META[p.range] || { label: p.range.toUpperCase(), badgeCls:'badge-explore', dotCls:'range-dot-explore' };
-          const icon = CAT_ICON[p.cat] || CAT_ICON.default;
+          const icon = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.3"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M21 15l-5-5-11 11" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>';
           const genderTag = p.gender ? `<span class="sc-gender">${p.gender === 'M' ? '♂' : '♀'}</span>` : '';
           const colourCount = p.colours.length > 1 ? p.colours.length + ' colours' : (p.colours.length === 1 ? p.colours[0].label : '');
           const sizeCount = p.sizes.length > 1 ? p.sizes.length + ' sizes' : (p.sizes.length === 1 ? p.sizes[0] : '');
           const varCount = [colourCount, sizeCount].filter(Boolean).join(' · ');
-          return `<div class="sc-card" onclick="openDrawer('${p.sku}')">
+          return `<div class="sc-card reveal" style="--reveal-i:${idx % 4}" onclick="openDrawer('${p.sku}')">
             ${(() => { const src = getProductImg(p, 0, p.sizes && p.sizes[0]); return src
               ? `<img class="sc-img" src="${src}" alt="${p.name}" loading="lazy" decoding="async">`
               : `<div class="sc-img-ph"><span class="sc-img-ph-icon">${icon}</span></div>`; })()}
@@ -724,13 +673,7 @@
         }).join('');
       }
       grid.innerHTML = html;
-    }
-
-    // ── Range filter ──────────────────────────────────────────────
-    function filterRange(range, btn) {
-      document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
-      btn.classList.add('active');
-      renderGrid(range);
+      setupRevealObserver();
     }
 
     // ── Drawer ────────────────────────────────────────────────────
@@ -738,22 +681,22 @@
     let selectedColour = null;
     let selectedSize = null;
 
-    function openDrawer(sku) {
+    function openDrawer(sku, presetColour, presetSize) {
       const p = PRODUCTS.find(x => x.sku === sku);
       if (!p) return;
       currentProduct = p;
-      selectedColour = p.colours.length ? p.colours[0].label : null;
-      selectedSize = p.sizes.length ? p.sizes[0] : null;
+      selectedColour = (presetColour && p.colours.some(c => c.label === presetColour)) ? presetColour : (p.colours.length ? p.colours[0].label : null);
+      selectedSize = (presetSize && p.sizes.includes(presetSize)) ? presetSize : (p.sizes.length ? p.sizes[0] : null);
 
       const rm = RANGE_META[p.range] || { label: p.range.toUpperCase(), badgeCls:'badge-explore', dotCls:'range-dot-explore' };
       document.getElementById('pdrawer-badge').className = 'rs-range-badge ' + rm.badgeCls;
       document.getElementById('pdrawer-badge').innerHTML = `<span class="range-dot ${rm.dotCls}"></span>${rm.label}`;
       document.getElementById('pdrawer-cat').textContent = p.cat + (p.gender ? (p.gender === 'M' ? ' — Men' : ' — Women') : '');
       document.getElementById('pdrawer-name').textContent = p.name;
-      document.getElementById('pdrawer-cn').textContent = '';
       const drawerImg = document.getElementById('pdrawer-img');
       const drawerPh  = document.getElementById('pdrawer-img-ph');
-      const firstImg  = getProductImg(p, 0, p.sizes && p.sizes[0]);
+      const initialColourIdx = Math.max(0, p.colours.findIndex(c => c.label === selectedColour));
+      const firstImg  = getProductImg(p, initialColourIdx, selectedSize);
       if (firstImg) {
         drawerImg.src = firstImg;
         drawerImg.alt = p.name;
@@ -762,49 +705,60 @@
       } else {
         drawerImg.style.display = 'none';
         drawerPh.style.display  = 'flex';
-        document.getElementById('pdrawer-ph-icon').textContent = CAT_ICON[p.cat] || '🚴';
+        // placeholder icon is now a static SVG in the HTML — nothing to set here
         document.getElementById('pdrawer-ph-sku').textContent  = '';
       }
       // Price — show per-product SGD price
       updateDrawerPrice(p, null);
 
-      // Colours
+      // Colours: thumbnail gallery (each colour = one photo, click to select)
       const cBlock = document.getElementById('pdrawer-colours-block');
-      const swatch = document.getElementById('pdrawer-swatches');
+      const thumbs = document.getElementById('pdrawer-thumbs');
+      const colourSelect = document.getElementById('pdrawer-colour-select');
       if (p.colours.length) {
         cBlock.style.display = '';
-        swatch.innerHTML = p.colours.map((c, i) => 
-          `<button class="pdrawer-swatch${c.label === selectedColour ? ' active' : ''}" 
-            style="background:${c.hex}" 
-            title="${c.label}"
-            onclick="selectColour('${c.label}', ${c.varImg || i+1}, ${i}, this)"></button>`
+        thumbs.innerHTML = p.colours.map((c, i) => {
+          const thumbSrc = getProductImg(p, i, p.sizes && p.sizes[0]);
+          return `<button class="pdrawer-thumb${c.label === selectedColour ? ' active' : ''}" title="${c.label}" onclick="selectColour('${c.label}', ${c.varImg || i+1}, ${i}, this)">
+            ${thumbSrc ? `<img src="${thumbSrc}" alt="${c.label}">` : `<span style="background:${c.hex};display:block;width:100%;height:100%;"></span>`}
+          </button>`;
+        }).join('');
+        colourSelect.innerHTML = p.colours.map(c =>
+          `<option value="${c.label}" ${c.label === selectedColour ? 'selected' : ''}>${c.label}</option>`
         ).join('');
-        document.getElementById('pdrawer-colour-chosen').textContent = '— ' + selectedColour;
-      } else { cBlock.style.display = 'none'; }
+      } else { cBlock.style.display = 'none'; thumbs.innerHTML = ''; }
 
-      // Sizes
+      // Sizes: dropdown
       const szBlock = document.getElementById('pdrawer-sizes-block');
-      const szWrap = document.getElementById('pdrawer-sizes');
+      const sizeSelect = document.getElementById('pdrawer-size-select');
       if (p.sizes.length) {
         szBlock.style.display = '';
-        szWrap.innerHTML = p.sizes.map(s =>
-          `<button class="pdrawer-size-btn${s === selectedSize ? ' active' : ''}" onclick="selectSize('${s}', this)">${s}</button>`
+        sizeSelect.innerHTML = p.sizes.map(s =>
+          `<option value="${s}" ${s === selectedSize ? 'selected' : ''}>${s}</option>`
         ).join('');
-        document.getElementById('pdrawer-size-chosen').textContent = '— ' + selectedSize;
       } else { szBlock.style.display = 'none'; }
 
       // Show product pane
       document.getElementById('pdrawer-product').style.display = '';
-      document.getElementById('pdrawer-order').style.display = 'none';
       document.getElementById('pdrawer-overlay').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
 
+    function selectColourFromDropdown(label) {
+      const idx = currentProduct.colours.findIndex(c => c.label === label);
+      const btn = document.querySelectorAll('.pdrawer-thumb')[idx];
+      selectColour(label, currentProduct.colours[idx].varImg || idx + 1, idx, btn);
+    }
+
+    function selectSizeFromDropdown(size) {
+      selectSize(size, null);
+    }
+
     function selectColour(label, varIdx, colourObjIdx, btn) {
       selectedColour = label;
-      document.querySelectorAll('.pdrawer-swatch').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('pdrawer-colour-chosen').textContent = '— ' + label;
+      document.querySelectorAll('.pdrawer-thumb').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      document.getElementById('pdrawer-colour-select').value = label;
 
       // Update price (901 has per-colour pricing)
       updateDrawerPrice(currentProduct, colourObjIdx);
@@ -812,8 +766,6 @@
       // Swap image using getProductImg
       const drawerImg = document.getElementById('pdrawer-img');
       const drawerPh  = document.getElementById('pdrawer-img-ph');
-      const selectedSize = document.getElementById('pdrawer-size-chosen') ?
-        document.getElementById('pdrawer-size-chosen').textContent.replace('— ','') : null;
       const src = getProductImg(currentProduct, colourObjIdx, selectedSize);
       if (src) {
         drawerImg.src = src;
@@ -830,9 +782,7 @@
 
     function selectSize(size, btn) {
       selectedSize = size;
-      document.querySelectorAll('.pdrawer-size-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('pdrawer-size-chosen').textContent = '— ' + size;
+      document.getElementById('pdrawer-size-select').value = size;
 
       // For 912: swap image when size changes
       if (currentProduct && currentProduct.sku === '912') {
@@ -845,24 +795,17 @@
       }
     }
 
-
-
-    function goToOrder() {
-      const p = currentProduct;
-      let summary = `<strong>${p.name}</strong> (${p.sku})`;
-      if (selectedColour) summary += `<br>Colour: ${selectedColour}`;
-      if (selectedSize) summary += `<br>Size: ${selectedSize}`;
-      document.getElementById('pdrawer-order-summary').innerHTML = summary;
-      document.getElementById('pdrawer-product').style.display = 'none';
-      document.getElementById('pdrawer-order').style.display = '';
-      document.getElementById('of-success').style.display = 'none';
-      document.getElementById('of-error').style.display = 'none';
+    function buyNow() {
+      addToCart();
+      window.location.href = 'checkout.html';
     }
 
-    function goToProduct() {
-      document.getElementById('pdrawer-product').style.display = '';
-      document.getElementById('pdrawer-order').style.display = 'none';
+    function toggleAccordion(headBtn) {
+      const item = headBtn.closest('.accordion-item');
+      item.classList.toggle('open');
     }
+
+
 
     function closeDrawer() {
       document.getElementById('pdrawer-overlay').classList.remove('open');
@@ -873,50 +816,181 @@
       if (e.target === document.getElementById('pdrawer-overlay')) closeDrawer();
     }
 
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeDrawer(); closeCart(); }
+    });
 
-    function changeQty(delta) {
-      const input = document.getElementById('of-qty');
+    function changeDrawerQty(delta) {
+      const input = document.getElementById('pdrawer-qty');
       input.value = Math.max(1, Math.min(99, parseInt(input.value || 1) + delta));
     }
 
-    async function submitOrder() {
-      const name = document.getElementById('of-name').value.trim();
-      const email = document.getElementById('of-email').value.trim();
-      const qty = document.getElementById('of-qty').value;
-      if (!name || !email) { alert('Please fill in your name and email.'); return; }
+    // ── Cart state ──────────────────────────────────────────────────
+    // Cart persists in the browser (localStorage) so it survives page
+    // reloads and navigating between pages. It's just an array of line
+    // items: one entry per product+colour+size combo added.
+    const CART_KEY = 'evr_cart_v1';
 
-      const p = currentProduct;
-      const btn = document.getElementById('of-submit');
-      btn.disabled = true;
-      btn.textContent = 'Sending…';
-
-      const payload = {
-        type: 'evr-order',
-        name, email,
-        phone: document.getElementById('of-phone').value.trim(),
-        product: `${p.name} (${p.sku})`,
-        colour: selectedColour || '—',
-        size: selectedSize || '—',
-        qty,
-        delivery: document.getElementById('of-delivery').value,
-        remarks: document.getElementById('of-remarks').value.trim(),
-        timestamp: new Date().toISOString()
-      };
-
+    function getCart() {
       try {
-        const res = await fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify(payload) });
-        const data = await res.json();
-        if (data.result === 'success') {
-          document.getElementById('of-success').style.display = '';
-          btn.style.display = 'none';
-        } else { throw new Error(data.error); }
-      } catch(err) {
-        document.getElementById('of-error').style.display = '';
-        btn.disabled = false;
-        btn.textContent = 'Try Again';
+        return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+      } catch (e) { return []; }
+    }
+
+    function saveCart(cart) {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      updateCartBadge();
+    }
+
+    function updateCartBadge() {
+      const cart = getCart();
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      const badge = document.getElementById('nav-cart-badge');
+      if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = '';
+        badge.classList.remove('bump');
+        void badge.offsetWidth; // restart animation if already present
+        badge.classList.add('bump');
+      } else {
+        badge.style.display = 'none';
       }
     }
+
+    function priceToNumber(priceSGD) {
+      if (!priceSGD) return 0;
+      const m = String(priceSGD).match(/[\d.]+/);
+      return m ? parseFloat(m[0]) : 0;
+    }
+
+    function addToCart() {
+      const p = currentProduct;
+      if (!p) return;
+      const qty = Math.max(1, parseInt(document.getElementById('pdrawer-qty').value || 1));
+      const colourIdx = p.colours.findIndex(c => c.label === selectedColour);
+      const colourObj = colourIdx >= 0 ? p.colours[colourIdx] : null;
+      const unitPrice = (colourObj && colourObj.price) ? priceToNumber(colourObj.price) : priceToNumber(p.priceSGD);
+      const image = getProductImg(p, colourIdx >= 0 ? colourIdx : 0, selectedSize);
+
+      const cart = getCart();
+      // Same product+colour+size already in cart -> bump qty instead of duplicating
+      const existing = cart.find(item =>
+        item.sku === p.sku && item.colour === selectedColour && item.size === selectedSize);
+
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        cart.push({
+          sku: p.sku,
+          name: p.name,
+          colour: selectedColour,
+          size: selectedSize,
+          qty,
+          unitPrice,
+          image
+        });
+      }
+      saveCart(cart);
+
+      const msg = document.getElementById('pdrawer-added-msg');
+      msg.style.display = '';
+      setTimeout(() => { msg.style.display = 'none'; }, 1800);
+    }
+
+    // ── Cart drawer UI ──────────────────────────────────────────────
+    function openCart() {
+      renderCartList();
+      document.getElementById('cart-list-pane').style.display = '';
+      document.getElementById('cart-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCart() {
+      document.getElementById('cart-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function handleCartOverlay(e) {
+      if (e.target === document.getElementById('cart-overlay')) closeCart();
+    }
+
+    function renderCartList() {
+      const cart = getCart();
+      const listEl = document.getElementById('cart-items-list');
+      const emptyEl = document.getElementById('cart-empty-msg');
+      const totalsEl = document.getElementById('cart-totals');
+      const titleEl = document.getElementById('cart-title');
+
+      titleEl.textContent = cart.length ? `Cart (${cart.reduce((s,i)=>s+i.qty,0)} item${cart.reduce((s,i)=>s+i.qty,0)===1?'':'s'})` : 'Cart';
+
+      if (!cart.length) {
+        listEl.innerHTML = '';
+        emptyEl.style.display = '';
+        totalsEl.style.display = 'none';
+        return;
+      }
+      emptyEl.style.display = 'none';
+      totalsEl.style.display = '';
+
+      listEl.innerHTML = cart.map((item, idx) => `
+        <div class="cart-row">
+          <div class="cart-row-img">
+            ${item.image ? `<img src="${item.image}" alt="${item.name}">` : ''}
+          </div>
+          <div class="cart-row-info">
+            <div class="cart-row-name">${item.name}</div>
+            <div class="cart-row-var">Option: ${item.colour ? item.colour : ''}${item.colour && item.size ? ' / ' : ''}${item.size ? item.size : ''}</div>
+            <div class="cart-row-actions">
+              <div class="pform-qty-wrap">
+                <button class="pform-qty-btn" onclick="changeCartQty(${idx}, -1)">−</button>
+                <span class="cart-row-qty-display">${item.qty}</span>
+                <button class="pform-qty-btn" onclick="changeCartQty(${idx}, 1)">+</button>
+              </div>
+              <button class="cart-row-link" onclick="editCartItem(${idx})">Edit</button>
+              <button class="cart-row-link" onclick="removeCartItem(${idx})">Remove</button>
+            </div>
+          </div>
+          <div class="cart-row-price-col">
+            <div class="cart-row-total">S$${(item.qty * item.unitPrice).toFixed(2).replace(/\.00$/, '')}</div>
+            <div class="cart-row-unit">S$${item.unitPrice} each</div>
+          </div>
+        </div>
+      `).join('');
+
+      const subtotal = cart.reduce((sum, item) => sum + item.qty * item.unitPrice, 0);
+      const subtotalStr = `S$${subtotal.toFixed(2).replace(/\.00$/, '')}`;
+      document.getElementById('cart-subtotal').textContent = subtotalStr;
+      const shipEl = document.getElementById('cart-shipping-amt');
+      if (shipEl) shipEl.textContent = 'Calculated at checkout';
+      const totalEl = document.getElementById('cart-expected-total');
+      if (totalEl) totalEl.textContent = subtotalStr;
+    }
+
+    function editCartItem(idx) {
+      const cart = getCart();
+      const item = cart[idx];
+      if (!item) return;
+      closeCart();
+      openDrawer(item.sku, item.colour, item.size);
+    }
+
+    function changeCartQty(idx, delta) {
+      const cart = getCart();
+      if (!cart[idx]) return;
+      cart[idx].qty = Math.max(1, Math.min(99, cart[idx].qty + delta));
+      saveCart(cart);
+      renderCartList();
+    }
+
+    function removeCartItem(idx) {
+      const cart = getCart();
+      cart.splice(idx, 1);
+      saveCart(cart);
+      renderCartList();
+    }
+
+    // Initialize cart badge on page load
+    updateCartBadge();
 
   </script>
 

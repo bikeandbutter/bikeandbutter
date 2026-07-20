@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EVR Admin — Orders</title>
+<meta name="robots" content="noindex, nofollow" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{--bg:#0a0a0a;--bg-2:#111111;--bg-3:#181818;--bg-4:#222222;--border:rgba(255,255,255,0.08);--border-mid:rgba(255,255,255,0.14);--white-dim:rgba(255,255,255,0.55);--orange:#F26522;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:#fff;font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.5;}
+  .wrap{max-width:1100px;margin:0 auto;padding:32px 24px 80px;}
+  h1{font-size:20px;font-weight:800;margin-bottom:4px;}
+  .sub{color:var(--white-dim);font-size:13px;margin-bottom:28px;}
+
+  /* Login */
+  #login-screen{max-width:360px;margin:100px auto;padding:32px;background:var(--bg-2);border:1px solid var(--border-mid);border-radius:10px;}
+  #login-screen h2{font-size:16px;margin-bottom:16px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--white-dim);margin-bottom:6px;}
+  .field input,.field select,.field textarea{width:100%;background:var(--bg-3);border:1px solid var(--border);border-radius:4px;color:#fff;padding:9px 11px;font-size:13px;font-family:inherit;}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--orange);}
+  button.btn{background:var(--orange);color:#fff;border:none;border-radius:4px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.3px;}
+  button.btn:hover{background:#d4561e;}
+  button.btn:disabled{opacity:0.4;cursor:not-allowed;}
+  button.btn-ghost{background:none;border:1px solid var(--border-mid);color:var(--white-dim);border-radius:4px;padding:8px 14px;font-size:12px;cursor:pointer;}
+  button.btn-ghost:hover{color:#fff;border-color:rgba(255,255,255,0.3);}
+  .error-msg{color:#ef9a9a;font-size:12px;margin-top:10px;display:none;}
+
+  /* Dashboard */
+  #dashboard{display:none;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+  .filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+  .filter-btn{background:var(--bg-3);border:1px solid var(--border);color:var(--white-dim);padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;}
+  .filter-btn.active{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:600;}
+  .order-card{background:var(--bg-2);border:1px solid var(--border);border-radius:8px;margin-bottom:14px;overflow:hidden;}
+  .order-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;cursor:pointer;}
+  .order-head:hover{background:var(--bg-3);}
+  .order-head-left{display:flex;flex-direction:column;gap:3px;}
+  .order-num{font-weight:700;font-size:14px;}
+  .order-meta{font-size:12px;color:var(--white-dim);}
+  .status-pill{font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;}
+  .status-pending_payment{background:rgba(255,193,7,0.15);color:#ffc107;}
+  .status-paid{background:rgba(66,165,245,0.15);color:#42a5f5;}
+  .status-confirmed{background:rgba(102,187,106,0.15);color:#66bb6a;}
+  .status-partially_refunded{background:rgba(255,138,101,0.15);color:#ff8a65;}
+  .status-fully_refunded{background:rgba(239,83,80,0.15);color:#ef5350;}
+  .status-shipped{background:rgba(129,199,132,0.15);color:#81c784;}
+  .status-delivered{background:rgba(165,214,167,0.15);color:#a5d6a7;}
+  .status-cancelled{background:rgba(158,158,158,0.15);color:#9e9e9e;}
+  .order-body{display:none;padding:0 20px 20px;border-top:1px solid var(--border);}
+  .order-body.open{display:block;}
+  .cust-info{font-size:12.5px;color:var(--white-dim);padding:14px 0;border-bottom:1px solid var(--border);margin-bottom:14px;}
+  .cust-info div{margin-bottom:3px;}
+  table.items-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+  table.items-table th{text-align:left;font-size:10px;letter-spacing:0.5px;text-transform:uppercase;color:var(--white-dim);padding:8px 6px;border-bottom:1px solid var(--border);}
+  table.items-table td{padding:8px 6px;border-bottom:1px solid var(--border);font-size:12.5px;vertical-align:middle;}
+  .fulfill-select{background:var(--bg-3);border:1px solid var(--border);color:#fff;padding:5px 8px;border-radius:4px;font-size:11.5px;}
+  .refund-inputs{display:flex;gap:6px;margin-top:4px;}
+  .refund-inputs input{width:90px;background:var(--bg-3);border:1px solid var(--border);color:#fff;padding:5px 7px;border-radius:4px;font-size:11px;}
+  .order-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  .save-status{font-size:12px;color:#66bb6a;display:none;}
+  .empty-state{text-align:center;padding:60px 20px;color:var(--white-dim);font-size:13px;}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <h2>EVR Admin Login</h2>
+  <div class="field">
+    <label>Email</label>
+    <input type="email" id="login-email" placeholder="you@example.com" />
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="login-password" placeholder="••••••••" />
+  </div>
+  <button class="btn" id="login-btn" onclick="doLogin()" style="width:100%;">Log In</button>
+  <div class="error-msg" id="login-error">Invalid email or password.</div>
+</div>
+
+<div class="wrap" id="dashboard">
+  <div class="topbar">
+    <div>
+      <h1>Orders</h1>
+      <div class="sub" id="order-count-sub">Loading…</div>
+    </div>
+    <button class="btn-ghost" onclick="doLogout()">Log out</button>
+  </div>
+
+  <div class="filters" id="status-filters"></div>
+
+  <div id="orders-container">
+    <div class="empty-state">Loading orders…</div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = "https://aeszkgesbqxfqzuwintb.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_HLEeqpfnhWJ3kr_AHJIffA_9FOE0aHV";
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const ORDER_STATUSES = ['pending_payment','paid','confirmed','partially_refunded','fully_refunded','shipped','delivered','cancelled'];
+  const FULFILLMENT_STATUSES = ['pending_confirmation','confirmed_with_china','unavailable','shipped'];
+
+  let allOrders = [];
+  let activeFilter = 'all';
+
+  async function doLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const btn = document.getElementById('login-btn');
+    btn.disabled = true;
+    btn.textContent = 'Logging in…';
+    document.getElementById('login-error').style.display = 'none';
+
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      document.getElementById('login-error').style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Log In';
+      return;
+    }
+    showDashboard();
+  }
+
+  async function doLogout() {
+    await sb.auth.signOut();
+    location.reload();
+  }
+
+  async function checkSession() {
+    const { data } = await sb.auth.getSession();
+    if (data.session) {
+      showDashboard();
+    }
+  }
+
+  function showDashboard() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    renderFilters();
+    loadOrders();
+  }
+
+  function renderFilters() {
+    const wrap = document.getElementById('status-filters');
+    const filters = ['all', ...ORDER_STATUSES];
+    wrap.innerHTML = filters.map(f =>
+      `<button class="filter-btn${f===activeFilter?' active':''}" onclick="setFilter('${f}')">${f === 'all' ? 'All' : f.replace(/_/g,' ')}</button>`
+    ).join('');
+  }
+
+  function setFilter(f) {
+    activeFilter = f;
+    renderFilters();
+    renderOrders();
+  }
+
+  async function loadOrders() {
+    const { data, error } = await sb
+      .from('orders')
+      .select('*, order_items(*)')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      document.getElementById('orders-container').innerHTML =
+        `<div class="empty-state">Failed to load orders: ${error.message}</div>`;
+      return;
+    }
+    allOrders = data;
+    renderOrders();
+  }
+
+  function renderOrders() {
+    const container = document.getElementById('orders-container');
+    const filtered = activeFilter === 'all' ? allOrders : allOrders.filter(o => o.status === activeFilter);
+    document.getElementById('order-count-sub').textContent =
+      `${allOrders.length} total order${allOrders.length===1?'':'s'}${activeFilter!=='all' ? ` — showing ${filtered.length} ${activeFilter.replace(/_/g,' ')}` : ''}`;
+
+    if (!filtered.length) {
+      container.innerHTML = `<div class="empty-state">No orders in this view.</div>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(order => `
+      <div class="order-card" id="card-${order.id}">
+        <div class="order-head" onclick="toggleOrder('${order.id}')">
+          <div class="order-head-left">
+            <div class="order-num">${order.order_number} — ${order.customer_name}</div>
+            <div class="order-meta">${new Date(order.created_at).toLocaleString('en-SG')} · S$${order.subtotal_sgd}${order.refunded_total_sgd > 0 ? ` · S$${order.refunded_total_sgd} refunded` : ''}</div>
+          </div>
+          <span class="status-pill status-${order.status}">${order.status.replace(/_/g,' ')}</span>
+        </div>
+        <div class="order-body" id="body-${order.id}">
+          <div class="cust-info">
+            <div><strong>Email:</strong> ${order.email}</div>
+            <div><strong>Phone:</strong> ${order.phone}</div>
+            <div><strong>Address:</strong> ${order.delivery_address}</div>
+            ${order.delivery_notes ? `<div><strong>Notes:</strong> ${order.delivery_notes}</div>` : ''}
+          </div>
+          <table class="items-table">
+            <thead>
+              <tr><th>Item</th><th>Colour/Size</th><th>Qty</th><th>Line Total</th><th>Fulfillment</th><th>Refund (S$)</th></tr>
+            </thead>
+            <tbody>
+              ${order.order_items.map(item => `
+                <tr>
+                  <td>${item.name}</td>
+                  <td>${item.colour || ''} ${item.size || ''}</td>
+                  <td>${item.qty}</td>
+                  <td>S$${item.line_total_sgd}</td>
+                  <td>
+                    <select class="fulfill-select" id="fulfill-${item.id}">
+                      ${FULFILLMENT_STATUSES.map(s => `<option value="${s}" ${s===item.fulfillment_status?'selected':''}>${s.replace(/_/g,' ')}</option>`).join('')}
+                    </select>
+                  </td>
+                  <td>
+                    <input type="number" step="0.01" id="refund-${item.id}" placeholder="0.00" value="${item.refund_amount_sgd || ''}" />
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="order-actions">
+            <label style="font-size:11px;color:var(--white-dim);">Order status:</label>
+            <select class="fulfill-select" id="orderstatus-${order.id}">
+              ${ORDER_STATUSES.map(s => `<option value="${s}" ${s===order.status?'selected':''}>${s.replace(/_/g,' ')}</option>`).join('')}
+            </select>
+            <button class="btn" onclick="saveOrder('${order.id}')">Save Changes</button>
+            ${order.status === 'pending_payment' ? `<button class="btn-ghost" onclick="markAsPaid('${order.id}')" title="Use if HitPay's webhook didn't fire but payment actually went through">Mark as Paid (manual override)</button>` : ''}
+            <span class="save-status" id="save-status-${order.id}">✓ Saved</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function toggleOrder(id) {
+    document.getElementById(`body-${id}`).classList.toggle('open');
+  }
+
+  async function saveOrder(orderId) {
+    const order = allOrders.find(o => o.id === orderId);
+    if (!order) return;
+
+    // Save each item's fulfillment status + refund amount
+    let refundedTotal = 0;
+    for (const item of order.order_items) {
+      const fulfillStatus = document.getElementById(`fulfill-${item.id}`).value;
+      const refundAmount = parseFloat(document.getElementById(`refund-${item.id}`).value) || 0;
+      if (fulfillStatus === 'unavailable') refundedTotal += refundAmount;
+
+      const updatePayload = {
+        fulfillment_status: fulfillStatus,
+        refund_amount_sgd: refundAmount || null
+      };
+      if (fulfillStatus === 'unavailable' && refundAmount > 0) {
+        updatePayload.refunded_at = new Date().toISOString();
+      }
+
+      const { error } = await sb.from('order_items').update(updatePayload).eq('id', item.id);
+      if (error) { alert('Failed to save item: ' + error.message); return; }
+    }
+
+    // Save order-level status + refunded total
+    const newStatus = document.getElementById(`orderstatus-${orderId}`).value;
+    const { error: orderErr } = await sb
+      .from('orders')
+      .update({ status: newStatus, refunded_total_sgd: refundedTotal, updated_at: new Date().toISOString() })
+      .eq('id', orderId);
+
+    if (orderErr) { alert('Failed to save order: ' + orderErr.message); return; }
+
+    const saveMsg = document.getElementById(`save-status-${orderId}`);
+    saveMsg.style.display = 'inline';
+    setTimeout(() => { saveMsg.style.display = 'none'; }, 2000);
+
+    loadOrders(); // refresh data
+  }
+
+  async function markAsPaid(orderId) {
+    if (!confirm('Confirm this order was actually paid? Only do this if you\'ve verified payment in your HitPay dashboard directly — this bypasses the automatic webhook check.')) return;
+
+    const { error } = await sb
+      .from('orders')
+      .update({ status: 'paid', updated_at: new Date().toISOString() })
+      .eq('id', orderId);
+
+    if (error) { alert('Failed to update: ' + error.message); return; }
+    loadOrders();
+  }
+
+  checkSession();
+</script>
+</body>
+</html>

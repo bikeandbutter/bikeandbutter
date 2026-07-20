@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Checkout — EVR × Bike and Butter</title>
+<link rel="stylesheet" href="EVR.css" />
+<style>
+  body{background:var(--bg)}
+  .checkout-page-wrap{max-width:1040px;margin:0 auto;padding:48px 40px 100px}
+  .checkout-page-nav{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--white-dim);margin-bottom:8px}
+  .checkout-page-nav a{color:var(--white-dim)}
+  .checkout-page-nav a:hover{color:var(--orange)}
+  .checkout-page-title{font-size:24px;font-weight:700;margin:8px 0 36px}
+  @media (max-width:720px){ .checkout-page-wrap{padding:28px 20px 80px} }
+</style>
+</head>
+<body>
+
+  <div class="demo-bar">DEMO SITE — this store is in testing. No orders placed here will be processed, charged, or fulfilled.</div>
+  <nav class="rs-nav">
+    <div class="nav-left-group">
+      <div class="nav-left-icons">
+        <a class="nav-icon-btn" href="./" aria-label="Back to shop">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M12 4l-6 6 6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="nav-icon-btn" href="../" aria-label="Home">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 9l7-6 7 6v8a1 1 0 0 1-1 1h-4v-6H8v6H4a1 1 0 0 1-1-1V9z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <div class="nav-logo">
+        <a href="../" class="logo-link"><img src="photos/bikeandbutter_logo.png" alt="Bike and Butter" class="nav-logo-img nav-logo-img-bb"/><span class="logo-x">×</span><img src="photos/evr_logo.png" alt="EVR" class="nav-logo-img nav-logo-img-evr"/></a>
+      </div>
+    </div>
+    <div class="nav-right"></div>
+  </nav>
+
+  <main>
+    <div class="checkout-page-wrap">
+      <div class="checkout-page-nav">
+        <a href="./">EVR</a> <span>›</span> <span>Checkout</span>
+      </div>
+      <h1 class="checkout-page-title">Delivery &amp; Payment</h1>
+
+      <div class="checkout-layout">
+        <div class="checkout-items-col">
+          <div id="checkout-empty" style="display:none">
+            <p style="color:var(--white-dim);margin-bottom:20px;">Your cart is empty.</p>
+            <a href="./" class="pdrawer-btn-primary" style="display:inline-block;text-decoration:none;">Continue Shopping</a>
+          </div>
+          <div id="checkout-items-list"></div>
+        </div>
+        <div class="checkout-form-col">
+          <div class="cart-summary-box" id="checkout-form-wrap">
+            <h4>Delivery Details</h4>
+            <div class="pform">
+              <div class="pform-row">
+                <label class="pform-label">Full Name *</label>
+                <input class="pform-input" id="co-name" type="text" placeholder="Your name" required/>
+              </div>
+              <div class="pform-row">
+                <label class="pform-label">Email *</label>
+                <input class="pform-input" id="co-email" type="email" placeholder="your@email.com" required/>
+              </div>
+              <div class="pform-row">
+                <label class="pform-label">Phone / WhatsApp *</label>
+                <input class="pform-input" id="co-phone" type="tel" placeholder="+65 9xxx xxxx" required/>
+              </div>
+              <div class="pform-row">
+                <label class="pform-label">Delivery Address *</label>
+                <textarea class="pform-input pform-textarea" id="co-address" placeholder="Full address including unit number and postal code" required></textarea>
+              </div>
+              <div class="pform-row">
+                <label class="pform-label">Delivery Notes</label>
+                <textarea class="pform-input pform-textarea" id="co-notes" placeholder="Any notes for delivery (optional)"></textarea>
+              </div>
+            </div>
+            <div class="cart-summary-row cart-summary-row-final">
+              <span>Total</span>
+              <span id="checkout-subtotal">S$0</span>
+            </div>
+            <div class="checkout-payment-disclaimer">
+              This is a demo checkout. Submitting this form will not create a real order, charge any payment method, or result in delivery of any product.
+            </div>
+            <button class="pdrawer-btn-primary" id="co-submit" style="width:100%;margin-top:16px;" onclick="submitCartOrder()">Proceed to Payment →</button>
+            <p class="pdrawer-note" style="margin-top:14px;">This is a pre-order — items ship in from China (~10 working days). Your order is confirmed once payment is received. If any item can't be fulfilled, that portion is refunded and the rest of your order proceeds as normal.</p>
+            <div id="co-success" class="pform-success" style="display:none;margin-top:12px;">✓ Order created! Redirecting you to payment…</div>
+            <div id="co-error" class="pform-error" style="display:none;margin-top:12px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://aeszkgesbqxfqzuwintb.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_HLEeqpfnhWJ3kr_AHJIffA_9FOE0aHV";
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const CART_KEY = 'evr_cart_v1';
+
+    function getCart() {
+      try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch (e) { return []; }
+    }
+
+    function renderSummary() {
+      const cart = getCart();
+      if (!cart.length) {
+        document.getElementById('checkout-empty').style.display = '';
+        document.getElementById('checkout-items-list').style.display = 'none';
+        document.getElementById('checkout-form-wrap').style.display = 'none';
+        document.getElementById('checkout-subtotal').textContent = 'S$0';
+        return;
+      }
+      document.getElementById('checkout-items-list').innerHTML = cart.map(item => `
+        <div class="cart-row">
+          <div class="cart-row-img">
+            ${item.image ? `<img src="${item.image}" alt="${item.name}">` : ''}
+          </div>
+          <div class="cart-row-info">
+            <div class="cart-row-name">${item.name}</div>
+            <div class="cart-row-var">Option: ${item.colour ? item.colour : ''}${item.colour && item.size ? ' / ' : ''}${item.size ? item.size : ''}</div>
+            <div class="cart-row-var">Qty: ${item.qty}</div>
+          </div>
+          <div class="cart-row-price-col">
+            <div class="cart-row-total">S$${(item.qty * item.unitPrice).toFixed(2).replace(/\.00$/, '')}</div>
+            <div class="cart-row-unit">S$${item.unitPrice} each</div>
+          </div>
+        </div>
+      `).join('');
+      const subtotal = cart.reduce((sum, item) => sum + item.qty * item.unitPrice, 0);
+      document.getElementById('checkout-subtotal').textContent = `S$${subtotal.toFixed(2).replace(/\.00$/, '')}`;
+    }
+
+    function genOrderNumber() {
+      const rand = Math.floor(Math.random() * 900000 + 100000);
+      return `EVR-${rand}`;
+    }
+
+    function validateCheckoutForm(name, email, phone, address) {
+      const errors = {};
+      if (!name) errors.name = 'Please enter your full name.';
+
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email) errors.email = 'Please enter your email address.';
+      else if (!emailPattern.test(email)) errors.email = 'That doesn\'t look like a valid email address (e.g. name@example.com).';
+
+      const digitsOnly = phone.replace(/[^0-9]/g, '');
+      if (!phone) errors.phone = 'Please enter your phone number.';
+      else if (digitsOnly.length < 8) errors.phone = 'Please enter a valid phone number (at least 8 digits).';
+
+      if (!address) errors.address = 'Please enter your delivery address.';
+
+      return errors;
+    }
+
+    function showFieldError(fieldId, message) {
+      const input = document.getElementById(fieldId);
+      input.classList.add('pform-input-error');
+      let errEl = document.getElementById(fieldId + '-err');
+      if (!errEl) {
+        errEl = document.createElement('div');
+        errEl.id = fieldId + '-err';
+        errEl.className = 'pform-field-error';
+        input.insertAdjacentElement('afterend', errEl);
+      }
+      errEl.textContent = message;
+    }
+
+    function clearFieldErrors() {
+      document.querySelectorAll('.pform-input-error').forEach(el => el.classList.remove('pform-input-error'));
+      document.querySelectorAll('.pform-field-error').forEach(el => el.remove());
+    }
+
+    async function submitCartOrder() {
+      const name = document.getElementById('co-name').value.trim();
+      const email = document.getElementById('co-email').value.trim();
+      const phone = document.getElementById('co-phone').value.trim();
+      const address = document.getElementById('co-address').value.trim();
+      const notes = document.getElementById('co-notes').value.trim();
+
+      clearFieldErrors();
+      const errors = validateCheckoutForm(name, email, phone, address);
+      if (Object.keys(errors).length) {
+        if (errors.name) showFieldError('co-name', errors.name);
+        if (errors.email) showFieldError('co-email', errors.email);
+        if (errors.phone) showFieldError('co-phone', errors.phone);
+        if (errors.address) showFieldError('co-address', errors.address);
+        document.getElementById(Object.keys(errors)[0] === 'name' ? 'co-name' : 'co-' + Object.keys(errors)[0]).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      const cart = getCart();
+      if (!cart.length) { alert('Your cart is empty.'); return; }
+
+      const btn = document.getElementById('co-submit');
+      btn.disabled = true;
+      btn.textContent = 'Creating order…';
+      document.getElementById('co-success').style.display = 'none';
+      document.getElementById('co-error').style.display = 'none';
+
+      const subtotal = cart.reduce((sum, item) => sum + item.qty * item.unitPrice, 0);
+      const orderNumber = genOrderNumber();
+
+      try {
+        const orderId = crypto.randomUUID();
+        const { error: orderErr } = await sb.from('orders').insert({
+          id: orderId,
+          order_number: orderNumber,
+          customer_name: name,
+          email, phone,
+          delivery_address: address,
+          delivery_notes: notes || null,
+          status: 'pending_payment',
+          subtotal_sgd: subtotal
+        });
+        if (orderErr) throw orderErr;
+
+        const itemRows = cart.map(item => ({
+          order_id: orderId,
+          sku: item.sku,
+          name: item.name,
+          colour: item.colour,
+          size: item.size,
+          qty: item.qty,
+          unit_price_sgd: item.unitPrice,
+          line_total_sgd: item.qty * item.unitPrice
+        }));
+        const { error: itemsErr } = await sb.from('order_items').insert(itemRows);
+        if (itemsErr) throw itemsErr;
+
+        localStorage.removeItem(CART_KEY);
+        btn.textContent = 'Redirecting to payment…';
+
+        const { data: fnData, error: fnErr } = await sb.functions.invoke('create-payment', {
+          body: { order_id: orderId }
+        });
+        if (fnErr || !fnData || fnData.error) {
+          throw new Error(fnErr?.message || fnData?.error || 'Could not create payment link');
+        }
+        window.location.href = fnData.checkout_url;
+      } catch (err) {
+        console.error('Order submission failed:', err);
+        const errEl = document.getElementById('co-error');
+        errEl.style.display = '';
+        errEl.textContent = `Order ${orderNumber} was saved, but we couldn't start payment (${err.message || err}). Please contact us to complete payment for this order.`;
+        btn.disabled = false;
+        btn.textContent = 'Try Again';
+      }
+    }
+
+    renderSummary();
+  </script>
+
+</body>
+</html>
