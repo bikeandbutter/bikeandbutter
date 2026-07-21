@@ -425,7 +425,8 @@ body.loaded .rs-hero-content .btn-orange{opacity:1;transform:translateY(0);trans
    stuck in place until the whole page scrolled past it. Give it
    its own scroll region capped to the visible viewport height.
    ============================================================ */
-.filter-sidebar{max-height:calc(100vh - 110px);overflow-y:auto;padding-right:4px}
+.filter-sidebar{max-height:calc(100vh - 110px);overflow-y:auto;padding-right:4px;min-height:0}
+.filter-sidebar-panel.open{max-height:3000px;overflow:visible}
 .filter-sidebar::-webkit-scrollbar{width:5px}
 .filter-sidebar::-webkit-scrollbar-thumb{background:var(--border-mid);border-radius:3px}
 
