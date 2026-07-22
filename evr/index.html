@@ -492,10 +492,52 @@
       document.querySelectorAll('.section, .rs-cta').forEach(el => el.classList.add('reveal'));
       setupRevealObserver();
 
+      showSkeletonGrid();
       PRODUCTS = await loadProductsFromSupabase();
       buildFilterSidebar();
       renderGrid();
+
+      setupMagneticButtons();
     });
+
+    // Magnetic glow effect: button subtly follows the cursor and glows
+    // on hover. Applied to primary CTAs across the page.
+    function setupMagneticButtons() {
+      const selector = '.btn-orange, .hero-slide-cta, .mobile-filter-fab, .pdrawer-btn-primary, .pdrawer-btn-secondary';
+      document.querySelectorAll(selector).forEach(btn => {
+        if (btn.dataset.magnetic) return; // avoid double-binding
+        btn.dataset.magnetic = 'true';
+        btn.classList.add('magnetic-btn');
+
+        btn.addEventListener('mousemove', (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const midX = rect.width / 2, midY = rect.height / 2;
+          const moveX = (x - midX) * 0.18;
+          const moveY = (y - midY) * 0.18;
+          btn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+          btn.style.setProperty('--mx', x + 'px');
+          btn.style.setProperty('--my', y + 'px');
+        });
+        btn.addEventListener('mouseleave', () => {
+          btn.style.transform = 'translate(0, 0)';
+        });
+      });
+    }
+
+    function showSkeletonGrid() {
+      const grid = document.getElementById('shopee-grid');
+      let html = '';
+      for (let i = 0; i < 9; i++) {
+        html += `<div class="sc-skeleton">
+          <div class="sc-skeleton-img"></div>
+          <div class="sc-skeleton-line" style="width:70%"></div>
+          <div class="sc-skeleton-line" style="width:40%"></div>
+        </div>`;
+      }
+      grid.innerHTML = html;
+    }
 
     let revealObserver = null;
     function setupRevealObserver() {
@@ -679,10 +721,17 @@
           const colourCount = p.colours.length > 1 ? p.colours.length + ' colours' : (p.colours.length === 1 ? p.colours[0].label : '');
           const sizeCount = p.sizes.length > 1 ? p.sizes.length + ' sizes' : (p.sizes.length === 1 ? p.sizes[0] : '');
           const varCount = [colourCount, sizeCount].filter(Boolean).join(' · ');
+          const altImg = p.colours.length > 1 ? getProductImg(p, 1, p.sizes && p.sizes[0]) : null;
           return `<div class="sc-card reveal" style="--reveal-i:${idx % 4}" onclick="openDrawer('${p.sku}')">
-            ${(() => { const src = getProductImg(p, 0, p.sizes && p.sizes[0]); return src
-              ? `<img class="sc-img" src="${src}" alt="${p.name}" loading="lazy" decoding="async">`
-              : `<div class="sc-img-ph"><span class="sc-img-ph-icon">${icon}</span></div>`; })()}
+            <div class="sc-img-wrap">
+              ${(() => { const src = getProductImg(p, 0, p.sizes && p.sizes[0]); return src
+                ? `<img class="sc-img sc-img-main" src="${src}" alt="${p.name}" loading="lazy" decoding="async">`
+                : `<div class="sc-img-ph"><span class="sc-img-ph-icon">${icon}</span></div>`; })()}
+              ${altImg ? `<img class="sc-img sc-img-alt" src="${altImg}" alt="${p.name}" loading="lazy" decoding="async">` : ''}
+              <button class="sc-quick-add" onclick="quickAdd(event,'${p.sku}')" aria-label="Quick add to cart" title="Quick add">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
             <div class="sc-body">
               <div class="sc-range-row">
                 <span class="rs-range-badge ${rm2.badgeCls}"><span class="range-dot ${rm2.dotCls}"></span>${rm2.label}</span>${genderTag}
@@ -883,6 +932,28 @@
       if (!priceSGD) return 0;
       const m = String(priceSGD).match(/[\d.]+/);
       return m ? parseFloat(m[0]) : 0;
+    }
+
+    function quickAdd(evt, sku) {
+      evt.stopPropagation(); // don't also trigger the card's openDrawer click
+      const p = PRODUCTS.find(x => x.sku === sku);
+      if (!p) return;
+      const colourObj = p.colours[0] || null;
+      const colour = colourObj ? colourObj.label : null;
+      const size = p.sizes[0] || null;
+      const unitPrice = (colourObj && colourObj.price) ? priceToNumber(colourObj.price) : priceToNumber(p.priceSGD);
+      const image = getProductImg(p, 0, size);
+
+      const cart = getCart();
+      const existing = cart.find(item => item.sku === p.sku && item.colour === colour && item.size === size);
+      if (existing) existing.qty += 1;
+      else cart.push({ sku: p.sku, name: p.name, colour, size, qty: 1, unitPrice, image });
+      saveCart(cart);
+
+      // Brief inline confirmation on the button itself
+      const btn = evt.currentTarget;
+      btn.classList.add('added');
+      setTimeout(() => btn.classList.remove('added'), 900);
     }
 
     function addToCart() {
