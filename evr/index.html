@@ -721,13 +721,12 @@
           const colourCount = p.colours.length > 1 ? p.colours.length + ' colours' : (p.colours.length === 1 ? p.colours[0].label : '');
           const sizeCount = p.sizes.length > 1 ? p.sizes.length + ' sizes' : (p.sizes.length === 1 ? p.sizes[0] : '');
           const varCount = [colourCount, sizeCount].filter(Boolean).join(' · ');
-          const altImg = p.colours.length > 1 ? getProductImg(p, 1, p.sizes && p.sizes[0]) : null;
-          return `<div class="sc-card reveal" style="--reveal-i:${idx % 4}" onclick="openDrawer('${p.sku}')">
+          // Stack up to 4 colour images for the hover cycle (keeps payload reasonable)
+          const cycleImgs = p.colours.slice(0, 4).map((c, i) => getProductImg(p, i, p.sizes && p.sizes[0])).filter(Boolean);
+          return `<div class="sc-card reveal" style="--reveal-i:${idx % 4}" onclick="openDrawer('${p.sku}')" onmouseenter="startCardCycle(this)" onmouseleave="stopCardCycle(this)">
             <div class="sc-img-wrap">
-              ${(() => { const src = getProductImg(p, 0, p.sizes && p.sizes[0]); return src
-                ? `<img class="sc-img sc-img-main" src="${src}" alt="${p.name}" loading="lazy" decoding="async">`
-                : `<div class="sc-img-ph"><span class="sc-img-ph-icon">${icon}</span></div>`; })()}
-              ${altImg ? `<img class="sc-img sc-img-alt" src="${altImg}" alt="${p.name}" loading="lazy" decoding="async">` : ''}
+              ${cycleImgs.map((src, i) => `<img class="sc-img sc-img-cycle${i === 0 ? ' active' : ''}" src="${src}" alt="${p.name}" loading="lazy" decoding="async">`).join('')}
+              ${!cycleImgs.length ? `<div class="sc-img-ph"><span class="sc-img-ph-icon">${icon}</span></div>` : ''}
               <button class="sc-quick-add" onclick="quickAdd(event,'${p.sku}')" aria-label="Quick add to cart" title="Quick add">
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
               </button>
@@ -932,6 +931,26 @@
       if (!priceSGD) return 0;
       const m = String(priceSGD).match(/[\d.]+/);
       return m ? parseFloat(m[0]) : 0;
+    }
+
+    function startCardCycle(card) {
+      const imgs = card.querySelectorAll('.sc-img-cycle');
+      if (imgs.length < 2) return; // nothing to cycle through
+      let i = 0;
+      card._cycleTimer = setInterval(() => {
+        i = (i + 1) % imgs.length;
+        imgs.forEach(img => img.classList.remove('active'));
+        imgs[i].classList.add('active');
+      }, 700);
+    }
+
+    function stopCardCycle(card) {
+      if (card._cycleTimer) {
+        clearInterval(card._cycleTimer);
+        card._cycleTimer = null;
+      }
+      const imgs = card.querySelectorAll('.sc-img-cycle');
+      imgs.forEach((img, i) => img.classList.toggle('active', i === 0));
     }
 
     function quickAdd(evt, sku) {
