@@ -450,7 +450,9 @@ body.loaded .rs-hero-content .btn-orange{opacity:1;transform:translateY(0);trans
    stuck in place until the whole page scrolled past it. Give it
    its own scroll region capped to the visible viewport height.
    ============================================================ */
+@media (min-width:901px){
 .filter-sidebar{max-height:calc(100vh - 110px);overflow-y:auto;padding-right:4px;min-height:0}
+}
 .filter-sidebar-panel.open{max-height:3000px;overflow:visible}
 .filter-sidebar::-webkit-scrollbar{width:5px}
 .filter-sidebar::-webkit-scrollbar-thumb{background:var(--border-mid);border-radius:3px}
@@ -488,6 +490,10 @@ body.loaded .rs-hero-content .btn-orange{opacity:1;transform:translateY(0);trans
   .sc-price{font-size:12px}
   .rs-range-badge{font-size:8px;padding:3px 7px}
   .sc-body{padding:10px 1px 0}
+  .catalogue-section{padding:20px 12px 40px!important}
+}
+@media (max-width:900px){
+  .catalogue-section{padding:32px 20px 56px}
 }
 
 /* Logo is now two independent links (Bike & Butter -> main site,
@@ -532,7 +538,8 @@ body.loaded .rs-hero-content .btn-orange{opacity:1;transform:translateY(0);trans
 .sc-card:hover .sc-quick-add{opacity:1;transform:translateY(0)}
 .sc-quick-add:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
 .sc-quick-add.added{background:#4caf50;color:#fff;border-color:#4caf50}
-@media (hover:none){.sc-quick-add{opacity:1;transform:none}}
+@media (hover:none){.sc-quick-add{display:none}}
+@media (max-width:640px){.sc-quick-add{display:none}}
 
 .magnetic-btn{position:relative;transition:transform 0.25s cubic-bezier(.2,.8,.2,1);overflow:hidden}
 .magnetic-btn::before{

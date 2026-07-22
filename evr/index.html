@@ -503,7 +503,11 @@
     // Magnetic glow effect: button subtly follows the cursor and glows
     // on hover. Applied to primary CTAs across the page.
     function setupMagneticButtons() {
-      const selector = '.btn-orange, .hero-slide-cta, .mobile-filter-fab, .pdrawer-btn-primary, .pdrawer-btn-secondary';
+      // Skip entirely on touch devices — there's no real hover/mouseleave
+      // cycle on tap, which was leaving buttons stuck mid-transform.
+      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+      const selector = '.btn-orange, .hero-slide-cta, .pdrawer-btn-primary, .pdrawer-btn-secondary';
       document.querySelectorAll(selector).forEach(btn => {
         if (btn.dataset.magnetic) return; // avoid double-binding
         btn.dataset.magnetic = 'true';
