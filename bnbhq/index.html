@@ -6,7 +6,7 @@
 <title>BNBHQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <style>
 :root {
   --bg:        #f6f6f4;
@@ -419,15 +419,16 @@ async function loadAll() {
     setSyncStatus('synced');
   } catch (e) {
     console.error(e);
-    setSyncStatus('error');
+    setSyncStatus('error', e.message);
   }
 }
 
-function setSyncStatus(state) {
+function setSyncStatus(state, detail) {
   const dot = document.getElementById('syncDot');
   const txt = document.getElementById('syncTxt');
   dot.className = 'sync-dot ' + state;
-  txt.textContent = state === 'synced' ? 'Connected' : state === 'pending' ? 'Syncing…' : 'Connection error';
+  txt.textContent = state === 'synced' ? 'Connected' : state === 'pending' ? 'Syncing…' : ('Error: ' + (detail || 'unknown'));
+  txt.title = detail || '';
 }
 
 function bikeCountFor(customerId) { return BIKES.filter(b => b.customer_id === customerId).length; }
