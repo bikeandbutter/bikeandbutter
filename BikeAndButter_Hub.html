@@ -3326,7 +3326,7 @@ async function pushAllToSheet() {
   showAlert('settings-alert','success', `Pushing ${syncQueue.length} records to Google Sheets - watch the sync indicator, this can take a moment for a large dataset.`);
 }
 
-
+function prefillDates() {
   const t = new Date().toISOString().split('T')[0];
   ['po-date','sal-inv-date','sal-shopee-date','sal-lazada-date','sal-manual-date','opex-date','jnl-date'].forEach(id => {
     const e = document.getElementById(id); if (e) e.value = t;
