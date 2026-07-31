@@ -212,7 +212,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Finance</div>
-        <button class="nav-item" data-tab="accounting" onclick="switchTab('accounting')"><span class="nav-icon">ACC</span> Accounting <span class="nav-badge">Soon</span></button>
+        <button class="nav-item" data-tab="accounting" onclick="switchTab('accounting')"><span class="nav-icon">ACC</span> Accounting</button>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">System</div>
@@ -480,7 +480,68 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div id="productList"></div>
         </div>
       </div>
-      <div class="tab-panel" id="tab-accounting"><div class="coming-soon"><div class="coming-soon-title">Accounting — coming next</div><div class="coming-soon-sub">Balance Sheet and Income Statement generated from the ledger, with an automatic month-end email.</div></div></div>
+      <div class="tab-panel" id="tab-accounting">
+        <div class="page-header">
+          <div><div class="page-title">Accounting</div><div class="page-subtitle">Computed live from every invoice, purchase, and sale — plus manual adjustments</div></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+          <button class="btn btn-secondary" id="acctTabIncomeBtn" onclick="switchAcctView('income')">Income Statement</button>
+          <button class="btn btn-ghost" id="acctTabBalanceBtn" onclick="switchAcctView('balance')">Balance Sheet</button>
+          <button class="btn btn-ghost" id="acctTabJournalBtn" onclick="switchAcctView('journal')">Journal</button>
+        </div>
+
+        <div id="acctView-income">
+          <div class="card" style="margin-bottom:16px"><div class="card-body" style="display:flex;gap:12px;align-items:flex-end">
+            <div class="field" style="margin:0"><label>From</label><input type="date" id="isFrom" onchange="renderIncomeStatement()"></div>
+            <div class="field" style="margin:0"><label>To</label><input type="date" id="isTo" onchange="renderIncomeStatement()"></div>
+            <button class="btn btn-ghost btn-sm" onclick="setThisMonth()">This month</button>
+            <button class="btn btn-ghost btn-sm" onclick="setLastMonth()">Last month</button>
+          </div></div>
+          <div class="card"><div class="card-body" id="incomeStatementBody">Loading…</div></div>
+        </div>
+
+        <div id="acctView-balance" style="display:none">
+          <div class="card" style="margin-bottom:16px"><div class="card-body" style="display:flex;gap:12px;align-items:flex-end">
+            <div class="field" style="margin:0"><label>As of date</label><input type="date" id="bsAsOf" onchange="renderBalanceSheet()"></div>
+          </div></div>
+          <div class="card"><div class="card-body" id="balanceSheetBody">Loading…</div></div>
+        </div>
+
+        <div id="acctView-journal" style="display:none">
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-header"><div class="card-title">New manual entry</div></div>
+            <div class="card-body">
+              <div class="field-row fr-3">
+                <div class="field"><label>Date</label><input type="date" id="jeDate"></div>
+                <div class="field"><label>Account</label><input type="text" id="jeAccount" placeholder="e.g. Rent Expense"></div>
+                <div class="field"><label>Type</label>
+                  <select id="jeAccountType" style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:8px 11px;font-size:13px">
+                    <option value="asset">Asset</option><option value="liability">Liability</option><option value="equity">Equity</option><option value="revenue">Revenue</option><option value="expense" selected>Expense</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field-row fr-3">
+                <div class="field"><label>Debit or Credit</label>
+                  <select id="jeEntryType" style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:8px 11px;font-size:13px">
+                    <option value="debit">Debit</option><option value="credit">Credit</option>
+                  </select>
+                </div>
+                <div class="field"><label>Amount</label><input type="number" id="jeAmount" placeholder="0.00"></div>
+                <div class="field"><label>Memo</label><input type="text" id="jeMemo" placeholder="Optional"></div>
+              </div>
+              <button class="btn btn-primary" onclick="addJournalEntry()">Add Entry</button>
+              <span style="font-size:11px;color:var(--text3);margin-left:10px">Tip: a balanced entry needs a matching debit and credit — e.g. Debit Rent Expense $500 / Credit Cash $500, added as two entries.</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">All ledger entries</div></div>
+            <div class="tbl-wrap"><table>
+              <thead><tr><th>Date</th><th>Account</th><th>Type</th><th>Amount</th><th>Category</th><th>Memo</th><th></th></tr></thead>
+              <tbody id="ledgerRows"><tr><td colspan="7" class="cell-muted">Loading…</td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
       <div class="tab-panel" id="tab-settings">
         <div class="page-header"><div><div class="page-title">Settings</div><div class="page-subtitle">Signed in as <span id="settingsEmail">—</span></div></div></div>
       </div>
@@ -672,6 +733,10 @@ async function loadAll() {
     await loadProducts();
     await loadPurchases();
     await loadSales();
+    document.getElementById('jeDate').value = new Date().toISOString().slice(0,10);
+    document.getElementById('bsAsOf').value = new Date().toISOString().slice(0,10);
+    setThisMonth();
+    await loadLedger();
     setSyncStatus('synced');
   } catch (e) {
     console.error(e);
@@ -1093,6 +1158,162 @@ async function saveVariant() {
   await loadProducts();
 }
 
+/* ============ ACCOUNTING ============ */
+let LEDGER = [];
+
+async function loadLedger() {
+  const { data } = await sb.from('accounting_entries').select('*').order('entry_date', { ascending: false });
+  LEDGER = data || [];
+  renderLedgerRows();
+  renderIncomeStatement();
+  renderBalanceSheet();
+}
+
+function switchAcctView(view) {
+  ['income','balance','journal'].forEach(v => {
+    document.getElementById('acctView-' + v).style.display = v === view ? 'block' : 'none';
+    document.getElementById('acctTab' + v.charAt(0).toUpperCase() + v.slice(1) + 'Btn').className = v === view ? 'btn btn-secondary' : 'btn btn-ghost';
+  });
+}
+
+function setThisMonth() {
+  const now = new Date();
+  document.getElementById('isFrom').value = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
+  document.getElementById('isTo').value = new Date(now.getFullYear(), now.getMonth()+1, 0).toISOString().slice(0,10);
+  renderIncomeStatement();
+}
+function setLastMonth() {
+  const now = new Date();
+  document.getElementById('isFrom').value = new Date(now.getFullYear(), now.getMonth()-1, 1).toISOString().slice(0,10);
+  document.getElementById('isTo').value = new Date(now.getFullYear(), now.getMonth(), 0).toISOString().slice(0,10);
+  renderIncomeStatement();
+}
+
+function sumAccounts(entries, accountType, entryTypeSign) {
+  // entryTypeSign: for revenue/liability/equity, credit is +; for asset/expense, debit is +
+  const byAccount = {};
+  entries.filter(e => e.account_type === accountType).forEach(e => {
+    const sign = (e.entry_type === entryTypeSign) ? 1 : -1;
+    byAccount[e.account] = (byAccount[e.account] || 0) + sign * Number(e.amount);
+  });
+  return byAccount;
+}
+
+function renderIncomeStatement() {
+  const el = document.getElementById('incomeStatementBody');
+  if (!el) return;
+  const from = document.getElementById('isFrom').value;
+  const to = document.getElementById('isTo').value;
+  const entries = LEDGER.filter(e => (!from || e.entry_date >= from) && (!to || e.entry_date <= to));
+
+  const revenue = sumAccounts(entries, 'revenue', 'credit');
+  const expenses = sumAccounts(entries, 'expense', 'debit');
+  const totalRevenue = Object.values(revenue).reduce((a,b)=>a+b, 0);
+  const cogs = expenses['Cost of Goods Sold'] || 0;
+  const otherExpenses = Object.entries(expenses).filter(([k])=>k!=='Cost of Goods Sold');
+  const totalOtherExpenses = otherExpenses.reduce((s,[,v])=>s+v, 0);
+  const grossProfit = totalRevenue - cogs;
+  const netIncome = grossProfit - totalOtherExpenses;
+
+  const row = (label, val, opts={}) => `<div style="display:flex;justify-content:space-between;padding:6px 0;${opts.bold?'font-weight:700':''};${opts.indent?'padding-left:16px;color:var(--text2);font-size:12px':'font-size:13px'};${opts.border?'border-top:1px solid var(--border);margin-top:6px;padding-top:10px':''}">
+    <span>${label}</span><span>${money(val)}</span></div>`;
+
+  el.innerHTML = `
+    <div style="font-size:12px;color:var(--text3);margin-bottom:14px">${from ? formatDate(from) : '…'} — ${to ? formatDate(to) : '…'}</div>
+    <div style="font-weight:700;font-size:13px;margin-bottom:4px">Revenue</div>
+    ${Object.entries(revenue).map(([k,v]) => row(k, v, {indent:true})).join('') || row('No revenue', 0, {indent:true})}
+    ${row('Total Revenue', totalRevenue, {bold:true, border:true})}
+    ${row('Cost of Goods Sold', cogs)}
+    ${row('Gross Profit', grossProfit, {bold:true, border:true})}
+    <div style="font-weight:700;font-size:13px;margin:10px 0 4px">Operating Expenses</div>
+    ${otherExpenses.map(([k,v]) => row(k, v, {indent:true})).join('') || row('No other expenses', 0, {indent:true})}
+    ${row('Total Operating Expenses', totalOtherExpenses, {bold:true, border:true})}
+    <div style="display:flex;justify-content:space-between;padding-top:14px;margin-top:10px;border-top:2px solid var(--text);font-size:17px;font-weight:800">
+      <span>Net Income</span><span style="color:${netIncome>=0?'var(--green)':'var(--red)'}">${money(netIncome)}</span>
+    </div>`;
+}
+
+function renderBalanceSheet() {
+  const el = document.getElementById('balanceSheetBody');
+  if (!el) return;
+  const asOf = document.getElementById('bsAsOf').value;
+  const entries = LEDGER.filter(e => !asOf || e.entry_date <= asOf);
+
+  const assets = sumAccounts(entries, 'asset', 'debit');
+  const liabilities = sumAccounts(entries, 'liability', 'credit');
+  const equity = sumAccounts(entries, 'equity', 'credit');
+  // Retained earnings = cumulative net income to date (revenue - all expenses)
+  const revenue = sumAccounts(entries, 'revenue', 'credit');
+  const expenses = sumAccounts(entries, 'expense', 'debit');
+  const retainedEarnings = Object.values(revenue).reduce((a,b)=>a+b,0) - Object.values(expenses).reduce((a,b)=>a+b,0);
+
+  const totalAssets = Object.values(assets).reduce((a,b)=>a+b, 0);
+  const totalLiabilities = Object.values(liabilities).reduce((a,b)=>a+b, 0);
+  const totalEquity = Object.values(equity).reduce((a,b)=>a+b, 0) + retainedEarnings;
+
+  const row = (label, val, opts={}) => `<div style="display:flex;justify-content:space-between;padding:6px 0;${opts.bold?'font-weight:700':''};${opts.indent?'padding-left:16px;color:var(--text2);font-size:12px':'font-size:13px'};${opts.border?'border-top:1px solid var(--border);margin-top:6px;padding-top:10px':''}">
+    <span>${label}</span><span>${money(val)}</span></div>`;
+
+  el.innerHTML = `
+    <div style="font-size:12px;color:var(--text3);margin-bottom:14px">As of ${asOf ? formatDate(asOf) : 'today'}</div>
+    <div style="font-weight:700;font-size:13px;margin-bottom:4px">Assets</div>
+    ${Object.entries(assets).map(([k,v]) => row(k, v, {indent:true})).join('') || row('No assets recorded', 0, {indent:true})}
+    ${row('Total Assets', totalAssets, {bold:true, border:true})}
+    <div style="font-weight:700;font-size:13px;margin:14px 0 4px">Liabilities</div>
+    ${Object.entries(liabilities).map(([k,v]) => row(k, v, {indent:true})).join('') || row('No liabilities recorded', 0, {indent:true})}
+    ${row('Total Liabilities', totalLiabilities, {bold:true, border:true})}
+    <div style="font-weight:700;font-size:13px;margin:14px 0 4px">Equity</div>
+    ${Object.entries(equity).map(([k,v]) => row(k, v, {indent:true})).join('')}
+    ${row('Retained Earnings', retainedEarnings, {indent:true})}
+    ${row('Total Equity', totalEquity, {bold:true, border:true})}
+    <div style="display:flex;justify-content:space-between;padding-top:14px;margin-top:10px;border-top:2px solid var(--text);font-size:15px;font-weight:800">
+      <span>Liabilities + Equity</span><span>${money(totalLiabilities + totalEquity)}</span>
+    </div>
+    ${Math.abs(totalAssets - (totalLiabilities+totalEquity)) > 0.01 ? `<div style="margin-top:10px;font-size:11px;color:var(--red)">Note: Assets do not equal Liabilities + Equity by ${money(totalAssets-(totalLiabilities+totalEquity))}. This usually means an opening cash/capital balance hasn't been recorded yet — add one via the Journal tab.</div>` : ''}`;
+}
+
+function renderLedgerRows() {
+  const tbody = document.getElementById('ledgerRows');
+  if (!tbody) return;
+  if (!LEDGER.length) { tbody.innerHTML = '<tr><td colspan="7" class="cell-muted">No entries yet</td></tr>'; return; }
+  tbody.innerHTML = LEDGER.slice(0, 200).map(e => `
+    <tr>
+      <td>${formatDate(e.entry_date)}</td>
+      <td class="cell-strong">${escapeHtml(e.account)}</td>
+      <td><span class="badge badge-neutral">${e.entry_type}</span></td>
+      <td>${money(e.amount)}</td>
+      <td class="cell-muted">${escapeHtml(e.category || '—')}</td>
+      <td class="cell-muted" style="font-size:12px">${escapeHtml(e.memo || '—')}</td>
+      <td>${e.source_type === 'manual' ? `<button class="btn btn-ghost btn-sm" onclick="deleteJournalEntry('${e.id}')">✕</button>` : ''}</td>
+    </tr>`).join('');
+}
+
+async function addJournalEntry() {
+  const account = document.getElementById('jeAccount').value.trim();
+  const amount = parseFloat(document.getElementById('jeAmount').value);
+  if (!account || !amount) { alert('Account and amount are required.'); return; }
+  const payload = {
+    entry_date: document.getElementById('jeDate').value || new Date().toISOString().slice(0,10),
+    account, account_type: document.getElementById('jeAccountType').value,
+    entry_type: document.getElementById('jeEntryType').value,
+    amount, category: 'Manual', source_type: 'manual',
+    memo: document.getElementById('jeMemo').value.trim() || null,
+  };
+  const { error } = await sb.from('accounting_entries').insert(payload);
+  if (error) { alert('Save failed: ' + error.message); return; }
+  document.getElementById('jeAccount').value = '';
+  document.getElementById('jeAmount').value = '';
+  document.getElementById('jeMemo').value = '';
+  await loadLedger();
+}
+
+async function deleteJournalEntry(id) {
+  if (!confirm('Delete this manual entry?')) return;
+  const { error } = await sb.from('accounting_entries').delete().eq('id', id);
+  if (error) { alert('Delete failed: ' + error.message); return; }
+  await loadLedger();
+}
+
 /* ============ PURCHASES (drives WAC + stock qty up) ============ */
 let PURCHASES = [];
 let currentPurchaseItems = [];
@@ -1206,6 +1427,14 @@ async function savePurchase() {
   }
   await loadProducts();
   await loadPurchases();
+  if (document.getElementById('purchaseStatus').value === 'received') {
+    const pDate = document.getElementById('purchaseDate').value || new Date().toISOString().slice(0,10);
+    const memo = (document.getElementById('purchasePlatform').value.trim() || 'Purchase') + (document.getElementById('purchaseRef').value.trim() ? ' — ' + document.getElementById('purchaseRef').value.trim() : '');
+    await sb.from('accounting_entries').insert([
+      { entry_date: pDate, account: 'Inventory', account_type: 'asset', entry_type: 'debit', amount: totalSgd, category: 'Purchases', source_type: 'purchase', source_id: purchase.id, memo },
+      { entry_date: pDate, account: 'Cash', account_type: 'asset', entry_type: 'credit', amount: totalSgd, category: 'Purchases', source_type: 'purchase', source_id: purchase.id, memo },
+    ]);
+  }
   alert('Purchase saved and stock updated.');
   switchTab('purchases');
 }
@@ -1319,12 +1548,28 @@ async function saveSale() {
   }).select('id').single();
   if (error) { alert('Save failed: ' + error.message); return; }
 
+  let totalCogs = 0;
   for (const it of items) {
     await sb.from('sale_items').insert({ sale_id: sale.id, variant_id: it.variant_id, qty: it.qty, unit_price: it.unit_price });
     const v = VARIANTS.find(x => x.id === it.variant_id);
     const newQty = (Number(v?.qty) || 0) - it.qty;
     await sb.from('product_variants').update({ qty: newQty }).eq('id', it.variant_id);
+    totalCogs += it.qty * (Number(v?.wac) || 0);
   }
+  const saleDate = document.getElementById('saleDate').value || new Date().toISOString().slice(0,10);
+  const source = document.getElementById('saleSource').value.trim() || 'Sale';
+  const memo = source + (document.getElementById('saleRef').value.trim() ? ' — ' + document.getElementById('saleRef').value.trim() : '');
+  const ledgerEntries = [
+    { entry_date: saleDate, account: 'Cash', account_type: 'asset', entry_type: 'debit', amount: net, category: 'Sales', source_type: 'sale', source_id: sale.id, memo },
+    { entry_date: saleDate, account: 'Sales Revenue', account_type: 'revenue', entry_type: 'credit', amount: gross, category: 'Sales', source_type: 'sale', source_id: sale.id, memo },
+  ];
+  const totalDeductions = fee + shipping + returns + other;
+  if (totalDeductions > 0) ledgerEntries.push({ entry_date: saleDate, account: 'Platform Fees & Deductions', account_type: 'expense', entry_type: 'debit', amount: totalDeductions, category: 'Sales', source_type: 'sale', source_id: sale.id, memo });
+  if (totalCogs > 0) {
+    ledgerEntries.push({ entry_date: saleDate, account: 'Cost of Goods Sold', account_type: 'expense', entry_type: 'debit', amount: totalCogs, category: 'COGS', source_type: 'sale', source_id: sale.id, memo });
+    ledgerEntries.push({ entry_date: saleDate, account: 'Inventory', account_type: 'asset', entry_type: 'credit', amount: totalCogs, category: 'COGS', source_type: 'sale', source_id: sale.id, memo });
+  }
+  await sb.from('accounting_entries').insert(ledgerEntries);
   await loadProducts();
   await loadSales();
   alert('Sale saved and stock deducted.');
