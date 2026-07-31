@@ -733,7 +733,7 @@ thead th.tbl-num { text-align: right; }
       </div>
 
       <!-- ════════════ LOG SALE ════════════ -->
-      <div class="tab-panel" id="tab-sales">
+      <div class="tab-panel" id="tab-sales" data-editing-id="">
         <div class="page-header">
           <div><div class="page-title">Log Sale</div><div class="page-subtitle">Record a sale from any channel</div></div>
         </div>
@@ -802,7 +802,7 @@ thead th.tbl-num { text-align: right; }
                 <div id="sal-items-list"></div>
                 <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:6px" onclick="addSaleItem()">+ Add Item</button>
                 <div class="btn-row">
-                  <button class="btn btn-secondary" onclick="clearSaleForm()">Clear</button>
+                  <button class="btn btn-secondary" onclick="cancelSaleEdit()">Clear</button>
                   <button class="btn btn-primary" onclick="saveSale()">Save Sale</button>
                 </div>
               </div>
@@ -858,9 +858,20 @@ thead th.tbl-num { text-align: right; }
             </div>
           </div>
           <div class="tbl-wrap">
-            <table><thead><tr><th>Date</th><th>Channel</th><th>Reference</th><th class="tbl-num">Gross</th><th class="tbl-num">Fees</th><th class="tbl-num">Net</th><th class="tbl-num">COGS</th><th>Margin</th><th></th></tr></thead>
+            <table><thead id="slg-thead"><tr>
+              <th data-sortkey="date" data-label="Date" style="cursor:pointer;user-select:none" onclick="setSlgSort('date')">Date</th>
+              <th data-sortkey="source" data-label="Channel" style="cursor:pointer;user-select:none" onclick="setSlgSort('source')">Channel</th>
+              <th>Reference</th>
+              <th class="tbl-num" data-sortkey="gross" data-label="Gross" style="cursor:pointer;user-select:none" onclick="setSlgSort('gross')">Gross</th>
+              <th class="tbl-num" data-sortkey="fee" data-label="Fees" style="cursor:pointer;user-select:none" onclick="setSlgSort('fee')">Fees</th>
+              <th class="tbl-num" data-sortkey="net" data-label="Net" style="cursor:pointer;user-select:none" onclick="setSlgSort('net')">Net</th>
+              <th class="tbl-num" data-sortkey="cogs" data-label="COGS" style="cursor:pointer;user-select:none" onclick="setSlgSort('cogs')">COGS</th>
+              <th data-sortkey="margin" data-label="Margin" style="cursor:pointer;user-select:none" onclick="setSlgSort('margin')">Margin</th>
+              <th></th>
+            </tr></thead>
             <tbody id="slg-table-body"></tbody></table>
           </div>
+          <div style="padding:8px 16px;font-size:11px;color:var(--text3)">Click any row to see item-level detail (WAC, COGS per item). Click a column header to sort.</div>
         </div>
       </div>
 
@@ -4110,18 +4121,57 @@ function saveSale() {
   const other = parseFloat(document.getElementById('sal-other-ded').value) || 0;
   const net   = gross - fee - ship - ret - other;
 
+  // ── Validate every item row BEFORE touching stock. A row that has text typed
+  // or a qty entered but no confirmed variant selection is a broken row, not an
+  // empty one to silently skip - that silent-skip was the source of the missing
+  // COGS / stock-not-deducted bug. We stop and tell the user instead.
   const items = [];
-  document.querySelectorAll('.sal-item-row').forEach(row => {
-    const variantId = row.querySelector('.sal-var-id').value;
-    const productId = row.querySelector('.sal-prod-id').value;
-    const qty = parseInt(row.querySelector('.sal-qty').value) || 0;
-    if (!variantId || qty === 0) return;
+  const rows = document.querySelectorAll('.sal-item-row');
+  for (const row of rows) {
+    const searchEl  = row.querySelector('.sal-var-search');
+    const idEl      = row.querySelector('.sal-var-id');
+    const prodEl    = row.querySelector('.sal-prod-id');
+    const qtyEl     = row.querySelector('.sal-qty');
+    const typedText = (searchEl && searchEl.value || '').trim();
+    let variantId   = idEl.value;
+    const qty       = parseInt(qtyEl.value) || 0;
+
+    // Row is genuinely empty (never touched) - fine, skip silently.
+    if (!typedText && !variantId && qty === 0) continue;
+
+    // Fallback: dropdown click didn't register but the typed text is an exact,
+    // unique SKU match - auto-resolve instead of failing the whole sale.
+    if (!variantId && typedText) {
+      const exact = DB.products.flatMap(p => p.variants.map(v => ({v,p})))
+        .filter(x => x.v.sku.toLowerCase() === typedText.toLowerCase()
+                   || typedText.toLowerCase().startsWith(x.v.sku.toLowerCase()+' '));
+      if (exact.length === 1) {
+        variantId = exact[0].v.id;
+        idEl.value = variantId;
+        prodEl.value = exact[0].p.id;
+      }
+    }
+
+    if (!variantId || qty === 0) {
+      showAlert('sal-alert','error',
+        `Item row "${typedText || '(empty)'}" isn't a confirmed selection. Click the item from the dropdown list (don't just type and move on), or remove the row, then save again. Nothing was saved.`);
+      return; // abort the whole save - do not record a partial/broken sale
+    }
     const v = findVariant(variantId);
-    const wac = v ? (v.wac || toSGD(v.cost, v.currency)) : 0;
+    if (!v) {
+      showAlert('sal-alert','error', `Item row references a product that no longer exists. Remove the row and save again.`);
+      return;
+    }
+    const wac = v.wac || toSGD(v.cost, v.currency);
     const cogs = qty * wac;
-    items.push({ variantId, productId, qty, wac, cogs });
-    // Deduct stock
-    if (v) v.qty = Math.max(0, v.qty - qty);
+    items.push({ variantId, productId: prodEl.value, qty, wac, cogs });
+  }
+
+  // Only deduct stock once every row has passed validation - avoids partial
+  // stock deduction if a later row in the form turns out to be invalid.
+  items.forEach(it => {
+    const v = findVariant(it.variantId);
+    if (v) v.qty = Math.max(0, v.qty - it.qty);
   });
 
   let ref = '';
@@ -4129,8 +4179,9 @@ function saveSale() {
   else if (saleSource === 'shopee') ref = document.getElementById('sal-shopee-period').value.trim();
   else if (saleSource === 'lazada') ref = document.getElementById('sal-lazada-period').value.trim();
 
+  const editingId = document.getElementById('tab-sales').dataset.editingId;
   const sale = {
-    id: 'sal_' + Date.now(), date: getSaleDate(),
+    id: editingId || ('sal_' + Date.now()), date: getSaleDate(),
     source: saleSource.charAt(0).toUpperCase() + saleSource.slice(1),
     ref, customer: (document.getElementById('sal-manual-customer')||{}).value || '',
     gross, fee, shipping: ship, returns: ret, otherDed: other, net, items
@@ -4138,9 +4189,11 @@ function saveSale() {
 
   DB.sales.push(sale);
   saveLocalData(); queuePush('saveSale', sale);
-  showAlert('sal-alert','success','Sale saved. Inventory and COGS updated.');
+  showAlert('sal-alert','success', editingId ? 'Sale updated. Inventory and COGS recalculated.' : 'Sale saved. Inventory and COGS updated.');
   clearSaleForm();
+  delete document.getElementById('tab-sales').dataset.editingId;
   renderSalesStats(); renderProductStats(); renderProductTable(); updateLowBadge(); renderSaleQuickStats();
+  if (typeof renderSalesLog === 'function') renderSalesLog();
 }
 function clearSaleForm() {
   ['sal-gross','sal-fee','sal-ship','sal-returns','sal-other-ded','sal-invno','sal-manual-customer'].forEach(id => {
@@ -4150,6 +4203,14 @@ function clearSaleForm() {
   document.getElementById('sal-items-list').innerHTML = '';
   document.getElementById('sal-net-display').textContent = '$ --';
   prefillDates(); addSaleItem(); updateSaleNet();
+}
+function cancelSaleEdit() {
+  const editingId = document.getElementById('tab-sales').dataset.editingId;
+  if (editingId) {
+    showAlert('sal-alert','info','Edit cancelled. Note: the original sale was already removed and its stock restored - re-check Sales History if you meant to keep it.');
+    delete document.getElementById('tab-sales').dataset.editingId;
+  }
+  clearSaleForm();
 }
 function renderSalesStats() {
   const total = DB.sales.reduce((a,s) => a+s.net, 0);
@@ -4191,6 +4252,16 @@ function setSlgSrcFilter(val) {
   renderSalesLog();
 }
 
+let slgSortKey = 'date', slgSortDir = -1; // -1 = desc (newest first), 1 = asc
+function setSlgSort(key) {
+  if (slgSortKey === key) { slgSortDir *= -1; } else { slgSortKey = key; slgSortDir = key === 'date' ? -1 : -1; }
+  renderSalesLog();
+}
+function sortArrow(key) {
+  if (slgSortKey !== key) return '';
+  return slgSortDir === 1 ? ' ▲' : ' ▼';
+}
+
 function renderSalesLog() {
   renderSalesStats();
   const search = (document.getElementById('slg-search').value || '').toLowerCase();
@@ -4201,7 +4272,30 @@ function renderSalesLog() {
     if (monthF && !s.date.startsWith(monthF)) return false;
     if (search && !(s.ref||'').toLowerCase().includes(search) && !(s.customer||'').toLowerCase().includes(search)) return false;
     return true;
-  }).sort((a,b) => b.date.localeCompare(a.date));
+  });
+
+  const cogsOf = s => s.items.reduce((a,i) => a + (i.cogs||0), 0);
+  const marginOf = s => s.net > 0 ? ((s.net - cogsOf(s)) / s.net * 100) : -Infinity;
+  const sorters = {
+    date:   s => s.date,
+    source: s => s.source,
+    gross:  s => s.gross,
+    fee:    s => s.fee,
+    net:    s => s.net,
+    cogs:   cogsOf,
+    margin: marginOf,
+  };
+  const keyFn = sorters[slgSortKey] || sorters.date;
+  rows.sort((a,b) => {
+    const av = keyFn(a), bv = keyFn(b);
+    if (av < bv) return -1 * slgSortDir;
+    if (av > bv) return  1 * slgSortDir;
+    return 0;
+  });
+  // update header sort indicators
+  document.querySelectorAll('#slg-thead th[data-sortkey]').forEach(th => {
+    th.textContent = th.dataset.label + sortArrow(th.dataset.sortkey);
+  });
 
   const tbody = document.getElementById('slg-table-body');
   if (!rows.length) { tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-title">No sales recorded</div></div></td></tr>`; return; }
@@ -4209,29 +4303,99 @@ function renderSalesLog() {
   // Channels are a category, not a status — one neutral dot family, not competing colors
   const srcDot = { Invoice:'var(--accent)', Shopee:'var(--text)', Lazada:'var(--text2)', Manual:'var(--text3)' };
   tbody.innerHTML = rows.map(s => {
-    const cogs   = s.items.reduce((a,i) => a + (i.cogs||0), 0);
+    const cogs   = cogsOf(s);
     const marginPct = s.net > 0 ? ((s.net - cogs) / s.net * 100) : null;
     const marginBadge = marginPct === null ? '<span class="badge badge-gray">—</span>'
       : marginPct >= 30 ? `<span class="badge badge-green">${marginPct.toFixed(1)}%</span>`
       : marginPct >= 0  ? `<span class="badge badge-yellow">${marginPct.toFixed(1)}%</span>`
       : `<span class="badge badge-red">${marginPct.toFixed(1)}%</span>`;
-    return `<tr>
+    const cogsFlag = (cogs === 0) ? ' <span class="badge badge-red" style="margin-left:4px;font-size:9px">no COGS</span>' : '';
+    const itemsHtml = s.items.length ? s.items.map(it => {
+      const v = findVariant(it.variantId);
+      return `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bg3);font-size:12px">
+        <span>${v ? v.sku : it.variantId} ${v ? '— '+v.name : ''} <span style="color:var(--text3)">× ${it.qty}</span></span>
+        <span style="color:var(--text2)">WAC ${fmt(it.wac)} &nbsp;·&nbsp; COGS ${fmt(it.cogs)}</span>
+      </div>`;
+    }).join('') : `<div style="font-size:12px;color:var(--red)">No items linked — this sale has no COGS. Click Edit to fix.</div>`;
+
+    return `<tr class="slg-row" style="cursor:pointer" onclick="toggleSaleDetail('${s.id}')">
       <td style="font-size:13px;color:var(--text2);white-space:nowrap">${s.date}</td>
       <td><span style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text)"><span style="width:7px;height:7px;border-radius:50%;background:${srcDot[s.source]||'var(--text3)'};flex-shrink:0"></span>${s.source}</span></td>
       <td class="tbl-mono" style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px">${s.ref||s.customer||'—'}</td>
       <td class="tbl-num tbl-amount">${fmt(s.gross)}</td>
       <td class="tbl-num tbl-amount red">${fmt(s.fee)}</td>
       <td class="tbl-num tbl-amount green">${fmt(s.net)}</td>
-      <td class="tbl-num tbl-amount">${cogs>0?fmt(cogs):'—'}</td>
+      <td class="tbl-num tbl-amount">${cogs>0?fmt(cogs):'—'}${cogsFlag}</td>
       <td>${marginBadge}</td>
-      <td style="text-align:right"><button class="btn btn-danger btn-xs" onclick="deleteSale('${s.id}')">Del</button></td>
-    </tr>`;
+      <td style="text-align:right;white-space:nowrap">
+        <button class="btn btn-ghost btn-xs" style="margin-right:4px" onclick="event.stopPropagation();editSale('${s.id}')">Edit</button>
+        <button class="btn btn-danger btn-xs" onclick="event.stopPropagation();deleteSale('${s.id}')">Del</button>
+      </td>
+    </tr>
+    <tr class="slg-detail-row" id="slg-detail-${s.id}" style="display:none"><td colspan="9" style="background:var(--bg3);padding:12px 16px 12px 40px">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Sale ID: ${s.id} &nbsp;·&nbsp; Customer: ${s.customer||'—'} &nbsp;·&nbsp; Shipping: ${fmt(s.shipping||0)} &nbsp;·&nbsp; Returns: ${fmt(s.returns||0)}</div>
+      ${itemsHtml}
+    </td></tr>`;
   }).join('');
 }
-function deleteSale(id) {
-  if (!confirm('Delete this sale?')) return;
+function toggleSaleDetail(id) {
+  const row = document.getElementById('slg-detail-' + id);
+  if (row) row.style.display = row.style.display === 'none' ? '' : 'none';
+}
+function editSale(id) {
+  const sale = DB.sales.find(s => s.id === id);
+  if (!sale) return;
+  // Restore stock for the old items first - editing shouldn't require manual stock rework
+  sale.items.forEach(it => {
+    const v = findVariant(it.variantId);
+    if (v) v.qty += it.qty;
+  });
   DB.sales = DB.sales.filter(s => s.id !== id);
-  saveLocalData(); renderSalesStats(); renderSalesLog();
+  saveLocalData(); renderProductTable();
+
+  // Switch to the Log Sale tab and pre-fill the form
+  switchTab('sales');
+  setSaleSource(sale.source.toLowerCase(), document.getElementById('src-'+sale.source.toLowerCase()));
+  clearSaleForm();
+  document.getElementById('sal-gross').value = sale.gross;
+  document.getElementById('sal-fee').value = sale.fee;
+  document.getElementById('sal-ship').value = sale.shipping;
+  document.getElementById('sal-returns').value = sale.returns;
+  document.getElementById('sal-other-ded').value = sale.otherDed;
+  if (document.getElementById('sal-manual-customer')) document.getElementById('sal-manual-customer').value = sale.customer || '';
+  const dateMap = { invoice:'sal-inv-date', shopee:'sal-shopee-date', lazada:'sal-lazada-date', manual:'sal-manual-date' };
+  const dateEl = document.getElementById(dateMap[saleSource]); if (dateEl) dateEl.value = sale.date;
+
+  document.getElementById('sal-items-list').innerHTML = '';
+  sale.items.forEach(it => {
+    addSaleItem();
+    const row = document.getElementById('sal-items-list').lastElementChild;
+    const v = findVariant(it.variantId);
+    if (v && row) {
+      row.querySelector('.sal-var-search').value = v.sku + ' — ' + v.name;
+      row.querySelector('.sal-var-id').value = it.variantId;
+      row.querySelector('.sal-prod-id').value = it.productId;
+      row.querySelector('.sal-qty').value = it.qty;
+      row.querySelector('.sal-wac').value = fmt(it.wac);
+      row.querySelector('.sal-cogs').value = fmt(it.cogs);
+    }
+  });
+  updateSaleNet();
+  document.getElementById('tab-sales').dataset.editingId = id;
+  showAlert('sal-alert','success', `Editing sale from ${sale.date}. Stock has been restored - make your changes and save to re-apply.`);
+  document.getElementById('tab-sales').scrollIntoView({behavior:'smooth'});
+}
+function deleteSale(id) {
+  if (!confirm('Delete this sale? Stock will be restored automatically.')) return;
+  const sale = DB.sales.find(s => s.id === id);
+  if (sale) {
+    sale.items.forEach(it => {
+      const v = findVariant(it.variantId);
+      if (v) v.qty += it.qty; // restore stock - no manual rework needed
+    });
+  }
+  DB.sales = DB.sales.filter(s => s.id !== id);
+  saveLocalData(); renderSalesStats(); renderSalesLog(); renderProductTable(); updateLowBadge();
 }
 
 // ═══════════════════════════════════════════════════════════
