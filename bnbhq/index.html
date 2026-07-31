@@ -207,7 +207,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Inventory</div>
-        <button class="nav-item" data-tab="products" onclick="switchTab('products')"><span class="nav-icon">PRD</span> Products &amp; Stock <span class="nav-badge">Soon</span></button>
+        <button class="nav-item" data-tab="products" onclick="switchTab('products')"><span class="nav-icon">PRD</span> Products &amp; Stock</button>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Finance</div>
@@ -371,7 +371,16 @@ tbody tr.clickable:hover { background: var(--bg3); }
         </div>
       </div>
       <div class="tab-panel" id="tab-sales"><div class="coming-soon"><div class="coming-soon-title">Sales — coming next</div><div class="coming-soon-sub">Ported from the current Hub once the core CRM and invoicing are solid.</div></div></div>
-      <div class="tab-panel" id="tab-products"><div class="coming-soon"><div class="coming-soon-title">Products &amp; Stock — coming next</div><div class="coming-soon-sub">Products, purchases, and stocktake, ported from the current Hub.</div></div></div>
+      <div class="tab-panel" id="tab-products">
+        <div class="page-header">
+          <div><div class="page-title">Products &amp; Stock</div><div class="page-subtitle">Each product can have multiple variants, each tracked with its own stock and cost (WAC)</div></div>
+          <div class="page-actions"><button class="btn btn-primary" onclick="openProductModal()">+ New Product</button></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="search-input" style="width:280px"><input type="text" id="productSearch" placeholder="Search products…" oninput="renderProducts()"></div></div>
+          <div id="productList"></div>
+        </div>
+      </div>
       <div class="tab-panel" id="tab-accounting"><div class="coming-soon"><div class="coming-soon-title">Accounting — coming next</div><div class="coming-soon-sub">Balance Sheet and Income Statement generated from the ledger, with an automatic month-end email.</div></div></div>
       <div class="tab-panel" id="tab-settings">
         <div class="page-header"><div><div class="page-title">Settings</div><div class="page-subtitle">Signed in as <span id="settingsEmail">—</span></div></div></div>
@@ -439,6 +448,53 @@ tbody tr.clickable:hover { background: var(--bg3); }
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeServiceModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveService()">Save Service Record</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="productModalBackdrop">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="productModalTitle">New Product</div><button class="modal-close" onclick="closeProductModal()">&times;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="productId">
+      <div class="field"><label>Name *</label><input type="text" id="productName" placeholder="e.g. Shimano Ultegra RT-CL800 Rotor"></div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Category</label><input type="text" id="productCategory" placeholder="e.g. Brakes"></div>
+        <div class="field"><label>Brand</label><input type="text" id="productBrand" placeholder="e.g. Shimano"></div>
+      </div>
+      <div class="field"><label>Supplier</label><input type="text" id="productSupplier" placeholder="e.g. Taobao"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeProductModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProduct()">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="variantModalBackdrop">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="variantModalTitle">New Variant</div><button class="modal-close" onclick="closeVariantModal()">&times;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="variantId">
+      <input type="hidden" id="variantProductId">
+      <div class="field"><label>Variant name *</label><input type="text" id="variantName" placeholder="e.g. 160mm Front"></div>
+      <div class="field"><label>SKU</label><input type="text" id="variantSku" placeholder="Optional"></div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Currency</label><input type="text" id="variantCurrency" value="SGD"></div>
+        <div class="field"><label>Last cost</label><input type="number" id="variantCost" placeholder="0.00"></div>
+      </div>
+      <div class="field-row fr-2">
+        <div class="field"><label>WAC (SGD)</label><input type="number" id="variantWac" placeholder="0.00"></div>
+        <div class="field"><label>Sell price (SGD)</label><input type="number" id="variantSell" placeholder="0.00"></div>
+      </div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Qty on hand</label><input type="number" id="variantQty" placeholder="0"></div>
+        <div class="field"><label>Reorder min</label><input type="number" id="variantMinQty" placeholder="0"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeVariantModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveVariant()">Save Variant</button>
     </div>
   </div>
 </div>
@@ -514,6 +570,7 @@ async function loadAll() {
     renderDashboard();
     renderCustomers();
     await loadInvoices();
+    await loadProducts();
     setSyncStatus('synced');
   } catch (e) {
     console.error(e);
@@ -785,6 +842,129 @@ async function saveBike() {
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function formatDate(d) { if (!d) return '—'; const dt = new Date(d); return dt.toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' }); }
 function money(n) { const v = Number(n)||0; return '$' + v.toLocaleString('en-SG', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+/* ============ PRODUCTS & VARIANTS ============ */
+let PRODUCTS = [];
+let VARIANTS = [];
+
+async function loadProducts() {
+  const [{ data: prodData }, { data: varData }] = await Promise.all([
+    sb.from('products').select('*').order('name'),
+    sb.from('product_variants').select('*')
+  ]);
+  PRODUCTS = prodData || [];
+  VARIANTS = varData || [];
+  renderProducts();
+}
+
+function variantsFor(productId) { return VARIANTS.filter(v => v.product_id === productId); }
+
+function renderProducts() {
+  const q = (document.getElementById('productSearch')?.value || '').toLowerCase();
+  const list = document.getElementById('productList');
+  if (!list) return;
+  const rows = PRODUCTS.filter(p => !q || p.name.toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q) || (p.brand||'').toLowerCase().includes(q));
+  if (!rows.length) { list.innerHTML = '<div class="empty-state"><div class="empty-state-title">No products yet</div><div class="empty-state-sub">Add your first product above.</div></div>'; return; }
+
+  list.innerHTML = rows.map(p => {
+    const vs = variantsFor(p.id);
+    return `
+    <div style="border-bottom:1px solid var(--border)">
+      <div style="padding:14px 20px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div class="cell-strong">${escapeHtml(p.name)}</div>
+          <div class="cell-muted" style="font-size:12px">${[p.category, p.brand, p.supplier].filter(Boolean).map(escapeHtml).join(' · ') || '—'}</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="openVariantModal('${p.id}')">+ Variant</button>
+          <button class="btn btn-ghost btn-sm" onclick="openProductModal('${p.id}')">Edit</button>
+        </div>
+      </div>
+      ${vs.length ? `<div class="tbl-wrap"><table>
+        <thead><tr><th>Variant</th><th>SKU</th><th>Qty</th><th>WAC</th><th>Sell</th><th></th></tr></thead>
+        <tbody>${vs.map(v => `
+          <tr class="clickable" onclick="openVariantModal('${p.id}','${v.id}')">
+            <td>${escapeHtml(v.name)}</td>
+            <td class="cell-muted">${escapeHtml(v.sku || '—')}</td>
+            <td>${Number(v.qty)<=Number(v.min_qty) ? `<span class="badge badge-red">${v.qty}</span>` : v.qty}</td>
+            <td class="cell-muted">${money(v.wac)}</td>
+            <td class="cell-strong">${money(v.sell_sgd)}</td>
+            <td></td>
+          </tr>`).join('')}</tbody>
+      </table></div>` : `<div style="padding:0 20px 14px" class="cell-muted" style="font-size:12px">No variants yet</div>`}
+    </div>`;
+  }).join('');
+}
+
+function openProductModal(productId) {
+  const p = productId ? PRODUCTS.find(x => x.id === productId) : null;
+  document.getElementById('productModalTitle').textContent = p ? 'Edit Product' : 'New Product';
+  document.getElementById('productId').value = p?.id || '';
+  document.getElementById('productName').value = p?.name || '';
+  document.getElementById('productCategory').value = p?.category || '';
+  document.getElementById('productBrand').value = p?.brand || '';
+  document.getElementById('productSupplier').value = p?.supplier || '';
+  document.getElementById('productModalBackdrop').classList.add('open');
+}
+function closeProductModal() { document.getElementById('productModalBackdrop').classList.remove('open'); }
+
+async function saveProduct() {
+  const id = document.getElementById('productId').value;
+  const name = document.getElementById('productName').value.trim();
+  if (!name) { alert('Product name is required.'); return; }
+  const payload = {
+    name,
+    category: document.getElementById('productCategory').value.trim() || null,
+    brand: document.getElementById('productBrand').value.trim() || null,
+    supplier: document.getElementById('productSupplier').value.trim() || null,
+  };
+  let error;
+  if (id) ({ error } = await sb.from('products').update(payload).eq('id', id));
+  else ({ error } = await sb.from('products').insert(payload));
+  if (error) { alert('Save failed: ' + error.message); return; }
+  closeProductModal();
+  await loadProducts();
+}
+
+function openVariantModal(productId, variantId) {
+  const v = variantId ? VARIANTS.find(x => x.id === variantId) : null;
+  document.getElementById('variantModalTitle').textContent = v ? 'Edit Variant' : 'New Variant';
+  document.getElementById('variantId').value = v?.id || '';
+  document.getElementById('variantProductId').value = productId;
+  document.getElementById('variantName').value = v?.name || '';
+  document.getElementById('variantSku').value = v?.sku || '';
+  document.getElementById('variantCurrency').value = v?.currency || 'SGD';
+  document.getElementById('variantCost').value = v?.cost || '';
+  document.getElementById('variantWac').value = v?.wac || '';
+  document.getElementById('variantSell').value = v?.sell_sgd || '';
+  document.getElementById('variantQty').value = v?.qty ?? '';
+  document.getElementById('variantMinQty').value = v?.min_qty ?? '';
+  document.getElementById('variantModalBackdrop').classList.add('open');
+}
+function closeVariantModal() { document.getElementById('variantModalBackdrop').classList.remove('open'); }
+
+async function saveVariant() {
+  const id = document.getElementById('variantId').value;
+  const name = document.getElementById('variantName').value.trim();
+  if (!name) { alert('Variant name is required.'); return; }
+  const payload = {
+    product_id: document.getElementById('variantProductId').value,
+    name,
+    sku: document.getElementById('variantSku').value.trim() || null,
+    currency: document.getElementById('variantCurrency').value.trim() || 'SGD',
+    cost: parseFloat(document.getElementById('variantCost').value) || 0,
+    wac: parseFloat(document.getElementById('variantWac').value) || 0,
+    sell_sgd: parseFloat(document.getElementById('variantSell').value) || 0,
+    qty: parseFloat(document.getElementById('variantQty').value) || 0,
+    min_qty: parseFloat(document.getElementById('variantMinQty').value) || 0,
+  };
+  let error;
+  if (id) ({ error } = await sb.from('product_variants').update(payload).eq('id', id));
+  else ({ error } = await sb.from('product_variants').insert(payload));
+  if (error) { alert('Save failed: ' + error.message); return; }
+  closeVariantModal();
+  await loadProducts();
+}
 
 /* ============ INVOICES ============ */
 let INVOICES = [];
