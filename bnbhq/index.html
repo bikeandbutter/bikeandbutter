@@ -1357,14 +1357,22 @@ function renderInvoices() {
 }
 
 async function deleteInvoice(id) {
-  if (!confirm('Delete this invoice? This cannot be undone.')) return;
+  if (!confirm('Delete this invoice? This will restore any stock it deducted and remove its accounting entries. Cannot be undone.')) return;
+  const { data: items } = await sb.from('invoice_items').select('variant_id, qty').eq('invoice_id', id);
+  for (const it of (items || [])) {
+    if (!it.variant_id) continue;
+    const v = VARIANTS.find(x => x.id === it.variant_id);
+    await sb.from('product_variants').update({ qty: (Number(v?.qty)||0) + Number(it.qty) }).eq('id', it.variant_id);
+  }
+  await sb.from('accounting_entries').delete().eq('source_type', 'invoice').eq('source_id', id);
   const { error } = await sb.from('invoices').delete().eq('id', id);
   if (error) { alert('Delete failed: ' + error.message); return; }
+  await loadProducts();
   await loadInvoices();
 }
 
 function blankInvoiceItem() {
-  return { id: invoiceItemSeq++, desc: '', qty: 1, price: 0, subs: [], discounts: [] };
+  return { id: invoiceItemSeq++, desc: '', qty: 1, price: 0, subs: [], discounts: [], variant_id: '' };
 }
 
 function calcItemTotal(item) {
@@ -1418,7 +1426,7 @@ async function openInvoiceEditor(invoiceId) {
       const { data: items } = await sb.from('invoice_items').select('*').eq('invoice_id', invoiceId).order('sort_order');
       currentInvoiceItems = (items || []).map(it => ({
         id: invoiceItemSeq++, desc: it.description, qty: it.qty, price: it.unit_price,
-        subs: it.subs || [], discounts: it.discounts || []
+        subs: it.subs || [], discounts: it.discounts || [], variant_id: it.variant_id || ''
       }));
       if (!currentInvoiceItems.length) currentInvoiceItems = [blankInvoiceItem()];
     }
@@ -1431,8 +1439,11 @@ async function openInvoiceEditor(invoiceId) {
 
 function renderInvoiceItems() {
   const el = document.getElementById('invItemsList');
-  el.innerHTML = currentInvoiceItems.map((item, idx) => `
-    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px">
+  el.innerHTML = currentInvoiceItems.map((item, idx) => {
+    const linkedVariant = item.variant_id ? VARIANTS.find(v => v.id === item.variant_id) : null;
+    const stockWarn = linkedVariant && item.qty > linkedVariant.qty ? `<div style="font-size:11px;color:var(--red);margin-top:3px">Only ${linkedVariant.qty} in stock — saving will take stock negative</div>` : '';
+    return `
+    <div style="border:1px solid ${linkedVariant ? 'var(--green)' : 'var(--border)'};border-radius:8px;padding:12px;margin-bottom:10px">
       <div style="display:flex;gap:8px;margin-bottom:8px">
         <input type="text" placeholder="Description" value="${escapeHtml(item.desc)}" oninput="updateItem(${idx},'desc',this.value)" style="flex:1;border:1px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:13px">
         <input type="number" placeholder="Qty" value="${item.qty}" oninput="updateItem(${idx},'qty',this.value)" style="width:60px;border:1px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:13px">
@@ -1440,13 +1451,21 @@ function renderInvoiceItems() {
         <div style="width:80px;text-align:right;font-weight:700;font-size:13px;align-self:center">${money(calcItemTotal(item))}</div>
         <button class="btn btn-ghost btn-sm" onclick="removeItem(${idx})">✕</button>
       </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="font-size:11px;color:var(--text3);white-space:nowrap">${linkedVariant ? 'Deducts stock:' : 'Not linked to inventory'}</span>
+        <select onchange="updateItem(${idx},'variant_id',this.value)" style="flex:1;border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-size:11px;color:var(--text2)">
+          <option value="">— No inventory link (e.g. mechanic-owned part) —</option>${variantOptionsHtml(item.variant_id)}
+        </select>
+      </div>
+      ${stockWarn}
       ${item.subs.map((s,si) => `<div style="display:flex;gap:6px;margin:4px 0 4px 16px"><input type="text" placeholder="Sub-note" value="${escapeHtml(s.text)}" oninput="updateSub(${idx},${si},this.value)" style="flex:1;border:1px dashed var(--border2);border-radius:6px;padding:5px 9px;font-size:12px"><button class="btn btn-ghost btn-sm" onclick="removeSub(${idx},${si})">✕</button></div>`).join('')}
       ${item.discounts.map((d,di) => `<div style="display:flex;gap:6px;margin:4px 0 4px 16px"><input type="text" placeholder="Discount label" value="${escapeHtml(d.label)}" oninput="updateDisc(${idx},${di},'label',this.value)" style="flex:2;border:1px solid var(--yellow-bg);background:var(--yellow-bg);border-radius:6px;padding:5px 9px;font-size:12px"><input type="number" placeholder="%" value="${d.value}" oninput="updateDisc(${idx},${di},'value',this.value)" style="width:60px;border:1px solid var(--yellow-bg);background:var(--yellow-bg);border-radius:6px;padding:5px 9px;font-size:12px"><button class="btn btn-ghost btn-sm" onclick="removeDisc(${idx},${di})">✕</button></div>`).join('')}
       <div style="margin-top:6px;display:flex;gap:10px">
         <span style="font-size:11px;color:var(--text3);cursor:pointer" onclick="addSub(${idx})">+ sub-note</span>
         <span style="font-size:11px;color:var(--text3);cursor:pointer" onclick="addDisc(${idx})">+ item discount</span>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   document.getElementById('invGrandTotal').textContent = money(calcGrandTotal());
 }
 function updateItem(idx, field, val) { currentInvoiceItems[idx][field] = (field==='qty'||field==='price') ? parseFloat(val)||0 : val; renderInvoiceItems(); }
@@ -1509,26 +1528,57 @@ async function saveInvoice() {
   if (id) {
     const { error } = await sb.from('invoices').update(payload).eq('id', id);
     if (error) { alert('Save failed: ' + error.message); return; }
+    // Reverse stock effects of the previous version of this invoice before re-applying the new one
+    const { data: oldItems } = await sb.from('invoice_items').select('variant_id, qty').eq('invoice_id', id);
+    for (const oi of (oldItems || [])) {
+      if (!oi.variant_id) continue;
+      const v = VARIANTS.find(x => x.id === oi.variant_id);
+      await sb.from('product_variants').update({ qty: (Number(v?.qty)||0) + Number(oi.qty) }).eq('id', oi.variant_id);
+    }
+    await sb.from('accounting_entries').delete().eq('source_type', 'invoice').eq('source_id', id);
     await sb.from('invoice_items').delete().eq('invoice_id', id);
+    await loadProducts(); // refresh VARIANTS with reversed qty before computing new deductions
   } else {
     const { data, error } = await sb.from('invoices').insert(payload).select('id').single();
     if (error) { alert('Save failed: ' + error.message); return; }
     invoiceId = data.id;
   }
 
-  const itemRows = currentInvoiceItems.filter(it => it.desc.trim()).map((it, i) => ({
+  const validItems = currentInvoiceItems.filter(it => it.desc.trim());
+  const itemRows = validItems.map((it, i) => ({
     invoice_id: invoiceId, description: it.desc, qty: it.qty, unit_price: it.price,
-    sort_order: i, subs: it.subs.filter(s=>s.text.trim()), discounts: it.discounts.filter(d=>d.label.trim())
+    sort_order: i, subs: it.subs.filter(s=>s.text.trim()), discounts: it.discounts.filter(d=>d.label.trim()),
+    variant_id: it.variant_id || null
   }));
   if (itemRows.length) {
     const { error: itemErr } = await sb.from('invoice_items').insert(itemRows);
     if (itemErr) { alert('Items save failed: ' + itemErr.message); return; }
   }
 
+  // Apply stock deduction + COGS ledger entries for items linked to inventory
+  const linkedItems = validItems.filter(it => it.variant_id);
+  for (const it of linkedItems) {
+    const v = VARIANTS.find(x => x.id === it.variant_id);
+    if (!v) continue;
+    const newQty = (Number(v.qty) || 0) - it.qty;
+    await sb.from('product_variants').update({ qty: newQty }).eq('id', it.variant_id);
+    const cogs = it.qty * (Number(v.wac) || 0);
+    await sb.from('accounting_entries').insert([
+      { entry_date: payload.invoice_date, account: 'Cost of Goods Sold', account_type: 'expense', entry_type: 'debit', amount: cogs, category: 'COGS', source_type: 'invoice', source_id: invoiceId, memo: v.name + ' x' + it.qty },
+      { entry_date: payload.invoice_date, account: 'Inventory', account_type: 'asset', entry_type: 'credit', amount: cogs, category: 'COGS', source_type: 'invoice', source_id: invoiceId, memo: v.name + ' x' + it.qty },
+    ]);
+  }
+  // Revenue entry for the whole invoice, regardless of inventory linkage
+  await sb.from('accounting_entries').insert([
+    { entry_date: payload.invoice_date, account: 'Accounts Receivable', account_type: 'asset', entry_type: 'debit', amount: grandTotal, category: 'Sales', source_type: 'invoice', source_id: invoiceId, memo: fullInvoiceNo },
+    { entry_date: payload.invoice_date, account: 'Sales Revenue', account_type: 'revenue', entry_type: 'credit', amount: grandTotal, category: 'Sales', source_type: 'invoice', source_id: invoiceId, memo: fullInvoiceNo },
+  ]);
+
   document.getElementById('invId').value = invoiceId;
   document.getElementById('invSavedNo').value = invoiceNo;
+  await loadProducts();
   await loadInvoices();
-  alert('Invoice ' + fullInvoiceNo + ' saved.');
+  alert('Invoice ' + fullInvoiceNo + ' saved' + (linkedItems.length ? ', stock updated for ' + linkedItems.length + ' item(s).' : '.'));
 }
 
 function printInvoice() {
