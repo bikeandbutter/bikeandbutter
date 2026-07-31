@@ -1074,14 +1074,17 @@ thead th.tbl-num { text-align: right; }
           <div class="card">
             <div class="card-header"><div class="card-title">Data</div></div>
             <div class="card-body">
-              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
                 <button class="btn btn-secondary btn-sm" onclick="syncAllData()">↻ Sync from Google Sheet</button>
+                <button class="btn btn-primary btn-sm" onclick="pushAllToSheet()">↑ Push All to Google Sheet</button>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
                 <button class="btn btn-secondary btn-sm" onclick="exportLocalJSON()">↓ Export JSON Backup</button>
                 <button class="btn btn-secondary btn-sm" onclick="importJSON()">↑ Import JSON Backup</button>
               </div>
               <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(this)">
               <div class="divider"></div>
-              <p style="font-size:12px;color:var(--text3);line-height:1.7">Hub v3.0 &nbsp;·&nbsp; Bike &amp; Butter Operations<br>Invoice tool is on a separate page and unaffected.<br>Data stored in localStorage + synced to Google Sheets.</p>
+              <p style="font-size:12px;color:var(--text3);line-height:1.7">Hub v3.0 &nbsp;·&nbsp; Bike &amp; Butter Operations<br>Invoice tool is on a separate page and unaffected.<br>Data stored in localStorage. <b>Importing a JSON backup only updates this browser</b> - click "Push All to Google Sheet" afterwards to send it to Sheets too, or the next auto-sync will overwrite your import with old Sheet data.</p>
             </div>
           </div>
         </div>
@@ -3311,7 +3314,19 @@ async function maybePushInitialSeed() {
   } catch(e) { /* silent */ }
 }
 
-function prefillDates() {
+async function pushAllToSheet() {
+  if (!WEB_APP_URL) { showAlert('settings-alert','error','Set your Apps Script URL first.'); return; }
+  if (!confirm(`This will push everything currently in this Hub (${DB.products.length} products, ${DB.purchases.length} purchases, ${DB.sales.length} sales, ${DB.opex.length} opex, ${DB.journal.length} journal entries) up to Google Sheets, overwriting what's there. Continue?`)) return;
+  setSyncStatus('pending');
+  for (const p of DB.products)   queuePush('saveProduct', p);
+  for (const po of DB.purchases) queuePush('savePurchase', po);
+  for (const s of DB.sales)      queuePush('saveSale', s);
+  for (const o of DB.opex)       queuePush('saveOpex', o);
+  for (const j of DB.journal)    queuePush('saveJournal', j);
+  showAlert('settings-alert','success', `Pushing ${syncQueue.length} records to Google Sheets - watch the sync indicator, this can take a moment for a large dataset.`);
+}
+
+
   const t = new Date().toISOString().split('T')[0];
   ['po-date','sal-inv-date','sal-shopee-date','sal-lazada-date','sal-manual-date','opex-date','jnl-date'].forEach(id => {
     const e = document.getElementById(id); if (e) e.value = t;
