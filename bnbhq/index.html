@@ -203,11 +203,12 @@ tbody tr.clickable:hover { background: var(--bg3); }
       <div class="nav-group">
         <div class="nav-group-label">Sales</div>
         <button class="nav-item" data-tab="invoices" onclick="switchTab('invoices')"><span class="nav-icon">INV</span> Invoices</button>
-        <button class="nav-item" data-tab="sales" onclick="switchTab('sales')"><span class="nav-icon">SLS</span> Sales <span class="nav-badge">Soon</span></button>
+        <button class="nav-item" data-tab="sales" onclick="switchTab('sales')"><span class="nav-icon">SLS</span> Sales</button>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Inventory</div>
         <button class="nav-item" data-tab="products" onclick="switchTab('products')"><span class="nav-icon">PRD</span> Products &amp; Stock</button>
+        <button class="nav-item" data-tab="purchases" onclick="switchTab('purchases')"><span class="nav-icon">PUR</span> Purchases</button>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Finance</div>
@@ -370,7 +371,105 @@ tbody tr.clickable:hover { background: var(--bg3); }
           </div>
         </div>
       </div>
-      <div class="tab-panel" id="tab-sales"><div class="coming-soon"><div class="coming-soon-title">Sales — coming next</div><div class="coming-soon-sub">Ported from the current Hub once the core CRM and invoicing are solid.</div></div></div>
+      <div class="tab-panel" id="tab-sales">
+        <div class="page-header">
+          <div><div class="page-title">Sales</div><div class="page-subtitle">Online-channel sales (Shopee, Lazada, etc) — separate from walk-in invoices</div></div>
+          <div class="page-actions"><button class="btn btn-primary" onclick="openSaleEditor()">+ New Sale</button></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <select id="salesSourceFilter" onchange="renderSales()" style="border:1px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:13px">
+              <option value="">All sources</option>
+            </select>
+          </div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Date</th><th>Source</th><th>Customer</th><th>Gross</th><th>Net</th><th></th></tr></thead>
+            <tbody id="saleRows"><tr><td colspan="6" class="cell-muted">Loading…</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-sale-editor">
+        <div class="detail-header"><span class="back-link" onclick="switchTab('sales')">← Back to Sales</span></div>
+        <div class="page-header"><div><div class="page-title">New Sale</div></div>
+          <div class="page-actions"><button class="btn btn-primary" onclick="saveSale()">Save Sale</button></div>
+        </div>
+        <div class="grid grid-sidebar">
+          <div class="card"><div class="card-body">
+            <input type="hidden" id="saleId">
+            <div class="field"><label>Date</label><input type="date" id="saleDate"></div>
+            <div class="field"><label>Source</label><input type="text" id="saleSource" placeholder="Shopee, Lazada, Walk-in..."></div>
+            <div class="field"><label>Reference / Order No.</label><input type="text" id="saleRef"></div>
+            <div class="field"><label>Customer</label><input type="text" id="saleCustomer"></div>
+            <div class="field-row fr-2">
+              <div class="field"><label>Platform fee</label><input type="number" id="saleFee" value="0"></div>
+              <div class="field"><label>Shipping</label><input type="number" id="saleShipping" value="0"></div>
+            </div>
+            <div class="field-row fr-2">
+              <div class="field"><label>Returns</label><input type="number" id="saleReturns" value="0"></div>
+              <div class="field"><label>Other deductions</label><input type="number" id="saleOtherDed" value="0"></div>
+            </div>
+          </div></div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Items sold</div><button class="btn btn-ghost btn-sm" onclick="addSaleItem()">+ Add item</button></div>
+            <div id="saleItemsList" style="padding:12px 20px"></div>
+            <div style="border-top:1px solid var(--border);padding:16px 20px;display:flex;justify-content:space-between">
+              <div style="font-size:13px;color:var(--text2)">Gross / Net</div>
+              <div style="font-size:16px;font-weight:800"><span id="saleGross">$0.00</span> / <span id="saleNet">$0.00</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-purchases">
+        <div class="page-header">
+          <div><div class="page-title">Purchases</div><div class="page-subtitle">Stock-ins — automatically updates variant quantity and WAC</div></div>
+          <div class="page-actions"><button class="btn btn-primary" onclick="openPurchaseEditor()">+ New Purchase</button></div>
+        </div>
+        <div class="card">
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Date</th><th>Platform</th><th>Ref</th><th>Status</th><th>Total (SGD)</th><th></th></tr></thead>
+            <tbody id="purchaseRows"><tr><td colspan="6" class="cell-muted">Loading…</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-purchase-editor">
+        <div class="detail-header"><span class="back-link" onclick="switchTab('purchases')">← Back to Purchases</span></div>
+        <div class="page-header"><div><div class="page-title">New Purchase</div></div>
+          <div class="page-actions"><button class="btn btn-primary" onclick="savePurchase()">Save Purchase</button></div>
+        </div>
+        <div class="grid grid-sidebar">
+          <div class="card"><div class="card-body">
+            <input type="hidden" id="purchaseId">
+            <div class="field"><label>Date</label><input type="date" id="purchaseDate"></div>
+            <div class="field"><label>Platform</label><input type="text" id="purchasePlatform" placeholder="Taobao, PinDuoDuo, Direct..."></div>
+            <div class="field"><label>Reference</label><input type="text" id="purchaseRef"></div>
+            <div class="field"><label>Status</label>
+              <select id="purchaseStatus" style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:8px 11px;font-size:13px">
+                <option value="ordered">Ordered</option>
+                <option value="received" selected>Received</option>
+              </select>
+            </div>
+            <div class="field-row fr-2">
+              <div class="field"><label>Currency</label><input type="text" id="purchaseCurrency" value="SGD"></div>
+              <div class="field"><label>CNY→SGD rate (if applicable)</label><input type="number" id="purchaseCnyRate" step="0.0001"></div>
+            </div>
+            <div class="field-row fr-2">
+              <div class="field"><label>Shipping (SGD)</label><input type="number" id="purchaseShipping" value="0"></div>
+              <div class="field"><label>Misc (SGD)</label><input type="number" id="purchaseMisc" value="0"></div>
+            </div>
+          </div></div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Items purchased</div><button class="btn btn-ghost btn-sm" onclick="addPurchaseItem()">+ Add item</button></div>
+            <div id="purchaseItemsList" style="padding:12px 20px"></div>
+            <div style="border-top:1px solid var(--border);padding:16px 20px;display:flex;justify-content:space-between">
+              <div style="font-size:13px;color:var(--text2)">Total (SGD)</div>
+              <div style="font-size:20px;font-weight:800" id="purchaseTotalSgd">$0.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="tab-panel" id="tab-products">
         <div class="page-header">
           <div><div class="page-title">Products &amp; Stock</div><div class="page-subtitle">Each product can have multiple variants, each tracked with its own stock and cost (WAC)</div></div>
@@ -571,6 +670,8 @@ async function loadAll() {
     renderCustomers();
     await loadInvoices();
     await loadProducts();
+    await loadPurchases();
+    await loadSales();
     setSyncStatus('synced');
   } catch (e) {
     console.error(e);
@@ -878,22 +979,47 @@ function renderProducts() {
         <div style="display:flex;gap:8px">
           <button class="btn btn-ghost btn-sm" onclick="openVariantModal('${p.id}')">+ Variant</button>
           <button class="btn btn-ghost btn-sm" onclick="openProductModal('${p.id}')">Edit</button>
+          <button class="btn btn-ghost btn-sm" onclick="deleteProduct('${p.id}')" title="Delete product and all its variants">Delete</button>
         </div>
       </div>
       ${vs.length ? `<div class="tbl-wrap"><table>
         <thead><tr><th>Variant</th><th>SKU</th><th>Qty</th><th>WAC</th><th>Sell</th><th></th></tr></thead>
         <tbody>${vs.map(v => `
-          <tr class="clickable" onclick="openVariantModal('${p.id}','${v.id}')">
-            <td>${escapeHtml(v.name)}</td>
+          <tr>
+            <td class="clickable" onclick="openVariantModal('${p.id}','${v.id}')">${escapeHtml(v.name)}</td>
             <td class="cell-muted">${escapeHtml(v.sku || '—')}</td>
             <td>${Number(v.qty)<=Number(v.min_qty) ? `<span class="badge badge-red">${v.qty}</span>` : v.qty}</td>
             <td class="cell-muted">${money(v.wac)}</td>
             <td class="cell-strong">${money(v.sell_sgd)}</td>
-            <td></td>
+            <td><button class="btn btn-ghost btn-sm" onclick="deleteVariant('${v.id}')">✕</button></td>
           </tr>`).join('')}</tbody>
       </table></div>` : `<div style="padding:0 20px 14px" class="cell-muted" style="font-size:12px">No variants yet</div>`}
     </div>`;
   }).join('');
+}
+
+async function deleteProduct(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  const n = variantsFor(id).length;
+  if (!confirm(`Delete "${p?.name}"${n ? ` and its ${n} variant(s)` : ''}? This cannot be undone.`)) return;
+  const { error } = await sb.from('products').delete().eq('id', id);
+  if (error) { alert('Delete failed: ' + error.message); return; }
+  await loadProducts();
+}
+
+async function deleteVariant(id) {
+  if (!confirm('Delete this variant? This cannot be undone.')) return;
+  const { error } = await sb.from('product_variants').delete().eq('id', id);
+  if (error) { alert('Delete failed: ' + error.message); return; }
+  await loadProducts();
+}
+
+function generateSku(productName, category, seq) {
+  const letters = (productName || 'PRD').toUpperCase().replace(/[^A-Z\s]/g, '').split(/\s+/).filter(Boolean);
+  let stem = letters.slice(0, 2).map(w => w.slice(0, 2)).join('');
+  if (!stem) stem = 'PRD';
+  const catCode = (category || '').toUpperCase().slice(0, 3);
+  return [catCode, stem, String(seq).padStart(3, '0')].filter(Boolean).join('-');
 }
 
 function openProductModal(productId) {
@@ -928,11 +1054,12 @@ async function saveProduct() {
 
 function openVariantModal(productId, variantId) {
   const v = variantId ? VARIANTS.find(x => x.id === variantId) : null;
+  const p = PRODUCTS.find(x => x.id === productId);
   document.getElementById('variantModalTitle').textContent = v ? 'Edit Variant' : 'New Variant';
   document.getElementById('variantId').value = v?.id || '';
   document.getElementById('variantProductId').value = productId;
   document.getElementById('variantName').value = v?.name || '';
-  document.getElementById('variantSku').value = v?.sku || '';
+  document.getElementById('variantSku').value = v?.sku || (p ? generateSku(p.name, p.category, variantsFor(productId).length + 1) : '');
   document.getElementById('variantCurrency').value = v?.currency || 'SGD';
   document.getElementById('variantCost').value = v?.cost || '';
   document.getElementById('variantWac').value = v?.wac || '';
@@ -966,6 +1093,244 @@ async function saveVariant() {
   await loadProducts();
 }
 
+/* ============ PURCHASES (drives WAC + stock qty up) ============ */
+let PURCHASES = [];
+let currentPurchaseItems = [];
+let purchaseItemSeq = 1;
+
+async function loadPurchases() {
+  const { data } = await sb.from('purchases').select('*').order('purchase_date', { ascending: false });
+  PURCHASES = data || [];
+  renderPurchases();
+}
+
+function renderPurchases() {
+  const tbody = document.getElementById('purchaseRows');
+  if (!tbody) return;
+  if (!PURCHASES.length) { tbody.innerHTML = '<tr><td colspan="6" class="cell-muted">No purchases yet</td></tr>'; return; }
+  tbody.innerHTML = PURCHASES.map(p => `
+    <tr class="clickable" onclick="alert('Purchase detail view — coming soon. For now purchases are add-only to keep WAC history accurate.')">
+      <td>${formatDate(p.purchase_date)}</td>
+      <td class="cell-strong">${escapeHtml(p.platform || '—')}</td>
+      <td class="cell-muted">${escapeHtml(p.ref || '—')}</td>
+      <td><span class="badge ${p.status==='received'?'badge-green':'badge-yellow'}">${escapeHtml(p.status)}</span></td>
+      <td class="cell-strong">${money(p.total_sgd)}</td>
+      <td></td>
+    </tr>`).join('');
+}
+
+function blankPurchaseItem() { return { id: purchaseItemSeq++, variant_id: '', qty: 1, unit_cost: 0 }; }
+
+function openPurchaseEditor() {
+  document.getElementById('purchaseId').value = '';
+  document.getElementById('purchaseDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('purchasePlatform').value = '';
+  document.getElementById('purchaseRef').value = '';
+  document.getElementById('purchaseStatus').value = 'received';
+  document.getElementById('purchaseCurrency').value = 'SGD';
+  document.getElementById('purchaseCnyRate').value = '';
+  document.getElementById('purchaseShipping').value = '0';
+  document.getElementById('purchaseMisc').value = '0';
+  currentPurchaseItems = [blankPurchaseItem()];
+  renderPurchaseItems();
+  switchTab('purchase-editor');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+}
+
+function variantOptionsHtml(selected) {
+  return VARIANTS.map(v => {
+    const p = PRODUCTS.find(x => x.id === v.product_id);
+    const label = (p ? p.name + ' — ' : '') + v.name;
+    return `<option value="${v.id}" ${v.id===selected?'selected':''}>${escapeHtml(label)}</option>`;
+  }).join('');
+}
+
+function renderPurchaseItems() {
+  const currency = document.getElementById('purchaseCurrency').value.trim().toUpperCase() || 'SGD';
+  const rate = parseFloat(document.getElementById('purchaseCnyRate').value) || 1;
+  const el = document.getElementById('purchaseItemsList');
+  el.innerHTML = currentPurchaseItems.map((it, idx) => `
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+      <select onchange="updatePurchaseItem(${idx},'variant_id',this.value)" style="flex:1;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px">
+        <option value="">Select variant…</option>${variantOptionsHtml(it.variant_id)}
+      </select>
+      <input type="number" placeholder="Qty" value="${it.qty}" oninput="updatePurchaseItem(${idx},'qty',this.value)" style="width:60px;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px">
+      <input type="number" placeholder="Unit cost" value="${it.unit_cost}" oninput="updatePurchaseItem(${idx},'unit_cost',this.value)" style="width:90px;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px">
+      <div style="width:80px;text-align:right;font-size:12px;color:var(--text2)">${money((it.qty||0)*(it.unit_cost||0)*(currency==='SGD'?1:rate))}</div>
+      <button class="btn btn-ghost btn-sm" onclick="removePurchaseItem(${idx})">✕</button>
+    </div>`).join('');
+  const shipping = parseFloat(document.getElementById('purchaseShipping').value) || 0;
+  const misc = parseFloat(document.getElementById('purchaseMisc').value) || 0;
+  const itemsTotal = currentPurchaseItems.reduce((s,it) => s + (it.qty||0)*(it.unit_cost||0)*(currency==='SGD'?1:rate), 0);
+  document.getElementById('purchaseTotalSgd').textContent = money(itemsTotal + shipping + misc);
+}
+function updatePurchaseItem(idx, field, val) { currentPurchaseItems[idx][field] = field==='variant_id' ? val : parseFloat(val)||0; renderPurchaseItems(); }
+function addPurchaseItem() { currentPurchaseItems.push(blankPurchaseItem()); renderPurchaseItems(); }
+function removePurchaseItem(idx) { currentPurchaseItems.splice(idx,1); if(!currentPurchaseItems.length) currentPurchaseItems.push(blankPurchaseItem()); renderPurchaseItems(); }
+document.addEventListener('input', e => { if (['purchaseShipping','purchaseMisc','purchaseCurrency','purchaseCnyRate'].includes(e.target.id)) renderPurchaseItems(); });
+
+async function savePurchase() {
+  const items = currentPurchaseItems.filter(it => it.variant_id && it.qty > 0);
+  if (!items.length) { alert('Add at least one item with a variant and quantity.'); return; }
+  const currency = document.getElementById('purchaseCurrency').value.trim().toUpperCase() || 'SGD';
+  const rate = parseFloat(document.getElementById('purchaseCnyRate').value) || 1;
+  const shipping = parseFloat(document.getElementById('purchaseShipping').value) || 0;
+  const misc = parseFloat(document.getElementById('purchaseMisc').value) || 0;
+  const itemsTotalSgd = items.reduce((s,it) => s + it.qty * it.unit_cost * (currency==='SGD'?1:rate), 0);
+  const totalSgd = itemsTotalSgd + shipping + misc;
+
+  const { data: purchase, error } = await sb.from('purchases').insert({
+    purchase_date: document.getElementById('purchaseDate').value || new Date().toISOString().slice(0,10),
+    platform: document.getElementById('purchasePlatform').value.trim() || null,
+    ref: document.getElementById('purchaseRef').value.trim() || null,
+    status: document.getElementById('purchaseStatus').value,
+    currency, shipping, misc, total_sgd: totalSgd, cny_rate: currency !== 'SGD' ? rate : null,
+  }).select('id').single();
+  if (error) { alert('Save failed: ' + error.message); return; }
+
+  for (const it of items) {
+    const unitCostSgd = it.unit_cost * (currency==='SGD'?1:rate);
+    await sb.from('purchase_items').insert({
+      purchase_id: purchase.id, variant_id: it.variant_id, qty: it.qty,
+      unit_cost: it.unit_cost, currency, line_sgd: it.qty * unitCostSgd
+    });
+    // Recompute WAC: (existing qty*existing wac + new qty*new cost) / (existing qty + new qty)
+    if (document.getElementById('purchaseStatus').value === 'received') {
+      const v = VARIANTS.find(x => x.id === it.variant_id);
+      const oldQty = Number(v?.qty) || 0;
+      const oldWac = Number(v?.wac) || 0;
+      const newQty = oldQty + it.qty;
+      const newWac = newQty > 0 ? ((oldQty*oldWac) + (it.qty*unitCostSgd)) / newQty : unitCostSgd;
+      await sb.from('product_variants').update({ qty: newQty, wac: newWac, cost: unitCostSgd }).eq('id', it.variant_id);
+    }
+  }
+  await loadProducts();
+  await loadPurchases();
+  alert('Purchase saved and stock updated.');
+  switchTab('purchases');
+}
+
+/* ============ SALES (deducts stock; separate from walk-in Invoices) ============ */
+let SALES = [];
+let currentSaleItems = [];
+let saleItemSeq = 1;
+
+async function loadSales() {
+  const { data } = await sb.from('sales').select('*').order('sale_date', { ascending: false });
+  SALES = data || [];
+  const sources = [...new Set(SALES.map(s => s.source).filter(Boolean))];
+  const filterEl = document.getElementById('salesSourceFilter');
+  if (filterEl) {
+    const current = filterEl.value;
+    filterEl.innerHTML = '<option value="">All sources</option>' + sources.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+    filterEl.value = current;
+  }
+  renderSales();
+}
+
+function renderSales() {
+  const tbody = document.getElementById('saleRows');
+  if (!tbody) return;
+  const filter = document.getElementById('salesSourceFilter')?.value || '';
+  const rows = SALES.filter(s => !filter || s.source === filter);
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="6" class="cell-muted">No sales yet</td></tr>'; return; }
+  tbody.innerHTML = rows.map(s => `
+    <tr>
+      <td>${formatDate(s.sale_date)}</td>
+      <td><span class="badge badge-neutral">${escapeHtml(s.source || '—')}</span></td>
+      <td class="cell-muted">${escapeHtml(s.customer || '—')}</td>
+      <td>${money(s.gross)}</td>
+      <td class="cell-strong">${money(s.net)}</td>
+      <td></td>
+    </tr>`).join('');
+}
+
+function blankSaleItem() { return { id: saleItemSeq++, variant_id: '', qty: 1, unit_price: 0 }; }
+
+function openSaleEditor() {
+  document.getElementById('saleId').value = '';
+  document.getElementById('saleDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('saleSource').value = '';
+  document.getElementById('saleRef').value = '';
+  document.getElementById('saleCustomer').value = '';
+  document.getElementById('saleFee').value = '0';
+  document.getElementById('saleShipping').value = '0';
+  document.getElementById('saleReturns').value = '0';
+  document.getElementById('saleOtherDed').value = '0';
+  currentSaleItems = [blankSaleItem()];
+  renderSaleItems();
+  switchTab('sale-editor');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+}
+
+function renderSaleItems() {
+  const el = document.getElementById('saleItemsList');
+  el.innerHTML = currentSaleItems.map((it, idx) => {
+    const v = VARIANTS.find(x => x.id === it.variant_id);
+    const stockWarn = v && it.qty > v.qty ? `<div style="font-size:11px;color:var(--red);margin-top:3px">Only ${v.qty} in stock</div>` : '';
+    return `
+    <div style="margin-bottom:10px">
+      <div style="display:flex;gap:8px;align-items:center">
+        <select onchange="updateSaleItem(${idx},'variant_id',this.value)" style="flex:1;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px">
+          <option value="">Select variant…</option>${variantOptionsHtml(it.variant_id)}
+        </select>
+        <input type="number" placeholder="Qty" value="${it.qty}" oninput="updateSaleItem(${idx},'qty',this.value)" style="width:60px;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px">
+        <input type="number" placeholder="Unit price" value="${it.unit_price}" oninput="updateSaleItem(${idx},'unit_price',this.value)" style="width:90px;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px">
+        <button class="btn btn-ghost btn-sm" onclick="removeSaleItem(${idx})">✕</button>
+      </div>${stockWarn}
+    </div>`;
+  }).join('');
+  updateSaleTotals();
+}
+function updateSaleItem(idx, field, val) { currentSaleItems[idx][field] = field==='variant_id' ? val : parseFloat(val)||0; renderSaleItems(); }
+function addSaleItem() { currentSaleItems.push(blankSaleItem()); renderSaleItems(); }
+function removeSaleItem(idx) { currentSaleItems.splice(idx,1); if(!currentSaleItems.length) currentSaleItems.push(blankSaleItem()); renderSaleItems(); }
+function updateSaleTotals() {
+  const gross = currentSaleItems.reduce((s,it) => s + (it.qty||0)*(it.unit_price||0), 0);
+  const fee = parseFloat(document.getElementById('saleFee')?.value) || 0;
+  const shipping = parseFloat(document.getElementById('saleShipping')?.value) || 0;
+  const returns = parseFloat(document.getElementById('saleReturns')?.value) || 0;
+  const other = parseFloat(document.getElementById('saleOtherDed')?.value) || 0;
+  document.getElementById('saleGross').textContent = money(gross);
+  document.getElementById('saleNet').textContent = money(gross - fee - shipping - returns - other);
+}
+document.addEventListener('input', e => { if (['saleFee','saleShipping','saleReturns','saleOtherDed'].includes(e.target.id)) updateSaleTotals(); });
+
+async function saveSale() {
+  const items = currentSaleItems.filter(it => it.variant_id && it.qty > 0);
+  if (!items.length) { alert('Add at least one item with a variant and quantity.'); return; }
+  for (const it of items) {
+    const v = VARIANTS.find(x => x.id === it.variant_id);
+    if (v && it.qty > v.qty) { if (!confirm(`Warning: only ${v.qty} of "${v.name}" in stock, selling ${it.qty}. This will make stock negative. Continue?`)) return; }
+  }
+  const gross = items.reduce((s,it) => s + it.qty*it.unit_price, 0);
+  const fee = parseFloat(document.getElementById('saleFee').value) || 0;
+  const shipping = parseFloat(document.getElementById('saleShipping').value) || 0;
+  const returns = parseFloat(document.getElementById('saleReturns').value) || 0;
+  const other = parseFloat(document.getElementById('saleOtherDed').value) || 0;
+  const net = gross - fee - shipping - returns - other;
+
+  const { data: sale, error } = await sb.from('sales').insert({
+    sale_date: document.getElementById('saleDate').value || new Date().toISOString().slice(0,10),
+    source: document.getElementById('saleSource').value.trim() || null,
+    ref: document.getElementById('saleRef').value.trim() || null,
+    customer: document.getElementById('saleCustomer').value.trim() || null,
+    gross, fee, shipping, returns, other_deductions: other, net,
+  }).select('id').single();
+  if (error) { alert('Save failed: ' + error.message); return; }
+
+  for (const it of items) {
+    await sb.from('sale_items').insert({ sale_id: sale.id, variant_id: it.variant_id, qty: it.qty, unit_price: it.unit_price });
+    const v = VARIANTS.find(x => x.id === it.variant_id);
+    const newQty = (Number(v?.qty) || 0) - it.qty;
+    await sb.from('product_variants').update({ qty: newQty }).eq('id', it.variant_id);
+  }
+  await loadProducts();
+  await loadSales();
+  alert('Sale saved and stock deducted.');
+  switchTab('sales');
+}
+
 /* ============ INVOICES ============ */
 let INVOICES = [];
 let currentInvoiceItems = []; // [{id, desc, qty, price, subs:[{text}], discounts:[{label,type,value}]}]
@@ -982,13 +1347,20 @@ function renderInvoices() {
   if (!tbody) return;
   if (!INVOICES.length) { tbody.innerHTML = '<tr><td colspan="5" class="cell-muted">No invoices yet</td></tr>'; return; }
   tbody.innerHTML = INVOICES.map(inv => `
-    <tr class="clickable" onclick="openInvoiceEditor('${inv.id}')">
-      <td class="cell-strong">${escapeHtml(inv.full_invoice_no || inv.invoice_no)}</td>
+    <tr>
+      <td class="cell-strong clickable" onclick="openInvoiceEditor('${inv.id}')">${escapeHtml(inv.full_invoice_no || inv.invoice_no)}</td>
       <td>${escapeHtml(inv.customer_name || '—')}</td>
       <td class="cell-muted">${formatDate(inv.invoice_date)}</td>
       <td class="cell-strong">${money(inv.total)}</td>
-      <td></td>
+      <td><button class="btn btn-ghost btn-sm" onclick="deleteInvoice('${inv.id}')">✕</button></td>
     </tr>`).join('');
+}
+
+async function deleteInvoice(id) {
+  if (!confirm('Delete this invoice? This cannot be undone.')) return;
+  const { error } = await sb.from('invoices').delete().eq('id', id);
+  if (error) { alert('Delete failed: ' + error.message); return; }
+  await loadInvoices();
 }
 
 function blankInvoiceItem() {
