@@ -198,11 +198,11 @@ tbody tr.clickable:hover { background: var(--bg3); }
       <div class="nav-group">
         <div class="nav-group-label">Customers</div>
         <button class="nav-item" data-tab="crm" onclick="switchTab('crm')"><span class="nav-icon">CRM</span> Customers &amp; Bikes</button>
-        <button class="nav-item" data-tab="servicing" onclick="switchTab('servicing')"><span class="nav-icon">SVC</span> Servicing <span class="nav-badge">Soon</span></button>
+        <button class="nav-item" data-tab="servicing" onclick="switchTab('servicing')"><span class="nav-icon">SVC</span> Servicing</button>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Sales</div>
-        <button class="nav-item" data-tab="invoices" onclick="switchTab('invoices')"><span class="nav-icon">INV</span> Invoices <span class="nav-badge">Soon</span></button>
+        <button class="nav-item" data-tab="invoices" onclick="switchTab('invoices')"><span class="nav-icon">INV</span> Invoices</button>
         <button class="nav-item" data-tab="sales" onclick="switchTab('sales')"><span class="nav-icon">SLS</span> Sales <span class="nav-badge">Soon</span></button>
       </div>
       <div class="nav-group">
@@ -314,7 +314,62 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <p style="color:var(--text2);font-size:13px">Go to <strong>Customers &amp; Bikes</strong>, open a customer, then click a bike to see its full servicing record and log new work.</p>
         </div></div>
       </div>
-      <div class="tab-panel" id="tab-invoices"><div class="coming-soon"><div class="coming-soon-title">Invoices — being rebuilt</div><div class="coming-soon-sub">Replacing the standalone invoice generator, wired straight to customers, bikes, and products.</div></div></div>
+      <div class="tab-panel" id="tab-invoices">
+        <div class="page-header">
+          <div><div class="page-title">Invoices</div><div class="page-subtitle">Create, edit, and print invoices — with revisions</div></div>
+          <div class="page-actions"><button class="btn btn-primary" onclick="openInvoiceEditor()">+ New Invoice</button></div>
+        </div>
+        <div class="card">
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Invoice No.</th><th>Customer</th><th>Date</th><th>Total</th><th></th></tr></thead>
+            <tbody id="invoiceRows"><tr><td colspan="5" class="cell-muted">Loading…</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-invoice-editor">
+        <div class="detail-header"><span class="back-link" onclick="switchTab('invoices')">← Back to Invoices</span></div>
+        <div class="page-header">
+          <div><div class="page-title" id="invEditorTitle">New Invoice</div><div class="page-subtitle" id="invEditorSub">Not yet saved</div></div>
+          <div class="page-actions">
+            <button class="btn btn-secondary" onclick="printInvoice()">Print / PDF</button>
+            <button class="btn btn-primary" onclick="saveInvoice()">Save Invoice</button>
+          </div>
+        </div>
+        <div class="grid grid-sidebar">
+          <div class="card"><div class="card-body">
+            <input type="hidden" id="invId">
+            <input type="hidden" id="invSavedNo">
+            <input type="hidden" id="invRevSuffix">
+            <div class="field"><label>Customer name</label><input type="text" id="invCustomerName" placeholder="e.g. Jane Tan"></div>
+            <div class="field"><label>Date</label><input type="date" id="invDate"></div>
+            <div class="field-row fr-2">
+              <div class="field"><label>Address line 1</label><input type="text" id="invAddr1"></div>
+              <div class="field"><label>Address line 2</label><input type="text" id="invAddr2"></div>
+            </div>
+            <div class="field"><label>Postal code</label><input type="text" id="invPostal"></div>
+            <div class="field"><label>Remarks (shown on printed invoice)</label><textarea id="invRemarks" style="min-height:140px" placeholder="Service completed&#10;* ...&#10;&#10;Items to note&#10;* ..."></textarea></div>
+          </div></div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">Line items</div><button class="btn btn-ghost btn-sm" onclick="addInvoiceItem()">+ Add item</button></div>
+            <div id="invItemsList" style="padding:12px 20px"></div>
+            <div style="padding:0 20px 16px">
+              <div class="field" style="max-width:320px">
+                <label>Invoice-level discount</label>
+                <div style="display:flex;gap:6px">
+                  <input type="text" id="invDiscLabel" placeholder="Label e.g. Loyalty Discount" style="flex:2">
+                  <input type="number" id="invDiscPct" placeholder="%" style="flex:1">
+                </div>
+              </div>
+            </div>
+            <div style="border-top:1px solid var(--border);padding:16px 20px;display:flex;justify-content:flex-end;gap:20px;align-items:baseline">
+              <div style="font-size:13px;color:var(--text2)">Grand Total</div>
+              <div style="font-size:24px;font-weight:800" id="invGrandTotal">$0.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="tab-panel" id="tab-sales"><div class="coming-soon"><div class="coming-soon-title">Sales — coming next</div><div class="coming-soon-sub">Ported from the current Hub once the core CRM and invoicing are solid.</div></div></div>
       <div class="tab-panel" id="tab-products"><div class="coming-soon"><div class="coming-soon-title">Products &amp; Stock — coming next</div><div class="coming-soon-sub">Products, purchases, and stocktake, ported from the current Hub.</div></div></div>
       <div class="tab-panel" id="tab-accounting"><div class="coming-soon"><div class="coming-soon-title">Accounting — coming next</div><div class="coming-soon-sub">Balance Sheet and Income Statement generated from the ledger, with an automatic month-end email.</div></div></div>
@@ -458,6 +513,7 @@ async function loadAll() {
     BIKES = bikeData || [];
     renderDashboard();
     renderCustomers();
+    await loadInvoices();
     setSyncStatus('synced');
   } catch (e) {
     console.error(e);
@@ -728,6 +784,257 @@ async function saveBike() {
 
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function formatDate(d) { if (!d) return '—'; const dt = new Date(d); return dt.toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' }); }
+function money(n) { const v = Number(n)||0; return '$' + v.toLocaleString('en-SG', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+/* ============ INVOICES ============ */
+let INVOICES = [];
+let currentInvoiceItems = []; // [{id, desc, qty, price, subs:[{text}], discounts:[{label,type,value}]}]
+let invoiceItemSeq = 1;
+
+async function loadInvoices() {
+  const { data, error } = await sb.from('invoices').select('*').order('invoice_date', { ascending: false }).order('created_at', { ascending: false });
+  INVOICES = error ? [] : (data || []);
+  renderInvoices();
+}
+
+function renderInvoices() {
+  const tbody = document.getElementById('invoiceRows');
+  if (!tbody) return;
+  if (!INVOICES.length) { tbody.innerHTML = '<tr><td colspan="5" class="cell-muted">No invoices yet</td></tr>'; return; }
+  tbody.innerHTML = INVOICES.map(inv => `
+    <tr class="clickable" onclick="openInvoiceEditor('${inv.id}')">
+      <td class="cell-strong">${escapeHtml(inv.full_invoice_no || inv.invoice_no)}</td>
+      <td>${escapeHtml(inv.customer_name || '—')}</td>
+      <td class="cell-muted">${formatDate(inv.invoice_date)}</td>
+      <td class="cell-strong">${money(inv.total)}</td>
+      <td></td>
+    </tr>`).join('');
+}
+
+function blankInvoiceItem() {
+  return { id: invoiceItemSeq++, desc: '', qty: 1, price: 0, subs: [], discounts: [] };
+}
+
+function calcItemTotal(item) {
+  let total = (Number(item.qty)||0) * (Number(item.price)||0);
+  (item.discounts||[]).forEach(d => {
+    total -= d.type === 'pct' ? total * (Number(d.value)||0)/100 : (Number(d.value)||0);
+  });
+  return total;
+}
+
+function calcGrandTotal() {
+  let subtotal = currentInvoiceItems.reduce((s, it) => s + calcItemTotal(it), 0);
+  const pct = parseFloat(document.getElementById('invDiscPct')?.value) || 0;
+  if (pct) subtotal -= subtotal * pct / 100;
+  return subtotal;
+}
+
+async function openInvoiceEditor(invoiceId) {
+  document.getElementById('invId').value = '';
+  document.getElementById('invSavedNo').value = '';
+  document.getElementById('invRevSuffix').value = '';
+  document.getElementById('invCustomerName').value = '';
+  document.getElementById('invDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('invAddr1').value = '';
+  document.getElementById('invAddr2').value = '';
+  document.getElementById('invPostal').value = '';
+  document.getElementById('invRemarks').value = '';
+  document.getElementById('invDiscLabel').value = '';
+  document.getElementById('invDiscPct').value = '';
+  currentInvoiceItems = [blankInvoiceItem()];
+  document.getElementById('invEditorTitle').textContent = 'New Invoice';
+  document.getElementById('invEditorSub').textContent = 'Not yet saved';
+
+  if (invoiceId) {
+    const { data: inv, error } = await sb.from('invoices').select('*').eq('id', invoiceId).single();
+    if (!error && inv) {
+      document.getElementById('invId').value = inv.id;
+      document.getElementById('invSavedNo').value = inv.saved_invoice_no || inv.invoice_no || '';
+      document.getElementById('invRevSuffix').value = inv.rev_suffix || '';
+      document.getElementById('invCustomerName').value = inv.customer_name || '';
+      document.getElementById('invDate').value = inv.invoice_date || '';
+      document.getElementById('invAddr1').value = inv.address_line1 || '';
+      document.getElementById('invAddr2').value = inv.address_line2 || '';
+      document.getElementById('invPostal').value = inv.postal_code || '';
+      document.getElementById('invRemarks').value = inv.remarks || '';
+      const invDisc = (inv.invoice_discounts || [])[0];
+      if (invDisc) { document.getElementById('invDiscLabel').value = invDisc.label || ''; document.getElementById('invDiscPct').value = invDisc.value || ''; }
+      document.getElementById('invEditorTitle').textContent = inv.full_invoice_no || inv.invoice_no;
+      document.getElementById('invEditorSub').textContent = 'Editing saved invoice';
+
+      const { data: items } = await sb.from('invoice_items').select('*').eq('invoice_id', invoiceId).order('sort_order');
+      currentInvoiceItems = (items || []).map(it => ({
+        id: invoiceItemSeq++, desc: it.description, qty: it.qty, price: it.unit_price,
+        subs: it.subs || [], discounts: it.discounts || []
+      }));
+      if (!currentInvoiceItems.length) currentInvoiceItems = [blankInvoiceItem()];
+    }
+  }
+  renderInvoiceItems();
+  switchTab('invoice-editor');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('topbarTitle').textContent = 'Invoice Editor';
+}
+
+function renderInvoiceItems() {
+  const el = document.getElementById('invItemsList');
+  el.innerHTML = currentInvoiceItems.map((item, idx) => `
+    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px">
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input type="text" placeholder="Description" value="${escapeHtml(item.desc)}" oninput="updateItem(${idx},'desc',this.value)" style="flex:1;border:1px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:13px">
+        <input type="number" placeholder="Qty" value="${item.qty}" oninput="updateItem(${idx},'qty',this.value)" style="width:60px;border:1px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:13px">
+        <input type="number" placeholder="Unit Price" value="${item.price}" oninput="updateItem(${idx},'price',this.value)" style="width:90px;border:1px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:13px">
+        <div style="width:80px;text-align:right;font-weight:700;font-size:13px;align-self:center">${money(calcItemTotal(item))}</div>
+        <button class="btn btn-ghost btn-sm" onclick="removeItem(${idx})">✕</button>
+      </div>
+      ${item.subs.map((s,si) => `<div style="display:flex;gap:6px;margin:4px 0 4px 16px"><input type="text" placeholder="Sub-note" value="${escapeHtml(s.text)}" oninput="updateSub(${idx},${si},this.value)" style="flex:1;border:1px dashed var(--border2);border-radius:6px;padding:5px 9px;font-size:12px"><button class="btn btn-ghost btn-sm" onclick="removeSub(${idx},${si})">✕</button></div>`).join('')}
+      ${item.discounts.map((d,di) => `<div style="display:flex;gap:6px;margin:4px 0 4px 16px"><input type="text" placeholder="Discount label" value="${escapeHtml(d.label)}" oninput="updateDisc(${idx},${di},'label',this.value)" style="flex:2;border:1px solid var(--yellow-bg);background:var(--yellow-bg);border-radius:6px;padding:5px 9px;font-size:12px"><input type="number" placeholder="%" value="${d.value}" oninput="updateDisc(${idx},${di},'value',this.value)" style="width:60px;border:1px solid var(--yellow-bg);background:var(--yellow-bg);border-radius:6px;padding:5px 9px;font-size:12px"><button class="btn btn-ghost btn-sm" onclick="removeDisc(${idx},${di})">✕</button></div>`).join('')}
+      <div style="margin-top:6px;display:flex;gap:10px">
+        <span style="font-size:11px;color:var(--text3);cursor:pointer" onclick="addSub(${idx})">+ sub-note</span>
+        <span style="font-size:11px;color:var(--text3);cursor:pointer" onclick="addDisc(${idx})">+ item discount</span>
+      </div>
+    </div>`).join('');
+  document.getElementById('invGrandTotal').textContent = money(calcGrandTotal());
+}
+function updateItem(idx, field, val) { currentInvoiceItems[idx][field] = (field==='qty'||field==='price') ? parseFloat(val)||0 : val; renderInvoiceItems(); }
+function addInvoiceItem() { currentInvoiceItems.push(blankInvoiceItem()); renderInvoiceItems(); }
+function removeItem(idx) { currentInvoiceItems.splice(idx,1); if(!currentInvoiceItems.length) currentInvoiceItems.push(blankInvoiceItem()); renderInvoiceItems(); }
+function addSub(idx) { currentInvoiceItems[idx].subs.push({text:''}); renderInvoiceItems(); }
+function updateSub(idx,si,val) { currentInvoiceItems[idx].subs[si].text = val; }
+function removeSub(idx,si) { currentInvoiceItems[idx].subs.splice(si,1); renderInvoiceItems(); }
+function addDisc(idx) { currentInvoiceItems[idx].discounts.push({label:'',type:'pct',value:0}); renderInvoiceItems(); }
+function updateDisc(idx,di,field,val) { currentInvoiceItems[idx].discounts[di][field] = field==='value' ? parseFloat(val)||0 : val; renderInvoiceItems(); }
+function removeDisc(idx,di) { currentInvoiceItems[idx].discounts.splice(di,1); renderInvoiceItems(); }
+document.addEventListener('input', e => { if (e.target.id === 'invDiscPct') document.getElementById('invGrandTotal').textContent = money(calcGrandTotal()); });
+
+async function nextInvoiceNumber() {
+  const now = new Date();
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const yy = String(now.getFullYear()).slice(-2);
+  const prefix = 'INVBB' + mm + yy;
+  const { data } = await sb.from('invoices').select('invoice_no').ilike('invoice_no', prefix + '%').order('invoice_no', { ascending: false }).limit(1);
+  let seq = 1;
+  if (data && data.length) {
+    const last = data[0].invoice_no.replace(prefix, '');
+    seq = (parseInt(last, 10) || 0) + 1;
+  }
+  return prefix + String(seq).padStart(3, '0');
+}
+
+async function saveInvoice() {
+  const id = document.getElementById('invId').value;
+  const customerName = document.getElementById('invCustomerName').value.trim();
+  if (!customerName) { alert('Customer name is required.'); return; }
+  const grandTotal = calcGrandTotal();
+  const discLabel = document.getElementById('invDiscLabel').value.trim();
+  const discPct = parseFloat(document.getElementById('invDiscPct').value) || 0;
+  const invoiceDiscounts = discLabel && discPct ? [{ label: discLabel, type: 'pct', value: discPct }] : [];
+
+  let invoiceNo = document.getElementById('invSavedNo').value;
+  let revSuffix = document.getElementById('invRevSuffix').value;
+  if (!invoiceNo) invoiceNo = await nextInvoiceNumber();
+  const fullInvoiceNo = invoiceNo + (revSuffix || '');
+
+  const payload = {
+    invoice_no: invoiceNo,
+    saved_invoice_no: invoiceNo,
+    rev_suffix: revSuffix || null,
+    is_revision: !!revSuffix,
+    full_invoice_no: fullInvoiceNo,
+    customer_name: customerName,
+    invoice_date: document.getElementById('invDate').value || new Date().toISOString().slice(0,10),
+    address_line1: document.getElementById('invAddr1').value.trim() || null,
+    address_line2: document.getElementById('invAddr2').value.trim() || null,
+    postal_code: document.getElementById('invPostal').value.trim() || null,
+    remarks: document.getElementById('invRemarks').value.trim() || null,
+    invoice_discounts: invoiceDiscounts,
+    subtotal: grandTotal, tax: 0, total: grandTotal,
+    status: 'sent',
+  };
+
+  let invoiceId = id;
+  if (id) {
+    const { error } = await sb.from('invoices').update(payload).eq('id', id);
+    if (error) { alert('Save failed: ' + error.message); return; }
+    await sb.from('invoice_items').delete().eq('invoice_id', id);
+  } else {
+    const { data, error } = await sb.from('invoices').insert(payload).select('id').single();
+    if (error) { alert('Save failed: ' + error.message); return; }
+    invoiceId = data.id;
+  }
+
+  const itemRows = currentInvoiceItems.filter(it => it.desc.trim()).map((it, i) => ({
+    invoice_id: invoiceId, description: it.desc, qty: it.qty, unit_price: it.price,
+    sort_order: i, subs: it.subs.filter(s=>s.text.trim()), discounts: it.discounts.filter(d=>d.label.trim())
+  }));
+  if (itemRows.length) {
+    const { error: itemErr } = await sb.from('invoice_items').insert(itemRows);
+    if (itemErr) { alert('Items save failed: ' + itemErr.message); return; }
+  }
+
+  document.getElementById('invId').value = invoiceId;
+  document.getElementById('invSavedNo').value = invoiceNo;
+  await loadInvoices();
+  alert('Invoice ' + fullInvoiceNo + ' saved.');
+}
+
+function printInvoice() {
+  const customerName = document.getElementById('invCustomerName').value.trim() || '—';
+  const fullInvNo = (document.getElementById('invSavedNo').value || 'DRAFT') + (document.getElementById('invRevSuffix').value || '');
+  const date = document.getElementById('invDate').value;
+  const remarks = document.getElementById('invRemarks').value.trim();
+  const discLabel = document.getElementById('invDiscLabel').value.trim();
+  const discPct = parseFloat(document.getElementById('invDiscPct').value) || 0;
+
+  let rowsHtml = '';
+  let sn = 1;
+  currentInvoiceItems.filter(it=>it.desc.trim()).forEach(it => {
+    const lineTotal = (it.qty||0) * (it.price||0);
+    rowsHtml += `<tr><td>${sn++}</td><td>${escapeHtml(it.desc)}</td><td style="text-align:center">${it.qty}</td><td style="text-align:right">${money(it.price)}</td><td style="text-align:right">${money(lineTotal)}</td></tr>`;
+    it.subs.forEach(s => { if(s.text.trim()) rowsHtml += `<tr><td></td><td style="padding-left:20px;color:#555;font-size:12px">${escapeHtml(s.text)}</td><td></td><td></td><td></td></tr>`; });
+    it.discounts.forEach(d => { if(d.label.trim()) { const amt = -(lineTotal * (d.value||0)/100); rowsHtml += `<tr><td>-</td><td>${escapeHtml(d.label)} (${d.value}%)</td><td style="text-align:center">1</td><td style="text-align:right">${money(amt)}</td><td style="text-align:right">${money(amt)}</td></tr>`; } });
+  });
+  const grandTotal = calcGrandTotal();
+  if (discLabel && discPct) {
+    const subtotal = currentInvoiceItems.reduce((s,it)=>s+calcItemTotal(it),0);
+    const amt = -(subtotal * discPct/100);
+    rowsHtml += `<tr><td>-</td><td>${escapeHtml(discLabel)} (${discPct}%)</td><td style="text-align:center">1</td><td style="text-align:right">${money(amt)}</td><td style="text-align:right">${money(amt)}</td></tr>`;
+  }
+  const remarksHtml = remarks ? `<div style="margin-top:24px"><strong style="font-size:12px">Remarks:</strong><div style="white-space:pre-wrap;font-size:12px;margin-top:6px">${escapeHtml(remarks)}</div></div>` : '';
+
+  const html = `<!DOCTYPE html><html><head><title>${escapeHtml(fullInvNo)}</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;padding:50px;color:#111}
+    .brand{font-weight:900;font-size:20px}
+    .uen{color:#666;font-size:11px}
+    h1{font-size:34px;text-align:center;margin:20px 0}
+    table{width:100%;border-collapse:collapse;margin-top:20px}
+    th{border-bottom:2px solid #000;text-align:left;padding:6px;font-size:11px}
+    td{padding:6px;font-size:13px;border-bottom:1px solid #ddd}
+    .totalrow td{border-top:2px solid #000;border-bottom:none;font-weight:800;font-size:16px}
+    .bar{background:#f6ca14;height:6px;margin-top:40px}
+  </style></head><body>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div class="brand">Bike&amp;Butter</div>
+      <div class="uen">UEN: 53521776E</div>
+    </div>
+    <h1>Invoice</h1>
+    <div style="display:flex;justify-content:space-between;font-size:13px">
+      <div><strong>${escapeHtml(customerName)}</strong><br>Singapore</div>
+      <div style="text-align:right">Invoice No.: <strong>${escapeHtml(fullInvNo)}</strong><br>Date: <strong>${formatDate(date)}</strong></div>
+    </div>
+    <table><thead><tr><th>S/N</th><th>Description</th><th style="text-align:center">Qty</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th></tr></thead>
+    <tbody>${rowsHtml}<tr class="totalrow"><td colspan="3"></td><td>Total:</td><td style="text-align:right">${money(grandTotal)}</td></tr></tbody></table>
+    ${remarksHtml}
+    <div class="bar"></div>
+    <div style="margin-top:16px;font-size:11px">Payment can be made via PayNow using UEN <strong>53521776E</strong>. Please include your Invoice Number in the remarks.</div>
+  </body></html>`;
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+  w.print();
+}
 </script>
 </body>
 </html>
