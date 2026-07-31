@@ -604,6 +604,11 @@ tbody tr.clickable:hover { background: var(--bg3); }
       <div class="field"><label>Service completed (one item per line)</label><textarea id="svcWorkDone" placeholder="Replaced front and rear brake pads&#10;Adjusted front derailleur" style="min-height:100px"></textarea></div>
       <div class="field"><label>Items to note / watch next time (one item per line)</label><textarea id="svcWatchItems" placeholder="Seatpost seized in frame, recommend servicing after race&#10;Headset bearings smooth, service at next major" style="min-height:90px"></textarea></div>
       <div class="field"><label>Next service due (optional)</label><input type="date" id="svcNextDue"></div>
+      <div class="field"><label>Link to invoice (optional — enables combined print)</label>
+        <select id="svcInvoiceId" style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:8px 11px;font-size:13px">
+          <option value="">— No linked invoice —</option>
+        </select>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeServiceModal()">Cancel</button>
@@ -887,7 +892,10 @@ function renderServiceHistory() {
     <div style="border-bottom:1px solid var(--border);padding:16px 0">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
         <div class="cell-strong">${formatDate(s.service_date)}</div>
-        <div class="cell-muted" style="font-size:12px">${escapeHtml(s.mechanic || '')}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="cell-muted" style="font-size:12px">${escapeHtml(s.mechanic || '')}</div>
+          ${s.invoice_id ? `<button class="btn btn-ghost btn-sm" onclick="printCombined('${s.id}')">Print Invoice + Report</button>` : ''}
+        </div>
       </div>
       ${work.length ? `<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:3px">Service completed</div><ul style="margin:0 0 10px 18px;font-size:13px;color:var(--text)">${work.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
       ${watch.length ? `<div style="font-size:12px;font-weight:600;color:var(--yellow);margin-bottom:3px">Watch next time</div><ul style="margin:0 0 4px 18px;font-size:13px;color:var(--text)">${watch.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
@@ -896,12 +904,104 @@ function renderServiceHistory() {
   }).join('');
 }
 
-function openServiceModal() {
+async function printCombined(serviceRecordId) {
+  const s = SERVICE_RECORDS.find(x => x.id === serviceRecordId);
+  if (!s || !s.invoice_id) return;
+  const { data: inv } = await sb.from('invoices').select('*').eq('id', s.invoice_id).single();
+  const { data: items } = await sb.from('invoice_items').select('*').eq('invoice_id', s.invoice_id).order('sort_order');
+  const b = BIKES.find(x => x.id === currentBikeId);
+  const bikeName = b ? [b.brand, b.model].filter(Boolean).join(' ') : 'Bike';
+  const work = (s.work_done || '').split('\n').filter(Boolean);
+  const watch = (s.watch_items || '').split('\n').filter(Boolean);
+
+  let rowsHtml = '';
+  let sn = 1;
+  (items || []).forEach(it => {
+    const lineTotal = it.qty * it.unit_price;
+    rowsHtml += `<tr><td>${sn++}</td><td>${escapeHtml(it.description)}</td><td style="text-align:center">${it.qty}</td><td style="text-align:right">${money(it.unit_price)}</td><td style="text-align:right">${money(lineTotal)}</td></tr>`;
+    (it.subs||[]).forEach(sub => rowsHtml += `<tr><td></td><td style="padding-left:20px;color:#666;font-size:12px;font-style:italic">${escapeHtml(sub.text)}</td><td></td><td></td><td></td></tr>`);
+    (it.discounts||[]).forEach(d => { const amt = -(lineTotal * (d.value||0)/100); rowsHtml += `<tr><td>-</td><td>${escapeHtml(d.label)} (${d.value}%)</td><td style="text-align:center">1</td><td style="text-align:right">${money(amt)}</td><td style="text-align:right">${money(amt)}</td></tr>`; });
+  });
+
+  const html = `<!DOCTYPE html><html><head><title>${escapeHtml(inv.full_invoice_no)} — Invoice + Service Report</title>
+  <style>
+    @page { margin: 20mm 18mm; }
+    * { box-sizing: border-box; }
+    body{font-family:'Inter',Arial,Helvetica,sans-serif;color:#111;margin:0}
+    .page{max-width:720px;margin:0 auto;padding:40px 36px}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+    .brand-row{display:flex;align-items:center;gap:10px}
+    .brand-mark{width:38px;height:38px;background:#111;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:15px}
+    .brand-name{font-family:Georgia,serif;font-weight:700;font-size:20px}
+    .uen{color:#666;font-size:11px;text-align:right;margin-top:4px}
+    h1{font-size:26px;text-align:center;margin:24px 0 18px;font-weight:800}
+    .partybox{display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px}
+    .label{color:#888;font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+    table{width:100%;border-collapse:collapse;margin-top:16px}
+    th{border-bottom:2px solid #000;text-align:left;padding:7px 6px;font-size:10.5px;text-transform:uppercase}
+    td{padding:7px 6px;font-size:13px;border-bottom:1px solid #e5e5e5}
+    .totalrow td{border-top:2px solid #000;border-bottom:none;font-weight:800;font-size:16px;padding-top:10px}
+    .footer-bar{background:#f6ca14;height:8px;margin-top:36px;border-radius:2px}
+    .footer-note{margin-top:12px;font-size:11px;text-align:center}
+    .pagebreak{page-break-before:always}
+    .section-title{font-size:20px;font-weight:800;margin:0 0 4px;font-family:Georgia,serif}
+    .section-sub{font-size:12px;color:#666;margin-bottom:20px}
+    h3{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#666;margin:18px 0 6px}
+    li{font-size:13px;margin-bottom:3px}
+  </style></head><body>
+  <div class="page">
+    <div class="header">
+      <div class="brand-row"><div class="brand-mark">B&amp;B</div><div class="brand-name">Bike&amp;Butter</div></div>
+      <div class="uen">UEN: 53521776E</div>
+    </div>
+    <h1>INVOICE</h1>
+    <div class="partybox">
+      <div><div class="label">Billed to</div><strong>${escapeHtml(inv.customer_name)}</strong><br>Singapore</div>
+      <div style="text-align:right"><div class="label">Invoice No.</div><strong>${escapeHtml(inv.full_invoice_no)}</strong><br><span style="color:#888;font-size:11px">Date: ${formatDate(inv.invoice_date)}</span></div>
+    </div>
+    <table><thead><tr><th>S/N</th><th>Description</th><th style="text-align:center">Qty</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th></tr></thead>
+    <tbody>${rowsHtml}<tr class="totalrow"><td colspan="3"></td><td>Total</td><td style="text-align:right">${money(inv.total)}</td></tr></tbody></table>
+    <div class="footer-bar"></div>
+    <div class="footer-note">Payment can be made via PayNow using UEN <strong>53521776E</strong>. Please include your Invoice Number in the remarks.</div>
+
+    <div class="pagebreak"></div>
+    <div class="header" style="margin-top:0">
+      <div class="brand-row"><div class="brand-mark">B&amp;B</div><div class="brand-name">Bike&amp;Butter</div></div>
+      <div class="uen">UEN: 53521776E</div>
+    </div>
+    <div style="margin-top:24px">
+      <div class="section-title">Servicing Report</div>
+      <div class="section-sub">${escapeHtml(bikeName)} — Owner: ${escapeHtml(inv.customer_name)} — ${formatDate(s.service_date)}${s.mechanic ? ' — ' + escapeHtml(s.mechanic) : ''}</div>
+      ${work.length ? `<h3>Service completed</h3><ul>${work.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
+      ${watch.length ? `<h3>Items to note</h3><ul>${watch.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
+      ${s.next_service_due ? `<h3>Next service due</h3><div style="font-size:13px">${formatDate(s.next_service_due)}</div>` : ''}
+    </div>
+  </div>
+  </body></html>`;
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+  w.onload = () => w.print();
+}
+
+async function openServiceModal() {
   document.getElementById('svcDate').value = new Date().toISOString().slice(0,10);
   document.getElementById('svcMechanic').value = '';
   document.getElementById('svcWorkDone').value = '';
   document.getElementById('svcWatchItems').value = '';
   document.getElementById('svcNextDue').value = '';
+  const sel = document.getElementById('svcInvoiceId');
+  sel.innerHTML = '<option value="">— No linked invoice —</option>';
+  const b = BIKES.find(x => x.id === currentBikeId);
+  if (b) {
+    const c = CUSTOMERS.find(x => x.id === b.customer_id);
+    if (c) {
+      const { data: custInvoices } = await sb.from('invoices').select('id, full_invoice_no, invoice_date, total').eq('customer_name', c.name).order('invoice_date', { ascending: false });
+      (custInvoices || []).forEach(inv => {
+        sel.innerHTML += `<option value="${inv.id}">${escapeHtml(inv.full_invoice_no || '')} — ${formatDate(inv.invoice_date)} (${money(inv.total)})</option>`;
+      });
+    }
+  }
   document.getElementById('serviceModalBackdrop').classList.add('open');
 }
 function closeServiceModal() { document.getElementById('serviceModalBackdrop').classList.remove('open'); }
@@ -915,6 +1015,7 @@ async function saveService() {
     work_done: document.getElementById('svcWorkDone').value.trim() || null,
     watch_items: document.getElementById('svcWatchItems').value.trim() || null,
     next_service_due: document.getElementById('svcNextDue').value || null,
+    invoice_id: document.getElementById('svcInvoiceId').value || null,
   };
   const { error } = await sb.from('service_records').insert(payload);
   if (error) { alert('Save failed: ' + error.message); return; }
@@ -1597,8 +1698,31 @@ function renderInvoices() {
       <td>${escapeHtml(inv.customer_name || '—')}</td>
       <td class="cell-muted">${formatDate(inv.invoice_date)}</td>
       <td class="cell-strong">${money(inv.total)}</td>
-      <td><button class="btn btn-ghost btn-sm" onclick="deleteInvoice('${inv.id}')">✕</button></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-ghost btn-sm" onclick="quickPrintInvoice('${inv.id}')" title="Print / PDF">🖨</button>
+        <button class="btn btn-ghost btn-sm" onclick="deleteInvoice('${inv.id}')">✕</button>
+      </td>
     </tr>`).join('');
+}
+
+async function quickPrintInvoice(id) {
+  const { data: inv, error } = await sb.from('invoices').select('*').eq('id', id).single();
+  if (error || !inv) { alert('Could not load invoice.'); return; }
+  const { data: items } = await sb.from('invoice_items').select('*').eq('invoice_id', id).order('sort_order');
+  const invDisc = (inv.invoice_discounts || [])[0];
+  renderInvoicePrintWindow({
+    fullInvNo: inv.full_invoice_no || inv.invoice_no,
+    customerName: inv.customer_name,
+    date: inv.invoice_date,
+    remarks: inv.remarks,
+    items: (items || []).map(it => ({
+      desc: it.description, qty: it.qty, price: it.unit_price,
+      subs: it.subs || [], discounts: it.discounts || []
+    })),
+    discLabel: invDisc ? invDisc.label : '',
+    discPct: invDisc ? invDisc.value : 0,
+    grandTotal: inv.total
+  });
 }
 
 async function deleteInvoice(id) {
@@ -1827,60 +1951,85 @@ async function saveInvoice() {
 }
 
 function printInvoice() {
-  const customerName = document.getElementById('invCustomerName').value.trim() || '—';
-  const fullInvNo = (document.getElementById('invSavedNo').value || 'DRAFT') + (document.getElementById('invRevSuffix').value || '');
-  const date = document.getElementById('invDate').value;
-  const remarks = document.getElementById('invRemarks').value.trim();
   const discLabel = document.getElementById('invDiscLabel').value.trim();
   const discPct = parseFloat(document.getElementById('invDiscPct').value) || 0;
+  renderInvoicePrintWindow({
+    fullInvNo: (document.getElementById('invSavedNo').value || 'DRAFT') + (document.getElementById('invRevSuffix').value || ''),
+    customerName: document.getElementById('invCustomerName').value.trim() || '—',
+    date: document.getElementById('invDate').value,
+    remarks: document.getElementById('invRemarks').value.trim(),
+    items: currentInvoiceItems.filter(it => it.desc.trim()),
+    discLabel, discPct,
+    grandTotal: calcGrandTotal()
+  });
+}
+
+function renderInvoicePrintWindow(data) {
+  const { fullInvNo, customerName, date, remarks, items, discLabel, discPct, grandTotal } = data;
 
   let rowsHtml = '';
   let sn = 1;
-  currentInvoiceItems.filter(it=>it.desc.trim()).forEach(it => {
+  items.forEach(it => {
     const lineTotal = (it.qty||0) * (it.price||0);
     rowsHtml += `<tr><td>${sn++}</td><td>${escapeHtml(it.desc)}</td><td style="text-align:center">${it.qty}</td><td style="text-align:right">${money(it.price)}</td><td style="text-align:right">${money(lineTotal)}</td></tr>`;
-    it.subs.forEach(s => { if(s.text.trim()) rowsHtml += `<tr><td></td><td style="padding-left:20px;color:#555;font-size:12px">${escapeHtml(s.text)}</td><td></td><td></td><td></td></tr>`; });
-    it.discounts.forEach(d => { if(d.label.trim()) { const amt = -(lineTotal * (d.value||0)/100); rowsHtml += `<tr><td>-</td><td>${escapeHtml(d.label)} (${d.value}%)</td><td style="text-align:center">1</td><td style="text-align:right">${money(amt)}</td><td style="text-align:right">${money(amt)}</td></tr>`; } });
+    (it.subs||[]).forEach(s => { if(s.text && s.text.trim()) rowsHtml += `<tr><td></td><td style="padding-left:20px;color:#666;font-size:12px;font-style:italic">${escapeHtml(s.text)}</td><td></td><td></td><td></td></tr>`; });
+    (it.discounts||[]).forEach(d => { if(d.label && d.label.trim()) { const amt = -(lineTotal * (d.value||0)/100); rowsHtml += `<tr><td>-</td><td>${escapeHtml(d.label)} (${d.value}%)</td><td style="text-align:center">1</td><td style="text-align:right">${money(amt)}</td><td style="text-align:right">${money(amt)}</td></tr>`; } });
   });
-  const grandTotal = calcGrandTotal();
   if (discLabel && discPct) {
-    const subtotal = currentInvoiceItems.reduce((s,it)=>s+calcItemTotal(it),0);
+    const subtotal = items.reduce((s,it)=>s + (it.qty||0)*(it.price||0), 0);
     const amt = -(subtotal * discPct/100);
     rowsHtml += `<tr><td>-</td><td>${escapeHtml(discLabel)} (${discPct}%)</td><td style="text-align:center">1</td><td style="text-align:right">${money(amt)}</td><td style="text-align:right">${money(amt)}</td></tr>`;
   }
-  const remarksHtml = remarks ? `<div style="margin-top:24px"><strong style="font-size:12px">Remarks:</strong><div style="white-space:pre-wrap;font-size:12px;margin-top:6px">${escapeHtml(remarks)}</div></div>` : '';
+  const remarksHtml = remarks ? `<div class="remarks"><strong>Remarks:</strong><div class="remarks-body">${escapeHtml(remarks)}</div></div>` : '';
 
   const html = `<!DOCTYPE html><html><head><title>${escapeHtml(fullInvNo)}</title>
   <style>
-    body{font-family:Arial,Helvetica,sans-serif;padding:50px;color:#111}
-    .brand{font-weight:900;font-size:20px}
-    .uen{color:#666;font-size:11px}
-    h1{font-size:34px;text-align:center;margin:20px 0}
-    table{width:100%;border-collapse:collapse;margin-top:20px}
-    th{border-bottom:2px solid #000;text-align:left;padding:6px;font-size:11px}
-    td{padding:6px;font-size:13px;border-bottom:1px solid #ddd}
-    .totalrow td{border-top:2px solid #000;border-bottom:none;font-weight:800;font-size:16px}
-    .bar{background:#f6ca14;height:6px;margin-top:40px}
+    @page { margin: 20mm 18mm; }
+    * { box-sizing: border-box; }
+    body{font-family:'Inter',Arial,Helvetica,sans-serif;color:#111;margin:0;padding:0}
+    .page{max-width:720px;margin:0 auto;padding:40px 36px}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+    .brand-row{display:flex;align-items:center;gap:10px}
+    .brand-mark{width:38px;height:38px;background:#111;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:15px;letter-spacing:-.5px}
+    .brand-name{font-family:Georgia,serif;font-weight:700;font-size:20px;letter-spacing:-.3px}
+    .uen{color:#666;font-size:11px;text-align:right;margin-top:4px}
+    h1{font-size:30px;text-align:center;margin:26px 0 22px;font-weight:800;letter-spacing:1px}
+    .partybox{display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px}
+    .partybox .label{color:#888;font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+    table{width:100%;border-collapse:collapse;margin-top:18px}
+    th{border-bottom:2px solid #000;text-align:left;padding:7px 6px;font-size:10.5px;text-transform:uppercase;letter-spacing:.3px}
+    td{padding:7px 6px;font-size:13px;border-bottom:1px solid #e5e5e5}
+    .totalrow td{border-top:2px solid #000;border-bottom:none;font-weight:800;font-size:17px;padding-top:12px}
+    .remarks{margin-top:26px;font-size:12px}
+    .remarks-body{white-space:pre-wrap;margin-top:6px;color:#333;line-height:1.5}
+    .footer-bar{background:#f6ca14;height:8px;margin-top:44px;border-radius:2px}
+    .footer-note{margin-top:14px;font-size:11px;color:#333;text-align:center}
+    @media print { .noprint{display:none} }
   </style></head><body>
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div class="brand">Bike&amp;Butter</div>
+  <div class="page">
+    <div class="header">
+      <div class="brand-row">
+        <div class="brand-mark">B&amp;B</div>
+        <div class="brand-name">Bike&amp;Butter</div>
+      </div>
       <div class="uen">UEN: 53521776E</div>
     </div>
-    <h1>Invoice</h1>
-    <div style="display:flex;justify-content:space-between;font-size:13px">
-      <div><strong>${escapeHtml(customerName)}</strong><br>Singapore</div>
-      <div style="text-align:right">Invoice No.: <strong>${escapeHtml(fullInvNo)}</strong><br>Date: <strong>${formatDate(date)}</strong></div>
+    <h1>INVOICE</h1>
+    <div class="partybox">
+      <div><div class="label">Billed to</div><strong>${escapeHtml(customerName)}</strong><br>Singapore</div>
+      <div style="text-align:right"><div class="label">Invoice No.</div><strong>${escapeHtml(fullInvNo)}</strong><br><span style="color:#888;font-size:11px">Date: ${formatDate(date)}</span></div>
     </div>
     <table><thead><tr><th>S/N</th><th>Description</th><th style="text-align:center">Qty</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th></tr></thead>
-    <tbody>${rowsHtml}<tr class="totalrow"><td colspan="3"></td><td>Total:</td><td style="text-align:right">${money(grandTotal)}</td></tr></tbody></table>
+    <tbody>${rowsHtml}<tr class="totalrow"><td colspan="3"></td><td>Total</td><td style="text-align:right">${money(grandTotal)}</td></tr></tbody></table>
     ${remarksHtml}
-    <div class="bar"></div>
-    <div style="margin-top:16px;font-size:11px">Payment can be made via PayNow using UEN <strong>53521776E</strong>. Please include your Invoice Number in the remarks.</div>
+    <div class="footer-bar"></div>
+    <div class="footer-note">Payment can be made via PayNow using UEN <strong>53521776E</strong>. Please include your Invoice Number in the remarks.</div>
+  </div>
   </body></html>`;
   const w = window.open('', '_blank');
   w.document.write(html);
   w.document.close();
-  w.print();
+  w.onload = () => w.print();
 }
 </script>
 </body>
