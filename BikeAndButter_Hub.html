@@ -3374,19 +3374,34 @@ async function flushSyncQueue() {
   setSyncStatus('pending');
   const item = syncQueue[0];
   try {
-    await fetch(WEB_APP_URL, {
+    const r = await fetch(WEB_APP_URL, {
       method: 'POST', headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ action: item.action, ...item.payload })
     });
+    if (!r.ok) {
+      throw new Error(`Server responded ${r.status} ${r.statusText} - check your Web App URL and that it's deployed as "Anyone" can access`);
+    }
+    let d;
+    try { d = await r.json(); }
+    catch (parseErr) { throw new Error('Server did not return valid JSON - the Web App URL may be wrong or the script has an error'); }
+    if (d && d.ok === false) {
+      throw new Error(d.error || 'Server rejected the push (ok:false) with no error message');
+    }
     syncQueue.shift();
     localStorage.setItem(KEYS.queue, JSON.stringify(syncQueue));
     if (syncQueue.length > 0) flushSyncQueue();
     else setSyncStatus('synced');
   } catch(e) {
     item.retries++;
-    if (item.retries >= 3) { syncQueue.shift(); } // give up after 3
+    if (item.retries >= 3) {
+      syncQueue.shift();
+      localStorage.setItem(KEYS.queue, JSON.stringify(syncQueue));
+      showAlert('settings-alert','error', `Push failed after 3 tries and was dropped from the queue: ${e.message}`);
+    } else {
+      showAlert('settings-alert','error', `Push failed (attempt ${item.retries}/3): ${e.message}`);
+    }
     setSyncStatus('error');
-    setTimeout(flushSyncQueue, 5000);
+    if (item.retries < 3) setTimeout(flushSyncQueue, 5000);
   }
 }
 function setSyncStatus(s) {
