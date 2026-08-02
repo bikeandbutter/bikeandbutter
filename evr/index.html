@@ -460,12 +460,7 @@
         variants.forEach(v => {
           if (!sizes.includes(v.size)) sizes.push(v.size);
           if (!coloursMap.has(v.colour)) {
-            let varImg = null;
-            if (v.image_path) {
-              const m = v.image_path.match(/_(\d+)\.webp$/);
-              varImg = m ? parseInt(m[1], 10) : null;
-            }
-            coloursMap.set(v.colour, { label: v.colour, hex: v.hex, varImg });
+            coloursMap.set(v.colour, { label: v.colour, hex: v.hex, img: v.image_path || null });
           }
         });
 
@@ -576,45 +571,19 @@
 
     const CAT_ICON = {}; // emoji icons removed — placeholder now uses a neutral SVG instead
 
-    // ── Image auto-discovery ─────────────────────────────────────
-    // Lists every SKU that has at least one WebP in photos/.
-    // Add a SKU here once you've run prepare_images.py for it.
-    // imgSrc(sku) returns the path to variation _1 (the card thumbnail).
-    const SKUS_WITH_IMAGES = new Set([
-      '913', '905B', '2618', 'LX002', '2617', 'XT002',
-      'LX008', '906', '912', 'LX007', 'KX1154', '2501',
-      '905S', 'KXH2608', '901', 'KXH2626', '902X6', '902T',
-      '902B', 'LX012', '2406', '8102', '2510', '2405',
-      '2511', '2521', 'EV1001', 'EH1001', 'KXH2617', 'KXH2618',
-      'KXH2519C', 'KXH2514C', 'KXH2620', 'KXH2619', 'KXH2623', 'KXH2625',
-      'KXH2619A', 'KXH2609', 'KXH2610', 'KXH2606', 'KXH2535', 'KXH2537',
-      'KXH2542', 'KXH2543', 'KXH2544', 'KXH2546', 'KXH2547', 'KXH2557',
-      '9403', '9503', 'KXH2548', 'KXH2549', 'KXH2554', 'KXH2555',
-      'KXH2550', 'KXH2551', 'KXH2556', '1154', 'KX4154', 'KXH2552',
-      'KXH2553', '2430', '2410', 'KXH2558', 'KXH2559', 'KX2555',
-      'KX1504', 'KX1151', 'KX3307', 'KX3301', 'KX3305', 'T24',
-    ]);
-
-    function imgSrc(sku, varIdx) {
-      const v = varIdx || 1;
-      // 902T and 902B share the photos/902_*.webp folder
-      if (sku === '902T') return `photos/902_${v}.webp`;
-      if (sku === '902B') return `photos/902_${v}.webp`;
-      if (!SKUS_WITH_IMAGES.has(sku)) return null;
-      return `photos/${sku}_${v}.webp`;
+    // ── Image resolution ─────────────────────────────────────
+    // Images now come straight from Supabase's product_variants.image_path
+    // (e.g. "photos/KXH2617_Yellow.webp"), set per colour. No more
+    // SKU allowlist or numeric-index reconstruction needed.
+    function imgSrc(path) {
+      return path || null;
     }
 
     // Get the display image for a product+colour+size combo
     function getProductImg(p, colourIdx, selectedSize) {
       const c = p.colours[colourIdx || 0];
-      if (!c || c.varImg === null) return null;
-
-      // 912: size selector shifts image offset
-      if (p.sku === '912') {
-        const offset = (selectedSize === '650ml') ? 8 : 0;
-        return imgSrc(p.sku, c.varImg + offset);
-      }
-      return imgSrc(p.sku, c.varImg);
+      if (!c || !c.img) return null;
+      return imgSrc(c.img);
     }
 
     // ── Filters (sidebar: series, category, size — all combinable) ──
@@ -801,7 +770,7 @@
         cBlock.style.display = '';
         thumbs.innerHTML = p.colours.map((c, i) => {
           const thumbSrc = getProductImg(p, i, p.sizes && p.sizes[0]);
-          return `<button class="pdrawer-thumb${c.label === selectedColour ? ' active' : ''}" title="${c.label}" onclick="selectColour('${c.label}', ${c.varImg || i+1}, ${i}, this)">
+          return `<button class="pdrawer-thumb${c.label === selectedColour ? ' active' : ''}" title="${c.label}" onclick="selectColour('${c.label}', ${i}, ${i}, this)">
             ${thumbSrc ? `<img src="${thumbSrc}" alt="${c.label}">` : `<span style="background:${c.hex};display:block;width:100%;height:100%;"></span>`}
           </button>`;
         }).join('');
@@ -829,7 +798,7 @@
     function selectColourFromDropdown(label) {
       const idx = currentProduct.colours.findIndex(c => c.label === label);
       const btn = document.querySelectorAll('.pdrawer-thumb')[idx];
-      selectColour(label, currentProduct.colours[idx].varImg || idx + 1, idx, btn);
+      selectColour(label, idx, idx, btn);
     }
 
     function selectSizeFromDropdown(size) {
