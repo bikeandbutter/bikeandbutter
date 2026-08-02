@@ -3316,14 +3316,35 @@ async function maybePushInitialSeed() {
 
 async function pushAllToSheet() {
   if (!WEB_APP_URL) { showAlert('settings-alert','error','Set your Apps Script URL first.'); return; }
-  if (!confirm(`This will push everything currently in this Hub (${DB.products.length} products, ${DB.purchases.length} purchases, ${DB.sales.length} sales, ${DB.opex.length} opex, ${DB.journal.length} journal entries) up to Google Sheets, overwriting what's there. Continue?`)) return;
+  if (!confirm(`This will REPLACE everything in your Google Sheet with exactly what's in this Hub right now (${DB.products.length} products, ${DB.purchases.length} purchases, ${DB.sales.length} sales, ${DB.opex.length} opex, ${DB.journal.length} journal entries). Continue?`)) return;
   setSyncStatus('pending');
-  for (const p of DB.products)   queuePush('saveProduct', p);
-  for (const po of DB.purchases) queuePush('savePurchase', po);
-  for (const s of DB.sales)      queuePush('saveSale', s);
-  for (const o of DB.opex)       queuePush('saveOpex', o);
-  for (const j of DB.journal)    queuePush('saveJournal', j);
-  showAlert('settings-alert','success', `Pushing ${syncQueue.length} records to Google Sheets - watch the sync indicator, this can take a moment for a large dataset.`);
+  const calls = [
+    ['saveAllProducts',  { products: DB.products }],
+    ['saveAllPurchases', { purchases: DB.purchases }],
+    ['saveAllSales',     { sales: DB.sales }],
+    ['saveAllOpex',      { opex: DB.opex }],
+    ['saveAllJournal',   { journal: DB.journal }],
+  ];
+  let done = 0;
+  for (const [action, payload] of calls) {
+    try {
+      const r = await fetch(WEB_APP_URL, {
+        method: 'POST', headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action, ...payload })
+      });
+      if (!r.ok) throw new Error(`Server responded ${r.status} ${r.statusText}`);
+      const d = await r.json();
+      if (d && d.ok === false) throw new Error(d.error || 'Server rejected the push');
+      done++;
+      showAlert('settings-alert','success', `Replaced ${action.replace('saveAll','')} on Google Sheet (${done}/5)...`);
+    } catch(e) {
+      setSyncStatus('error');
+      showAlert('settings-alert','error', `Push stopped at "${action}": ${e.message}. Sheets before this step were already replaced successfully; re-run Push All once fixed to finish the rest.`);
+      return;
+    }
+  }
+  setSyncStatus('synced');
+  showAlert('settings-alert','success', `Done - Google Sheet now exactly matches this Hub (${DB.products.length} products, ${DB.purchases.length} purchases, ${DB.sales.length} sales, ${DB.opex.length} opex, ${DB.journal.length} journal entries).`);
 }
 
 function prefillDates() {
