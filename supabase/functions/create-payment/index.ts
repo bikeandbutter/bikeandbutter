@@ -65,7 +65,10 @@ Deno.serve(async (req) => {
         'X-BUSINESS-API-KEY': Deno.env.get('HITPAY_API_KEY')!,
       },
       body: JSON.stringify({
-        amount: order.subtotal_sgd,
+        // total_sgd = subtotal_sgd + shipping_fee_sgd, computed at checkout.
+        // Fall back to subtotal_sgd for any pre-existing order saved before
+        // the shipping columns existed, so older pending orders don't break.
+        amount: order.total_sgd ?? order.subtotal_sgd,
         currency: 'SGD',
         email: order.email,
         name: order.customer_name,

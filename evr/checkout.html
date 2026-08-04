@@ -16,6 +16,14 @@
   .checkout-page-nav a:hover{color:var(--orange)}
   .checkout-page-title{font-size:24px;font-weight:700;margin:8px 0 36px}
   @media (max-width:720px){ .checkout-page-wrap{padding:28px 20px 80px} }
+  .shipping-progress{margin:16px 0;padding:14px 16px;background:var(--card-bg,#f4f1ea);border:1px solid var(--border,#e4e0d8);border-radius:10px}
+  .shipping-progress .sp-message{font-size:13px;color:var(--white,#1e1c19);margin-bottom:8px;font-weight:500}
+  .shipping-progress .sp-message.qualified{color:#4a7a4a}
+  .shipping-progress .sp-track{height:6px;background:var(--border,#e4e0d8);border-radius:3px;overflow:hidden}
+  .shipping-progress .sp-fill{height:100%;background:var(--orange,#c2521f);border-radius:3px;transition:width .3s ease;width:0%}
+  .shipping-progress .sp-fill.qualified{background:#4a7a4a}
+  .checkout-shipping-disclaimer{font-size:12px;color:var(--white-dim);padding:10px 12px;background:rgba(194,82,31,0.06);border:1px solid rgba(194,82,31,0.18);border-radius:8px;margin:12px 0;line-height:1.5}
+  .cart-summary-row-shipping{display:flex;justify-content:space-between;font-size:13px;color:var(--white-dim);padding:4px 0}
 </style>
 </head>
 <body>
@@ -78,9 +86,24 @@
                 <textarea class="pform-input pform-textarea" id="co-notes" placeholder="Any notes for delivery (optional)"></textarea>
               </div>
             </div>
+            <div class="shipping-progress" id="shipping-progress">
+              <div class="sp-message" id="sp-message"></div>
+              <div class="sp-track"><div class="sp-fill" id="sp-fill"></div></div>
+            </div>
+            <div class="cart-summary-row">
+              <span>Subtotal</span>
+              <span id="checkout-items-subtotal">S$0</span>
+            </div>
+            <div class="cart-summary-row-shipping">
+              <span>Shipping</span>
+              <span id="checkout-shipping-fee">S$0</span>
+            </div>
             <div class="cart-summary-row cart-summary-row-final">
               <span>Total</span>
               <span id="checkout-subtotal">S$0</span>
+            </div>
+            <div class="checkout-shipping-disclaimer">
+              Orders of <strong>S$150 or more</strong> ship free. Orders under S$150 are charged a flat <strong>S$15</strong> shipping fee, included in the total above.
             </div>
             <div class="checkout-payment-disclaimer">
               This is a demo checkout. Submitting this form will not create a real order, charge any payment method, or result in delivery of any product.
@@ -101,9 +124,40 @@
     const SUPABASE_KEY = "sb_publishable_HLEeqpfnhWJ3kr_AHJIffA_9FOE0aHV";
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const CART_KEY = 'evr_cart_v1';
+    const FREE_SHIPPING_THRESHOLD = 150;
+    const FLAT_SHIPPING_FEE = 15;
 
     function getCart() {
       try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch (e) { return []; }
+    }
+
+    function calcSubtotal(cart) {
+      return cart.reduce((sum, item) => sum + item.qty * item.unitPrice, 0);
+    }
+
+    function calcShippingFee(subtotal) {
+      return subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : FLAT_SHIPPING_FEE;
+    }
+
+    function fmt(n) {
+      return `S$${n.toFixed(2).replace(/\.00$/, '')}`;
+    }
+
+    function updateShippingProgress(subtotal) {
+      const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+      const pct = Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100);
+      const messageEl = document.getElementById('sp-message');
+      const fillEl = document.getElementById('sp-fill');
+      fillEl.style.width = pct + '%';
+      if (remaining <= 0) {
+        messageEl.textContent = "You've got free shipping! 🎉";
+        messageEl.classList.add('qualified');
+        fillEl.classList.add('qualified');
+      } else {
+        messageEl.textContent = `Add ${fmt(remaining)} more to get free shipping`;
+        messageEl.classList.remove('qualified');
+        fillEl.classList.remove('qualified');
+      }
     }
 
     function renderSummary() {
@@ -131,8 +185,13 @@
           </div>
         </div>
       `).join('');
-      const subtotal = cart.reduce((sum, item) => sum + item.qty * item.unitPrice, 0);
-      document.getElementById('checkout-subtotal').textContent = `S$${subtotal.toFixed(2).replace(/\.00$/, '')}`;
+      const subtotal = calcSubtotal(cart);
+      const shippingFee = calcShippingFee(subtotal);
+      const total = subtotal + shippingFee;
+      document.getElementById('checkout-items-subtotal').textContent = fmt(subtotal);
+      document.getElementById('checkout-shipping-fee').textContent = shippingFee === 0 ? 'Free' : fmt(shippingFee);
+      document.getElementById('checkout-subtotal').textContent = fmt(total);
+      updateShippingProgress(subtotal);
     }
 
     function genOrderNumber() {
@@ -201,7 +260,9 @@
       document.getElementById('co-success').style.display = 'none';
       document.getElementById('co-error').style.display = 'none';
 
-      const subtotal = cart.reduce((sum, item) => sum + item.qty * item.unitPrice, 0);
+      const subtotal = calcSubtotal(cart);
+      const shippingFee = calcShippingFee(subtotal);
+      const total = subtotal + shippingFee;
       const orderNumber = genOrderNumber();
 
       try {
@@ -214,7 +275,9 @@
           delivery_address: address,
           delivery_notes: notes || null,
           status: 'pending_payment',
-          subtotal_sgd: subtotal
+          subtotal_sgd: subtotal,
+          shipping_fee_sgd: shippingFee,
+          total_sgd: total
         });
         if (orderErr) throw orderErr;
 
