@@ -714,7 +714,11 @@ tbody tr.clickable:hover { background: var(--bg3); }
         <div class="field"><label>Phone</label><input type="text" id="custPhone" placeholder="+65 9xxx xxxx"></div>
         <div class="field"><label>Email</label><input type="email" id="custEmail" placeholder="jane@email.com"></div>
       </div>
-      <div class="field"><label>Address</label><textarea id="custAddress" placeholder="Optional"></textarea></div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Address Line 1</label><input type="text" id="custAddr1" placeholder="e.g. 123 Orchard Road"></div>
+        <div class="field"><label>Address Line 2</label><input type="text" id="custAddr2" placeholder="e.g. #04-56 Lucky Plaza"></div>
+      </div>
+      <div class="field" style="max-width:200px"><label>Postal Code</label><input type="text" id="custPostal" placeholder="e.g. 238858" maxlength="6"></div>
       <div class="field"><label>Notes</label><textarea id="custNotes" placeholder="Optional"></textarea></div>
     </div>
     <div class="modal-footer">
@@ -953,7 +957,9 @@ function openCustomerModal(customer = null) {
   document.getElementById('custName').value = customer?.name || '';
   document.getElementById('custPhone').value = customer?.phone || '';
   document.getElementById('custEmail').value = customer?.email || '';
-  document.getElementById('custAddress').value = customer?.address || '';
+  document.getElementById('custAddr1').value = customer?.address_line1 || '';
+  document.getElementById('custAddr2').value = customer?.address_line2 || '';
+  document.getElementById('custPostal').value = customer?.postal_code || '';
   document.getElementById('custNotes').value = customer?.notes || '';
   document.getElementById('customerModalBackdrop').classList.add('open');
 }
@@ -967,7 +973,9 @@ async function saveCustomer() {
     name,
     phone: document.getElementById('custPhone').value.trim() || null,
     email: document.getElementById('custEmail').value.trim() || null,
-    address: document.getElementById('custAddress').value.trim() || null,
+    address_line1: document.getElementById('custAddr1').value.trim() || null,
+    address_line2: document.getElementById('custAddr2').value.trim() || null,
+    postal_code: document.getElementById('custPostal').value.trim() || null,
     notes: document.getElementById('custNotes').value.trim() || null,
   };
   let error;
@@ -989,7 +997,7 @@ function openCustomerDetail(id) {
   document.getElementById('custDetailName').textContent = c.name;
   document.getElementById('custDetailContact').textContent = [c.phone, c.email].filter(Boolean).join(' · ') || 'No contact info on file';
   document.getElementById('custDetailId').textContent = customerCode(c);
-  document.getElementById('custDetailAddress').textContent = c.address ? '· ' + c.address : '';
+  document.getElementById('custDetailAddress').textContent = [c.address_line1, c.address_line2, c.postal_code].filter(Boolean).length ? '· ' + [c.address_line1, c.address_line2, c.postal_code].filter(Boolean).join(', ') : '';
   document.getElementById('custEditBtn').onclick = () => openCustomerModal(c);
   renderBikesForCustomer(id);
   switchTab('customer-detail');
@@ -2072,8 +2080,9 @@ function ieSelectCustomer(id) {
   if (!c) return;
   document.getElementById('invCustomerName').value = c.name;
   document.getElementById('invLinkedCustomerId').value = c.id;
-  document.getElementById('invAddr1').value = c.address || '';
-  document.getElementById('invAddr2').value = '';
+  document.getElementById('invAddr1').value = c.address_line1 || '';
+  document.getElementById('invAddr2').value = c.address_line2 || '';
+  document.getElementById('invPostal').value = c.postal_code || '';
   document.getElementById('ieCustSuggest').style.display = 'none';
 
   const badge = document.getElementById('ieCustLinkedBadge');
@@ -2103,7 +2112,7 @@ function renderInvoiceItems() {
   const el = document.getElementById('invItemsList');
   el.innerHTML = currentInvoiceItems.map((item, idx) => {
     const linkedVariant = item.variant_id ? VARIANTS.find(v => v.id === item.variant_id) : null;
-    const stockWarn = linkedVariant && item.qty > linkedVariant.qty ? `<div style="font-size:11px;color:var(--red);margin-top:3px">Only ${linkedVariant.qty} in stock — saving will take stock negative</div>` : '';
+    const stockWarn = linkedVariant && item.qty > linkedVariant.qty ? `Only ${linkedVariant.qty} in stock — saving will take stock negative` : '';
     const subHTML = item.subs.map((s,si) => `
       <div class="ie-sub-row">
         <input type="text" placeholder="Sub-note" value="${escapeHtml(s.text)}" oninput="updateSub(${idx},${si},this.value)" style="flex:1;background:var(--bg);border:1px dashed var(--border2);border-radius:6px;color:var(--text);padding:6px 9px;font-size:12px;font-family:inherit">
@@ -2133,20 +2142,20 @@ function renderInvoiceItems() {
         <input type="number" placeholder="Qty" value="${item.qty}" oninput="updateItem(${idx},'qty',this.value)" style="background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px;font-family:inherit">
         <input type="number" placeholder="Unit Price" value="${item.price}" oninput="updateItem(${idx},'price',this.value)" style="background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px;font-family:inherit">
       </div>
-      <div style="display:flex;align-items:center;gap:8px;margin:8px 0 4px">
-        <span style="font-size:10px;color:#666;white-space:nowrap">${linkedVariant ? 'Deducts stock:' : 'Not linked to inventory'}</span>
-        <select onchange="updateItem(${idx},'variant_id',this.value)" style="flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);padding:6px 8px;font-size:11px;font-family:inherit">
+      <div class="ie-field" style="margin-top:8px">
+        <label>${linkedVariant ? 'Deducts stock' : 'Inventory link'}</label>
+        <select onchange="updateItem(${idx},'variant_id',this.value)">
           <option value="">— No inventory link (e.g. mechanic-owned part) —</option>${variantOptionsHtml(item.variant_id)}
         </select>
       </div>
-      ${stockWarn}
+      <div id="ie-li-warn-${idx}" style="font-size:11px;color:var(--red);margin-top:3px">${stockWarn}</div>
       ${subHTML}
       ${discHTML}
       <div style="margin-top:6px;display:flex;gap:12px">
         <span class="ie-mini-add" onclick="addSub(${idx})">+ sub-note</span>
         <span class="ie-mini-add" onclick="addDisc(${idx})">+ item discount</span>
       </div>
-      <div class="ie-li-total-row"><span class="ie-li-total-lbl">Line Total</span><span class="ie-li-total-val">${money(calcItemTotal(item))}</span></div>
+      <div class="ie-li-total-row"><span class="ie-li-total-lbl">Line Total</span><span class="ie-li-total-val" id="ie-li-total-${idx}">${money(calcItemTotal(item))}</span></div>
     </div>`;
   }).join('');
   document.getElementById('invGrandTotal').textContent = money(calcGrandTotal());
@@ -2167,7 +2176,23 @@ function ieDrop(e, idx) {
 }
 function ieDragEnd(e) { document.querySelectorAll('.ie-line-item').forEach(n => n.classList.remove('dragging','drag-over')); ieDragIdx = null; }
 
-function updateItem(idx, field, val) { currentInvoiceItems[idx][field] = (field==='qty'||field==='price') ? parseFloat(val)||0 : val; renderInvoiceItems(); renderInvoicePreview(); }
+function updateItem(idx, field, val) {
+  currentInvoiceItems[idx][field] = (field==='qty'||field==='price') ? parseFloat(val)||0 : val;
+  if (field === 'variant_id') {
+    renderInvoiceItems(); // structural: linked-variant badge/warning layout changes, safe to rebuild (select, not text input)
+  } else {
+    const item = currentInvoiceItems[idx];
+    const totalEl = document.getElementById('ie-li-total-'+idx);
+    if (totalEl) totalEl.textContent = money(calcItemTotal(item));
+    const warnEl = document.getElementById('ie-li-warn-'+idx);
+    if (warnEl) {
+      const linkedVariant = item.variant_id ? VARIANTS.find(v => v.id === item.variant_id) : null;
+      warnEl.textContent = (linkedVariant && item.qty > linkedVariant.qty) ? `Only ${linkedVariant.qty} in stock — saving will take stock negative` : '';
+    }
+    document.getElementById('invGrandTotal').textContent = money(calcGrandTotal());
+  }
+  renderInvoicePreview();
+}
 function addInvoiceItem() { currentInvoiceItems.push(blankInvoiceItem()); renderInvoiceItems(); renderInvoicePreview(); }
 function removeItem(idx) { currentInvoiceItems.splice(idx,1); if(!currentInvoiceItems.length) currentInvoiceItems.push(blankInvoiceItem()); renderInvoiceItems(); renderInvoicePreview(); }
 function moveItemUp(idx) { if (idx<=0) return; [currentInvoiceItems[idx-1],currentInvoiceItems[idx]]=[currentInvoiceItems[idx],currentInvoiceItems[idx-1]]; renderInvoiceItems(); renderInvoicePreview(); }
@@ -2176,7 +2201,13 @@ function addSub(idx) { currentInvoiceItems[idx].subs.push({text:''}); renderInvo
 function updateSub(idx,si,val) { currentInvoiceItems[idx].subs[si].text = val; renderInvoicePreview(); }
 function removeSub(idx,si) { currentInvoiceItems[idx].subs.splice(si,1); renderInvoiceItems(); renderInvoicePreview(); }
 function addDisc(idx) { currentInvoiceItems[idx].discounts.push({label:'',type:'pct',value:0}); renderInvoiceItems(); renderInvoicePreview(); }
-function updateDisc(idx,di,field,val) { currentInvoiceItems[idx].discounts[di][field] = field==='value' ? parseFloat(val)||0 : val; renderInvoiceItems(); renderInvoicePreview(); }
+function updateDisc(idx,di,field,val) {
+  currentInvoiceItems[idx].discounts[di][field] = field==='value' ? parseFloat(val)||0 : val;
+  const totalEl = document.getElementById('ie-li-total-'+idx);
+  if (totalEl) totalEl.textContent = money(calcItemTotal(currentInvoiceItems[idx]));
+  document.getElementById('invGrandTotal').textContent = money(calcGrandTotal());
+  renderInvoicePreview();
+}
 function removeDisc(idx,di) { currentInvoiceItems[idx].discounts.splice(di,1); renderInvoiceItems(); renderInvoicePreview(); }
 document.addEventListener('input', e => { if (e.target.id === 'invDiscPct' || e.target.id === 'invDiscLabel') { document.getElementById('invGrandTotal').textContent = money(calcGrandTotal()); renderInvoicePreview(); } });
 
@@ -2534,5 +2565,7 @@ function renderInvoicePrintWindow(data) {
   w.onload = () => w.print();
 }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
