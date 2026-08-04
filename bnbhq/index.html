@@ -94,6 +94,7 @@ html, body { height: 100%; font-family: 'Inter', -apple-system, BlinkMacSystemFo
 .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; }
 .card-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .card-body { padding: 20px; }
+.id-badge { display: inline-block; font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 11px; font-weight: 600; letter-spacing: .3px; color: var(--text2); background: var(--bg3); border: 1px solid var(--border2); border-radius: 5px; padding: 2px 7px; }
 .card-title { font-size: 13px; font-weight: 600; color: var(--text); }
 
 .tiles { display: grid; gap: 14px; margin-bottom: 20px; }
@@ -158,56 +159,59 @@ tbody tr.clickable:hover { background: var(--bg3); }
 .modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
 
 /* ============================================================
-   INVOICE EDITOR — split view (dark editor + live A4 preview)
+   INVOICE EDITOR — split view (hub theme + live A4 preview)
    ============================================================ */
 .ie-app { display: flex; height: 100%; overflow: hidden; }
-.ie-editor { width: 440px; min-width: 440px; background: #1a1a1a; padding: 18px 16px; overflow-y: auto; flex-shrink: 0; }
+.ie-editor { width: 420px; min-width: 420px; background: var(--bg); padding: 16px; overflow-y: auto; flex-shrink: 0; border-right: 1px solid var(--border); transition: width .22s ease, min-width .22s ease, padding .22s ease, opacity .18s ease; }
+.ie-editor.hidden { width: 0; min-width: 0; padding: 0; overflow: hidden; opacity: 0; border-right: none; }
 .ie-editor::-webkit-scrollbar { width: 5px; }
-.ie-editor::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 3px; }
-.ie-back { color: #888; font-size: 11px; font-weight: 600; cursor: pointer; margin-bottom: 10px; display: inline-block; }
-.ie-back:hover { color: #f6ca14; }
-.ie-title { color: #fff; font-size: 16px; font-weight: 800; }
-.ie-sub { color: #666; font-size: 11px; margin-bottom: 14px; }
-.ie-section { background: #242424; border-radius: 10px; padding: 13px 15px; margin-bottom: 9px; }
-.ie-section-title { color: #aaa; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 11px; }
+.ie-editor::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.ie-back { color: var(--text3); font-size: 11px; font-weight: 600; cursor: pointer; margin-bottom: 10px; display: inline-block; }
+.ie-back:hover { color: var(--text); }
+.ie-title { color: var(--text); font-size: 16px; font-weight: 800; font-family: var(--font-display); }
+.ie-sub { color: var(--text3); font-size: 11px; margin-bottom: 14px; }
+.ie-section { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 14px 16px; margin-bottom: 10px; }
+.ie-section-title { color: var(--text3); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 11px; }
 .ie-field { margin-bottom: 8px; }
 .ie-field:last-child { margin-bottom: 0; }
-.ie-field label { display: block; color: #666; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .7px; margin-bottom: 3px; }
+.ie-field label { display: block; color: var(--text3); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .7px; margin-bottom: 3px; }
 .ie-field input[type=text], .ie-field input[type=number], .ie-field input[type=date], .ie-field textarea, .ie-field select {
-  width: 100%; background: #111; border: 1px solid #2e2e2e; border-radius: 6px;
-  color: #eee; font-size: 13px; padding: 8px 10px; outline: none; font-family: inherit; transition: border-color .15s;
+  width: 100%; background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius);
+  color: var(--text); font-size: 13px; padding: 8px 10px; outline: none; font-family: inherit; transition: border-color .12s, box-shadow .12s;
   -webkit-appearance: none;
 }
-.ie-field input:focus, .ie-field textarea:focus, .ie-field select:focus { border-color: #f6ca14; }
+.ie-field input:focus, .ie-field textarea:focus, .ie-field select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(var(--accent-rgb),.10); }
 .ie-field textarea { resize: vertical; min-height: 100px; }
-.ie-field input::placeholder, .ie-field textarea::placeholder { color: #3a3a3a; }
+.ie-field input::placeholder, .ie-field textarea::placeholder { color: var(--text3); }
 .ie-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-.ie-line-item { background: #111; border: 1px solid #2a2a2a; border-radius: 8px; padding: 11px; margin-bottom: 7px; }
+.ie-line-item { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 11px; margin-bottom: 7px; }
 .ie-line-item.dragging { opacity: .35; }
-.ie-line-item.drag-over { border-color: #f6ca14; }
+.ie-line-item.drag-over { border-color: var(--accent); }
 .ie-li-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.ie-li-num { color: #f6ca14; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
-.ie-drag-handle { cursor: grab; color: #555; font-size: 13px; user-select: none; }
-.ie-btn-icon { background: none; border: none; color: #ff5555; cursor: pointer; font-size: 14px; padding: 4px 6px; border-radius: 4px; }
-.ie-btn-icon:hover { background: rgba(255,80,80,.15); }
+.ie-li-num { color: var(--text2); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+.ie-drag-handle { cursor: grab; color: var(--text3); font-size: 13px; user-select: none; }
+.ie-btn-icon { background: none; border: none; color: var(--red); cursor: pointer; padding: 4px 6px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; }
+.ie-btn-icon:hover { background: var(--red-bg); }
 .ie-row-price { display: grid; grid-template-columns: 1fr 90px 100px; gap: 7px; }
-.ie-add-btn { width: 100%; background: none; border: 1px dashed #2e2e2e; border-radius: 5px; color: #555; font-size: 11px; padding: 8px; cursor: pointer; font-family: inherit; margin-top: 4px; }
-.ie-add-btn:hover { border-color: #f6ca14; color: #f6ca14; }
+.ie-add-btn { width: 100%; background: none; border: 1px dashed var(--border2); border-radius: var(--radius); color: var(--text3); font-size: 11px; padding: 8px; cursor: pointer; font-family: inherit; margin-top: 4px; }
+.ie-add-btn:hover { border-color: var(--accent); color: var(--text); }
 .ie-sub-row, .ie-disc-row { display: flex; gap: 6px; align-items: center; margin: 5px 0 5px 0; }
-.ie-mini-add { font-size: 11px; color: #555; cursor: pointer; }
-.ie-mini-add:hover { color: #f6ca14; }
-.ie-li-total-row { display: flex; justify-content: space-between; padding-top: 7px; border-top: 1px solid #1e1e1e; margin-top: 6px; }
-.ie-li-total-lbl { color: #555; font-size: 11px; }
-.ie-li-total-val { color: #f6ca14; font-size: 13px; font-weight: 700; }
+.ie-mini-add { font-size: 11px; color: var(--text3); cursor: pointer; }
+.ie-mini-add:hover { color: var(--text); }
+.ie-li-total-row { display: flex; justify-content: space-between; padding-top: 7px; border-top: 1px solid var(--border); margin-top: 6px; }
+.ie-li-total-lbl { color: var(--text3); font-size: 11px; }
+.ie-li-total-val { color: var(--text); font-size: 13px; font-weight: 700; }
 .ie-btn-row { display: flex; gap: 8px; margin-top: 8px; }
-.ie-save-btn { flex: 1; background: #242424; border: 1px solid #333; border-radius: 10px; color: #eee; font-size: 13px; font-weight: 700; padding: 13px; cursor: pointer; font-family: inherit; }
-.ie-save-btn:hover { background: #2e2e2e; border-color: #666; }
-.ie-print-btn { flex: 1; background: #f6ca14; border: none; border-radius: 10px; color: #111; font-size: 13px; font-weight: 800; padding: 13px; cursor: pointer; font-family: inherit; }
-.ie-print-btn:hover { background: #e5b903; }
+.ie-save-btn { flex: 1; background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius-lg); color: var(--text); font-size: 13px; font-weight: 700; padding: 12px; cursor: pointer; font-family: inherit; }
+.ie-save-btn:hover { background: var(--bg3); }
+.ie-print-btn { flex: 1; background: var(--accent); border: none; border-radius: var(--radius-lg); color: #fff; font-size: 13px; font-weight: 700; padding: 12px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+.ie-print-btn:hover { background: var(--accent2); }
 
-.ie-preview-pane { flex: 1; background: #ddd9d0; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.ie-preview-pane { flex: 1; background: var(--bg3); padding: 20px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; min-width: 0; }
 .ie-preview-topbar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; align-self: stretch; flex-shrink: 0; width: 794px; max-width: 100%; }
-.ie-preview-label { color: #777; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; flex: 1; }
+.ie-preview-label { color: var(--text3); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; flex: 1; }
+.ie-toggle-btn { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); color: var(--text2); font-size: 11px; font-weight: 600; padding: 6px 12px; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 6px; }
+.ie-toggle-btn:hover { background: var(--bg3); color: var(--text); }
 .ie-scaler { width: 100%; display: flex; justify-content: center; }
 .ie-scaler-inner { transform-origin: top center; width: 794px; }
 
@@ -257,18 +261,28 @@ tbody tr.clickable:hover { background: var(--bg3); }
 .inv-footer-qr { width: 120px; height: 120px; object-fit: contain; flex-shrink: 0; background: white; padding: 4px; border-radius: 4px; }
 
 @media print {
+  html, body { background: white !important; margin: 0 !important; padding: 0 !important; height: auto !important; overflow: visible !important; }
   body * { visibility: hidden; }
   #tab-invoice-editor, #tab-invoice-editor * { visibility: visible; }
-  #tab-invoice-editor { position: absolute; inset: 0; padding: 0 !important; overflow: visible !important; }
-  .ie-editor, .ie-preview-topbar, .detail-header, .page-header { display: none !important; }
-  .ie-preview-pane { background: white !important; padding: 0 !important; overflow: visible !important; }
-  .ie-scaler, .ie-scaler-inner { transform: none !important; width: 210mm !important; }
-  .inv-page {
-    width: 210mm !important; min-height: 297mm !important;
-    page-break-after: always !important; break-after: page !important;
-    box-shadow: none !important; margin-top: 0 !important;
+  .app { display: block !important; height: auto !important; overflow: visible !important; }
+  .sidebar, .topbar { display: none !important; }
+  .main, .content { display: block !important; height: auto !important; overflow: visible !important; position: static !important; }
+  #tab-invoice-editor {
+    position: static !important; inset: auto !important; display: block !important;
+    padding: 0 !important; overflow: visible !important; height: auto !important;
   }
-  .inv-page:last-child { page-break-after: avoid !important; }
+  .ie-app { display: block !important; height: auto !important; overflow: visible !important; }
+  .ie-editor, .ie-preview-topbar, .detail-header, .page-header { display: none !important; }
+  .ie-preview-pane { display: block !important; background: white !important; padding: 0 !important; overflow: visible !important; height: auto !important; }
+  .ie-scaler, .ie-scaler-inner { transform: none !important; width: 210mm !important; margin: 0 !important; display: block !important; }
+  #invoiceDoc { width: 210mm !important; display: block !important; }
+  .inv-page {
+    width: 210mm !important; height: 297mm !important;
+    page-break-after: always !important; break-after: page !important;
+    display: flex !important; flex-direction: column !important;
+    overflow: hidden !important; box-shadow: none !important; margin-top: 0 !important;
+  }
+  .inv-page:last-child { page-break-after: avoid !important; break-after: avoid !important; }
   @page { size: A4; margin: 0; }
 }
 </style>
@@ -380,7 +394,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
         <div class="card">
           <div class="card-header"><div class="search-input" style="width:280px"><input type="text" id="customerSearch" placeholder="Search customers…" oninput="renderCustomers()"></div></div>
           <div class="tbl-wrap"><table>
-            <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Bikes</th><th></th></tr></thead>
+            <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Email</th><th>Bikes</th><th></th></tr></thead>
             <tbody id="customerRows"><tr><td colspan="5" class="cell-muted">Loading…</td></tr></tbody>
           </table></div>
         </div>
@@ -392,6 +406,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div>
             <div class="page-title" id="custDetailName">—</div>
             <div class="page-subtitle" id="custDetailContact">—</div>
+            <div style="margin-top:6px"><span class="id-badge" id="custDetailId">—</span></div>
           </div>
           <div class="page-actions">
             <button class="btn btn-secondary" id="custEditBtn">Edit Customer</button>
@@ -401,7 +416,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
         <div class="card">
           <div class="card-header"><div class="card-title">Bikes on file</div></div>
           <div class="tbl-wrap"><table>
-            <thead><tr><th>Brand / Model</th><th>Size</th><th>Serial No.</th><th>Purchased</th><th></th></tr></thead>
+            <thead><tr><th>ID</th><th>Brand / Model</th><th>Size</th><th>Serial No.</th><th>Purchased</th><th></th></tr></thead>
             <tbody id="bikeRows"><tr><td colspan="5" class="cell-muted">No bikes yet</td></tr></tbody>
           </table></div>
         </div>
@@ -413,6 +428,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div>
             <div class="page-title" id="bikeDetailName">—</div>
             <div class="page-subtitle" id="bikeDetailMeta">—</div>
+            <div style="margin-top:6px"><span class="id-badge" id="bikeDetailId">—</span></div>
           </div>
           <div class="page-actions">
             <button class="btn btn-secondary" onclick="printServicingReport()">Print Servicing Report</button>
@@ -487,14 +503,15 @@ tbody tr.clickable:hover { background: var(--bg3); }
 
             <div class="ie-btn-row">
               <button class="ie-save-btn" onclick="saveInvoice()">Save Invoice</button>
-              <button class="ie-print-btn" onclick="printInvoice()">Print / PDF</button>
+              <button class="ie-print-btn" onclick="printInvoice()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print / PDF</button>
             </div>
           </div>
 
           <div class="ie-preview-pane" id="iePreviewPane">
             <div class="ie-preview-topbar">
+              <button class="ie-toggle-btn" id="ieToggleBtn" onclick="ieToggleEditor()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>Hide Editor</button>
               <div class="ie-preview-label">Live Preview</div>
-              <div style="font-size:20px;font-weight:900;color:#222" id="invGrandTotal">$0.00</div>
+              <div style="font-size:20px;font-weight:900;color:var(--text)" id="invGrandTotal">$0.00</div>
             </div>
             <div class="ie-scaler">
               <div class="ie-scaler-inner" id="ieScaler">
@@ -913,9 +930,10 @@ function renderCustomers() {
   const q = (document.getElementById('customerSearch')?.value || '').toLowerCase();
   const rows = CUSTOMERS.filter(c => !q || c.name.toLowerCase().includes(q) || (c.phone||'').includes(q) || (c.email||'').toLowerCase().includes(q));
   const tbody = document.getElementById('customerRows');
-  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="5" class="cell-muted">No customers found</td></tr>'; return; }
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="6" class="cell-muted">No customers found</td></tr>'; return; }
   tbody.innerHTML = rows.map(c => `
     <tr class="clickable" onclick="openCustomerDetail('${c.id}')">
+      <td><span class="id-badge">${shortId(c.id,'CUST')}</span></td>
       <td class="cell-strong">${escapeHtml(c.name)}</td>
       <td>${escapeHtml(c.phone || '—')}</td>
       <td class="cell-muted">${escapeHtml(c.email || '—')}</td>
@@ -965,6 +983,7 @@ function openCustomerDetail(id) {
   if (!c) return;
   document.getElementById('custDetailName').textContent = c.name;
   document.getElementById('custDetailContact').textContent = [c.phone, c.email].filter(Boolean).join(' · ') || 'No contact info on file';
+  document.getElementById('custDetailId').textContent = shortId(c.id, 'CUST');
   document.getElementById('custEditBtn').onclick = () => openCustomerModal(c);
   renderBikesForCustomer(id);
   switchTab('customer-detail');
@@ -975,9 +994,10 @@ function openCustomerDetail(id) {
 function renderBikesForCustomer(customerId) {
   const rows = BIKES.filter(b => b.customer_id === customerId);
   const tbody = document.getElementById('bikeRows');
-  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="5" class="cell-muted">No bikes yet — add one above</td></tr>'; return; }
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="6" class="cell-muted">No bikes yet — add one above</td></tr>'; return; }
   tbody.innerHTML = rows.map(b => `
     <tr class="clickable" onclick="openBikeDetail('${b.id}')">
+      <td><span class="id-badge">${shortId(b.id,'BIKE')}</span></td>
       <td class="cell-strong">${escapeHtml([b.brand, b.model].filter(Boolean).join(' ') || 'Unnamed bike')}</td>
       <td>${escapeHtml(b.size || '—')}</td>
       <td class="cell-muted">${escapeHtml(b.serial_no || '—')}</td>
@@ -1002,6 +1022,7 @@ async function openBikeDetail(bikeId) {
     b.serial_no ? 'S/N ' + b.serial_no : null,
     c ? 'Owner: ' + c.name : null
   ].filter(Boolean).join(' · ') || '—';
+  document.getElementById('bikeDetailId').textContent = shortId(b.id, 'BIKE');
   document.getElementById('bikeDetailBackLink').onclick = () => openCustomerDetail(b.customer_id);
   switchTab('bike-detail');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1243,6 +1264,7 @@ async function saveBike() {
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function formatDate(d) { if (!d) return '—'; const dt = new Date(d); return dt.toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' }); }
 function money(n) { const v = Number(n)||0; return '$' + v.toLocaleString('en-SG', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function shortId(id, prefix) { if (!id) return '—'; return prefix + '-' + id.replace(/-/g,'').slice(0,6).toUpperCase(); }
 
 /* ============ PRODUCTS & VARIANTS ============ */
 let PRODUCTS = [];
@@ -1833,7 +1855,7 @@ function renderInvoices() {
       <td class="cell-muted">${formatDate(inv.invoice_date)}</td>
       <td class="cell-strong">${money(inv.total)}</td>
       <td style="white-space:nowrap">
-        <button class="btn btn-ghost btn-sm" onclick="quickPrintInvoice('${inv.id}')" title="Print / PDF">🖨</button>
+        <button class="btn btn-ghost btn-sm" onclick="quickPrintInvoice('${inv.id}')" title="Print / PDF" style="display:inline-flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
         <button class="btn btn-ghost btn-sm" onclick="deleteInvoice('${inv.id}')">✕</button>
       </td>
     </tr>`).join('');
@@ -1945,16 +1967,16 @@ function renderInvoiceItems() {
   const el = document.getElementById('invItemsList');
   el.innerHTML = currentInvoiceItems.map((item, idx) => {
     const linkedVariant = item.variant_id ? VARIANTS.find(v => v.id === item.variant_id) : null;
-    const stockWarn = linkedVariant && item.qty > linkedVariant.qty ? `<div style="font-size:11px;color:#ff8080;margin-top:3px">Only ${linkedVariant.qty} in stock — saving will take stock negative</div>` : '';
+    const stockWarn = linkedVariant && item.qty > linkedVariant.qty ? `<div style="font-size:11px;color:var(--red);margin-top:3px">Only ${linkedVariant.qty} in stock — saving will take stock negative</div>` : '';
     const subHTML = item.subs.map((s,si) => `
       <div class="ie-sub-row">
-        <input type="text" placeholder="Sub-note" value="${escapeHtml(s.text)}" oninput="updateSub(${idx},${si},this.value)" style="flex:1;background:#0d0d0d;border:1px dashed #333;border-radius:6px;color:#ddd;padding:6px 9px;font-size:12px;font-family:inherit">
+        <input type="text" placeholder="Sub-note" value="${escapeHtml(s.text)}" oninput="updateSub(${idx},${si},this.value)" style="flex:1;background:var(--bg);border:1px dashed var(--border2);border-radius:6px;color:var(--text);padding:6px 9px;font-size:12px;font-family:inherit">
         <button class="ie-btn-icon" onclick="removeSub(${idx},${si})">✕</button>
       </div>`).join('');
     const discHTML = item.discounts.map((d,di) => `
       <div class="ie-disc-row">
-        <input type="text" placeholder="Discount label" value="${escapeHtml(d.label)}" oninput="updateDisc(${idx},${di},'label',this.value)" style="flex:2;background:#241d05;border:1px solid #3a2f08;border-radius:6px;color:#f6ca14;padding:6px 9px;font-size:12px;font-family:inherit">
-        <input type="number" placeholder="%" value="${d.value}" oninput="updateDisc(${idx},${di},'value',this.value)" style="width:60px;background:#241d05;border:1px solid #3a2f08;border-radius:6px;color:#f6ca14;padding:6px 9px;font-size:12px;font-family:inherit">
+        <input type="text" placeholder="Discount label" value="${escapeHtml(d.label)}" oninput="updateDisc(${idx},${di},'label',this.value)" style="flex:2;background:var(--yellow-bg);border:1px solid var(--yellow-bg);border-radius:6px;color:var(--yellow);padding:6px 9px;font-size:12px;font-family:inherit">
+        <input type="number" placeholder="%" value="${d.value}" oninput="updateDisc(${idx},${di},'value',this.value)" style="width:60px;background:var(--yellow-bg);border:1px solid var(--yellow-bg);border-radius:6px;color:var(--yellow);padding:6px 9px;font-size:12px;font-family:inherit">
         <button class="ie-btn-icon" onclick="removeDisc(${idx},${di})">✕</button>
       </div>`).join('');
     return `
@@ -1968,12 +1990,12 @@ function renderInvoiceItems() {
       <div class="ie-field"><input type="text" placeholder="Description" value="${escapeHtml(item.desc)}" oninput="updateItem(${idx},'desc',this.value)"></div>
       <div class="ie-row-price">
         <div></div>
-        <input type="number" placeholder="Qty" value="${item.qty}" oninput="updateItem(${idx},'qty',this.value)" style="background:#111;border:1px solid #2e2e2e;border-radius:6px;color:#eee;padding:8px 10px;font-size:13px;font-family:inherit">
-        <input type="number" placeholder="Unit Price" value="${item.price}" oninput="updateItem(${idx},'price',this.value)" style="background:#111;border:1px solid #2e2e2e;border-radius:6px;color:#eee;padding:8px 10px;font-size:13px;font-family:inherit">
+        <input type="number" placeholder="Qty" value="${item.qty}" oninput="updateItem(${idx},'qty',this.value)" style="background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px;font-family:inherit">
+        <input type="number" placeholder="Unit Price" value="${item.price}" oninput="updateItem(${idx},'price',this.value)" style="background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px;font-family:inherit">
       </div>
       <div style="display:flex;align-items:center;gap:8px;margin:8px 0 4px">
         <span style="font-size:10px;color:#666;white-space:nowrap">${linkedVariant ? 'Deducts stock:' : 'Not linked to inventory'}</span>
-        <select onchange="updateItem(${idx},'variant_id',this.value)" style="flex:1;background:#111;border:1px solid #2e2e2e;border-radius:6px;color:#999;padding:6px 8px;font-size:11px;font-family:inherit">
+        <select onchange="updateItem(${idx},'variant_id',this.value)" style="flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);padding:6px 8px;font-size:11px;font-family:inherit">
           <option value="">— No inventory link (e.g. mechanic-owned part) —</option>${variantOptionsHtml(item.variant_id)}
         </select>
       </div>
@@ -2018,6 +2040,17 @@ document.addEventListener('input', e => { if (e.target.id === 'invDiscPct' || e.
 
 // ── LIVE A4 PREVIEW (paginated, real logo/QR) ──
 const IE_PAGE_H = 1122, IE_FOOTER_H = 110, IE_BODY_PAD = 84;
+// ── HIDE/SHOW EDITOR ──
+let ieEditorVisible = true;
+function ieToggleEditor() {
+  ieEditorVisible = !ieEditorVisible;
+  document.getElementById('ieEditorPane').classList.toggle('hidden', !ieEditorVisible);
+  document.getElementById('ieToggleBtn').innerHTML = (ieEditorVisible
+    ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>Hide Editor'
+    : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>Show Editor');
+  setTimeout(ieScaleInvoice, 240);
+}
+
 function ieScaleInvoice() {
   const scaler = document.getElementById('ieScaler');
   const pane = document.getElementById('iePreviewPane');
