@@ -441,7 +441,7 @@
     async function loadProductsFromSupabase() {
       const { data, error } = await sb
         .from('products')
-        .select('sku,name,range,category,gender,price_sgd,product_variants(colour,hex,size,image_path,price_sgd,created_at)')
+        .select('sku,name,range,category,gender,price_sgd,size_run,product_variants(colour,hex,size,image_path,price_sgd,created_at)')
         .eq('active', true)
         .order('name', { ascending: true });
 
@@ -454,11 +454,13 @@
         const variants = [...(p.product_variants || [])]
           .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
-        const sizes = [];
+        const sizes = (p.size_run || 'One Size')
+          .split(',')
+          .map(s => s.trim())
+          .filter(Boolean);
         const coloursMap = new Map();
 
         variants.forEach(v => {
-          if (!sizes.includes(v.size)) sizes.push(v.size);
           if (!coloursMap.has(v.colour)) {
             const colourPrice = (v.price_sgd === 0 || v.price_sgd === null || v.price_sgd === undefined)
               ? null
@@ -591,7 +593,7 @@
 
     // ── Filters (sidebar: series, category, size — all combinable) ──
     const activeFilters = { series: new Set(), category: new Set(), size: new Set() };
-    const SIZE_ORDER = ['XXS','XS','S','M','L','XL','2XL','3XL'];
+    const SIZE_ORDER = ['XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL'];
 
     function sortSizes(sizes) {
       return [...sizes].sort((a, b) => {
