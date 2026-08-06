@@ -137,6 +137,12 @@ tbody tr.clickable:hover { background: var(--bg3); }
 .badge { display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: .3px; }
 .badge-neutral { background: var(--bg3); color: var(--text2); }
 
+.svc-tick-row { display: flex; gap: 8px; margin: 8px 0; }
+.svc-tick { flex: 1; padding: 12px 6px; border-radius: 8px; border: 1.5px solid var(--border2); background: var(--bg2); color: var(--text2); font-size: 12.5px; font-weight: 700; text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: all .1s; }
+.svc-tick.active-ok { background: #e6f4ea; border-color: #2e7d32; color: #2e7d32; }
+.svc-tick.active-attention { background: #fef3e0; border-color: #b5720a; color: #b5720a; }
+.svc-tick.active-replaced { background: #e8effa; border-color: #1a56b0; color: #1a56b0; }
+
 .search-input { position: relative; display: block; }
 .search-input input { width: 100%; box-sizing: border-box; padding: 11px 12px 11px 34px; background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); color: var(--text); font-size: 13px; font-family: inherit; outline: none; transition: border-color .12s, box-shadow .12s; }
 .search-input input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(var(--accent-rgb),.10); }
@@ -223,6 +229,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
 .inv-body { flex: 1; padding: 36px 44px 16px; }
 .inv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
 .inv-logo { width: 140px; height: 110px; object-fit: contain; object-position: left; }
+.svc-logo { height: 64px; width: auto; max-width: 180px; object-fit: contain; object-position: left; }
 .inv-company { text-align: right; padding-top: 8px; }
 .inv-company-name { font-size: 18px; font-weight: 900; color: #111; }
 .inv-company-uen { font-size: 11px; color: #666; margin-top: 2px; }
@@ -829,12 +836,6 @@ tbody tr.clickable:hover { background: var(--bg3); }
         <button type="button" class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="svcAddPartRow()">+ Add Part</button>
       </div>
 
-      <div class="field-row fr-2">
-        <div class="field"><label>Labor hours</label><input type="number" step="0.25" min="0" id="svcLaborHours" placeholder="e.g. 1.5" oninput="svcUpdateLaborCost()"></div>
-        <div class="field"><label>Labor rate ($/hr)</label><input type="number" step="0.5" min="0" id="svcLaborRate" placeholder="e.g. 40" oninput="svcUpdateLaborCost()"></div>
-      </div>
-      <div id="svcLaborCost" style="font-size:12px;color:var(--text2);margin:-6px 0 4px"></div>
-
       <div class="field">
         <label>Photos</label>
         <div id="svcPhotosGrid" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px"></div>
@@ -1241,18 +1242,17 @@ let currentServicePhotos = [];
 
 function renderSvcChecklist() {
   const el = document.getElementById('svcChecklist');
+  const opts = [['ok','OK'],['attention','Needs Attention'],['replaced','Replaced']];
   el.innerHTML = currentServiceChecklist.map((row, i) => `
-    <div style="display:grid;grid-template-columns:140px 150px 1fr;gap:10px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--border)">
-      <div style="font-size:13px">${escapeHtml(row.item)}</div>
-      <select onchange="svcSetChecklistStatus(${i}, this.value)" style="width:100%;box-sizing:border-box;border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-size:12px">
-        <option value="ok" ${row.status==='ok'?'selected':''}>OK</option>
-        <option value="attention" ${row.status==='attention'?'selected':''}>Needs Attention</option>
-        <option value="replaced" ${row.status==='replaced'?'selected':''}>Replaced</option>
-      </select>
-      <input type="text" value="${escapeHtml(row.note||'')}" placeholder="Note (optional)" oninput="svcSetChecklistNote(${i}, this.value)" style="width:100%;box-sizing:border-box;border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-size:12px">
+    <div style="padding:12px 12px;border-bottom:1px solid var(--border)">
+      <div style="font-size:13.5px;font-weight:600;margin-bottom:8px">${escapeHtml(row.item)}</div>
+      <div class="svc-tick-row">
+        ${opts.map(([val,label]) => `<button type="button" class="svc-tick ${row.status===val ? 'active-'+val : ''}" onclick="svcSetChecklistStatus(${i}, '${val}')">${label}</button>`).join('')}
+      </div>
+      <input type="text" value="${escapeHtml(row.note||'')}" placeholder="Note (optional)" oninput="svcSetChecklistNote(${i}, this.value)" style="width:100%;box-sizing:border-box;border:1px solid var(--border2);border-radius:6px;padding:9px 10px;font-size:12.5px">
     </div>`).join('');
 }
-function svcSetChecklistStatus(i, val) { currentServiceChecklist[i].status = val; }
+function svcSetChecklistStatus(i, val) { currentServiceChecklist[i].status = val; renderSvcChecklist(); }
 function svcSetChecklistNote(i, val) { currentServiceChecklist[i].note = val; }
 
 function renderSvcParts() {
@@ -1275,11 +1275,6 @@ function svcRemovePartRow(i) { currentServiceParts.splice(i, 1); renderSvcParts(
 function svcSetPartVariant(i, val) { currentServiceParts[i].variant_id = val; renderSvcParts(); }
 function svcSetPartQty(i, val) { currentServiceParts[i].qty = Math.max(1, parseInt(val) || 1); }
 
-function svcUpdateLaborCost() {
-  const h = parseFloat(document.getElementById('svcLaborHours').value) || 0;
-  const r = parseFloat(document.getElementById('svcLaborRate').value) || 0;
-  document.getElementById('svcLaborCost').textContent = (h && r) ? ('Labor cost: ' + money(h * r)) : '';
-}
 
 async function svcUploadPhotos(fileList) {
   const files = Array.from(fileList || []);
@@ -1372,9 +1367,6 @@ async function openServiceModal(bikeId, recordId) {
   document.getElementById('svcWorkDone').value = record ? (record.work_done || '') : '';
   document.getElementById('svcWatchItems').value = record ? (record.watch_items || '') : '';
   document.getElementById('svcNextDue').value = record ? (record.next_service_due || '') : '';
-  document.getElementById('svcLaborHours').value = (record && record.labor_hours != null) ? record.labor_hours : '';
-  document.getElementById('svcLaborRate').value = (record && record.labor_rate != null) ? record.labor_rate : '';
-  svcUpdateLaborCost();
 
   if (record) {
     if (Array.isArray(record.checklist) && record.checklist.length) currentServiceChecklist = record.checklist;
@@ -1425,8 +1417,6 @@ async function saveService() {
     invoice_id: invoiceId,
     checklist: currentServiceChecklist,
     parts_used: validParts,
-    labor_hours: parseFloat(document.getElementById('svcLaborHours').value) || null,
-    labor_rate: parseFloat(document.getElementById('svcLaborRate').value) || null,
     photos: currentServicePhotos,
   };
   if (!svcEditingId) payload.report_no = await nextServiceReportNumber();
@@ -1512,8 +1502,6 @@ function buildServiceReportPage(s, b, c) {
   const work = (s.work_done || '').split('\n').filter(Boolean);
   const watch = (s.watch_items || '').split('\n').filter(Boolean);
   const checklist = s.checklist || [];
-  const partsUsed = s.parts_used || [];
-  const laborLine = (s.labor_hours && s.labor_rate) ? `${s.labor_hours} hr @ ${money(s.labor_rate)}/hr = ${money(s.labor_hours * s.labor_rate)}` : (s.labor_hours ? `${s.labor_hours} hr` : '');
   const photos = s.photos || [];
   const pillLabel = { ok: 'OK', attention: 'Needs Attention', replaced: 'Replaced' };
 
@@ -1539,24 +1527,18 @@ function buildServiceReportPage(s, b, c) {
       ${watch.length ? `<div><div class="svc-section-lbl">Items to Note</div><ul class="svc-list watch">${watch.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul></div>` : '<div></div>'}
     </div>` : '';
 
-  const partsLaborHTML = (partsUsed.length || laborLine) ? `<div class="svc-two-col">
-      ${partsUsed.length ? `<div><div class="svc-section-lbl">Parts Used</div><table class="svc-parts-table">${partsUsed.map(p=>{ const v = VARIANTS.find(x=>x.id===p.variant_id); return `<tr><td>${escapeHtml(v ? v.name : 'Part')}</td><td style="text-align:right;color:#555">x${p.qty}</td></tr>`; }).join('')}</table></div>` : '<div></div>'}
-      ${laborLine ? `<div><div class="svc-section-lbl">Labor</div><div style="font-size:12.5px">${escapeHtml(laborLine)}</div></div>` : '<div></div>'}
-    </div>` : '';
-
   const photosHTML = photos.length ? `<div style="margin-bottom:18px"><div class="svc-section-lbl">Photos</div><div class="svc-photos-grid">${photos.map(p=>`<img src="${p.url}" alt="${p.stage||''}">`).join('')}</div></div>` : '';
 
   return `<div class="inv-page"><div class="inv-body" style="padding:36px 44px 0">
-    <div class="inv-header"><img class="inv-logo" src="${BNB_LOGO_DATA_URI}" alt="Bike&amp;Butter">
+    <div class="inv-header"><img class="svc-logo" src="${BNB_LOGO_DATA_URI}" alt="Bike&amp;Butter">
       <div class="inv-company"><div class="inv-company-name">Bike&amp;Butter</div><div class="inv-company-uen">UEN: 53521776E</div></div></div>
     <div class="inv-title">SERVICING REPORT</div>
     ${infobar}
     ${checklistHTML}
     ${doneWatchHTML}
-    ${partsLaborHTML}
     ${photosHTML}
   </div>
-  <div class="svc-footer">Bike&amp;Butter — UEN 53521776E — Thank you for trusting us with your ride.</div>
+  <div class="svc-footer">Bike&amp;Butter — UEN 53521776E — Ride buttery smooth. 🧈🚲</div>
   </div>`;
 }
 
