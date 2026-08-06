@@ -137,8 +137,8 @@ tbody tr.clickable:hover { background: var(--bg3); }
 .badge { display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: .3px; }
 .badge-neutral { background: var(--bg3); color: var(--text2); }
 
-.search-input { position: relative; }
-.search-input input { padding-left: 32px; }
+.search-input { position: relative; display: block; }
+.search-input input { padding-left: 32px; width: 100%; box-sizing: border-box; }
 .search-input::before { content: '⌕'; position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 14px; }
 
 .detail-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
@@ -382,7 +382,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div class="page-actions"><button class="btn btn-primary" onclick="openCustomerModal()">+ New Customer</button></div>
         </div>
         <div class="card">
-          <div class="card-header"><div class="search-input" style="width:280px"><input type="text" id="customerSearch" placeholder="Search customers…" oninput="renderCustomers()"></div></div>
+          <div class="card-header"><div class="search-input" style="width:360px"><input type="text" id="customerSearch" placeholder="Search customers…" oninput="renderCustomers()"></div></div>
           <div class="tbl-wrap"><table>
             <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Email</th><th>Bikes</th><th></th></tr></thead>
             <tbody id="customerRows"><tr><td colspan="5" class="cell-muted">Loading…</td></tr></tbody>
@@ -440,10 +440,10 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div class="page-actions"><button class="btn btn-primary" onclick="openServiceModal()">+ Log Service</button></div>
         </div>
         <div class="card">
-          <div class="card-header"><div class="search-input" style="width:320px"><input type="text" id="svcSearch" placeholder="Search invoice no., customer, or bike…" oninput="renderServicingList()"></div></div>
+          <div class="card-header"><div class="search-input" style="width:420px"><input type="text" id="svcSearch" placeholder="Search invoice no., customer, or bike…" oninput="renderServicingList()"></div></div>
           <div class="tbl-wrap"><table>
-            <thead><tr><th>Date</th><th>Customer</th><th>Bike</th><th>Mechanic</th><th>Invoice</th><th>Next Due</th><th></th></tr></thead>
-            <tbody id="servicingRows"><tr><td colspan="7" class="cell-muted">Loading…</td></tr></tbody>
+            <thead><tr><th>Report No.</th><th>Date</th><th>Customer</th><th>Bike</th><th>Mechanic</th><th>Invoice</th><th>Next Due</th><th></th></tr></thead>
+            <tbody id="servicingRows"><tr><td colspan="8" class="cell-muted">Loading…</td></tr></tbody>
           </table></div>
         </div>
       </div>
@@ -453,7 +453,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div class="page-actions"><button class="btn btn-primary" onclick="openInvoiceEditor()">+ New Invoice</button></div>
         </div>
         <div class="card">
-          <div class="card-header"><div class="search-input" style="width:280px"><input type="text" id="invoiceSearch" placeholder="Search invoice no. or customer…" oninput="renderInvoices()"></div></div>
+          <div class="card-header"><div class="search-input" style="width:380px"><input type="text" id="invoiceSearch" placeholder="Search invoice no. or customer…" oninput="renderInvoices()"></div></div>
           <div class="tbl-wrap"><table>
             <thead><tr><th>Invoice No.</th><th>Customer</th><th>Date</th><th>Total</th><th></th></tr></thead>
             <tbody id="invoiceRows"><tr><td colspan="5" class="cell-muted">Loading…</td></tr></tbody>
@@ -639,7 +639,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div class="page-actions"><button class="btn btn-primary" onclick="openProductModal()">+ New Product</button></div>
         </div>
         <div class="card">
-          <div class="card-header"><div class="search-input" style="width:280px"><input type="text" id="productSearch" placeholder="Search products…" oninput="renderProducts()"></div></div>
+          <div class="card-header"><div class="search-input" style="width:360px"><input type="text" id="productSearch" placeholder="Search products…" oninput="renderProducts()"></div></div>
           <div id="productList"></div>
         </div>
       </div>
@@ -1239,14 +1239,14 @@ let currentServicePhotos = [];
 function renderSvcChecklist() {
   const el = document.getElementById('svcChecklist');
   el.innerHTML = currentServiceChecklist.map((row, i) => `
-    <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--border)">
-      <div style="flex:1;font-size:13px">${escapeHtml(row.item)}</div>
-      <select onchange="svcSetChecklistStatus(${i}, this.value)" style="border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-size:12px">
+    <div style="display:grid;grid-template-columns:140px 150px 1fr;gap:10px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--border)">
+      <div style="font-size:13px">${escapeHtml(row.item)}</div>
+      <select onchange="svcSetChecklistStatus(${i}, this.value)" style="width:100%;box-sizing:border-box;border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-size:12px">
         <option value="ok" ${row.status==='ok'?'selected':''}>OK</option>
         <option value="attention" ${row.status==='attention'?'selected':''}>Needs Attention</option>
         <option value="replaced" ${row.status==='replaced'?'selected':''}>Replaced</option>
       </select>
-      <input type="text" value="${escapeHtml(row.note||'')}" placeholder="Note (optional)" oninput="svcSetChecklistNote(${i}, this.value)" style="flex:1.3;border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-size:12px">
+      <input type="text" value="${escapeHtml(row.note||'')}" placeholder="Note (optional)" oninput="svcSetChecklistNote(${i}, this.value)" style="width:100%;box-sizing:border-box;border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-size:12px">
     </div>`).join('');
 }
 function svcSetChecklistStatus(i, val) { currentServiceChecklist[i].status = val; }
@@ -1348,14 +1348,13 @@ async function openServiceModal(bikeId, recordId) {
   currentServiceParts = [];
   currentServicePhotos = [];
 
-  document.getElementById('svcModalTitle').textContent = recordId ? 'Edit Service Record' : 'Log Service';
-  document.getElementById('svcId').value = recordId || '';
-
   let record = null;
   if (recordId) {
     const { data } = await sb.from('service_records').select('*').eq('id', recordId).single();
     record = data;
   }
+  document.getElementById('svcId').value = recordId || '';
+  document.getElementById('svcModalTitle').textContent = record ? ('Edit Service Record — ' + (record.report_no || '')) : 'Log Service';
 
   const effectiveBikeId = record ? record.bike_id : (bikeId || currentBikeId || '');
   const b = BIKES.find(x => x.id === effectiveBikeId);
@@ -1391,6 +1390,20 @@ async function openServiceModal(bikeId, recordId) {
 
 function closeServiceModal() { document.getElementById('serviceModalBackdrop').classList.remove('open'); }
 
+async function nextServiceReportNumber() {
+  const now = new Date();
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const yy = String(now.getFullYear()).slice(-2);
+  const prefix = 'SRBB' + mm + yy;
+  const { data } = await sb.from('service_records').select('report_no').ilike('report_no', prefix + '%').order('report_no', { ascending: false }).limit(1);
+  let seq = 1;
+  if (data && data.length) {
+    const last = data[0].report_no.replace(prefix, '');
+    seq = (parseInt(last, 10) || 0) + 1;
+  }
+  return prefix + String(seq).padStart(3, '0');
+}
+
 async function saveService() {
   const bikeId = document.getElementById('svcBikeSelect').value;
   const customerId = document.getElementById('svcCustomerSelect').value || null;
@@ -1413,6 +1426,7 @@ async function saveService() {
     labor_rate: parseFloat(document.getElementById('svcLaborRate').value) || null,
     photos: currentServicePhotos,
   };
+  if (!svcEditingId) payload.report_no = await nextServiceReportNumber();
 
   // Reverse stock effect of the previously saved version of this record, if it had
   // deducted stock (i.e. was linked to an invoice with parts), before applying the new one.
@@ -1467,10 +1481,11 @@ function renderServicingList() {
     return { s, b, c, invNo };
   }).filter(({ b, c, invNo }) => !q || invNo.toLowerCase().includes(q) || (c?.name||'').toLowerCase().includes(q) || ([b?.brand,b?.model].filter(Boolean).join(' ')||'').toLowerCase().includes(q));
 
-  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="7" class="cell-muted">${q ? 'No service records match “' + escapeHtml(q) + '”' : 'No service records yet'}</td></tr>`; return; }
+  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="8" class="cell-muted">${q ? 'No service records match “' + escapeHtml(q) + '”' : 'No service records yet'}</td></tr>`; return; }
 
   tbody.innerHTML = rows.map(({ s, b, c, invNo }) => `
     <tr>
+      <td>${escapeHtml(s.report_no || '—')}</td>
       <td>${formatDate(s.service_date)}</td>
       <td>${c ? `<span style="cursor:pointer;text-decoration:underline" onclick="openCustomerDetail('${c.id}')">${escapeHtml(c.name)}</span>` : '—'}</td>
       <td>${b ? `<span style="cursor:pointer;text-decoration:underline" onclick="openBikeDetail('${b.id}')">${escapeHtml([b.brand,b.model].filter(Boolean).join(' ')||'Unnamed bike')}</span>` : '—'}</td>
@@ -1479,53 +1494,82 @@ function renderServicingList() {
       <td>${s.next_service_due ? formatDate(s.next_service_due) : '—'}</td>
       <td style="text-align:right;white-space:nowrap">
         <button class="btn btn-ghost btn-sm" onclick="openServiceModal(null,'${s.id}')">Edit</button>
-        ${s.invoice_id ? `<button class="btn btn-ghost btn-sm" onclick="printCombined('${s.id}')">Print</button>` : ''}
+        ${s.invoice_id ? `<button class="btn btn-ghost btn-sm" onclick="printCombined('${s.id}')">Print w/ Invoice</button>` : `<button class="btn btn-ghost btn-sm" onclick="printSingleServiceReport('${s.id}')">Print</button>`}
       </td>
     </tr>`).join('');
 }
 
-function printServicingReport() {
+
+// Builds one A4 "page" for a single service record, styled to match the invoice header
+// exactly (same .inv-header/.inv-logo/.inv-title classes) — just "SERVICING REPORT" instead
+// of "INVOICE" — so both documents look like they belong to the same paperwork family.
+function buildServiceReportPage(s, b, c) {
+  const bikeName = b ? ([b.brand, b.model].filter(Boolean).join(' ') || 'Unnamed bike') : 'Bike';
+  const work = (s.work_done || '').split('\n').filter(Boolean);
+  const watch = (s.watch_items || '').split('\n').filter(Boolean);
+  const checklistRows = (s.checklist || []).filter(row => row.status !== 'ok' || row.note);
+  const partsUsed = s.parts_used || [];
+  const laborLine = (s.labor_hours && s.labor_rate) ? `${s.labor_hours} hr @ ${money(s.labor_rate)}/hr = ${money(s.labor_hours * s.labor_rate)}` : (s.labor_hours ? `${s.labor_hours} hr` : '');
+  const photos = s.photos || [];
+
+  return `<div class="inv-page"><div class="inv-body" style="padding:36px 44px 0">
+    <div class="inv-header"><img class="inv-logo" src="${BNB_LOGO_DATA_URI}" alt="Bike&amp;Butter">
+      <div class="inv-company"><div class="inv-company-name">Bike&amp;Butter</div><div class="inv-company-uen">UEN: 53521776E</div></div></div>
+    <div class="inv-title">SERVICING REPORT</div>
+    <div class="inv-meta"><div><div class="inv-billto-name">${escapeHtml(bikeName)}</div><div class="inv-billto-addr">
+        ${b && b.size ? `<div>Size ${escapeHtml(b.size)}</div>` : ''}${b && b.colour ? `<div>${escapeHtml(b.colour)}</div>` : ''}<div>Owner: ${c ? escapeHtml(c.name) : '—'}</div></div></div>
+      <div class="inv-meta-right"><p>Report No.: <span>${escapeHtml(s.report_no || '—')}</span></p><p>Date: <span>${formatDate(s.service_date)}</span></p>${s.mechanic ? `<p>Mechanic: <span>${escapeHtml(s.mechanic)}</span></p>` : ''}</div></div>
+
+    <div style="margin-top:20px;font-size:13px;line-height:1.5">
+      ${work.length ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#555;margin-bottom:4px">Service completed</div><ul style="margin:0 0 16px 18px">${work.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
+      ${checklistRows.length ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#555;margin-bottom:4px">Checklist</div><ul style="margin:0 0 16px 18px">${checklistRows.map(row=>`<li>${escapeHtml(row.item)}: <strong>${row.status==='attention'?'Needs attention':row.status==='replaced'?'Replaced':'OK'}</strong>${row.note?' — '+escapeHtml(row.note):''}</li>`).join('')}</ul>` : ''}
+      ${partsUsed.length ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#555;margin-bottom:4px">Parts used</div><ul style="margin:0 0 16px 18px">${partsUsed.map(p=>{ const v = VARIANTS.find(x=>x.id===p.variant_id); return `<li>${escapeHtml(v ? v.name : 'Part')} x${p.qty}</li>`; }).join('')}</ul>` : ''}
+      ${laborLine ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#555;margin-bottom:4px">Labor</div><div style="margin-bottom:16px">${escapeHtml(laborLine)}</div>` : ''}
+      ${watch.length ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#a15c00;margin-bottom:4px">Items to note</div><ul style="margin:0 0 16px 18px">${watch.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
+      ${s.next_service_due ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#555;margin-bottom:4px">Next service due</div><div style="margin-bottom:16px">${formatDate(s.next_service_due)}</div>` : ''}
+      ${photos.length ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#555;margin-bottom:6px">Photos</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">${photos.map(p=>`<img src="${p.url}" style="width:90px;height:90px;object-fit:cover;border-radius:4px;border:1px solid #ddd">`).join('')}</div>` : ''}
+    </div>
+  </div></div>`;
+}
+
+async function printServicingReport() {
   const b = BIKES.find(x => x.id === currentBikeId);
   if (!b) return;
   const c = CUSTOMERS.find(x => x.id === b.customer_id);
   const bikeName = [b.brand, b.model].filter(Boolean).join(' ') || 'Unnamed bike';
-  const rowsHtml = SERVICE_RECORDS.map(s => {
-    const work = (s.work_done || '').split('\n').filter(Boolean);
-    const watch = (s.watch_items || '').split('\n').filter(Boolean);
-    return `
-      <div style="margin-bottom:22px">
-        <div style="font-weight:700;font-size:13px;margin-bottom:6px">${formatDate(s.service_date)}${s.mechanic ? ' — ' + escapeHtml(s.mechanic) : ''}</div>
-        ${work.length ? `<div style="font-size:11px;font-weight:700;margin-bottom:2px">Service completed</div><ul style="margin:0 0 8px 16px;font-size:12px">${work.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
-        ${watch.length ? `<div style="font-size:11px;font-weight:700;margin-bottom:2px">Items to note</div><ul style="margin:0 0 8px 16px;font-size:12px">${watch.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
-      </div>`;
-  }).join('') || '<p style="font-size:12px;color:#888">No service records on file.</p>';
+  if (!SERVICE_RECORDS.length) { alert('No service records on file for this bike.'); return; }
 
-  const html = `<!DOCTYPE html><html><head><title>Servicing Report — ${escapeHtml(bikeName)}</title>
-  <style>
-    body{font-family:Arial,Helvetica,sans-serif;padding:50px;color:#111}
-    .brand{font-weight:900;font-size:20px}
-    .uen{color:#666;font-size:11px}
-    h1{font-size:26px;margin:30px 0 4px}
-    .meta{color:#444;font-size:13px;margin-bottom:24px}
-    .bar{background:#f6ca14;height:6px;margin:24px 0}
-  </style></head><body>
-    <div style="display:flex;justify-content:space-between;align-items:flex-start">
-      <div class="brand">Bike&amp;Butter</div>
-      <div class="uen">UEN: 53521776E</div>
-    </div>
-    <h1>Servicing Report</h1>
-    <div class="meta">
-      <div><strong>${escapeHtml(bikeName)}</strong>${b.size ? ' — Size ' + escapeHtml(b.size) : ''}${b.serial_no ? ' — S/N ' + escapeHtml(b.serial_no) : ''}</div>
-      <div>Owner: ${c ? escapeHtml(c.name) : '—'}</div>
-      <div>Printed: ${formatDate(new Date().toISOString())}</div>
-    </div>
-    <div class="bar"></div>
-    ${rowsHtml}
-  </body></html>`;
-  const w = window.open('', '_blank');
-  w.document.write(html);
-  w.document.close();
-  w.print();
+  const container = makeOffscreenContainer();
+  try {
+    container.innerHTML = SERVICE_RECORDS.map(s => buildServiceReportPage(s, b, c)).join('');
+    await new Promise(r => setTimeout(r, 50));
+    const pageEls = Array.from(container.querySelectorAll('.inv-page'));
+    await downloadPdfFromPages(pageEls, 'Servicing Report - ' + bikeName + '.pdf');
+  } catch (e) {
+    console.error(e);
+    alert('PDF generation failed: ' + e.message);
+  } finally {
+    document.body.removeChild(container);
+  }
+}
+
+async function printSingleServiceReport(recordId) {
+  const s = ALL_SERVICE_RECORDS.find(x => x.id === recordId) || SERVICE_RECORDS.find(x => x.id === recordId);
+  if (!s) return;
+  const b = BIKES.find(x => x.id === s.bike_id);
+  const c = CUSTOMERS.find(x => x.id === (s.customer_id || (b ? b.customer_id : null)));
+  const container = makeOffscreenContainer();
+  try {
+    container.innerHTML = buildServiceReportPage(s, b, c);
+    await new Promise(r => setTimeout(r, 50));
+    const pageEls = Array.from(container.querySelectorAll('.inv-page'));
+    await downloadPdfFromPages(pageEls, (s.report_no || 'Servicing Report') + '.pdf');
+  } catch (e) {
+    console.error(e);
+    alert('PDF generation failed: ' + e.message);
+  } finally {
+    document.body.removeChild(container);
+  }
 }
 
 function openBikeModal(bike = null) {
