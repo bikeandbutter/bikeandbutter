@@ -138,8 +138,10 @@ tbody tr.clickable:hover { background: var(--bg3); }
 .badge-neutral { background: var(--bg3); color: var(--text2); }
 
 .search-input { position: relative; display: block; }
-.search-input input { padding-left: 32px; width: 100%; box-sizing: border-box; }
-.search-input::before { content: '⌕'; position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 14px; }
+.search-input input { width: 100%; box-sizing: border-box; padding: 11px 12px 11px 34px; background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); color: var(--text); font-size: 13px; font-family: inherit; outline: none; transition: border-color .12s, box-shadow .12s; }
+.search-input input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(var(--accent-rgb),.10); }
+.search-input input::placeholder { color: var(--text3); }
+.search-input::before { content: '⌕'; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 15px; }
 
 .detail-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
 .back-link { font-size: 12px; color: var(--text3); cursor: pointer; font-weight: 600; }
@@ -259,6 +261,30 @@ tbody tr.clickable:hover { background: var(--bg3); }
 .inv-footer .line { font-size: 12px; color: #111; line-height: 1.8; }
 .inv-footer .line strong { font-weight: 800; }
 .inv-footer-qr { width: 120px; height: 120px; object-fit: contain; flex-shrink: 0; background: white; padding: 4px; border-radius: 4px; }
+
+.svc-infobar { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid #ddd; border-radius: 6px; overflow: hidden; margin: 16px 0 20px; }
+.svc-infobar > div { padding: 9px 12px; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; }
+.svc-infobar > div:nth-child(4n) { border-right: none; }
+.svc-infobar-lbl { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: #999; margin-bottom: 2px; }
+.svc-infobar-val { font-size: 12.5px; font-weight: 700; color: #111; }
+.svc-section-lbl { font-weight: 800; font-size: 10.5px; text-transform: uppercase; letter-spacing: .5px; color: #999; margin: 0 0 8px; padding-bottom: 6px; border-bottom: 1.5px solid #111; }
+.svc-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 18px; }
+.svc-list { margin: 0; padding-left: 16px; font-size: 12.5px; line-height: 1.7; color: #222; }
+.svc-list.watch { border-left: 3px solid #f6ca14; padding-left: 13px; margin-left: 3px; }
+.svc-list.done { border-left: 3px solid #2e7d32; padding-left: 13px; margin-left: 3px; }
+.svc-check-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 18px; }
+.svc-check-table th { text-align: left; font-size: 9.5px; text-transform: uppercase; letter-spacing: .4px; color: #999; padding: 5px 8px; border-bottom: 1.5px solid #111; }
+.svc-check-table td { padding: 6px 8px; border-bottom: 1px solid #eee; vertical-align: top; }
+.svc-check-table tr:nth-child(even) td { background: #fafafa; }
+.svc-pill { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 700; }
+.svc-pill.ok { background: #e6f4ea; color: #2e7d32; }
+.svc-pill.attention { background: #fef3e0; color: #b5720a; }
+.svc-pill.replaced { background: #e8effa; color: #1a56b0; }
+.svc-parts-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.svc-parts-table td { padding: 5px 8px; border-bottom: 1px solid #eee; }
+.svc-photos-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+.svc-photos-grid img { width: 100px; height: 100px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd; }
+.svc-footer { flex-shrink: 0; background: #f6ca14; padding: 12px 44px; text-align: center; font-size: 11.5px; color: #111; }
 
 #printRoot { display: none; }
 @media print {
@@ -1138,12 +1164,8 @@ async function printCombined(serviceRecordId) {
   if (!s || !s.invoice_id) return;
   const { data: inv } = await sb.from('invoices').select('*').eq('id', s.invoice_id).single();
   const { data: items } = await sb.from('invoice_items').select('*').eq('invoice_id', s.invoice_id).order('sort_order');
-  const b = BIKES.find(x => x.id === currentBikeId);
-  const bikeName = b ? [b.brand, b.model].filter(Boolean).join(' ') : 'Bike';
-  const work = (s.work_done || '').split('\n').filter(Boolean);
-  const watch = (s.watch_items || '').split('\n').filter(Boolean);
-
-  let rowsHtml = '';
+  const b = BIKES.find(x => x.id === s.bike_id);
+  const c = CUSTOMERS.find(x => x.id === (s.customer_id || (b ? b.customer_id : null)));
   let sn = 1;
   (items || []).forEach(it => {
     const lineTotal = it.qty * it.unit_price;
@@ -1191,32 +1213,13 @@ async function printCombined(serviceRecordId) {
     </div>
   </div>`;
 
-  const checklistRows = (s.checklist || []).filter(c => c.status !== 'ok' || c.note);
-  const partsUsed = s.parts_used || [];
-  const laborLine = (s.labor_hours && s.labor_rate) ? `${s.labor_hours} hr @ ${money(s.labor_rate)}/hr = ${money(s.labor_hours * s.labor_rate)}` : (s.labor_hours ? `${s.labor_hours} hr` : '');
-
-  const page2 = `<div class="pc-page">
-    <div class="header" style="margin-top:0">
-      <img class="brand-logo" src="${BNB_LOGO_DATA_URI}" alt="Bike&amp;Butter">
-      <div class="uen">UEN: 53521776E</div>
-    </div>
-    <div style="margin-top:24px">
-      <div class="section-title">Servicing Report</div>
-      <div class="section-sub">${escapeHtml(bikeName)} — Owner: ${escapeHtml(inv.customer_name)} — ${formatDate(s.service_date)}${s.mechanic ? ' — ' + escapeHtml(s.mechanic) : ''}</div>
-      ${work.length ? `<h3>Service completed</h3><ul>${work.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
-      ${checklistRows.length ? `<h3>Checklist</h3><ul>${checklistRows.map(c=>`<li>${escapeHtml(c.item)}: <strong>${c.status === 'attention' ? 'Needs attention' : c.status === 'replaced' ? 'Replaced' : 'OK'}</strong>${c.note ? ' — ' + escapeHtml(c.note) : ''}</li>`).join('')}</ul>` : ''}
-      ${partsUsed.length ? `<h3>Parts used</h3><ul>${partsUsed.map(p=>{ const v = VARIANTS.find(x=>x.id===p.variant_id); return `<li>${escapeHtml(v ? v.name : 'Part')} x${p.qty}</li>`; }).join('')}</ul>` : ''}
-      ${laborLine ? `<h3>Labor</h3><div style="font-size:13px">${escapeHtml(laborLine)}</div>` : ''}
-      ${watch.length ? `<h3>Items to note</h3><ul>${watch.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
-      ${s.next_service_due ? `<h3>Next service due</h3><div style="font-size:13px">${formatDate(s.next_service_due)}</div>` : ''}
-    </div>
-  </div>`;
+  const page2 = buildServiceReportPage(s, b, c);
 
   const container = makeOffscreenContainer();
   try {
     container.innerHTML = style + page1 + page2;
     await new Promise(r => setTimeout(r, 50));
-    const pageEls = Array.from(container.querySelectorAll('.pc-page'));
+    const pageEls = Array.from(container.querySelectorAll('.pc-page, .inv-page'));
     await downloadPdfFromPages(pageEls, (inv.full_invoice_no || 'invoice') + ' - Invoice + Report.pdf');
   } catch (e) {
     console.error(e);
@@ -1500,36 +1503,61 @@ function renderServicingList() {
 }
 
 
-// Builds one A4 "page" for a single service record, styled to match the invoice header
-// exactly (same .inv-header/.inv-logo/.inv-title classes) — just "SERVICING REPORT" instead
-// of "INVOICE" — so both documents look like they belong to the same paperwork family.
+// Builds one A4 "page" for a single service record. Shares the invoice's header/title/logo
+// classes so both documents read as the same paperwork family, then uses a more structured,
+// at-a-glance layout below: an info-bar grid, a full color-coded checklist table, and
+// two-column done/watch lists — rather than a flat stack of bullet sections.
 function buildServiceReportPage(s, b, c) {
   const bikeName = b ? ([b.brand, b.model].filter(Boolean).join(' ') || 'Unnamed bike') : 'Bike';
   const work = (s.work_done || '').split('\n').filter(Boolean);
   const watch = (s.watch_items || '').split('\n').filter(Boolean);
-  const checklistRows = (s.checklist || []).filter(row => row.status !== 'ok' || row.note);
+  const checklist = s.checklist || [];
   const partsUsed = s.parts_used || [];
   const laborLine = (s.labor_hours && s.labor_rate) ? `${s.labor_hours} hr @ ${money(s.labor_rate)}/hr = ${money(s.labor_hours * s.labor_rate)}` : (s.labor_hours ? `${s.labor_hours} hr` : '');
   const photos = s.photos || [];
+  const pillLabel = { ok: 'OK', attention: 'Needs Attention', replaced: 'Replaced' };
+
+  const infobar = `<div class="svc-infobar">
+    <div><div class="svc-infobar-lbl">Bike</div><div class="svc-infobar-val">${escapeHtml(bikeName)}</div></div>
+    <div><div class="svc-infobar-lbl">Owner</div><div class="svc-infobar-val">${c ? escapeHtml(c.name) : '—'}</div></div>
+    <div><div class="svc-infobar-lbl">Report No.</div><div class="svc-infobar-val">${escapeHtml(s.report_no || '—')}</div></div>
+    <div><div class="svc-infobar-lbl">Date</div><div class="svc-infobar-val">${formatDate(s.service_date)}</div></div>
+    <div><div class="svc-infobar-lbl">Size / Colour</div><div class="svc-infobar-val">${[b?.size, b?.colour].filter(Boolean).map(escapeHtml).join(' · ') || '—'}</div></div>
+    <div><div class="svc-infobar-lbl">Serial No.</div><div class="svc-infobar-val">${b?.serial_no ? escapeHtml(b.serial_no) : '—'}</div></div>
+    <div><div class="svc-infobar-lbl">Mechanic</div><div class="svc-infobar-val">${s.mechanic ? escapeHtml(s.mechanic) : '—'}</div></div>
+    <div><div class="svc-infobar-lbl">Next Service Due</div><div class="svc-infobar-val">${s.next_service_due ? formatDate(s.next_service_due) : '—'}</div></div>
+  </div>`;
+
+  const checklistHTML = checklist.length ? `
+    <div class="svc-section-lbl">Checklist</div>
+    <table class="svc-check-table"><thead><tr><th style="width:34%">Item</th><th style="width:22%">Status</th><th>Note</th></tr></thead><tbody>
+      ${checklist.map(row => `<tr><td>${escapeHtml(row.item)}</td><td><span class="svc-pill ${row.status}">${pillLabel[row.status] || 'OK'}</span></td><td style="color:#555">${row.note ? escapeHtml(row.note) : '—'}</td></tr>`).join('')}
+    </tbody></table>` : '';
+
+  const doneWatchHTML = (work.length || watch.length) ? `<div class="svc-two-col">
+      ${work.length ? `<div><div class="svc-section-lbl">Service Completed</div><ul class="svc-list done">${work.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul></div>` : '<div></div>'}
+      ${watch.length ? `<div><div class="svc-section-lbl">Items to Note</div><ul class="svc-list watch">${watch.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul></div>` : '<div></div>'}
+    </div>` : '';
+
+  const partsLaborHTML = (partsUsed.length || laborLine) ? `<div class="svc-two-col">
+      ${partsUsed.length ? `<div><div class="svc-section-lbl">Parts Used</div><table class="svc-parts-table">${partsUsed.map(p=>{ const v = VARIANTS.find(x=>x.id===p.variant_id); return `<tr><td>${escapeHtml(v ? v.name : 'Part')}</td><td style="text-align:right;color:#555">x${p.qty}</td></tr>`; }).join('')}</table></div>` : '<div></div>'}
+      ${laborLine ? `<div><div class="svc-section-lbl">Labor</div><div style="font-size:12.5px">${escapeHtml(laborLine)}</div></div>` : '<div></div>'}
+    </div>` : '';
+
+  const photosHTML = photos.length ? `<div style="margin-bottom:18px"><div class="svc-section-lbl">Photos</div><div class="svc-photos-grid">${photos.map(p=>`<img src="${p.url}" alt="${p.stage||''}">`).join('')}</div></div>` : '';
 
   return `<div class="inv-page"><div class="inv-body" style="padding:36px 44px 0">
     <div class="inv-header"><img class="inv-logo" src="${BNB_LOGO_DATA_URI}" alt="Bike&amp;Butter">
       <div class="inv-company"><div class="inv-company-name">Bike&amp;Butter</div><div class="inv-company-uen">UEN: 53521776E</div></div></div>
     <div class="inv-title">SERVICING REPORT</div>
-    <div class="inv-meta"><div><div class="inv-billto-name">${escapeHtml(bikeName)}</div><div class="inv-billto-addr">
-        ${b && b.size ? `<div>Size ${escapeHtml(b.size)}</div>` : ''}${b && b.colour ? `<div>${escapeHtml(b.colour)}</div>` : ''}<div>Owner: ${c ? escapeHtml(c.name) : '—'}</div></div></div>
-      <div class="inv-meta-right"><p>Report No.: <span>${escapeHtml(s.report_no || '—')}</span></p><p>Date: <span>${formatDate(s.service_date)}</span></p>${s.mechanic ? `<p>Mechanic: <span>${escapeHtml(s.mechanic)}</span></p>` : ''}</div></div>
-
-    <div style="margin-top:20px;font-size:13px;line-height:1.5">
-      ${work.length ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#555;margin-bottom:4px">Service completed</div><ul style="margin:0 0 16px 18px">${work.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
-      ${checklistRows.length ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#555;margin-bottom:4px">Checklist</div><ul style="margin:0 0 16px 18px">${checklistRows.map(row=>`<li>${escapeHtml(row.item)}: <strong>${row.status==='attention'?'Needs attention':row.status==='replaced'?'Replaced':'OK'}</strong>${row.note?' — '+escapeHtml(row.note):''}</li>`).join('')}</ul>` : ''}
-      ${partsUsed.length ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#555;margin-bottom:4px">Parts used</div><ul style="margin:0 0 16px 18px">${partsUsed.map(p=>{ const v = VARIANTS.find(x=>x.id===p.variant_id); return `<li>${escapeHtml(v ? v.name : 'Part')} x${p.qty}</li>`; }).join('')}</ul>` : ''}
-      ${laborLine ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#555;margin-bottom:4px">Labor</div><div style="margin-bottom:16px">${escapeHtml(laborLine)}</div>` : ''}
-      ${watch.length ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#a15c00;margin-bottom:4px">Items to note</div><ul style="margin:0 0 16px 18px">${watch.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
-      ${s.next_service_due ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#555;margin-bottom:4px">Next service due</div><div style="margin-bottom:16px">${formatDate(s.next_service_due)}</div>` : ''}
-      ${photos.length ? `<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#555;margin-bottom:6px">Photos</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">${photos.map(p=>`<img src="${p.url}" style="width:90px;height:90px;object-fit:cover;border-radius:4px;border:1px solid #ddd">`).join('')}</div>` : ''}
-    </div>
-  </div></div>`;
+    ${infobar}
+    ${checklistHTML}
+    ${doneWatchHTML}
+    ${partsLaborHTML}
+    ${photosHTML}
+  </div>
+  <div class="svc-footer">Bike&amp;Butter — UEN 53521776E — Thank you for trusting us with your ride.</div>
+  </div>`;
 }
 
 async function printServicingReport() {
@@ -1686,29 +1714,56 @@ async function loadProducts() {
 
 function variantsFor(productId) { return VARIANTS.filter(v => v.product_id === productId); }
 
+let expandedProducts = new Set();
+function toggleProductRow(id) {
+  if (expandedProducts.has(id)) expandedProducts.delete(id); else expandedProducts.add(id);
+  renderProducts();
+}
+
 function renderProducts() {
   const q = (document.getElementById('productSearch')?.value || '').toLowerCase();
   const list = document.getElementById('productList');
   if (!list) return;
-  const rows = PRODUCTS.filter(p => !q || p.name.toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q) || (p.brand||'').toLowerCase().includes(q));
+
+  const rows = PRODUCTS.filter(p => {
+    if (!q) return true;
+    if (p.name.toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q) || (p.brand||'').toLowerCase().includes(q)) return true;
+    return variantsFor(p.id).some(v => v.name.toLowerCase().includes(q) || (v.sku||'').toLowerCase().includes(q));
+  });
   if (!rows.length) { list.innerHTML = '<div class="empty-state"><div class="empty-state-title">No products yet</div><div class="empty-state-sub">Add your first product above.</div></div>'; return; }
+
+  // Auto-expand any product whose match came from a variant, so search results are visible.
+  if (q) rows.forEach(p => {
+    const vs = variantsFor(p.id);
+    if (vs.some(v => v.name.toLowerCase().includes(q) || (v.sku||'').toLowerCase().includes(q))) expandedProducts.add(p.id);
+  });
 
   list.innerHTML = rows.map(p => {
     const vs = variantsFor(p.id);
+    const totalQty = vs.reduce((s,v) => s + (Number(v.qty)||0), 0);
+    const lowStock = vs.some(v => Number(v.qty) <= Number(v.min_qty));
+    const isOpen = expandedProducts.has(p.id);
     return `
     <div style="border-bottom:1px solid var(--border)">
-      <div style="padding:14px 20px;display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div class="cell-strong">${escapeHtml(p.name)}</div>
-          <div class="cell-muted" style="font-size:12px">${[p.category, p.brand, p.supplier].filter(Boolean).map(escapeHtml).join(' · ') || '—'}</div>
+      <div style="padding:12px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleProductRow('${p.id}')">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0">
+          <span style="display:inline-block;width:16px;flex-shrink:0;transition:transform .12s;transform:rotate(${isOpen ? '90deg' : '0deg'});color:var(--text3);font-size:11px">▶</span>
+          <div style="min-width:0">
+            <div class="cell-strong">${escapeHtml(p.name)}</div>
+            <div class="cell-muted" style="font-size:12px">${[p.category, p.brand, p.supplier].filter(Boolean).map(escapeHtml).join(' · ') || '—'}${vs.length ? ' · ' + vs.length + ' variant' + (vs.length>1?'s':'') : ''}</div>
+          </div>
         </div>
-        <div style="display:flex;gap:8px">
+        <div style="display:flex;align-items:center;gap:14px;flex-shrink:0" onclick="event.stopPropagation()">
+          <div style="text-align:right">
+            <div class="${lowStock ? 'badge badge-red' : 'cell-strong'}" style="${lowStock?'':'font-size:14px'}">${totalQty}</div>
+            <div class="cell-muted" style="font-size:10.5px">total qty</div>
+          </div>
           <button class="btn btn-ghost btn-sm" onclick="openVariantModal('${p.id}')">+ Variant</button>
           <button class="btn btn-ghost btn-sm" onclick="openProductModal('${p.id}')">Edit</button>
           <button class="btn btn-ghost btn-sm" onclick="deleteProduct('${p.id}')" title="Delete product and all its variants">Delete</button>
         </div>
       </div>
-      ${vs.length ? `<div class="tbl-wrap"><table>
+      ${isOpen ? (vs.length ? `<div class="tbl-wrap"><table>
         <thead><tr><th>Variant</th><th>SKU</th><th>Qty</th><th>WAC</th><th>Sell</th><th></th></tr></thead>
         <tbody>${vs.map(v => `
           <tr>
@@ -1719,7 +1774,7 @@ function renderProducts() {
             <td class="cell-strong">${money(v.sell_sgd)}</td>
             <td><button class="btn btn-ghost btn-sm" onclick="deleteVariant('${v.id}')">${ICON_TRASH}</button></td>
           </tr>`).join('')}</tbody>
-      </table></div>` : `<div style="padding:0 20px 14px" class="cell-muted" style="font-size:12px">No variants yet</div>`}
+      </table></div>` : `<div style="padding:0 20px 14px;color:var(--text3);font-size:12px">No variants yet</div>`) : ''}
     </div>`;
   }).join('');
 }
