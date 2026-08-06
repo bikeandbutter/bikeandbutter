@@ -352,6 +352,13 @@
           <div id="pdrawer-added-msg" class="pform-success" style="display:none">✓ Added to cart</div>
 
           <div class="pdrawer-accordion">
+            <div class="accordion-item" id="pdrawer-sizeguide-item" style="display:none">
+              <button class="accordion-head" onclick="toggleAccordion(this)">
+                Sizing Guide
+                <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="accordion-body"><img id="pdrawer-sizechart-img" src="" alt="Size chart" style="width:100%;height:auto;border-radius:8px;display:block"></div>
+            </div>
             <div class="accordion-item">
               <button class="accordion-head" onclick="toggleAccordion(this)">
                 Payment Information
@@ -441,7 +448,7 @@
     async function loadProductsFromSupabase() {
       const { data, error } = await sb
         .from('products')
-        .select('sku,name,range,category,gender,price_sgd,size_run,product_variants(colour,hex,size,image_path,price_sgd,created_at)')
+        .select('sku,name,range,category,gender,price_sgd,size_run,size_chart_url,product_variants(colour,hex,size,image_path,price_sgd,created_at)')
         .eq('active', true)
         .order('name', { ascending: true });
 
@@ -476,6 +483,7 @@
           cat: p.category,
           gender: p.gender,
           priceSGD: (p.price_sgd === 0 || p.price_sgd === null) ? 'Price TBA' : `S$${p.price_sgd}`,
+          sizeChartUrl: p.size_chart_url || null,
           sizes,
           colours: Array.from(coloursMap.values())
         };
@@ -793,6 +801,15 @@
           `<option value="${s}" ${s === selectedSize ? 'selected' : ''}>${s}</option>`
         ).join('');
       } else { szBlock.style.display = 'none'; }
+
+      // Sizing guide accordion tab
+      const sizeGuideItem = document.getElementById('pdrawer-sizeguide-item');
+      if (p.sizeChartUrl) {
+        document.getElementById('pdrawer-sizechart-img').src = imgSrc(p.sizeChartUrl);
+        sizeGuideItem.style.display = '';
+      } else {
+        sizeGuideItem.style.display = 'none';
+      }
 
       // Show product pane
       document.getElementById('pdrawer-product').style.display = '';
