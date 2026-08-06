@@ -14,8 +14,8 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 // ── Switch this one line when going live (see HitPay docs) ──────────
-// const HITPAY_BASE_URL = 'https://api.sandbox.hit-pay.com/v1'; // <- sandbox
-const HITPAY_BASE_URL = 'https://api.hit-pay.com/v1';
+const HITPAY_BASE_URL = 'https://api.sandbox.hit-pay.com/v1'; // sandbox (TEMP for testing)
+// const HITPAY_BASE_URL = 'https://api.hit-pay.com/v1'; // live - switch back before go-live
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
