@@ -435,10 +435,17 @@ tbody tr.clickable:hover { background: var(--bg3); }
       </div>
 
       <div class="tab-panel" id="tab-servicing">
-        <div class="page-header"><div><div class="page-title">Servicing</div><div class="page-subtitle">Search for a bike via Customers &amp; Bikes to view or log service history</div></div></div>
-        <div class="card"><div class="card-body">
-          <p style="color:var(--text2);font-size:13px">Go to <strong>Customers &amp; Bikes</strong>, open a customer, then click a bike to see its full servicing record and log new work.</p>
-        </div></div>
+        <div class="page-header">
+          <div><div class="page-title">Servicing</div><div class="page-subtitle">Every service report — searchable by invoice, customer, or bike</div></div>
+          <div class="page-actions"><button class="btn btn-primary" onclick="openServiceModal()">+ Log Service</button></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="search-input" style="width:320px"><input type="text" id="svcSearch" placeholder="Search invoice no., customer, or bike…" oninput="renderServicingList()"></div></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Date</th><th>Customer</th><th>Bike</th><th>Mechanic</th><th>Invoice</th><th>Next Due</th><th></th></tr></thead>
+            <tbody id="servicingRows"><tr><td colspan="7" class="cell-muted">Loading…</td></tr></tbody>
+          </table></div>
+        </div>
       </div>
       <div class="tab-panel" id="tab-invoices">
         <div class="page-header">
@@ -446,6 +453,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div class="page-actions"><button class="btn btn-primary" onclick="openInvoiceEditor()">+ New Invoice</button></div>
         </div>
         <div class="card">
+          <div class="card-header"><div class="search-input" style="width:280px"><input type="text" id="invoiceSearch" placeholder="Search invoice no. or customer…" oninput="renderInvoices()"></div></div>
           <div class="tbl-wrap"><table>
             <thead><tr><th>Invoice No.</th><th>Customer</th><th>Date</th><th>Total</th><th></th></tr></thead>
             <tbody id="invoiceRows"><tr><td colspan="5" class="cell-muted">Loading…</td></tr></tbody>
@@ -753,20 +761,59 @@ tbody tr.clickable:hover { background: var(--bg3); }
 </div>
 
 <div class="modal-backdrop" id="serviceModalBackdrop">
-  <div class="modal" style="width:520px">
-    <div class="modal-header"><div class="modal-title">Log Service</div><button class="modal-close" onclick="closeServiceModal()">&times;</button></div>
+  <div class="modal" style="width:720px">
+    <div class="modal-header"><div class="modal-title" id="svcModalTitle">Log Service</div><button class="modal-close" onclick="closeServiceModal()">&times;</button></div>
     <div class="modal-body">
+      <input type="hidden" id="svcId">
+      <div class="field-row fr-2">
+        <div class="field"><label>Customer</label>
+          <select id="svcCustomerSelect" onchange="svcOnCustomerChange()" style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:8px 11px;font-size:13px">
+            <option value="">— Select customer —</option>
+          </select>
+        </div>
+        <div class="field"><label>Bike</label>
+          <select id="svcBikeSelect" style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:8px 11px;font-size:13px">
+            <option value="">— Select bike —</option>
+          </select>
+        </div>
+      </div>
       <div class="field-row fr-2">
         <div class="field"><label>Date</label><input type="date" id="svcDate"></div>
         <div class="field"><label>Mechanic</label><input type="text" id="svcMechanic" placeholder="e.g. Jon"></div>
       </div>
-      <div class="field"><label>Service completed (one item per line)</label><textarea id="svcWorkDone" placeholder="Replaced front and rear brake pads&#10;Adjusted front derailleur" style="min-height:100px"></textarea></div>
-      <div class="field"><label>Items to note / watch next time (one item per line)</label><textarea id="svcWatchItems" placeholder="Seatpost seized in frame, recommend servicing after race&#10;Headset bearings smooth, service at next major" style="min-height:90px"></textarea></div>
-      <div class="field"><label>Next service due (optional)</label><input type="date" id="svcNextDue"></div>
-      <div class="field"><label>Link to invoice (optional — enables combined print)</label>
-        <select id="svcInvoiceId" style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:8px 11px;font-size:13px">
+      <div class="field"><label>Link to invoice (optional — enables combined print &amp; stock deduction for parts used)</label>
+        <select id="svcInvoiceId" onchange="svcOnInvoiceChange()" style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:8px 11px;font-size:13px">
           <option value="">— No linked invoice —</option>
         </select>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">Parts below only deduct stock if a linked invoice is chosen.</div>
+      </div>
+
+      <div class="field">
+        <label>Checklist</label>
+        <div id="svcChecklist" style="border:1px solid var(--border2);border-radius:8px;overflow:hidden"></div>
+      </div>
+
+      <div class="field"><label>Service completed (one item per line)</label><textarea id="svcWorkDone" placeholder="Replaced front and rear brake pads&#10;Adjusted front derailleur" style="min-height:80px"></textarea></div>
+      <div class="field"><label>Items to note / watch next time (one item per line)</label><textarea id="svcWatchItems" placeholder="Seatpost seized in frame, recommend servicing after race&#10;Headset bearings smooth, service at next major" style="min-height:70px"></textarea></div>
+      <div class="field" style="max-width:220px"><label>Next service due (optional)</label><input type="date" id="svcNextDue"></div>
+
+      <div class="field">
+        <label>Parts used</label>
+        <div id="svcPartsBody"></div>
+        <button type="button" class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="svcAddPartRow()">+ Add Part</button>
+      </div>
+
+      <div class="field-row fr-2">
+        <div class="field"><label>Labor hours</label><input type="number" step="0.25" min="0" id="svcLaborHours" placeholder="e.g. 1.5" oninput="svcUpdateLaborCost()"></div>
+        <div class="field"><label>Labor rate ($/hr)</label><input type="number" step="0.5" min="0" id="svcLaborRate" placeholder="e.g. 40" oninput="svcUpdateLaborCost()"></div>
+      </div>
+      <div id="svcLaborCost" style="font-size:12px;color:var(--text2);margin:-6px 0 4px"></div>
+
+      <div class="field">
+        <label>Photos</label>
+        <div id="svcPhotosGrid" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px"></div>
+        <input type="file" id="svcPhotoInput" accept="image/*" multiple onchange="svcUploadPhotos(this.files)">
+        <div id="svcPhotoStatus" style="font-size:11px;color:var(--text3);margin-top:4px"></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -878,6 +925,7 @@ function switchTab(tab) {
   if (navBtn) navBtn.classList.add('active');
   const titles = { dashboard: 'Dashboard', crm: 'Customers & Bikes', servicing: 'Servicing', invoices: 'Invoices', sales: 'Sales', products: 'Products & Stock', accounting: 'Accounting', settings: 'Settings' };
   document.getElementById('topbarTitle').textContent = titles[tab] || tab;
+  if (tab === 'servicing') loadServicingList();
 }
 
 async function loadAll() {
@@ -1056,18 +1104,27 @@ function renderServiceHistory() {
   el.innerHTML = SERVICE_RECORDS.map(s => {
     const work = (s.work_done || '').split('\n').filter(Boolean);
     const watch = (s.watch_items || '').split('\n').filter(Boolean);
+    const attentionCount = (s.checklist || []).filter(c => c.status === 'attention').length;
+    const partsCount = (s.parts_used || []).length;
+    const photosCount = (s.photos || []).length;
     return `
     <div style="border-bottom:1px solid var(--border);padding:16px 0">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
         <div class="cell-strong">${formatDate(s.service_date)}</div>
         <div style="display:flex;align-items:center;gap:8px">
           <div class="cell-muted" style="font-size:12px">${escapeHtml(s.mechanic || '')}</div>
+          <button class="btn btn-ghost btn-sm" onclick="openServiceModal(null,'${s.id}')">Edit</button>
           ${s.invoice_id ? `<button class="btn btn-ghost btn-sm" onclick="printCombined('${s.id}')">Print Invoice + Report</button>` : ''}
         </div>
       </div>
       ${work.length ? `<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:3px">Service completed</div><ul style="margin:0 0 10px 18px;font-size:13px;color:var(--text)">${work.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
       ${watch.length ? `<div style="font-size:12px;font-weight:600;color:var(--yellow);margin-bottom:3px">Watch next time</div><ul style="margin:0 0 4px 18px;font-size:13px;color:var(--text)">${watch.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
-      ${s.next_service_due ? `<div class="badge badge-yellow" style="margin-top:4px">Next due: ${formatDate(s.next_service_due)}</div>` : ''}
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+        ${s.next_service_due ? `<div class="badge badge-yellow">Next due: ${formatDate(s.next_service_due)}</div>` : ''}
+        ${attentionCount ? `<div class="badge badge-yellow">${attentionCount} item${attentionCount>1?'s':''} need attention</div>` : ''}
+        ${partsCount ? `<div class="badge">${partsCount} part${partsCount>1?'s':''} used</div>` : ''}
+        ${photosCount ? `<div class="badge">${photosCount} photo${photosCount>1?'s':''}</div>` : ''}
+      </div>
     </div>`;
   }).join('');
 }
@@ -1134,6 +1191,10 @@ async function printCombined(serviceRecordId) {
     </div>
   </div>`;
 
+  const checklistRows = (s.checklist || []).filter(c => c.status !== 'ok' || c.note);
+  const partsUsed = s.parts_used || [];
+  const laborLine = (s.labor_hours && s.labor_rate) ? `${s.labor_hours} hr @ ${money(s.labor_rate)}/hr = ${money(s.labor_hours * s.labor_rate)}` : (s.labor_hours ? `${s.labor_hours} hr` : '');
+
   const page2 = `<div class="pc-page">
     <div class="header" style="margin-top:0">
       <img class="brand-logo" src="${BNB_LOGO_DATA_URI}" alt="Bike&amp;Butter">
@@ -1143,6 +1204,9 @@ async function printCombined(serviceRecordId) {
       <div class="section-title">Servicing Report</div>
       <div class="section-sub">${escapeHtml(bikeName)} — Owner: ${escapeHtml(inv.customer_name)} — ${formatDate(s.service_date)}${s.mechanic ? ' — ' + escapeHtml(s.mechanic) : ''}</div>
       ${work.length ? `<h3>Service completed</h3><ul>${work.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
+      ${checklistRows.length ? `<h3>Checklist</h3><ul>${checklistRows.map(c=>`<li>${escapeHtml(c.item)}: <strong>${c.status === 'attention' ? 'Needs attention' : c.status === 'replaced' ? 'Replaced' : 'OK'}</strong>${c.note ? ' — ' + escapeHtml(c.note) : ''}</li>`).join('')}</ul>` : ''}
+      ${partsUsed.length ? `<h3>Parts used</h3><ul>${partsUsed.map(p=>{ const v = VARIANTS.find(x=>x.id===p.variant_id); return `<li>${escapeHtml(v ? v.name : 'Part')} x${p.qty}</li>`; }).join('')}</ul>` : ''}
+      ${laborLine ? `<h3>Labor</h3><div style="font-size:13px">${escapeHtml(laborLine)}</div>` : ''}
       ${watch.length ? `<h3>Items to note</h3><ul>${watch.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
       ${s.next_service_due ? `<h3>Next service due</h3><div style="font-size:13px">${formatDate(s.next_service_due)}</div>` : ''}
     </div>
@@ -1162,43 +1226,262 @@ async function printCombined(serviceRecordId) {
   }
 }
 
-async function openServiceModal() {
-  document.getElementById('svcDate').value = new Date().toISOString().slice(0,10);
-  document.getElementById('svcMechanic').value = '';
-  document.getElementById('svcWorkDone').value = '';
-  document.getElementById('svcWatchItems').value = '';
-  document.getElementById('svcNextDue').value = '';
+const SVC_CHECKLIST_DEFAULT = ['Brakes','Gears / Drivetrain','Tires / Wheels','Headset','Bottom Bracket','Cables / Housing','Chain','Suspension','Frame / Alignment'];
+function svcChecklistDefault() { return SVC_CHECKLIST_DEFAULT.map(item => ({ item, status: 'ok', note: '' })); }
+
+let svcEditingId = null;
+let svcOrigInvoiceId = null;
+let svcOrigParts = [];
+let currentServiceChecklist = [];
+let currentServiceParts = [];
+let currentServicePhotos = [];
+
+function renderSvcChecklist() {
+  const el = document.getElementById('svcChecklist');
+  el.innerHTML = currentServiceChecklist.map((row, i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--border)">
+      <div style="flex:1;font-size:13px">${escapeHtml(row.item)}</div>
+      <select onchange="svcSetChecklistStatus(${i}, this.value)" style="border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-size:12px">
+        <option value="ok" ${row.status==='ok'?'selected':''}>OK</option>
+        <option value="attention" ${row.status==='attention'?'selected':''}>Needs Attention</option>
+        <option value="replaced" ${row.status==='replaced'?'selected':''}>Replaced</option>
+      </select>
+      <input type="text" value="${escapeHtml(row.note||'')}" placeholder="Note (optional)" oninput="svcSetChecklistNote(${i}, this.value)" style="flex:1.3;border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-size:12px">
+    </div>`).join('');
+}
+function svcSetChecklistStatus(i, val) { currentServiceChecklist[i].status = val; }
+function svcSetChecklistNote(i, val) { currentServiceChecklist[i].note = val; }
+
+function renderSvcParts() {
+  const el = document.getElementById('svcPartsBody');
+  if (!currentServiceParts.length) { el.innerHTML = '<div style="font-size:12px;color:var(--text3)">No parts added.</div>'; return; }
+  el.innerHTML = currentServiceParts.map((p, i) => {
+    const v = VARIANTS.find(x => x.id === p.variant_id);
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <select onchange="svcSetPartVariant(${i}, this.value)" style="flex:2;border:1px solid var(--border2);border-radius:6px;padding:6px 8px;font-size:12px">
+        <option value="">Select variant…</option>${variantOptionsHtml(p.variant_id)}
+      </select>
+      <input type="number" min="1" value="${p.qty}" oninput="svcSetPartQty(${i}, this.value)" style="width:70px;border:1px solid var(--border2);border-radius:6px;padding:6px 8px;font-size:12px">
+      <div style="font-size:11px;color:var(--text3);width:64px">${v ? 'stock: ' + v.qty : ''}</div>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="svcRemovePartRow(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+function svcAddPartRow() { currentServiceParts.push({ variant_id: '', qty: 1 }); renderSvcParts(); }
+function svcRemovePartRow(i) { currentServiceParts.splice(i, 1); renderSvcParts(); }
+function svcSetPartVariant(i, val) { currentServiceParts[i].variant_id = val; renderSvcParts(); }
+function svcSetPartQty(i, val) { currentServiceParts[i].qty = Math.max(1, parseInt(val) || 1); }
+
+function svcUpdateLaborCost() {
+  const h = parseFloat(document.getElementById('svcLaborHours').value) || 0;
+  const r = parseFloat(document.getElementById('svcLaborRate').value) || 0;
+  document.getElementById('svcLaborCost').textContent = (h && r) ? ('Labor cost: ' + money(h * r)) : '';
+}
+
+async function svcUploadPhotos(fileList) {
+  const files = Array.from(fileList || []);
+  if (!files.length) return;
+  const statusEl = document.getElementById('svcPhotoStatus');
+  statusEl.textContent = `Uploading ${files.length} photo(s)…`;
+  for (const file of files) {
+    const path = `${Date.now()}_${Math.random().toString(36).slice(2,8)}_${file.name.replace(/[^a-zA-Z0-9.\-_]/g,'_')}`;
+    const { error } = await sb.storage.from('service-photos').upload(path, file, { upsert: false });
+    if (error) { statusEl.textContent = 'Upload failed: ' + error.message; continue; }
+    const { data: pub } = sb.storage.from('service-photos').getPublicUrl(path);
+    currentServicePhotos.push({ url: pub.publicUrl, path, stage: 'after', caption: '' });
+  }
+  document.getElementById('svcPhotoInput').value = '';
+  statusEl.textContent = '';
+  renderSvcPhotos();
+}
+function renderSvcPhotos() {
+  const el = document.getElementById('svcPhotosGrid');
+  el.innerHTML = currentServicePhotos.map((p, i) => `
+    <div style="width:100px">
+      <img src="${p.url}" style="width:100px;height:100px;object-fit:cover;border-radius:6px;border:1px solid var(--border2)">
+      <select onchange="svcSetPhotoStage(${i}, this.value)" style="width:100%;font-size:11px;margin-top:4px;border:1px solid var(--border2);border-radius:4px">
+        <option value="before" ${p.stage==='before'?'selected':''}>Before</option>
+        <option value="after" ${p.stage==='after'?'selected':''}>After</option>
+      </select>
+      <button type="button" class="btn btn-ghost btn-sm" style="width:100%;margin-top:4px" onclick="svcRemovePhoto(${i})">Remove</button>
+    </div>`).join('');
+}
+function svcSetPhotoStage(i, val) { currentServicePhotos[i].stage = val; }
+async function svcRemovePhoto(i) {
+  const p = currentServicePhotos[i];
+  if (p.path) await sb.storage.from('service-photos').remove([p.path]);
+  currentServicePhotos.splice(i, 1);
+  renderSvcPhotos();
+}
+
+function svcPopulateCustomerSelect(selectedCustomerId) {
+  const sel = document.getElementById('svcCustomerSelect');
+  sel.innerHTML = '<option value="">— Select customer —</option>' + CUSTOMERS.map(c => `<option value="${c.id}" ${c.id===selectedCustomerId?'selected':''}>${escapeHtml(c.name)}</option>`).join('');
+}
+function svcPopulateBikeSelect(customerId, selectedBikeId) {
+  const sel = document.getElementById('svcBikeSelect');
+  const bikes = customerId ? BIKES.filter(b => b.customer_id === customerId) : [];
+  sel.innerHTML = '<option value="">— Select bike —</option>' + bikes.map(b => `<option value="${b.id}" ${b.id===selectedBikeId?'selected':''}>${escapeHtml([b.brand,b.model].filter(Boolean).join(' ')||'Unnamed bike')}</option>`).join('');
+}
+async function svcOnCustomerChange() {
+  const custId = document.getElementById('svcCustomerSelect').value;
+  svcPopulateBikeSelect(custId, null);
+  await svcPopulateInvoiceSelect(custId, null);
+}
+async function svcPopulateInvoiceSelect(customerId, selectedInvoiceId) {
   const sel = document.getElementById('svcInvoiceId');
   sel.innerHTML = '<option value="">— No linked invoice —</option>';
-  const b = BIKES.find(x => x.id === currentBikeId);
-  if (b) {
-    const c = CUSTOMERS.find(x => x.id === b.customer_id);
-    if (c) {
-      const { data: custInvoices } = await sb.from('invoices').select('id, full_invoice_no, invoice_date, total').eq('customer_name', c.name).order('invoice_date', { ascending: false });
-      (custInvoices || []).forEach(inv => {
-        sel.innerHTML += `<option value="${inv.id}">${escapeHtml(inv.full_invoice_no || '')} — ${formatDate(inv.invoice_date)} (${money(inv.total)})</option>`;
-      });
-    }
+  const c = CUSTOMERS.find(x => x.id === customerId);
+  if (!c) return;
+  const { data: custInvoices } = await sb.from('invoices').select('id, full_invoice_no, invoice_date, total').eq('customer_name', c.name).order('invoice_date', { ascending: false });
+  (custInvoices || []).forEach(inv => {
+    sel.innerHTML += `<option value="${inv.id}" ${inv.id===selectedInvoiceId?'selected':''}>${escapeHtml(inv.full_invoice_no || '')} — ${formatDate(inv.invoice_date)} (${money(inv.total)})</option>`;
+  });
+}
+function svcOnInvoiceChange() { renderSvcParts(); }
+
+async function openServiceModal(bikeId, recordId) {
+  svcEditingId = recordId || null;
+  svcOrigInvoiceId = null;
+  svcOrigParts = [];
+  currentServiceChecklist = svcChecklistDefault();
+  currentServiceParts = [];
+  currentServicePhotos = [];
+
+  document.getElementById('svcModalTitle').textContent = recordId ? 'Edit Service Record' : 'Log Service';
+  document.getElementById('svcId').value = recordId || '';
+
+  let record = null;
+  if (recordId) {
+    const { data } = await sb.from('service_records').select('*').eq('id', recordId).single();
+    record = data;
   }
+
+  const effectiveBikeId = record ? record.bike_id : (bikeId || currentBikeId || '');
+  const b = BIKES.find(x => x.id === effectiveBikeId);
+  const custId = record ? (record.customer_id || (b ? b.customer_id : '')) : (b ? b.customer_id : '');
+
+  svcPopulateCustomerSelect(custId);
+  svcPopulateBikeSelect(custId, effectiveBikeId);
+  await svcPopulateInvoiceSelect(custId, record ? record.invoice_id : '');
+
+  document.getElementById('svcDate').value = record ? record.service_date : new Date().toISOString().slice(0,10);
+  document.getElementById('svcMechanic').value = record ? (record.mechanic || '') : '';
+  document.getElementById('svcWorkDone').value = record ? (record.work_done || '') : '';
+  document.getElementById('svcWatchItems').value = record ? (record.watch_items || '') : '';
+  document.getElementById('svcNextDue').value = record ? (record.next_service_due || '') : '';
+  document.getElementById('svcLaborHours').value = (record && record.labor_hours != null) ? record.labor_hours : '';
+  document.getElementById('svcLaborRate').value = (record && record.labor_rate != null) ? record.labor_rate : '';
+  svcUpdateLaborCost();
+
+  if (record) {
+    if (Array.isArray(record.checklist) && record.checklist.length) currentServiceChecklist = record.checklist;
+    currentServiceParts = Array.isArray(record.parts_used) ? record.parts_used.map(p => ({ variant_id: p.variant_id, qty: p.qty })) : [];
+    currentServicePhotos = Array.isArray(record.photos) ? record.photos : [];
+    svcOrigInvoiceId = record.invoice_id || null;
+    svcOrigParts = currentServiceParts.map(p => ({ ...p }));
+  }
+
+  renderSvcChecklist();
+  renderSvcParts();
+  renderSvcPhotos();
+
   document.getElementById('serviceModalBackdrop').classList.add('open');
 }
+
 function closeServiceModal() { document.getElementById('serviceModalBackdrop').classList.remove('open'); }
 
 async function saveService() {
-  if (!currentBikeId) return;
+  const bikeId = document.getElementById('svcBikeSelect').value;
+  const customerId = document.getElementById('svcCustomerSelect').value || null;
+  if (!bikeId) { alert('Please select a bike.'); return; }
+  const invoiceId = document.getElementById('svcInvoiceId').value || null;
+  const validParts = currentServiceParts.filter(p => p.variant_id);
+
   const payload = {
-    bike_id: currentBikeId,
+    bike_id: bikeId,
+    customer_id: customerId,
     service_date: document.getElementById('svcDate').value || new Date().toISOString().slice(0,10),
     mechanic: document.getElementById('svcMechanic').value.trim() || null,
     work_done: document.getElementById('svcWorkDone').value.trim() || null,
     watch_items: document.getElementById('svcWatchItems').value.trim() || null,
     next_service_due: document.getElementById('svcNextDue').value || null,
-    invoice_id: document.getElementById('svcInvoiceId').value || null,
+    invoice_id: invoiceId,
+    checklist: currentServiceChecklist,
+    parts_used: validParts,
+    labor_hours: parseFloat(document.getElementById('svcLaborHours').value) || null,
+    labor_rate: parseFloat(document.getElementById('svcLaborRate').value) || null,
+    photos: currentServicePhotos,
   };
-  const { error } = await sb.from('service_records').insert(payload);
-  if (error) { alert('Save failed: ' + error.message); return; }
+
+  // Reverse stock effect of the previously saved version of this record, if it had
+  // deducted stock (i.e. was linked to an invoice with parts), before applying the new one.
+  if (svcEditingId && svcOrigInvoiceId && svcOrigParts.length) {
+    for (const p of svcOrigParts) {
+      const v = VARIANTS.find(x => x.id === p.variant_id);
+      if (v) await sb.from('product_variants').update({ qty: (Number(v.qty)||0) + Number(p.qty) }).eq('id', p.variant_id);
+    }
+    await loadProducts();
+  }
+
+  let recordId = svcEditingId;
+  if (svcEditingId) {
+    const { error } = await sb.from('service_records').update(payload).eq('id', svcEditingId);
+    if (error) { alert('Save failed: ' + error.message); return; }
+  } else {
+    const { data, error } = await sb.from('service_records').insert(payload).select('id').single();
+    if (error) { alert('Save failed: ' + error.message); return; }
+    recordId = data.id;
+  }
+
+  // Deduct stock for the new set of parts — only when linked to an invoice.
+  if (invoiceId && validParts.length) {
+    for (const p of validParts) {
+      const v = VARIANTS.find(x => x.id === p.variant_id);
+      if (!v) continue;
+      await sb.from('product_variants').update({ qty: (Number(v.qty)||0) - Number(p.qty) }).eq('id', p.variant_id);
+    }
+    await loadProducts();
+  }
+
   closeServiceModal();
-  await openBikeDetail(currentBikeId);
+  if (currentBikeId) await openBikeDetail(currentBikeId);
+  const svcTab = document.getElementById('tab-servicing');
+  if (svcTab && svcTab.classList.contains('active')) await loadServicingList();
+}
+
+let ALL_SERVICE_RECORDS = [];
+async function loadServicingList() {
+  const { data, error } = await sb.from('service_records').select('*').order('service_date', { ascending: false });
+  ALL_SERVICE_RECORDS = error ? [] : (data || []);
+  renderServicingList();
+}
+function renderServicingList() {
+  const tbody = document.getElementById('servicingRows');
+  if (!tbody) return;
+  const q = (document.getElementById('svcSearch')?.value || '').trim().toLowerCase();
+  const rows = ALL_SERVICE_RECORDS.map(s => {
+    const b = BIKES.find(x => x.id === s.bike_id);
+    const c = CUSTOMERS.find(x => x.id === (s.customer_id || (b ? b.customer_id : null)));
+    const invNo = s.invoice_id ? (INVOICES.find(i => i.id === s.invoice_id)?.full_invoice_no || '') : '';
+    return { s, b, c, invNo };
+  }).filter(({ b, c, invNo }) => !q || invNo.toLowerCase().includes(q) || (c?.name||'').toLowerCase().includes(q) || ([b?.brand,b?.model].filter(Boolean).join(' ')||'').toLowerCase().includes(q));
+
+  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="7" class="cell-muted">${q ? 'No service records match “' + escapeHtml(q) + '”' : 'No service records yet'}</td></tr>`; return; }
+
+  tbody.innerHTML = rows.map(({ s, b, c, invNo }) => `
+    <tr>
+      <td>${formatDate(s.service_date)}</td>
+      <td>${c ? `<span style="cursor:pointer;text-decoration:underline" onclick="openCustomerDetail('${c.id}')">${escapeHtml(c.name)}</span>` : '—'}</td>
+      <td>${b ? `<span style="cursor:pointer;text-decoration:underline" onclick="openBikeDetail('${b.id}')">${escapeHtml([b.brand,b.model].filter(Boolean).join(' ')||'Unnamed bike')}</span>` : '—'}</td>
+      <td>${escapeHtml(s.mechanic || '—')}</td>
+      <td>${invNo ? escapeHtml(invNo) : '<span class="cell-muted">—</span>'}</td>
+      <td>${s.next_service_due ? formatDate(s.next_service_due) : '—'}</td>
+      <td style="text-align:right;white-space:nowrap">
+        <button class="btn btn-ghost btn-sm" onclick="openServiceModal(null,'${s.id}')">Edit</button>
+        ${s.invoice_id ? `<button class="btn btn-ghost btn-sm" onclick="printCombined('${s.id}')">Print</button>` : ''}
+      </td>
+    </tr>`).join('');
 }
 
 function printServicingReport() {
@@ -1924,8 +2207,13 @@ async function loadInvoices() {
 function renderInvoices() {
   const tbody = document.getElementById('invoiceRows');
   if (!tbody) return;
-  if (!INVOICES.length) { tbody.innerHTML = '<tr><td colspan="5" class="cell-muted">No invoices yet</td></tr>'; return; }
-  tbody.innerHTML = INVOICES.map(inv => `
+  const q = (document.getElementById('invoiceSearch')?.value || '').trim().toLowerCase();
+  const list = q ? INVOICES.filter(inv =>
+    (inv.full_invoice_no || inv.invoice_no || '').toLowerCase().includes(q) ||
+    (inv.customer_name || '').toLowerCase().includes(q)
+  ) : INVOICES;
+  if (!list.length) { tbody.innerHTML = `<tr><td colspan="5" class="cell-muted">${q ? 'No invoices match “' + escapeHtml(q) + '”' : 'No invoices yet'}</td></tr>`; return; }
+  tbody.innerHTML = list.map(inv => `
     <tr>
       <td class="cell-strong clickable" onclick="openInvoiceEditor('${inv.id}')">${escapeHtml(inv.full_invoice_no || inv.invoice_no)}</td>
       <td>${escapeHtml(inv.customer_name || '—')}</td>
