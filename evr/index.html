@@ -357,7 +357,13 @@
                 Sizing Guide
                 <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
-              <div class="accordion-body"><img id="pdrawer-sizechart-img" src="" alt="Size chart" style="width:100%;height:auto;border-radius:8px;display:block"></div>
+              <div class="accordion-body">
+                <img id="pdrawer-sizechart-img" src="" alt="Size chart" style="width:100%;height:auto;border-radius:8px;display:block;cursor:zoom-in" onclick="openSizeChartZoom()">
+                <button type="button" class="sizechart-zoom-btn" onclick="openSizeChartZoom()">
+                  <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M14 14l4 4M9 6.5v5M6.5 9h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  Zoom in
+                </button>
+              </div>
             </div>
             <div class="accordion-item">
               <button class="accordion-head" onclick="toggleAccordion(this)">
@@ -930,6 +936,20 @@
       }
     }
 
+    function openSizeChartZoom() {
+      const src = document.getElementById('pdrawer-sizechart-img').src;
+      if (!src) return;
+      document.getElementById('sizechart-zoom-img').src = src;
+      document.getElementById('sizechart-zoom-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSizeChartZoom(e) {
+      if (e) e.stopPropagation();
+      document.getElementById('sizechart-zoom-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
     function priceToNumber(priceSGD) {
       if (!priceSGD) return 0;
       const m = String(priceSGD).match(/[\d.]+/);
@@ -1109,5 +1129,9 @@
 
   </script>
 
+  <div id="sizechart-zoom-overlay" class="sizechart-zoom-overlay" onclick="closeSizeChartZoom(event)">
+    <img id="sizechart-zoom-img" src="" alt="Size chart, zoomed">
+    <button type="button" class="sizechart-zoom-close" onclick="closeSizeChartZoom(event)">&times;</button>
+  </div>
 </body>
 </html>

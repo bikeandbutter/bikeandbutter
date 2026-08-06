@@ -302,6 +302,13 @@ body.loaded .rs-hero-content .btn-orange{opacity:1;transform:translateY(0);trans
 .accordion-item.open .accordion-head svg{transform:rotate(180deg)}
 .accordion-body{max-height:0;overflow:hidden;transition:max-height 0.25s ease}
 .accordion-item.open .accordion-body{max-height:200px}
+#pdrawer-sizeguide-item.accordion-item.open .accordion-body{max-height:2000px}
+.sizechart-zoom-btn{display:flex;align-items:center;gap:6px;margin:10px 0 16px;padding:7px 12px;background:none;border:1px solid var(--border);border-radius:20px;color:var(--white-dim);font-size:11.5px;font-weight:600;cursor:pointer}
+.sizechart-zoom-btn:hover{color:var(--white);border-color:var(--white-dim)}
+.sizechart-zoom-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;padding:32px;cursor:zoom-out}
+.sizechart-zoom-overlay.open{display:flex}
+.sizechart-zoom-overlay img{max-width:100%;max-height:100%;border-radius:8px;cursor:default}
+.sizechart-zoom-close{position:absolute;top:20px;right:24px;background:none;border:none;color:#fff;font-size:32px;line-height:1;cursor:pointer;padding:4px 10px}
 .accordion-body p{font-size:12.5px;color:var(--white-dim);line-height:1.7;padding-bottom:16px}
 
 /* ============================================================
