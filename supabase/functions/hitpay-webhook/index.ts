@@ -100,6 +100,85 @@ async function sendOwnerNotification(order: any, items: any[]) {
   }
 }
 
+async function sendCustomerConfirmation(order: any, items: any[]) {
+  const gmailAddress = Deno.env.get('GMAIL_ADDRESS');
+  const gmailAppPassword = Deno.env.get('GMAIL_APP_PASSWORD');
+
+  if (!gmailAddress || !gmailAppPassword) {
+    console.error('GMAIL_ADDRESS or GMAIL_APP_PASSWORD not set — skipping customer confirmation email');
+    return;
+  }
+
+  // Deliberately NO sku column here — this goes to the customer, and the
+  // SKU is what lets us order stock from our supplier. Keep it internal.
+  const itemRows = items.map((item) =>
+    `<tr>
+       <td style="padding:6px 10px;border-bottom:1px solid #eee;">${item.name}</td>
+       <td style="padding:6px 10px;border-bottom:1px solid #eee;">${item.colour || ''}</td>
+       <td style="padding:6px 10px;border-bottom:1px solid #eee;">${item.size || ''}</td>
+       <td style="padding:6px 10px;border-bottom:1px solid #eee;">${item.qty}</td>
+       <td style="padding:6px 10px;border-bottom:1px solid #eee;">S$${item.line_total_sgd}</td>
+     </tr>`
+  ).join('');
+
+  const html = `
+    <h2>Thanks for your order, ${order.customer_name}!</h2>
+    <p>We've received your payment for order <strong>${order.order_number}</strong>.
+       This is a pre-order — items ship from our warehouse in approximately
+       10 working days. We'll be in touch if anything in your order can't be
+       fulfilled.</p>
+    <table style="border-collapse:collapse;width:100%;font-family:sans-serif;font-size:13px;margin-top:12px;">
+      <thead>
+        <tr style="background:#f4f4f4;text-align:left;">
+          <th style="padding:6px 10px;">Item</th>
+          <th style="padding:6px 10px;">Colour</th>
+          <th style="padding:6px 10px;">Size</th>
+          <th style="padding:6px 10px;">Qty</th>
+          <th style="padding:6px 10px;">Line Total</th>
+        </tr>
+      </thead>
+      <tbody>${itemRows}</tbody>
+    </table>
+    <p style="margin-top:14px;">
+      <strong>Subtotal:</strong> S$${order.subtotal_sgd}<br/>
+      <strong>Shipping:</strong> S$${order.shipping_fee_sgd}<br/>
+      <strong>Total paid:</strong> S$${order.total_sgd}
+    </p>
+    <p style="margin-top:14px;">
+      <strong>Delivery address:</strong> ${order.delivery_address}<br/>
+      ${order.delivery_notes ? `<strong>Notes:</strong> ${order.delivery_notes}<br/>` : ''}
+    </p>
+    <p style="margin-top:14px;color:#666;font-size:12px;">
+      Questions about your order? Just reply to this email.
+    </p>
+  `;
+
+  const client = new SMTPClient({
+    connection: {
+      hostname: 'smtp.gmail.com',
+      port: 465,
+      tls: true,
+      auth: {
+        username: gmailAddress,
+        password: gmailAppPassword,
+      },
+    },
+  });
+
+  try {
+    await client.send({
+      from: gmailAddress,
+      to: order.email,
+      subject: `Your order ${order.order_number} is confirmed — Bike & Butter`,
+      html,
+    });
+  } catch (err) {
+    console.error('Gmail SMTP send (customer) failed:', err);
+  } finally {
+    await client.close();
+  }
+}
+
 async function verifyHmac(fields: Record<string, string>, salt: string): Promise<boolean> {
   const { hmac, ...rest } = fields;
   if (!hmac) return false;
@@ -187,6 +266,7 @@ Deno.serve(async (req) => {
           console.error('Failed to fetch order items for email:', itemsErr);
         } else {
           await sendOwnerNotification(order, items || []);
+          await sendCustomerConfirmation(order, items || []);
         }
       }
     }
