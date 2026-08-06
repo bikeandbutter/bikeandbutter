@@ -471,14 +471,6 @@ body.loaded .rs-hero-content .btn-orange{opacity:1;transform:translateY(0);trans
 .pform-field-error{color:#d9534f;font-size:11.5px;margin-top:4px;margin-bottom:6px}
 
 /* ============================================================
-   DEMO DISCLAIMER — deliberately distinct from normal marketing
-   banner styling (different color, bold) so it reads as a notice,
-   not a promo. Sticky so it stays visible while scrolling.
-   ============================================================ */
-.demo-bar{background:#fff3cd;color:#7a5c00;text-align:center;font-size:12.5px;font-weight:700;padding:9px 16px;letter-spacing:0.2px;border-bottom:1px solid #f0d878}
-.checkout-payment-disclaimer{background:#fff3cd;border:1px solid #f0d878;color:#7a5c00;font-size:12px;font-weight:600;padding:12px 14px;border-radius:6px;margin-bottom:14px;text-align:center;line-height:1.6}
-
-/* ============================================================
    NAV LOGOS — actual brand marks instead of text
    ============================================================ */
 .nav-logo-img{display:block;width:auto!important;object-fit:contain;flex-shrink:0}

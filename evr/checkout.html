@@ -28,7 +28,6 @@
 </head>
 <body>
 
-  <div class="demo-bar">DEMO SITE — this store is in testing. No orders placed here will be processed, charged, or fulfilled.</div>
   <nav class="rs-nav">
     <div class="nav-left-group">
       <div class="nav-left-icons">
@@ -105,9 +104,6 @@
             <div class="checkout-shipping-disclaimer">
               Orders of <strong>S$150 or more</strong> ship free. Orders under S$150 are charged a flat <strong>S$15</strong> shipping fee, included in the total above.
             </div>
-            <div class="checkout-payment-disclaimer">
-              This is a demo checkout. Submitting this form will not create a real order, charge any payment method, or result in delivery of any product.
-            </div>
             <button class="pdrawer-btn-primary" id="co-submit" style="width:100%;margin-top:16px;" onclick="submitCartOrder()">Proceed to Payment →</button>
             <p class="pdrawer-note" style="margin-top:14px;">This is a pre-order — items ship from our warehouse (~10 working days). Your order is confirmed once payment is received. If any item can't be fulfilled, that portion is refunded and the rest of your order proceeds as normal.</p>
             <div id="co-success" class="pform-success" style="display:none;margin-top:12px;">✓ Order created! Redirecting you to payment…</div>
@@ -150,7 +146,7 @@
       const fillEl = document.getElementById('sp-fill');
       fillEl.style.width = pct + '%';
       if (remaining <= 0) {
-        messageEl.textContent = "You've got free shipping! 🎉";
+        messageEl.textContent = "You've got free shipping!";
         messageEl.classList.add('qualified');
         fillEl.classList.add('qualified');
       } else {
