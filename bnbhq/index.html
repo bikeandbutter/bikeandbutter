@@ -1236,6 +1236,7 @@ function svcChecklistDefault() { return SVC_CHECKLIST_DEFAULT.map(item => ({ ite
 let svcEditingId = null;
 let svcOrigInvoiceId = null;
 let svcOrigParts = [];
+let svcOrigReportNo = null;
 let currentServiceChecklist = [];
 let currentServiceParts = [];
 let currentServicePhotos = [];
@@ -1342,6 +1343,7 @@ async function openServiceModal(bikeId, recordId) {
   svcEditingId = recordId || null;
   svcOrigInvoiceId = null;
   svcOrigParts = [];
+  svcOrigReportNo = null;
   currentServiceChecklist = svcChecklistDefault();
   currentServiceParts = [];
   currentServicePhotos = [];
@@ -1374,6 +1376,7 @@ async function openServiceModal(bikeId, recordId) {
     currentServicePhotos = Array.isArray(record.photos) ? record.photos : [];
     svcOrigInvoiceId = record.invoice_id || null;
     svcOrigParts = currentServiceParts.map(p => ({ ...p }));
+    svcOrigReportNo = record.report_no || null;
   }
 
   renderSvcChecklist();
@@ -1399,6 +1402,15 @@ async function nextServiceReportNumber() {
   return prefix + String(seq).padStart(3, '0');
 }
 
+// Mirrors invoices: re-saving an existing report bumps a -01, -02, ... revision suffix
+// on the same base report number, instead of overwriting silently in place.
+function nextReportRevision(current) {
+  const base = (current || '').replace(/-\d+$/, '');
+  const m = (current || '').match(/-(\d+)$/);
+  const n = m ? parseInt(m[1], 10) + 1 : 1;
+  return base + '-' + String(n).padStart(2, '0');
+}
+
 async function saveService() {
   const bikeId = document.getElementById('svcBikeSelect').value;
   const customerId = document.getElementById('svcCustomerSelect').value || null;
@@ -1420,6 +1432,7 @@ async function saveService() {
     photos: currentServicePhotos,
   };
   if (!svcEditingId) payload.report_no = await nextServiceReportNumber();
+  else payload.report_no = nextReportRevision(svcOrigReportNo);
 
   // Reverse stock effect of the previously saved version of this record, if it had
   // deducted stock (i.e. was linked to an invoice with parts), before applying the new one.
@@ -1732,12 +1745,12 @@ function renderProducts() {
           <span style="display:inline-block;width:16px;flex-shrink:0;transition:transform .12s;transform:rotate(${isOpen ? '90deg' : '0deg'});color:var(--text3);font-size:11px">▶</span>
           <div style="min-width:0">
             <div class="cell-strong">${escapeHtml(p.name)}</div>
-            <div class="cell-muted" style="font-size:12px">${[p.category, p.brand, p.supplier].filter(Boolean).map(escapeHtml).join(' · ') || '—'}${vs.length ? ' · ' + vs.length + ' variant' + (vs.length>1?'s':'') : ''}</div>
+            <div class="cell-muted" style="font-size:12px">${vs.length ? vs.length + ' variant' + (vs.length>1?'s':'') : 'No variants yet'}</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:14px;flex-shrink:0" onclick="event.stopPropagation()">
           <div style="text-align:right">
-            <div class="${lowStock ? 'badge badge-red' : 'cell-strong'}" style="${lowStock?'':'font-size:14px'}">${totalQty}</div>
+            <div style="font-size:14px;font-weight:700;color:${lowStock ? 'var(--red)' : 'var(--text)'}">${totalQty}</div>
             <div class="cell-muted" style="font-size:10.5px">total qty</div>
           </div>
           <button class="btn btn-ghost btn-sm" onclick="openVariantModal('${p.id}')">+ Variant</button>
