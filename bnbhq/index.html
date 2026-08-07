@@ -1639,6 +1639,8 @@ function formatDate(d) { if (!d) return '—'; const dt = new Date(d); return dt
 function money(n) { const v = Number(n)||0; return '$' + v.toLocaleString('en-SG', {minimumFractionDigits:2, maximumFractionDigits:2}); }
 function shortId(id, prefix) { if (!id) return '—'; return prefix + '-' + id.replace(/-/g,'').slice(0,6).toUpperCase(); }
 const ICON_TRASH = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
+const ICON_PLUS = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
+const ICON_EDIT = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
 const ICON_UP = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>';
 const ICON_DOWN = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
 const ICON_GRIP = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>';
@@ -1745,17 +1747,17 @@ function renderProducts() {
           <span style="display:inline-block;width:16px;flex-shrink:0;transition:transform .12s;transform:rotate(${isOpen ? '90deg' : '0deg'});color:var(--text3);font-size:11px">▶</span>
           <div style="min-width:0">
             <div class="cell-strong">${escapeHtml(p.name)}</div>
-            <div class="cell-muted" style="font-size:12px">${[p.sku ? 'SKU: ' + escapeHtml(p.sku) : null, vs.length ? vs.length + ' variant' + (vs.length>1?'s':'') : 'No variants yet'].filter(Boolean).join(' · ')}</div>
+            <div class="cell-muted" style="font-size:12px">${p.sku ? escapeHtml(p.sku) : (vs.length ? vs.length + ' variant' + (vs.length>1?'s':'') : 'No variants yet')}</div>
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:14px;flex-shrink:0" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0" onclick="event.stopPropagation()">
           <div style="text-align:right">
             <div style="font-size:14px;font-weight:700;color:${lowStock ? 'var(--red)' : 'var(--text)'}">${totalQty}</div>
             <div class="cell-muted" style="font-size:10.5px">total qty</div>
           </div>
-          <button class="btn btn-ghost btn-sm" onclick="openVariantModal('${p.id}')">+ Variant</button>
-          <button class="btn btn-ghost btn-sm" onclick="openProductModal('${p.id}')">Edit</button>
-          <button class="btn btn-ghost btn-sm" onclick="deleteProduct('${p.id}')" title="Delete product and all its variants">Delete</button>
+          <button class="btn btn-ghost btn-sm" style="padding:6px 8px" title="Add variant" onclick="openVariantModal('${p.id}')">${ICON_PLUS}</button>
+          <button class="btn btn-ghost btn-sm" style="padding:6px 8px" title="Edit product" onclick="openProductModal('${p.id}')">${ICON_EDIT}</button>
+          <button class="btn btn-ghost btn-sm" style="padding:6px 8px" title="Delete product and all its variants" onclick="deleteProduct('${p.id}')">${ICON_TRASH}</button>
         </div>
       </div>
       ${isOpen ? (vs.length ? `<div class="tbl-wrap"><table>
@@ -1764,7 +1766,7 @@ function renderProducts() {
           <tr>
             <td class="clickable" onclick="openVariantModal('${p.id}','${v.id}')">${escapeHtml(v.name)}</td>
             <td class="cell-muted">${escapeHtml(v.sku || '—')}</td>
-            <td>${Number(v.qty)<=Number(v.min_qty) ? `<span class="badge badge-red">${v.qty}</span>` : v.qty}</td>
+            <td style="font-weight:700;color:${Number(v.qty)<=Number(v.min_qty) ? 'var(--red)' : 'var(--text)'}">${v.qty}</td>
             <td class="cell-muted">${money(v.wac)}</td>
             <td class="cell-strong">${money(v.sell_sgd)}</td>
             <td><button class="btn btn-ghost btn-sm" onclick="deleteVariant('${v.id}')">${ICON_TRASH}</button></td>
