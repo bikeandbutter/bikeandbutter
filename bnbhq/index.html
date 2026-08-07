@@ -393,9 +393,30 @@ tbody tr.clickable:hover { background: var(--bg3); }
           </div>
         </div>
         <div class="tiles tiles-3">
+          <div class="tile"><div class="tile-label">Workshop Revenue (this month)</div><div class="tile-val" id="statWorkshopRevenue">–</div><div class="tile-sub">Labor &amp; service, excl. parts</div></div>
+          <div class="tile"><div class="tile-label">Product Revenue (this month)</div><div class="tile-val" id="statProductRevenue">–</div><div class="tile-sub">Parts &amp; accessories sold</div></div>
+          <div class="tile"><div class="tile-label">Low Stock Items</div><div class="tile-val" id="statLowStock">–</div><div class="tile-sub">At or below reorder point</div></div>
+        </div>
+        <div class="tiles tiles-3">
           <div class="tile"><div class="tile-label">Customers</div><div class="tile-val" id="statCustomers">–</div><div class="tile-sub">Total on record</div></div>
           <div class="tile"><div class="tile-label">Bikes</div><div class="tile-val" id="statBikes">–</div><div class="tile-sub">Across all customers</div></div>
           <div class="tile"><div class="tile-label">Service Records</div><div class="tile-val" id="statServices">–</div><div class="tile-sub">Logged to date</div></div>
+        </div>
+        <div class="grid grid-sidebar">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Upcoming services due</div></div>
+            <div class="tbl-wrap"><table>
+              <thead><tr><th>Due</th><th>Bike</th><th>Owner</th></tr></thead>
+              <tbody id="dashUpcomingServices"><tr><td colspan="3" class="cell-muted">Loading…</td></tr></tbody>
+            </table></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Low stock</div></div>
+            <div class="tbl-wrap"><table>
+              <thead><tr><th>Variant</th><th>Qty</th></tr></thead>
+              <tbody id="dashLowStock"><tr><td colspan="2" class="cell-muted">Loading…</td></tr></tbody>
+            </table></div>
+          </div>
         </div>
         <div class="card">
           <div class="card-header"><div class="card-title">Recently added customers</div></div>
@@ -573,7 +594,8 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div class="page-actions"><button class="btn btn-primary" onclick="openSaleEditor()">+ New Sale</button></div>
         </div>
         <div class="card">
-          <div class="card-header">
+          <div class="card-header" style="display:flex;gap:10px;align-items:center">
+            <div class="search-input" style="width:300px"><input type="text" id="salesSearch" placeholder="Search customer or ref…" oninput="renderSales()"></div>
             <select id="salesSourceFilter" onchange="renderSales()" style="border:1px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:13px">
               <option value="">All sources</option>
             </select>
@@ -623,6 +645,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div class="page-actions"><button class="btn btn-primary" onclick="openPurchaseEditor()">+ New Purchase</button></div>
         </div>
         <div class="card">
+          <div class="card-header"><div class="search-input" style="width:340px"><input type="text" id="purchaseSearch" placeholder="Search platform or reference…" oninput="renderPurchases()"></div></div>
           <div class="tbl-wrap"><table>
             <thead><tr><th>Date</th><th>Platform</th><th>Ref</th><th>Status</th><th>Total (SGD)</th><th></th></tr></thead>
             <tbody id="purchaseRows"><tr><td colspan="6" class="cell-muted">Loading…</td></tr></tbody>
@@ -834,6 +857,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
         <label>Parts used</label>
         <div id="svcPartsBody"></div>
         <button type="button" class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="svcAddPartRow()">+ Add Part</button>
+        <button type="button" class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="svcPullPartsFromInvoice(true)" title="Replace the list below with the product line items from the linked invoice">↻ Pull from invoice</button>
       </div>
 
       <div class="field">
@@ -970,6 +994,7 @@ async function loadAll() {
     renderCustomers();
     await loadInvoices();
     await loadProducts();
+    renderDashboard(); // re-run now that PRODUCTS/VARIANTS are loaded (low stock panel needs them)
     await loadPurchases();
     await loadSales();
     document.getElementById('jeDate').value = new Date().toISOString().slice(0,10);
@@ -998,6 +1023,42 @@ async function renderDashboard() {
   document.getElementById('statBikes').textContent = BIKES.length;
   const { count } = await sb.from('service_records').select('*', { count: 'exact', head: true });
   document.getElementById('statServices').textContent = count ?? 0;
+
+  // This month's revenue split (Product vs Workshop/Service)
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
+  const monthEnd = new Date(now.getFullYear(), now.getMonth()+1, 0).toISOString().slice(0,10);
+  const { data: revEntries } = await sb.from('accounting_entries').select('account, amount')
+    .eq('account_type', 'revenue').eq('entry_type', 'credit')
+    .gte('entry_date', monthStart).lte('entry_date', monthEnd);
+  let productRev = 0, workshopRev = 0;
+  (revEntries || []).forEach(e => {
+    if (e.account === 'Product Revenue') productRev += Number(e.amount) || 0;
+    else if (e.account === 'Workshop / Service Revenue') workshopRev += Number(e.amount) || 0;
+  });
+  document.getElementById('statProductRevenue').textContent = money(productRev);
+  document.getElementById('statWorkshopRevenue').textContent = money(workshopRev);
+
+  // Low stock
+  const lowStockVariants = VARIANTS.filter(v => Number(v.qty) <= Number(v.min_qty)).sort((a,b) => Number(a.qty) - Number(b.qty));
+  document.getElementById('statLowStock').textContent = lowStockVariants.length;
+  const lowStockEl = document.getElementById('dashLowStock');
+  lowStockEl.innerHTML = lowStockVariants.length ? lowStockVariants.slice(0,8).map(v => {
+    const p = PRODUCTS.find(x => x.id === v.product_id);
+    return `<tr><td>${escapeHtml((p ? p.name + ' — ' : '') + v.name)}</td><td style="color:var(--red);font-weight:700">${v.qty}</td></tr>`;
+  }).join('') : '<tr><td colspan="2" class="cell-muted">Nothing low on stock</td></tr>';
+
+  // Upcoming services due (next 30 days)
+  const in30 = new Date(now.getTime() + 30*24*60*60*1000).toISOString().slice(0,10);
+  const today = now.toISOString().slice(0,10);
+  const { data: dueRecords } = await sb.from('service_records').select('next_service_due, bike_id, customer_id')
+    .not('next_service_due', 'is', null).gte('next_service_due', today).lte('next_service_due', in30).order('next_service_due');
+  const dueEl = document.getElementById('dashUpcomingServices');
+  dueEl.innerHTML = (dueRecords && dueRecords.length) ? dueRecords.slice(0,8).map(s => {
+    const b = BIKES.find(x => x.id === s.bike_id);
+    const c = CUSTOMERS.find(x => x.id === (s.customer_id || (b ? b.customer_id : null)));
+    return `<tr><td>${formatDate(s.next_service_due)}</td><td>${b ? escapeHtml([b.brand,b.model].filter(Boolean).join(' ')||'Unnamed bike') : '—'}</td><td>${c ? escapeHtml(c.name) : '—'}</td></tr>`;
+  }).join('') : '<tr><td colspan="3" class="cell-muted">Nothing due in the next 30 days</td></tr>';
 
   const recent = CUSTOMERS.slice(0, 6);
   const tbody = document.getElementById('dashRecentCustomers');
@@ -1337,7 +1398,19 @@ async function svcPopulateInvoiceSelect(customerId, selectedInvoiceId) {
     sel.innerHTML += `<option value="${inv.id}" ${inv.id===selectedInvoiceId?'selected':''}>${escapeHtml(inv.full_invoice_no || '')} — ${formatDate(inv.invoice_date)} (${money(inv.total)})</option>`;
   });
 }
-function svcOnInvoiceChange() { renderSvcParts(); }
+async function svcOnInvoiceChange() {
+  await svcPullPartsFromInvoice(false);
+}
+async function svcPullPartsFromInvoice(force) {
+  const invoiceId = document.getElementById('svcInvoiceId').value;
+  if (!invoiceId) { renderSvcParts(); return; }
+  if (!force && currentServiceParts.length) { renderSvcParts(); return; } // don't clobber manual entries unless explicitly asked
+  const { data: items } = await sb.from('invoice_items').select('variant_id, qty').eq('invoice_id', invoiceId).not('variant_id', 'is', null);
+  if (items && items.length) {
+    currentServiceParts = items.map(it => ({ variant_id: it.variant_id, qty: it.qty }));
+  }
+  renderSvcParts();
+}
 
 async function openServiceModal(bikeId, recordId) {
   svcEditingId = recordId || null;
@@ -2041,8 +2114,10 @@ async function loadPurchases() {
 function renderPurchases() {
   const tbody = document.getElementById('purchaseRows');
   if (!tbody) return;
-  if (!PURCHASES.length) { tbody.innerHTML = '<tr><td colspan="6" class="cell-muted">No purchases yet</td></tr>'; return; }
-  tbody.innerHTML = PURCHASES.map(p => `
+  const q = (document.getElementById('purchaseSearch')?.value || '').trim().toLowerCase();
+  const rows = q ? PURCHASES.filter(p => (p.platform||'').toLowerCase().includes(q) || (p.ref||'').toLowerCase().includes(q)) : PURCHASES;
+  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="6" class="cell-muted">${q ? 'No purchases match “'+escapeHtml(q)+'”' : 'No purchases yet'}</td></tr>`; return; }
+  tbody.innerHTML = rows.map(p => `
     <tr class="clickable" onclick="alert('Purchase detail view — coming soon. For now purchases are add-only to keep WAC history accurate.')">
       <td>${formatDate(p.purchase_date)}</td>
       <td class="cell-strong">${escapeHtml(p.platform || '—')}</td>
@@ -2174,8 +2249,9 @@ function renderSales() {
   const tbody = document.getElementById('saleRows');
   if (!tbody) return;
   const filter = document.getElementById('salesSourceFilter')?.value || '';
-  const rows = SALES.filter(s => !filter || s.source === filter);
-  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="6" class="cell-muted">No sales yet</td></tr>'; return; }
+  const q = (document.getElementById('salesSearch')?.value || '').trim().toLowerCase();
+  const rows = SALES.filter(s => (!filter || s.source === filter) && (!q || (s.customer||'').toLowerCase().includes(q) || (s.ref||'').toLowerCase().includes(q)));
+  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="6" class="cell-muted">${q ? 'No sales match “'+escapeHtml(q)+'”' : 'No sales yet'}</td></tr>`; return; }
   tbody.innerHTML = rows.map(s => `
     <tr>
       <td>${formatDate(s.sale_date)}</td>
@@ -2898,11 +2974,21 @@ async function saveInvoice() {
       { entry_date: payload.invoice_date, account: 'Inventory', account_type: 'asset', entry_type: 'credit', amount: cogs, category: 'COGS', source_type: 'invoice', source_id: invoiceId, memo: v.name + ' x' + it.qty },
     ]);
   }
-  // Revenue entry for the whole invoice, regardless of inventory linkage
-  await sb.from('accounting_entries').insert([
+  // Revenue entry for the whole invoice, split by whether each line is a product
+  // (has a linked variant — Products & Stock) or workshop/service work (labor, custom
+  // line with no variant link) — so Accounting can report them separately.
+  const productSubtotal = validItems.filter(it => it.variant_id).reduce((s, it) => s + calcItemTotal(it), 0);
+  const workshopSubtotal = validItems.filter(it => !it.variant_id).reduce((s, it) => s + calcItemTotal(it), 0);
+  const preDiscSubtotal = productSubtotal + workshopSubtotal;
+  const productRevenue = preDiscSubtotal > 0 ? grandTotal * (productSubtotal / preDiscSubtotal) : 0;
+  const workshopRevenue = grandTotal - productRevenue; // remainder, so the two always sum exactly to grandTotal
+
+  const revenueEntries = [
     { entry_date: payload.invoice_date, account: 'Accounts Receivable', account_type: 'asset', entry_type: 'debit', amount: grandTotal, category: 'Sales', source_type: 'invoice', source_id: invoiceId, memo: fullInvoiceNo },
-    { entry_date: payload.invoice_date, account: 'Sales Revenue', account_type: 'revenue', entry_type: 'credit', amount: grandTotal, category: 'Sales', source_type: 'invoice', source_id: invoiceId, memo: fullInvoiceNo },
-  ]);
+  ];
+  if (productRevenue > 0.001) revenueEntries.push({ entry_date: payload.invoice_date, account: 'Product Revenue', account_type: 'revenue', entry_type: 'credit', amount: Math.round(productRevenue*100)/100, category: 'Sales', source_type: 'invoice', source_id: invoiceId, memo: fullInvoiceNo });
+  if (workshopRevenue > 0.001) revenueEntries.push({ entry_date: payload.invoice_date, account: 'Workshop / Service Revenue', account_type: 'revenue', entry_type: 'credit', amount: Math.round(workshopRevenue*100)/100, category: 'Sales', source_type: 'invoice', source_id: invoiceId, memo: fullInvoiceNo });
+  await sb.from('accounting_entries').insert(revenueEntries);
 
   document.getElementById('invId').value = invoiceId;
   document.getElementById('invSavedNo').value = invoiceNo;
