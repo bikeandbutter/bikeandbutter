@@ -413,8 +413,8 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div class="card">
             <div class="card-header"><div class="card-title">Low stock</div></div>
             <div class="tbl-wrap"><table>
-              <thead><tr><th>Variant</th><th>Qty</th></tr></thead>
-              <tbody id="dashLowStock"><tr><td colspan="2" class="cell-muted">Loading…</td></tr></tbody>
+              <thead><tr><th>Variant</th><th>Qty</th><th></th></tr></thead>
+              <tbody id="dashLowStock"><tr><td colspan="3" class="cell-muted">Loading…</td></tr></tbody>
             </table></div>
           </div>
         </div>
@@ -816,6 +816,22 @@ tbody tr.clickable:hover { background: var(--bg3); }
   </div>
 </div>
 
+<div class="modal-backdrop" id="purchaseDetailModalBackdrop">
+  <div class="modal" style="width:560px">
+    <div class="modal-header"><div class="modal-title">Purchase Detail</div><button class="modal-close" onclick="closePurchaseDetail()">&times;</button></div>
+    <div class="modal-body" id="purchaseDetailBody"></div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closePurchaseDetail()">Close</button></div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="saleDetailModalBackdrop">
+  <div class="modal" style="width:560px">
+    <div class="modal-header"><div class="modal-title">Sale Detail</div><button class="modal-close" onclick="closeSaleDetail()">&times;</button></div>
+    <div class="modal-body" id="saleDetailBody"></div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeSaleDetail()">Close</button></div>
+  </div>
+</div>
+
 <div class="modal-backdrop" id="serviceModalBackdrop">
   <div class="modal" style="width:720px">
     <div class="modal-header"><div class="modal-title" id="svcModalTitle">Log Service</div><button class="modal-close" onclick="closeServiceModal()">&times;</button></div>
@@ -1045,8 +1061,8 @@ async function renderDashboard() {
   const lowStockEl = document.getElementById('dashLowStock');
   lowStockEl.innerHTML = lowStockVariants.length ? lowStockVariants.slice(0,8).map(v => {
     const p = PRODUCTS.find(x => x.id === v.product_id);
-    return `<tr><td>${escapeHtml((p ? p.name + ' — ' : '') + v.name)}</td><td style="color:var(--red);font-weight:700">${v.qty}</td></tr>`;
-  }).join('') : '<tr><td colspan="2" class="cell-muted">Nothing low on stock</td></tr>';
+    return `<tr><td>${escapeHtml((p ? p.name + ' — ' : '') + v.name)}</td><td style="color:var(--red);font-weight:700">${v.qty}</td><td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="openPurchaseEditor('${v.id}')">+ Purchase</button></td></tr>`;
+  }).join('') : '<tr><td colspan="3" class="cell-muted">Nothing low on stock</td></tr>';
 
   // Upcoming services due (next 30 days)
   const in30 = new Date(now.getTime() + 30*24*60*60*1000).toISOString().slice(0,10);
@@ -2111,6 +2127,71 @@ async function loadPurchases() {
   renderPurchases();
 }
 
+async function openPurchaseDetail(id) {
+  const pu = PURCHASES.find(p => p.id === id);
+  if (!pu) return;
+  const { data: items } = await sb.from('purchase_items').select('*').eq('purchase_id', id);
+  const rowsHtml = (items || []).map(it => {
+    const v = VARIANTS.find(x => x.id === it.variant_id);
+    const p = v ? PRODUCTS.find(x => x.id === v.product_id) : null;
+    const name = v ? [p?.name, v.name].filter(Boolean).join(' — ') : '(deleted variant)';
+    return `<tr><td>${escapeHtml(name)}</td><td class="cell-muted">${v ? escapeHtml(v.sku||'—') : '—'}</td><td style="text-align:center">${it.qty}</td><td style="text-align:right">${it.currency !== 'SGD' ? it.currency + ' ' + Number(it.unit_cost).toFixed(2) : money(it.unit_cost)}</td><td style="text-align:right" class="cell-strong">${money(it.line_sgd)}</td></tr>`;
+  }).join('');
+  document.getElementById('purchaseDetailBody').innerHTML = `
+    <div class="field-row fr-2" style="margin-bottom:14px">
+      <div class="field"><label>Date</label><div class="cell-strong">${formatDate(pu.purchase_date)}</div></div>
+      <div class="field"><label>Platform</label><div class="cell-strong">${escapeHtml(pu.platform || '—')}</div></div>
+    </div>
+    <div class="field-row fr-2" style="margin-bottom:14px">
+      <div class="field"><label>Status</label><div><span class="badge ${pu.status==='received'?'badge-green':'badge-yellow'}">${escapeHtml(pu.status)}</span></div></div>
+      <div class="field"><label>Reference</label><div class="cell-strong">${escapeHtml(pu.ref || '—')}</div></div>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Variant</th><th>SKU</th><th>Qty</th><th>Unit Cost</th><th>Line (SGD)</th></tr></thead>
+      <tbody>${rowsHtml || '<tr><td colspan="5" class="cell-muted">No line items</td></tr>'}</tbody>
+    </table></div>
+    <div style="display:flex;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-weight:700;font-size:15px">
+      <span>Total</span><span>${money(pu.total_sgd)}</span>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:10px">Purchases are add-only, not editable — this keeps WAC (weighted average cost) history accurate. If a purchase was entered wrong, tell me and I'll help you correct it properly rather than editing in place.</div>`;
+  document.getElementById('purchaseDetailModalBackdrop').classList.add('open');
+}
+function closePurchaseDetail() { document.getElementById('purchaseDetailModalBackdrop').classList.remove('open'); }
+
+async function openSaleDetail(id) {
+  const sl = SALES.find(s => s.id === id);
+  if (!sl) return;
+  const { data: items } = await sb.from('sale_items').select('*').eq('sale_id', id);
+  const rowsHtml = (items || []).map(it => {
+    const v = VARIANTS.find(x => x.id === it.variant_id);
+    const p = v ? PRODUCTS.find(x => x.id === v.product_id) : null;
+    const name = v ? [p?.name, v.name].filter(Boolean).join(' — ') : '(no variant linked)';
+    return `<tr><td>${escapeHtml(name)}</td><td style="text-align:center">${it.qty}</td><td style="text-align:right">${money(it.unit_price)}</td><td style="text-align:right" class="cell-strong">${money(it.qty * it.unit_price)}</td></tr>`;
+  }).join('');
+  document.getElementById('saleDetailBody').innerHTML = `
+    <div class="field-row fr-2" style="margin-bottom:14px">
+      <div class="field"><label>Date</label><div class="cell-strong">${formatDate(sl.sale_date)}</div></div>
+      <div class="field"><label>Source</label><div><span class="badge badge-neutral">${escapeHtml(sl.source || '—')}</span></div></div>
+    </div>
+    <div class="field-row fr-2" style="margin-bottom:14px">
+      <div class="field"><label>Customer</label><div class="cell-strong">${escapeHtml(sl.customer || '—')}</div></div>
+      <div class="field"><label>Reference</label><div class="cell-strong">${escapeHtml(sl.ref || '—')}</div></div>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Variant</th><th>Qty</th><th>Unit Price</th><th>Line</th></tr></thead>
+      <tbody>${rowsHtml || '<tr><td colspan="4" class="cell-muted">No line items</td></tr>'}</tbody>
+    </table></div>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:13px;line-height:1.9">
+      <div style="display:flex;justify-content:space-between"><span class="cell-muted">Gross</span><span>${money(sl.gross)}</span></div>
+      <div style="display:flex;justify-content:space-between"><span class="cell-muted">Platform fee</span><span>-${money(sl.fee)}</span></div>
+      <div style="display:flex;justify-content:space-between"><span class="cell-muted">Shipping</span><span>-${money(sl.shipping)}</span></div>
+      <div style="display:flex;justify-content:space-between"><span class="cell-muted">Returns / other deductions</span><span>-${money((sl.returns||0) + (sl.other_deductions||0))}</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:700;font-size:15px;margin-top:6px"><span>Net</span><span>${money(sl.net)}</span></div>
+    </div>`;
+  document.getElementById('saleDetailModalBackdrop').classList.add('open');
+}
+function closeSaleDetail() { document.getElementById('saleDetailModalBackdrop').classList.remove('open'); }
+
 function renderPurchases() {
   const tbody = document.getElementById('purchaseRows');
   if (!tbody) return;
@@ -2118,7 +2199,7 @@ function renderPurchases() {
   const rows = q ? PURCHASES.filter(p => (p.platform||'').toLowerCase().includes(q) || (p.ref||'').toLowerCase().includes(q)) : PURCHASES;
   if (!rows.length) { tbody.innerHTML = `<tr><td colspan="6" class="cell-muted">${q ? 'No purchases match “'+escapeHtml(q)+'”' : 'No purchases yet'}</td></tr>`; return; }
   tbody.innerHTML = rows.map(p => `
-    <tr class="clickable" onclick="alert('Purchase detail view — coming soon. For now purchases are add-only to keep WAC history accurate.')">
+    <tr class="clickable" onclick="openPurchaseDetail('${p.id}')">
       <td>${formatDate(p.purchase_date)}</td>
       <td class="cell-strong">${escapeHtml(p.platform || '—')}</td>
       <td class="cell-muted">${escapeHtml(p.ref || '—')}</td>
@@ -2130,7 +2211,7 @@ function renderPurchases() {
 
 function blankPurchaseItem() { return { id: purchaseItemSeq++, variant_id: '', qty: 1, unit_cost: 0 }; }
 
-function openPurchaseEditor() {
+function openPurchaseEditor(prefillVariantId) {
   document.getElementById('purchaseId').value = '';
   document.getElementById('purchaseDate').value = new Date().toISOString().slice(0,10);
   document.getElementById('purchasePlatform').value = '';
@@ -2140,7 +2221,7 @@ function openPurchaseEditor() {
   document.getElementById('purchaseCnyRate').value = '';
   document.getElementById('purchaseShipping').value = '0';
   document.getElementById('purchaseMisc').value = '0';
-  currentPurchaseItems = [blankPurchaseItem()];
+  currentPurchaseItems = [prefillVariantId ? { ...blankPurchaseItem(), variant_id: prefillVariantId } : blankPurchaseItem()];
   renderPurchaseItems();
   switchTab('purchase-editor');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -2253,7 +2334,7 @@ function renderSales() {
   const rows = SALES.filter(s => (!filter || s.source === filter) && (!q || (s.customer||'').toLowerCase().includes(q) || (s.ref||'').toLowerCase().includes(q)));
   if (!rows.length) { tbody.innerHTML = `<tr><td colspan="6" class="cell-muted">${q ? 'No sales match “'+escapeHtml(q)+'”' : 'No sales yet'}</td></tr>`; return; }
   tbody.innerHTML = rows.map(s => `
-    <tr>
+    <tr class="clickable" onclick="openSaleDetail('${s.id}')">
       <td>${formatDate(s.sale_date)}</td>
       <td><span class="badge badge-neutral">${escapeHtml(s.source || '—')}</span></td>
       <td class="cell-muted">${escapeHtml(s.customer || '—')}</td>
