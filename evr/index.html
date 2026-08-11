@@ -357,8 +357,9 @@
                 <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
               <div class="accordion-body">
+                <div id="pdrawer-sizechart-tables"></div>
                 <img id="pdrawer-sizechart-img" src="" alt="Size chart" style="width:100%;height:auto;border-radius:8px;display:block;cursor:zoom-in" onclick="openSizeChartZoom()">
-                <button type="button" class="sizechart-zoom-btn" onclick="openSizeChartZoom()">
+                <button type="button" id="pdrawer-sizechart-zoom-btn" class="sizechart-zoom-btn" onclick="openSizeChartZoom()">
                   <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M14 14l4 4M9 6.5v5M6.5 9h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                   Zoom in
                 </button>
@@ -462,6 +463,22 @@
         return [];
       }
 
+      // Fetch the English size chart tables (translated from the original
+      // Chinese chart images) and index by SKU for quick lookup below.
+      const sizeChartTableMap = {};
+      try {
+        const { data: chartRows, error: chartErr } = await sb
+          .from('size_chart_data')
+          .select('sku,tables');
+        if (chartErr) {
+          console.error('Failed to load size_chart_data:', chartErr);
+        } else {
+          (chartRows || []).forEach(row => { sizeChartTableMap[row.sku] = row.tables; });
+        }
+      } catch (e) {
+        console.error('size_chart_data fetch threw:', e);
+      }
+
       return data.map(p => {
         const variants = [...(p.product_variants || [])]
           .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
@@ -489,6 +506,7 @@
           gender: p.gender,
           priceSGD: (p.price_sgd === 0 || p.price_sgd === null) ? 'Price TBA' : `S$${p.price_sgd}`,
           sizeChartUrl: p.size_chart_url || null,
+          sizeChartTables: sizeChartTableMap[p.sku] || null,
           sizes,
           colours: Array.from(coloursMap.values())
         };
@@ -807,10 +825,28 @@
         ).join('');
       } else { szBlock.style.display = 'none'; }
 
-      // Sizing guide accordion tab
+      // Sizing guide accordion tab.
+      // Prefer the translated English tables (built from the original
+      // Chinese chart images) when we have them for this SKU; fall back
+      // to the raw chart image otherwise (e.g. SKUs whose chart was
+      // borrowed from a similar product's donor image).
       const sizeGuideItem = document.getElementById('pdrawer-sizeguide-item');
-      if (p.sizeChartUrl) {
-        document.getElementById('pdrawer-sizechart-img').src = imgSrc(p.sizeChartUrl);
+      const tablesContainer = document.getElementById('pdrawer-sizechart-tables');
+      const chartImg = document.getElementById('pdrawer-sizechart-img');
+      const zoomBtn = document.getElementById('pdrawer-sizechart-zoom-btn');
+
+      if (p.sizeChartTables && p.sizeChartTables.length) {
+        tablesContainer.innerHTML = renderSizeChartTables(p.sizeChartTables);
+        tablesContainer.style.display = '';
+        chartImg.style.display = 'none';
+        zoomBtn.style.display = 'none';
+        sizeGuideItem.style.display = '';
+      } else if (p.sizeChartUrl) {
+        tablesContainer.style.display = 'none';
+        tablesContainer.innerHTML = '';
+        chartImg.src = imgSrc(p.sizeChartUrl);
+        chartImg.style.display = 'block';
+        zoomBtn.style.display = '';
         sizeGuideItem.style.display = '';
       } else {
         sizeGuideItem.style.display = 'none';
@@ -933,6 +969,40 @@
       } else {
         badge.style.display = 'none';
       }
+    }
+
+    // Renders the translated English size chart tables (from size_chart_data)
+    // as clean HTML tables, replacing the original Chinese chart image.
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function renderSizeChartTables(tables) {
+      return tables.map(t => {
+        if (!t.headers || !t.headers.length || !t.rows || !t.rows.length) {
+          return t.note ? `<div class="sizechart-note">${escapeHtml(t.note)}</div>` : '';
+        }
+        const headCells = t.headers.map(h => `<th>${escapeHtml(h)}</th>`).join('');
+        const bodyRows = t.rows.map(r =>
+          `<tr><td class="sizechart-rowlabel">${escapeHtml(r.label)}</td>${
+            r.values.map(v => `<td>${escapeHtml(v)}</td>`).join('')
+          }</tr>`
+        ).join('');
+        const note = t.note ? `<div class="sizechart-note">${escapeHtml(t.note)}</div>` : '';
+        return `
+          <div class="sizechart-table-block">
+            <div class="sizechart-table-title">${escapeHtml(t.title || '')}</div>
+            <div class="sizechart-table-scroll">
+              <table class="sizechart-table">
+                <thead><tr><th></th>${headCells}</tr></thead>
+                <tbody>${bodyRows}</tbody>
+              </table>
+            </div>
+            ${note}
+          </div>`;
+      }).join('');
     }
 
     function openSizeChartZoom() {
