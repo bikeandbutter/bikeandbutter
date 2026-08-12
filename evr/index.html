@@ -12,7 +12,8 @@
   <link rel="icon" type="image/png" sizes="32x32" href="photos/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="photos/favicon-16.png" />
   <link rel="apple-touch-icon" href="photos/apple-touch-icon.png" />
-  <link rel="stylesheet" href="EVR.css?v=3" />
+  <link rel="preload" href="EVR.css?v=3" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="EVR.css?v=3" /></noscript>
   <title>Bike &amp; Butter x EVR — Cycling Apparel</title>
   <meta name="description" content="EVR cycling apparel — jerseys, bib shorts, outerwear and base layers. Singapore distributor. Elevation · Velocity · Revolution." />
   <meta name="robots" content="index, follow" />
@@ -101,7 +102,11 @@
   <!-- ── Hero: image carousel ──────────────────────────────────────── -->
   <section class="hero-carousel" id="hero-carousel">
     <div class="hero-slide active" data-slide="0">
-      <img src="photos/evr_hero_1.jpg" alt="EVR cycling apparel" id="hero-img">
+      <img
+        src="photos/evr_hero_1.webp"
+        srcset="photos/evr_hero_1_mobile.webp 800w, photos/evr_hero_1.webp 1920w"
+        sizes="100vw"
+        alt="EVR cycling apparel" id="hero-img" fetchpriority="high">
       <div class="hero-slide-overlay"></div>
       <div class="hero-slide-content">
         <div class="hero-slide-title">Elevation. Velocity. Revolution.<br>EVR S/S Collection</div>
@@ -109,7 +114,11 @@
       </div>
     </div>
     <div class="hero-slide" data-slide="1">
-      <img src="photos/evr_hero_2.jpg" alt="EVR cycling apparel">
+      <img
+        src="photos/evr_hero_2.webp"
+        srcset="photos/evr_hero_2_mobile.webp 800w, photos/evr_hero_2.webp 1920w"
+        sizes="100vw"
+        alt="EVR cycling apparel" loading="lazy">
       <div class="hero-slide-overlay"></div>
       <div class="hero-slide-content">
         <div class="hero-slide-title">Race-tuned fits.<br>Italian chamois pads.</div>
@@ -117,7 +126,11 @@
       </div>
     </div>
     <div class="hero-slide" data-slide="2">
-      <img src="photos/evr_hero_3.jpg" alt="EVR cycling apparel">
+      <img
+        src="photos/evr_hero_3.webp"
+        srcset="photos/evr_hero_3_mobile.webp 800w, photos/evr_hero_3.webp 1920w"
+        sizes="100vw"
+        alt="EVR cycling apparel" loading="lazy">
       <div class="hero-slide-overlay"></div>
       <div class="hero-slide-content">
         <div class="hero-slide-title">Official Singapore<br>Distributor</div>
