@@ -616,11 +616,26 @@
       return path || null;
     }
 
+    // Small (320x320) variant used anywhere an image displays small —
+    // catalogue grid cards and the colour-swatch thumbnail row in the
+    // drawer. Cuts payload ~87% versus the full 1000x1000 photo, since
+    // those spots never need more than a couple hundred px on screen.
+    function imgSrcThumb(path) {
+      if (!path) return null;
+      return path.replace('photos/', 'photos/thumbs/');
+    }
+
     // Get the display image for a product+colour+size combo
     function getProductImg(p, colourIdx, selectedSize) {
       const c = p.colours[colourIdx || 0];
       if (!c || !c.img) return null;
       return imgSrc(c.img);
+    }
+
+    function getProductImgThumb(p, colourIdx, selectedSize) {
+      const c = p.colours[colourIdx || 0];
+      if (!c || !c.img) return null;
+      return imgSrcThumb(c.img);
     }
 
     // ── Filters (sidebar: series, category, size — all combinable) ──
@@ -739,11 +754,12 @@
           const colourCount = p.colours.length > 1 ? p.colours.length + ' colours' : (p.colours.length === 1 ? p.colours[0].label : '');
           const sizeCount = p.sizes.length > 1 ? p.sizes.length + ' sizes' : (p.sizes.length === 1 ? p.sizes[0] : '');
           const varCount = [colourCount, sizeCount].filter(Boolean).join(' · ');
-          // Stack up to 4 colour images for the hover cycle (keeps payload reasonable)
-          const cycleImgs = p.colours.slice(0, 4).map((c, i) => getProductImg(p, i, p.sizes && p.sizes[0])).filter(Boolean);
+          // Stack up to 4 colour images for the hover cycle (keeps payload reasonable) —
+          // grid cards only ever display at a few hundred px, so use the small thumb variant.
+          const cycleImgs = p.colours.slice(0, 4).map((c, i) => getProductImgThumb(p, i, p.sizes && p.sizes[0])).filter(Boolean);
           return `<div class="sc-card reveal" style="--reveal-i:${idx % 4}" onclick="openDrawer('${p.sku}')" onmouseenter="startCardCycle(this)" onmouseleave="stopCardCycle(this)">
             <div class="sc-img-wrap">
-              ${cycleImgs.map((src, i) => `<img class="sc-img sc-img-cycle${i === 0 ? ' active' : ''}" src="${src}" alt="${p.name}" loading="lazy" decoding="async">`).join('')}
+              ${cycleImgs.map((src, i) => `<img class="sc-img sc-img-cycle${i === 0 ? ' active' : ''}" src="${src}" alt="${p.name}" loading="lazy" decoding="async" width="320" height="320">`).join('')}
               ${!cycleImgs.length ? `<div class="sc-img-ph"><span class="sc-img-ph-icon">${icon}</span></div>` : ''}
               <button class="sc-quick-add" onclick="quickAdd(event,'${p.sku}')" aria-label="Quick add to cart" title="Quick add">
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -806,9 +822,9 @@
       if (p.colours.length) {
         cBlock.style.display = '';
         thumbs.innerHTML = p.colours.map((c, i) => {
-          const thumbSrc = getProductImg(p, i, p.sizes && p.sizes[0]);
+          const thumbSrc = getProductImgThumb(p, i, p.sizes && p.sizes[0]);
           return `<button class="pdrawer-thumb${c.label === selectedColour ? ' active' : ''}" title="${c.label}" onclick="selectColour('${c.label}', ${i}, ${i}, this)">
-            ${thumbSrc ? `<img src="${thumbSrc}" alt="${c.label}">` : `<span style="background:${c.hex};display:block;width:100%;height:100%;"></span>`}
+            ${thumbSrc ? `<img src="${thumbSrc}" alt="${c.label}" loading="lazy" decoding="async" width="320" height="320">` : `<span style="background:${c.hex};display:block;width:100%;height:100%;"></span>`}
           </button>`;
         }).join('');
         colourSelect.innerHTML = p.colours.map(c =>
@@ -1054,7 +1070,7 @@
       const colour = colourObj ? colourObj.label : null;
       const size = p.sizes[0] || null;
       const unitPrice = (colourObj && colourObj.price) ? priceToNumber(colourObj.price) : priceToNumber(p.priceSGD);
-      const image = getProductImg(p, 0, size);
+      const image = getProductImgThumb(p, 0, size);
 
       const cart = getCart();
       const existing = cart.find(item => item.sku === p.sku && item.colour === colour && item.size === size);
@@ -1075,7 +1091,7 @@
       const colourIdx = p.colours.findIndex(c => c.label === selectedColour);
       const colourObj = colourIdx >= 0 ? p.colours[colourIdx] : null;
       const unitPrice = (colourObj && colourObj.price) ? priceToNumber(colourObj.price) : priceToNumber(p.priceSGD);
-      const image = getProductImg(p, colourIdx >= 0 ? colourIdx : 0, selectedSize);
+      const image = getProductImgThumb(p, colourIdx >= 0 ? colourIdx : 0, selectedSize);
 
       const cart = getCart();
       // Same product+colour+size already in cart -> bump qty instead of duplicating
