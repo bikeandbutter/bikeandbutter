@@ -451,19 +451,34 @@
 
 
   <!-- ── Scripts ───────────────────────────────────────────────────── -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyD5oir2beAnURC3hy56VCA4vIaJXuu6KoGlNmF03cyXEzqSwbAzqZOH9yiKdYGlEYQ/exec";
 
     // ── Supabase connection ───────────────────────────────────────
+    // This page only ever does plain database reads (.from().select()...),
+    // so instead of loading the full @supabase/supabase-js SDK (which also
+    // bundles Auth, Storage, Realtime and Functions clients this page never
+    // uses), we load just the lightweight query engine (postgrest-js) that
+    // powers .from() under the hood. Loaded via dynamic import so it never
+    // blocks HTML parsing; `sb` is only actually used later, inside the
+    // window 'load' handler below, so there's plenty of time for this to
+    // resolve first.
     const SUPABASE_URL = "https://aeszkgesbqxfqzuwintb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_HLEeqpfnhWJ3kr_AHJIffA_9FOE0aHV";
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let sb = null;
+    const sbReady = import('https://cdn.jsdelivr.net/npm/@supabase/postgrest-js/+esm')
+      .then(({ PostgrestClient }) => {
+        sb = new PostgrestClient(`${SUPABASE_URL}/rest/v1`, {
+          headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+        });
+      })
+      .catch(err => console.error('Failed to load postgrest-js:', err));
 
     // Fetch products + their variants from Supabase and reshape them
     // into the exact same shape the old hardcoded PRODUCTS array used,
     // so renderGrid/getProductImg/etc below need zero changes.
     async function loadProductsFromSupabase() {
+      await sbReady; // make sure the postgrest-js dynamic import has resolved before first use
       const { data, error } = await sb
         .from('products')
         .select('sku,name,range,category,gender,price_sgd,size_run,size_chart_url,product_variants(colour,hex,size,image_path,price_sgd,created_at)')
