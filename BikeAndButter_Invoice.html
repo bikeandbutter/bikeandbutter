@@ -122,8 +122,15 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; background: #f0f0ee
 .invnum-wrap > .field { flex: 1; margin-bottom: 0; }
 .rev-field { width: 72px; flex-shrink: 0; }
 .rev-field input { text-align: center; }
-.line-item { background: #111; border: 1px solid #2a2a2a; border-radius: 8px; padding: 11px; margin-bottom: 7px; }
+.line-item { background: #111; border: 1px solid #2a2a2a; border-radius: 8px; padding: 11px; margin-bottom: 7px; transition: opacity .15s, border-color .15s; }
+.line-item.dragging { opacity: .35; }
+.line-item.drag-over-top { border-top: 2px solid #f6ca14; }
+.line-item.drag-over-bottom { border-bottom: 2px solid #f6ca14; }
 .li-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.li-header-left { display: flex; align-items: center; gap: 8px; }
+.li-drag-handle { cursor: grab; color: #555; font-size: 14px; line-height: 1; padding: 2px 4px; user-select: none; touch-action: none; }
+.li-drag-handle:hover { color: #f6ca14; }
+.li-drag-handle:active { cursor: grabbing; }
 .li-num { color: #f6ca14; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 .btn-icon { background: none; border: none; color: #ff5555; cursor: pointer; font-size: 14px; padding: 4px 6px; border-radius: 4px; transition: background .15s; }
 .btn-icon:hover { background: rgba(255,80,80,.15); }
@@ -644,6 +651,52 @@ function calcGrand(){
   return r;
 }
 
+// ── DRAG & DROP REORDER ──
+let dragItemId=null;
+function onItemDragStart(e){
+  dragItemId=this.dataset.id;
+  this.classList.add("dragging");
+  e.dataTransfer.effectAllowed="move";
+  try{e.dataTransfer.setData("text/plain",dragItemId);}catch(err){}
+}
+function onItemDragOver(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect="move";
+  if(this.dataset.id===dragItemId)return;
+  const rect=this.getBoundingClientRect();
+  const before=(e.clientY-rect.top)<rect.height/2;
+  this.classList.toggle("drag-over-top",before);
+  this.classList.toggle("drag-over-bottom",!before);
+}
+function onItemDragLeave(){
+  this.classList.remove("drag-over-top","drag-over-bottom");
+}
+function onItemDrop(e){
+  e.preventDefault();
+  const targetId=this.dataset.id;
+  this.classList.remove("drag-over-top","drag-over-bottom");
+  if(!dragItemId||targetId===dragItemId)return;
+  const rect=this.getBoundingClientRect();
+  const before=(e.clientY-rect.top)<rect.height/2;
+  moveItem(dragItemId,targetId,before);
+}
+function onItemDragEnd(){
+  document.querySelectorAll(".line-item").forEach(el=>{
+    el.classList.remove("dragging","drag-over-top","drag-over-bottom");
+  });
+  dragItemId=null;
+}
+function moveItem(draggedId,targetId,before){
+  const fromIdx=items.findIndex(i=>String(i.id)===String(draggedId));
+  let toIdx=items.findIndex(i=>String(i.id)===String(targetId));
+  if(fromIdx===-1||toIdx===-1)return;
+  const [moved]=items.splice(fromIdx,1);
+  toIdx=items.findIndex(i=>String(i.id)===String(targetId));
+  const insertAt=before?toIdx:toIdx+1;
+  items.splice(insertAt,0,moved);
+  renderLineItems();renderInvoice();
+}
+
 // ── ITEM MUTATORS ──
 function addItem(){items.push({id:uid++,desc:"",qty:1,price:0,subs:[],discs:[]});renderLineItems();renderInvoice();}
 function removeItem(id){if(items.length<=1)return;items=items.filter(i=>i.id!==id);renderLineItems();renderInvoice();}
@@ -674,7 +727,12 @@ function setInvDisc(id,f,v){
 function renderLineItems(){
   const c=document.getElementById("lineItemsEditor");c.innerHTML="";
   items.forEach((it,idx)=>{
-    const el=document.createElement("div");el.className="line-item";
+    const el=document.createElement("div");el.className="line-item";el.dataset.id=it.id;el.draggable=true;
+    el.addEventListener("dragstart",onItemDragStart);
+    el.addEventListener("dragover",onItemDragOver);
+    el.addEventListener("dragleave",onItemDragLeave);
+    el.addEventListener("drop",onItemDrop);
+    el.addEventListener("dragend",onItemDragEnd);
     const subHTML=it.subs.map((s,si)=>`
       <div class="subitem-row">
         <span class="sub-lbl">${ALPHA[si%26]})</span>
@@ -697,7 +755,10 @@ function renderLineItems(){
       </div>`).join("");
     el.innerHTML=`
       <div class="li-header">
-        <span class="li-num">Item ${idx+1}</span>
+        <div class="li-header-left">
+          <span class="li-drag-handle" title="Drag to reorder">&#x2630;</span>
+          <span class="li-num">Item ${idx+1}</span>
+        </div>
         ${items.length>1?`<button class="btn-icon" onclick="removeItem(${it.id})">&#x2715;</button>`:""}
       </div>
       <div class="field"><label>Description</label>
