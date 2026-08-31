@@ -2254,19 +2254,23 @@ function variantLabel(v) {
 }
 // Lightweight searchable variant picker: a text input + filtered dropdown list,
 // used in place of a plain <select> so typing narrows results (like the old Hub).
-function variantPickerHtml(idx, selectedId) {
+// Generic searchable variant picker — a text input + filtered floating dropdown, used
+// wherever a plain <select> of variants would otherwise be too slow to scan (sale items,
+// invoice line items' inventory link). `ctx` distinguishes which array/updater to call
+// when a result is picked ('sale' -> currentSaleItems/updateSaleItem, 'invoice' -> currentInvoiceItems/updateItem).
+function variantPickerHtml(ctx, idx, selectedId, placeholder) {
   const v = VARIANTS.find(x => x.id === selectedId);
   const displayVal = v ? variantLabel(v) : '';
   return `
     <div class="variant-picker" style="position:relative;flex:1">
-      <input type="text" class="variant-picker-input" data-idx="${idx}"
-        value="${escapeHtml(displayVal)}" placeholder="Search variant…"
+      <input type="text" class="variant-picker-input" data-ctx="${ctx}" data-idx="${idx}"
+        value="${escapeHtml(displayVal)}" placeholder="${escapeHtml(placeholder || 'Search variant…')}"
         autocomplete="off"
-        style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px"
-        oninput="onVariantPickerInput(${idx}, this.value)"
-        onfocus="onVariantPickerInput(${idx}, this.value)"
-        onblur="setTimeout(()=>closeVariantPicker(${idx}), 150)">
-      <input type="hidden" class="variant-picker-value" data-idx="${idx}" value="${selectedId||''}">
+        style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px;background:var(--bg2);color:var(--text);font-family:inherit"
+        oninput="onVariantPickerInput('${ctx}', ${idx}, this.value)"
+        onfocus="onVariantPickerInput('${ctx}', ${idx}, this.value)"
+        onblur="setTimeout(()=>closeVariantPicker('${ctx}', ${idx}), 150)">
+      <input type="hidden" class="variant-picker-value" data-ctx="${ctx}" data-idx="${idx}" value="${selectedId||''}">
     </div>`;
 }
 // Dropdown is rendered into a body-level container and positioned with fixed coordinates
@@ -2282,31 +2286,37 @@ function getVariantPickerOverlay() {
   }
   return el;
 }
-function onVariantPickerInput(idx, text) {
-  const input = document.querySelector(`.variant-picker-input[data-idx="${idx}"]`);
+function onVariantPickerInput(ctx, idx, text) {
+  const input = document.querySelector(`.variant-picker-input[data-ctx="${ctx}"][data-idx="${idx}"]`);
   const overlay = getVariantPickerOverlay();
   if (!input) return;
   const q = (text || '').toLowerCase();
   const matches = VARIANTS.filter(v => variantLabel(v).toLowerCase().includes(q)).slice(0, 50);
-  overlay.innerHTML = matches.length
-    ? matches.map(v => `<div class="variant-picker-option" style="padding:8px 10px;font-size:12px;cursor:pointer;white-space:nowrap" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''" onmousedown="pickVariant(${idx}, '${v.id}')">${escapeHtml(variantLabel(v))} <span style="color:var(--text3)">— WAC ${money(v.wac)}</span></div>`).join('')
-    : `<div style="padding:8px 10px;font-size:12px;color:var(--text3)">No matches</div>`;
+  const noLinkOption = ctx === 'invoice'
+    ? `<div class="variant-picker-option" style="padding:8px 10px;font-size:12px;cursor:pointer;color:var(--text3)" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''" onmousedown="pickVariant('${ctx}', ${idx}, '')">— No inventory link (e.g. mechanic-owned part) —</div>`
+    : '';
+  overlay.innerHTML = noLinkOption + (matches.length
+    ? matches.map(v => `<div class="variant-picker-option" style="padding:8px 10px;font-size:12px;cursor:pointer;white-space:nowrap" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''" onmousedown="pickVariant('${ctx}', ${idx}, '${v.id}')">${escapeHtml(variantLabel(v))} <span style="color:var(--text3)">— WAC ${money(v.wac)}</span></div>`).join('')
+    : `<div style="padding:8px 10px;font-size:12px;color:var(--text3)">No matches</div>`);
   const r = input.getBoundingClientRect();
   overlay.style.left = r.left + 'px';
   overlay.style.top = (r.bottom + 2) + 'px';
   overlay.style.width = Math.max(r.width, 260) + 'px';
   overlay.style.display = 'block';
+  overlay.dataset.ctx = ctx;
   overlay.dataset.idx = idx;
 }
-function closeVariantPicker(idx) {
+function closeVariantPicker(ctx, idx) {
   const overlay = document.getElementById('variantPickerOverlay');
-  if (overlay && String(overlay.dataset.idx) === String(idx)) overlay.style.display = 'none';
+  if (overlay && overlay.dataset.ctx === ctx && String(overlay.dataset.idx) === String(idx)) overlay.style.display = 'none';
 }
-function pickVariant(idx, variantId) {
+function pickVariant(ctx, idx, variantId) {
   const overlay = document.getElementById('variantPickerOverlay');
   if (overlay) overlay.style.display = 'none';
-  updateSaleItem(idx, 'variant_id', variantId);
+  if (ctx === 'sale') updateSaleItem(idx, 'variant_id', variantId);
+  else updateItem(idx, 'variant_id', variantId);
 }
+
 
 function renderPurchaseItems() {
   const currency = document.getElementById('purchaseCurrency').value.trim().toUpperCase() || 'SGD';
@@ -2444,7 +2454,7 @@ function renderSaleItems() {
     return `
     <div style="margin-bottom:10px" data-item-idx="${idx}">
       <div style="display:flex;gap:8px;align-items:center">
-        ${variantPickerHtml(idx, it.variant_id)}
+        ${variantPickerHtml('sale', idx, it.variant_id)}
         <input type="number" placeholder="Qty" value="${it.qty}"
           oninput="updateSaleItemQuiet(${idx},'qty',this.value)"
           style="width:60px;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px">
@@ -2810,9 +2820,7 @@ function renderInvoiceItems() {
       </div>
       <div class="ie-field" style="margin-top:8px">
         <label>${linkedVariant ? 'Deducts stock' : 'Inventory link'}</label>
-        <select onchange="updateItem(${idx},'variant_id',this.value)">
-          <option value="">— No inventory link (e.g. mechanic-owned part) —</option>${variantOptionsHtml(item.variant_id)}
-        </select>
+        ${variantPickerHtml('invoice', idx, item.variant_id, '— No inventory link (e.g. mechanic-owned part) —')}
       </div>
       <div id="ie-li-warn-${idx}" style="font-size:11px;color:var(--red);margin-top:3px">${stockWarn}</div>
       ${subHTML}
