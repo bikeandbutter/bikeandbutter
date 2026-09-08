@@ -37,6 +37,16 @@
 html, body { height: 100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
 
 .login-screen { height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--sidebar); }
+.pm-card { width: 380px; max-width: 100%; background: #242424; border-radius: 14px; padding: 32px 26px; text-align: center; }
+.pm-logo { width: 44px; height: 44px; background: #f6ca14; color: #111; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; margin: 0 auto 16px; }
+.pm-title { color: #fff; font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+.pm-sub { color: #999; font-size: 13px; margin-bottom: 20px; }
+.pm-label { display: block; text-align: left; color: #777; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px; }
+.pm-input { width: 100%; box-sizing: border-box; background: #111; border: 1px solid #333; border-radius: 8px; color: #eee; font-size: 15px; padding: 12px 14px; text-align: center; outline: none; margin-bottom: 14px; font-family: inherit; }
+.pm-input:focus { border-color: #f6ca14; }
+.pm-btn { width: 100%; background: #f6ca14; border: none; border-radius: 8px; color: #111; font-size: 14px; font-weight: 800; padding: 13px; cursor: pointer; font-family: inherit; }
+.pm-btn:hover { background: #e5b903; }
+.pm-status { margin-top: 12px; font-size: 12.5px; min-height: 16px; }
 .login-box { width: 340px; background: var(--bg2); border-radius: var(--radius-lg); padding: 32px 28px; box-shadow: var(--shadow-md); }
 .login-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
 .login-logo-mark { width: 34px; height: 34px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 900; color: #fff; letter-spacing: -.5px; }
@@ -351,6 +361,13 @@ tbody tr.clickable:hover { background: var(--bg3); }
   </div>
 </div>
 
+<div id="publicMileagePage" style="display:none;height:100vh;align-items:center;justify-content:center;background:#1a1a1a;padding:20px">
+  <div class="pm-card">
+    <div class="pm-logo">B&amp;B</div>
+    <div class="pm-title">Loading…</div>
+  </div>
+</div>
+
 <div class="app" id="app">
   <div class="sidebar" id="mainSidebar">
     <div class="sidebar-logo">
@@ -498,6 +515,35 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div class="page-actions">
             <button class="btn btn-secondary" onclick="printServicingReport()">Print Servicing Report</button>
             <button class="btn btn-primary" onclick="openServiceModal()">+ Log Service</button>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-header">
+            <div class="card-title">Mileage</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-ghost btn-sm" onclick="copyMileageLink()">Copy customer link</button>
+              <button class="btn btn-secondary btn-sm" onclick="promptLogMileage()">Log reading</button>
+            </div>
+          </div>
+          <div style="padding:14px 20px">
+            <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px">
+              <div>
+                <div style="font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Current status</div>
+                <div id="bikeDueStatusPill"></div>
+              </div>
+              <div>
+                <div style="font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Latest reading</div>
+                <div id="bikeLatestReading" style="font-size:14px;font-weight:700">—</div>
+              </div>
+              <div>
+                <div style="font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Service interval</div>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <input type="number" id="bikeServiceIntervalKm" placeholder="e.g. 500" style="width:90px;border:1px solid var(--border2);border-radius:6px;padding:5px 8px;font-size:13px" onchange="saveBikeServiceInterval()">
+                  <span style="font-size:12px;color:var(--text3)">km</span>
+                </div>
+              </div>
+            </div>
+            <div id="mileageLogRows" style="font-size:12.5px;color:var(--text2)"></div>
           </div>
         </div>
         <div class="card">
@@ -1000,6 +1046,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let CUSTOMERS = [];
 let BIKES = [];
+let MILEAGE_LOGS = [];
 let currentCustomerId = null;
 
 async function doLogin() {
@@ -1032,9 +1079,47 @@ async function enterApp(session) {
 }
 
 (async () => {
+  const publicBikeId = new URLSearchParams(location.search).get('logmileage');
+  if (publicBikeId) { await renderPublicMileagePage(publicBikeId); return; }
   const { data } = await sb.auth.getSession();
   if (data.session) { enterApp(data.session); }
 })();
+
+// Unauthenticated, single-purpose page: a customer opens a shared link, confirms it's
+// their bike, submits a reading. Uses only the anon-insert RLS policy on mileage_logs
+// and the get_bike_public_info() RPC — no other table is exposed to anon anywhere.
+async function renderPublicMileagePage(bikeId) {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').classList.remove('active');
+  const root = document.getElementById('publicMileagePage');
+  root.style.display = 'flex';
+  const { data, error } = await sb.rpc('get_bike_public_info', { p_bike_id: bikeId });
+  const bike = (!error && data && data[0]) ? data[0] : null;
+  if (!bike) {
+    root.innerHTML = `<div class="pm-card"><div class="pm-title">Link not found</div><div class="pm-sub">This mileage-update link looks invalid. Please check with Bike &amp; Butter.</div></div>`;
+    return;
+  }
+  root.innerHTML = `
+    <div class="pm-card">
+      <div class="pm-logo">B&amp;B</div>
+      <div class="pm-title">${escapeHtml([bike.brand, bike.model].filter(Boolean).join(' ') || 'Your bike')}</div>
+      <div class="pm-sub">${[bike.size?('Size '+bike.size):null, bike.colour].filter(Boolean).join(' · ') || 'Update your current mileage'}</div>
+      <label class="pm-label">Current odometer reading (km)</label>
+      <input type="number" id="pmReading" class="pm-input" placeholder="e.g. 1250" min="0">
+      <button class="pm-btn" onclick="submitPublicMileage('${bikeId}')">Submit reading</button>
+      <div id="pmStatus" class="pm-status"></div>
+    </div>`;
+}
+async function submitPublicMileage(bikeId) {
+  const input = document.getElementById('pmReading');
+  const status = document.getElementById('pmStatus');
+  const val = parseFloat(input.value);
+  if (isNaN(val) || val < 0) { status.textContent = 'Enter a valid number.'; status.style.color = '#b0392c'; return; }
+  status.textContent = 'Saving…'; status.style.color = '#666';
+  const { error } = await sb.from('mileage_logs').insert({ bike_id: bikeId, reading_km: val, source: 'customer' });
+  if (error) { status.textContent = 'Something went wrong — please try again.'; status.style.color = '#b0392c'; return; }
+  document.querySelector('.pm-card').innerHTML = `<div class="pm-logo">B&amp;B</div><div class="pm-title">Thanks!</div><div class="pm-sub">Your reading has been saved. We'll be in touch if it's about time for a service.</div>`;
+}
 
 document.getElementById('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
@@ -1252,6 +1337,83 @@ async function openBikeDetail(bikeId) {
   const { data, error } = await sb.from('service_records').select('*').eq('bike_id', bikeId).order('service_date', { ascending: false });
   SERVICE_RECORDS = error ? [] : (data || []);
   renderServiceHistory();
+
+  const { data: mData, error: mErr } = await sb.from('mileage_logs').select('*').eq('bike_id', bikeId).order('logged_at', { ascending: false });
+  MILEAGE_LOGS = mErr ? [] : (mData || []);
+  renderMileageSection(b);
+}
+
+// Combines a date-based due signal (service_records.next_service_due, set by the mechanic
+// at the last visit) with a km-based one (service_interval_km vs distance ridden since the
+// last mechanic-logged reading) — "whichever triggers first" means we always surface
+// whichever of the two is currently more urgent, not average them together.
+function computeBikeDueStatus(bike) {
+  const lastServiceDate = SERVICE_RECORDS[0]?.next_service_due || null;
+  const dateStatus = dueStatusFromDate(lastServiceDate);
+
+  let kmStatus = null;
+  if (bike.service_interval_km && MILEAGE_LOGS.length) {
+    const latest = MILEAGE_LOGS[0]; // already sorted desc by logged_at
+    const lastMechanicReading = MILEAGE_LOGS.find(m => m.source === 'mechanic');
+    const baseline = lastMechanicReading ? lastMechanicReading.reading_km : MILEAGE_LOGS[MILEAGE_LOGS.length - 1].reading_km;
+    const sinceService = latest.reading_km - baseline;
+    const pct = sinceService / bike.service_interval_km;
+    kmStatus = pct >= 1 ? 'overdue' : pct >= 0.85 ? 'soon' : 'healthy';
+  }
+
+  const rank = { overdue: 2, soon: 1, healthy: 0, none: -1 };
+  const worst = [dateStatus, kmStatus].filter(Boolean).reduce((a,b) => rank[b] > rank[a] ? b : a, 'none');
+
+  if (worst === 'none') return { level: 'none', label: 'No data yet' };
+  if (worst === 'overdue') return { level: 'overdue', label: kmStatus==='overdue' ? 'Overdue (mileage)' : 'Overdue (date)' };
+  if (worst === 'soon') return { level: 'soon', label: kmStatus==='soon' ? 'Due soon (mileage)' : 'Due soon (date)' };
+  return { level: 'healthy', label: 'Healthy' };
+}
+function dueStatusFromDate(dateStr) {
+  if (!dateStr) return null;
+  const due = new Date(dateStr + 'T00:00:00');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diffDays = Math.round((due - today) / 86400000);
+  if (diffDays < 0) return 'overdue';
+  if (diffDays <= DUE_SOON_DAYS) return 'soon';
+  return 'healthy';
+}
+function renderMileageSection(bike) {
+  const status = computeBikeDueStatus(bike);
+  document.getElementById('bikeDueStatusPill').innerHTML = `<span class="due-pill ${status.level==='none'?'none':status.level}">${escapeHtml(status.label)}</span>`;
+  document.getElementById('bikeLatestReading').textContent = MILEAGE_LOGS.length ? MILEAGE_LOGS[0].reading_km + ' km' : '—';
+  document.getElementById('bikeServiceIntervalKm').value = bike.service_interval_km || '';
+  const rowsEl = document.getElementById('mileageLogRows');
+  if (!MILEAGE_LOGS.length) {
+    rowsEl.innerHTML = '<div class="cell-muted">No readings logged yet.</div>';
+  } else {
+    rowsEl.innerHTML = MILEAGE_LOGS.slice(0, 6).map(m => `
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span>${formatDate(m.logged_at.slice(0,10))} — <strong>${m.reading_km} km</strong> <span class="cell-muted">(${m.source})</span></span>
+      </div>`).join('');
+  }
+}
+async function promptLogMileage() {
+  const km = prompt('Current odometer reading (km):');
+  if (km === null) return;
+  const val = parseFloat(km);
+  if (isNaN(val) || val < 0) { alert('Enter a valid number.'); return; }
+  const { error } = await sb.from('mileage_logs').insert({ bike_id: currentBikeId, reading_km: val, source: 'mechanic' });
+  if (error) { alert('Could not save reading: ' + error.message); return; }
+  await openBikeDetail(currentBikeId);
+}
+async function saveBikeServiceInterval() {
+  const val = parseFloat(document.getElementById('bikeServiceIntervalKm').value) || null;
+  const { error } = await sb.from('bikes').update({ service_interval_km: val }).eq('id', currentBikeId);
+  if (error) { alert('Could not save interval: ' + error.message); return; }
+  const b = BIKES.find(x => x.id === currentBikeId);
+  if (b) b.service_interval_km = val;
+  renderMileageSection(b);
+}
+function copyMileageLink() {
+  const url = location.origin + location.pathname + '?logmileage=' + currentBikeId;
+  navigator.clipboard.writeText(url).then(() => alert('Link copied — send it to the customer:\n' + url))
+    .catch(() => prompt('Copy this link:', url));
 }
 
 function renderServiceHistory() {
