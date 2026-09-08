@@ -511,6 +511,87 @@ tbody tr.clickable:hover { background: var(--bg3); }
           </table></div>
         </div>
       </div>
+      <div class="tab-panel" id="tab-service-editor" style="padding:0;overflow:hidden;">
+        <div class="ie-app">
+          <div class="ie-editor" id="svcEditorPane">
+            <span class="ie-back" onclick="closeServiceModal()">← Back to Servicing</span>
+            <div class="ie-title" id="svcEditorTitle">Log Service</div>
+            <div class="ie-sub" id="svcEditorSub">Not yet saved</div>
+
+            <input type="hidden" id="svcId">
+
+            <div class="ie-section">
+              <div class="ie-section-title">Bike &amp; Customer</div>
+              <div class="ie-field"><label>Customer</label>
+                <select id="svcCustomerSelect" onchange="svcOnCustomerChange()">
+                  <option value="">— Select customer —</option>
+                </select>
+              </div>
+              <div class="ie-field"><label>Bike</label>
+                <select id="svcBikeSelect" onchange="renderServicePreview()">
+                  <option value="">— Select bike —</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="ie-section">
+              <div class="ie-section-title">Report Details</div>
+              <div class="ie-row-2">
+                <div class="ie-field"><label>Date</label><input type="date" id="svcDate" oninput="renderServicePreview()"></div>
+                <div class="ie-field"><label>Mechanic</label><input type="text" id="svcMechanic" placeholder="e.g. Jon" oninput="renderServicePreview()"></div>
+              </div>
+              <div class="ie-field"><label>Link to invoice (optional — enables combined print &amp; stock deduction for parts used)</label>
+                <select id="svcInvoiceId" onchange="svcOnInvoiceChange()">
+                  <option value="">— No linked invoice —</option>
+                </select>
+              </div>
+              <div style="font-size:11px;color:#666;margin-top:-4px">Parts below only deduct stock if a linked invoice is chosen.</div>
+            </div>
+
+            <div class="ie-section">
+              <div class="ie-section-title">Checklist</div>
+              <div id="svcChecklist"></div>
+            </div>
+
+            <div class="ie-section">
+              <div class="ie-field"><label>Service completed (one item per line)</label><textarea id="svcWorkDone" placeholder="Replaced front and rear brake pads&#10;Adjusted front derailleur" oninput="renderServicePreview()"></textarea></div>
+              <div class="ie-field"><label>Items to note / watch next time (one item per line)</label><textarea id="svcWatchItems" placeholder="Seatpost seized in frame, recommend servicing after race&#10;Headset bearings smooth, service at next major" oninput="renderServicePreview()"></textarea></div>
+              <div class="ie-field"><label>Next service due (optional)</label><input type="date" id="svcNextDue" oninput="renderServicePreview()"></div>
+            </div>
+
+            <div class="ie-section">
+              <div class="ie-section-title">Parts used</div>
+              <div id="svcPartsBody"></div>
+              <button type="button" class="ie-add-btn" onclick="svcAddPartRow()">+ Add part</button>
+              <button type="button" class="ie-add-btn" style="margin-top:6px" onclick="svcPullPartsFromInvoice(true)" title="Replace the list below with the product line items from the linked invoice">↻ Pull from invoice</button>
+            </div>
+
+            <div class="ie-section">
+              <div class="ie-section-title">Photos</div>
+              <div id="svcPhotosGrid" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px"></div>
+              <input type="file" id="svcPhotoInput" accept="image/*" multiple onchange="svcUploadPhotos(this.files)">
+              <div id="svcPhotoStatus" style="font-size:11px;color:#666;margin-top:4px"></div>
+            </div>
+
+            <div class="ie-btn-row">
+              <button class="ie-save-btn" onclick="saveService()">Save</button>
+              <button class="ie-print-btn" onclick="svcPrintFromEditor()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Save &amp; Print PDF</button>
+            </div>
+          </div>
+
+          <div class="ie-preview-pane" id="svcPreviewPane">
+            <div class="ie-preview-topbar">
+              <div class="ie-preview-label">Live Preview</div>
+              <button class="ie-toggle-btn" onclick="document.getElementById('svcEditorPane').classList.toggle('hidden')">Hide Editor</button>
+            </div>
+            <div class="ie-scaler">
+              <div class="ie-scaler-inner" id="svcScaler">
+                <div id="svcPreviewDoc"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="tab-panel" id="tab-invoices">
         <div class="page-header">
           <div><div class="page-title">Invoices</div><div class="page-subtitle">Create, edit, and print invoices — with revisions</div></div>
@@ -853,64 +934,6 @@ tbody tr.clickable:hover { background: var(--bg3); }
     <div class="modal-header"><div class="modal-title">Sale Detail</div><button class="modal-close" onclick="closeSaleDetail()">&times;</button></div>
     <div class="modal-body" id="saleDetailBody"></div>
     <div class="modal-footer"><button class="btn btn-secondary" onclick="closeSaleDetail()">Close</button></div>
-  </div>
-</div>
-
-<div class="modal-backdrop" id="serviceModalBackdrop">
-  <div class="modal" style="width:720px">
-    <div class="modal-header"><div class="modal-title" id="svcModalTitle">Log Service</div><button class="modal-close" onclick="closeServiceModal()">&times;</button></div>
-    <div class="modal-body">
-      <input type="hidden" id="svcId">
-      <div class="field-row fr-2">
-        <div class="field"><label>Customer</label>
-          <select id="svcCustomerSelect" onchange="svcOnCustomerChange()" style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:8px 11px;font-size:13px">
-            <option value="">— Select customer —</option>
-          </select>
-        </div>
-        <div class="field"><label>Bike</label>
-          <select id="svcBikeSelect" style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:8px 11px;font-size:13px">
-            <option value="">— Select bike —</option>
-          </select>
-        </div>
-      </div>
-      <div class="field-row fr-2">
-        <div class="field"><label>Date</label><input type="date" id="svcDate"></div>
-        <div class="field"><label>Mechanic</label><input type="text" id="svcMechanic" placeholder="e.g. Jon"></div>
-      </div>
-      <div class="field"><label>Link to invoice (optional — enables combined print &amp; stock deduction for parts used)</label>
-        <select id="svcInvoiceId" onchange="svcOnInvoiceChange()" style="width:100%;border:1px solid var(--border2);border-radius:6px;padding:8px 11px;font-size:13px">
-          <option value="">— No linked invoice —</option>
-        </select>
-        <div style="font-size:11px;color:var(--text3);margin-top:4px">Parts below only deduct stock if a linked invoice is chosen.</div>
-      </div>
-
-      <div class="field">
-        <label>Checklist</label>
-        <div id="svcChecklist" style="border:1px solid var(--border2);border-radius:8px;overflow:hidden"></div>
-      </div>
-
-      <div class="field"><label>Service completed (one item per line)</label><textarea id="svcWorkDone" placeholder="Replaced front and rear brake pads&#10;Adjusted front derailleur" style="min-height:80px"></textarea></div>
-      <div class="field"><label>Items to note / watch next time (one item per line)</label><textarea id="svcWatchItems" placeholder="Seatpost seized in frame, recommend servicing after race&#10;Headset bearings smooth, service at next major" style="min-height:70px"></textarea></div>
-      <div class="field" style="max-width:220px"><label>Next service due (optional)</label><input type="date" id="svcNextDue"></div>
-
-      <div class="field">
-        <label>Parts used</label>
-        <div id="svcPartsBody"></div>
-        <button type="button" class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="svcAddPartRow()">+ Add Part</button>
-        <button type="button" class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="svcPullPartsFromInvoice(true)" title="Replace the list below with the product line items from the linked invoice">↻ Pull from invoice</button>
-      </div>
-
-      <div class="field">
-        <label>Photos</label>
-        <div id="svcPhotosGrid" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px"></div>
-        <input type="file" id="svcPhotoInput" accept="image/*" multiple onchange="svcUploadPhotos(this.files)">
-        <div id="svcPhotoStatus" style="font-size:11px;color:var(--text3);margin-top:4px"></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeServiceModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveService()">Save Service Record</button>
-    </div>
   </div>
 </div>
 
@@ -1346,31 +1369,33 @@ function renderSvcChecklist() {
   const el = document.getElementById('svcChecklist');
   const opts = [['ok','OK'],['attention','Needs Attention'],['replaced','Replaced']];
   el.innerHTML = currentServiceChecklist.map((row, i) => `
-    <div style="padding:12px 12px;border-bottom:1px solid var(--border)">
-      <div style="font-size:13.5px;font-weight:600;margin-bottom:8px">${escapeHtml(row.item)}</div>
+    <div style="padding:12px 12px;border-bottom:1px solid #2a2a2a">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:#eee">${escapeHtml(row.item)}</div>
       <div class="svc-tick-row">
         ${opts.map(([val,label]) => `<button type="button" class="svc-tick ${row.status===val ? 'active-'+val : ''}" onclick="svcSetChecklistStatus(${i}, '${val}')">${label}</button>`).join('')}
       </div>
-      <input type="text" value="${escapeHtml(row.note||'')}" placeholder="Note (optional)" oninput="svcSetChecklistNote(${i}, this.value)" style="width:100%;box-sizing:border-box;border:1px solid var(--border2);border-radius:6px;padding:9px 10px;font-size:12.5px">
+      <input type="text" value="${escapeHtml(row.note||'')}" placeholder="Note (optional)" oninput="svcSetChecklistNote(${i}, this.value)" style="width:100%;box-sizing:border-box;background:#111;border:1px solid #2e2e2e;color:#eee;border-radius:6px;padding:9px 10px;font-size:12.5px;font-family:inherit">
     </div>`).join('');
+  renderServicePreview();
 }
 function svcSetChecklistStatus(i, val) { currentServiceChecklist[i].status = val; renderSvcChecklist(); }
 function svcSetChecklistNote(i, val) { currentServiceChecklist[i].note = val; }
 
 function renderSvcParts() {
   const el = document.getElementById('svcPartsBody');
-  if (!currentServiceParts.length) { el.innerHTML = '<div style="font-size:12px;color:var(--text3)">No parts added.</div>'; return; }
+  if (!currentServiceParts.length) { el.innerHTML = '<div style="font-size:12px;color:#555">No parts added.</div>'; renderServicePreview(); return; }
   el.innerHTML = currentServiceParts.map((p, i) => {
     const v = VARIANTS.find(x => x.id === p.variant_id);
     return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-      <select onchange="svcSetPartVariant(${i}, this.value)" style="flex:2;border:1px solid var(--border2);border-radius:6px;padding:6px 8px;font-size:12px">
+      <select onchange="svcSetPartVariant(${i}, this.value)" style="flex:2;background:#111;border:1px solid #2e2e2e;color:#eee;border-radius:6px;padding:6px 8px;font-size:12px;font-family:inherit">
         <option value="">Select variant…</option>${variantOptionsHtml(p.variant_id)}
       </select>
-      <input type="number" min="1" value="${p.qty}" oninput="svcSetPartQty(${i}, this.value)" style="width:70px;border:1px solid var(--border2);border-radius:6px;padding:6px 8px;font-size:12px">
-      <div style="font-size:11px;color:var(--text3);width:64px">${v ? 'stock: ' + v.qty : ''}</div>
-      <button type="button" class="btn btn-ghost btn-sm" onclick="svcRemovePartRow(${i})">✕</button>
+      <input type="number" min="1" value="${p.qty}" oninput="svcSetPartQty(${i}, this.value)" style="width:70px;background:#111;border:1px solid #2e2e2e;color:#eee;border-radius:6px;padding:6px 8px;font-size:12px;font-family:inherit">
+      <div style="font-size:11px;color:#555;width:64px">${v ? 'stock: ' + v.qty : ''}</div>
+      <button type="button" class="ie-btn-icon" onclick="svcRemovePartRow(${i})">✕</button>
     </div>`;
   }).join('');
+  renderServicePreview();
 }
 function svcAddPartRow() { currentServiceParts.push({ variant_id: '', qty: 1 }); renderSvcParts(); }
 function svcRemovePartRow(i) { currentServiceParts.splice(i, 1); renderSvcParts(); }
@@ -1398,13 +1423,14 @@ function renderSvcPhotos() {
   const el = document.getElementById('svcPhotosGrid');
   el.innerHTML = currentServicePhotos.map((p, i) => `
     <div style="width:100px">
-      <img src="${p.url}" style="width:100px;height:100px;object-fit:cover;border-radius:6px;border:1px solid var(--border2)">
-      <select onchange="svcSetPhotoStage(${i}, this.value)" style="width:100%;font-size:11px;margin-top:4px;border:1px solid var(--border2);border-radius:4px">
+      <img src="${p.url}" style="width:100px;height:100px;object-fit:cover;border-radius:6px;border:1px solid #2e2e2e">
+      <select onchange="svcSetPhotoStage(${i}, this.value)" style="width:100%;font-size:11px;margin-top:4px;background:#111;border:1px solid #2e2e2e;color:#eee;border-radius:4px;font-family:inherit">
         <option value="before" ${p.stage==='before'?'selected':''}>Before</option>
         <option value="after" ${p.stage==='after'?'selected':''}>After</option>
       </select>
-      <button type="button" class="btn btn-ghost btn-sm" style="width:100%;margin-top:4px" onclick="svcRemovePhoto(${i})">Remove</button>
+      <button type="button" class="ie-btn-icon" style="width:100%;margin-top:4px;border:1px solid #2e2e2e" onclick="svcRemovePhoto(${i})">Remove</button>
     </div>`).join('');
+  renderServicePreview();
 }
 function svcSetPhotoStage(i, val) { currentServicePhotos[i].stage = val; }
 async function svcRemovePhoto(i) {
@@ -1427,6 +1453,7 @@ async function svcOnCustomerChange() {
   const custId = document.getElementById('svcCustomerSelect').value;
   svcPopulateBikeSelect(custId, null);
   await svcPopulateInvoiceSelect(custId, null);
+  renderServicePreview();
 }
 async function svcPopulateInvoiceSelect(customerId, selectedInvoiceId) {
   const sel = document.getElementById('svcInvoiceId');
@@ -1452,6 +1479,40 @@ async function svcPullPartsFromInvoice(force) {
   renderSvcParts();
 }
 
+function renderServicePreview() {
+  const doc = document.getElementById('svcPreviewDoc');
+  if (!doc) return;
+  const bikeId = document.getElementById('svcBikeSelect')?.value;
+  const custId = document.getElementById('svcCustomerSelect')?.value;
+  const b = BIKES.find(x => x.id === bikeId) || null;
+  const c = CUSTOMERS.find(x => x.id === custId) || null;
+  const draft = {
+    report_no: svcOrigReportNo || 'DRAFT',
+    service_date: document.getElementById('svcDate')?.value || new Date().toISOString().slice(0,10),
+    mechanic: document.getElementById('svcMechanic')?.value || '',
+    work_done: document.getElementById('svcWorkDone')?.value || '',
+    watch_items: document.getElementById('svcWatchItems')?.value || '',
+    next_service_due: document.getElementById('svcNextDue')?.value || '',
+    checklist: currentServiceChecklist,
+    photos: currentServicePhotos,
+  };
+  doc.innerHTML = buildServiceReportPage(draft, b, c);
+  svcScaleReport();
+}
+function svcScaleReport() {
+  const scaler = document.getElementById('svcScaler');
+  const pane = document.getElementById('svcPreviewPane');
+  if (!scaler || !pane) return;
+  const scale = Math.min(1, (pane.clientWidth - 36) / 794);
+  scaler.style.transform = 'scale(' + scale + ')';
+  scaler.style.marginBottom = (-(1122 * (1 - scale))) + 'px';
+}
+window.addEventListener('resize', () => { if (document.getElementById('tab-service-editor')?.classList.contains('active')) svcScaleReport(); });
+async function svcPrintFromEditor() {
+  await saveService();
+  if (svcEditingId) await printSingleServiceReport(svcEditingId);
+}
+
 async function openServiceModal(bikeId, recordId) {
   svcEditingId = recordId || null;
   svcOrigInvoiceId = null;
@@ -1467,7 +1528,8 @@ async function openServiceModal(bikeId, recordId) {
     record = data;
   }
   document.getElementById('svcId').value = recordId || '';
-  document.getElementById('svcModalTitle').textContent = record ? ('Edit Service Record — ' + (record.report_no || '')) : 'Log Service';
+  document.getElementById('svcEditorTitle').textContent = record ? ('Edit Service Record — ' + (record.report_no || '')) : 'Log Service';
+  document.getElementById('svcEditorSub').textContent = record ? ('Report ' + (record.report_no || '')) : 'Not yet saved';
 
   const effectiveBikeId = record ? record.bike_id : (bikeId || currentBikeId || '');
   const b = BIKES.find(x => x.id === effectiveBikeId);
@@ -1496,10 +1558,13 @@ async function openServiceModal(bikeId, recordId) {
   renderSvcParts();
   renderSvcPhotos();
 
-  document.getElementById('serviceModalBackdrop').classList.add('open');
+  switchTab('service-editor');
+  renderServicePreview();
 }
 
-function closeServiceModal() { document.getElementById('serviceModalBackdrop').classList.remove('open'); }
+function closeServiceModal() {
+  switchTab('servicing');
+}
 
 async function nextServiceReportNumber() {
   const now = new Date();
