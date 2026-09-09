@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a Service — Bike & Butter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+:root {
+  --bg: #f6f6f4; --bg2: #ffffff; --bg3: #eeede9;
+  --border: #e3e1da; --border2: #cfccc2;
+  --text: #14130f; --text2: #63605a; --text3: #9c988c;
+  --accent: #14130f; --green: #3f7d52; --green-bg: #edf3ee;
+  --red: #b0392c; --red-bg: #f9ebe8;
+  --radius: 6px; --radius-lg: 10px;
+  --font-display: 'Fraunces', Georgia, serif;
+  --shadow: 0 1px 3px rgba(20,19,15,.07), 0 1px 2px rgba(20,19,15,.04);
+  --shadow-md: 0 4px 10px rgba(20,19,15,.08), 0 2px 4px rgba(20,19,15,.04);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+.wrap { max-width: 560px; margin: 0 auto; padding: 32px 20px 80px; }
+.header { margin-bottom: 28px; }
+.header h1 { font-family: var(--font-display); font-size: 26px; font-weight: 600; margin-bottom: 4px; }
+.header p { color: var(--text2); font-size: 13.5px; }
+
+.step { display: none; }
+.step.active { display: block; }
+
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 20px; margin-bottom: 16px; }
+
+.service-option { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; cursor: pointer; transition: all .12s; }
+.service-option:hover { border-color: var(--border2); background: var(--bg3); }
+.service-option.selected { border-color: var(--accent); background: var(--bg3); }
+.service-name { font-weight: 600; font-size: 14.5px; margin-bottom: 3px; }
+.service-meta { font-size: 12px; color: var(--text3); }
+.service-price { font-weight: 700; font-size: 14px; }
+
+.day-tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; }
+.day-tab { flex-shrink: 0; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg2); cursor: pointer; text-align: center; min-width: 62px; }
+.day-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.day-tab .dow { font-size: 10px; text-transform: uppercase; letter-spacing: .4px; opacity: .7; }
+.day-tab .dnum { font-size: 15px; font-weight: 700; }
+
+.slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.slot-btn { padding: 10px 6px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg2); cursor: pointer; font-size: 13px; font-weight: 600; text-align: center; }
+.slot-btn:hover { border-color: var(--accent); }
+.slot-btn.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+.slot-btn:disabled { opacity: .3; cursor: not-allowed; text-decoration: line-through; }
+.no-slots { color: var(--text3); font-size: 13px; padding: 20px 0; text-align: center; }
+
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
+.field input, .field textarea { width: 100%; padding: 11px 12px; border: 1px solid var(--border2); border-radius: var(--radius); font-family: inherit; font-size: 14px; outline: none; }
+.field input:focus, .field textarea:focus { border-color: var(--accent); }
+.field textarea { resize: vertical; min-height: 70px; }
+
+.summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+.summary-row:last-child { border-bottom: none; }
+.summary-row span:first-child { color: var(--text2); }
+.summary-row span:last-child { font-weight: 600; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 13px 20px; border-radius: var(--radius); font-size: 14px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; width: 100%; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { opacity: .9; }
+.btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+.btn-secondary { background: none; color: var(--text2); border: 1px solid var(--border2); margin-top: 8px; }
+
+.confirm-box { text-align: center; padding: 40px 20px; }
+.confirm-icon { font-size: 40px; margin-bottom: 12px; }
+.confirm-box h2 { font-family: var(--font-display); font-size: 22px; margin-bottom: 8px; }
+.confirm-box p { color: var(--text2); font-size: 13.5px; line-height: 1.5; }
+
+.error-box { background: var(--red-bg); color: var(--red); padding: 10px 12px; border-radius: var(--radius); font-size: 12.5px; margin-bottom: 14px; display: none; }
+.error-box.show { display: block; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <h1>Book a Service</h1>
+    <p>Pick a service, choose a time, and we'll confirm your slot.</p>
+  </div>
+
+  <div class="error-box" id="globalError"></div>
+
+  <!-- STEP 1: choose service -->
+  <div class="step active" id="step-service">
+    <div class="card">
+      <div id="serviceList"></div>
+    </div>
+  </div>
+
+  <!-- STEP 2: choose slot -->
+  <div class="step" id="step-slot">
+    <div class="card">
+      <div class="day-tabs" id="dayTabs"></div>
+      <div class="slots-grid" id="slotsGrid"></div>
+    </div>
+    <button class="btn btn-secondary" onclick="goToStep('service')">← Back</button>
+  </div>
+
+  <!-- STEP 3: your details -->
+  <div class="step" id="step-details">
+    <div class="card">
+      <div class="field">
+        <label>Your name</label>
+        <input type="text" id="custName" placeholder="Jane Tan">
+      </div>
+      <div class="field">
+        <label>Phone (WhatsApp)</label>
+        <input type="tel" id="custPhone" placeholder="9123 4567">
+      </div>
+      <div class="field">
+        <label>Anything we should know? (optional)</label>
+        <textarea id="custNotes" placeholder="e.g. clicking noise from rear wheel"></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <div class="summary-row"><span>Service</span><span id="sumService"></span></div>
+      <div class="summary-row"><span>Date & time</span><span id="sumSlot"></span></div>
+    </div>
+    <button class="btn btn-primary" id="submitBtn" onclick="submitBooking()">Request This Slot</button>
+    <button class="btn btn-secondary" onclick="goToStep('slot')">← Back</button>
+  </div>
+
+  <!-- STEP 4: confirmation -->
+  <div class="step" id="step-done">
+    <div class="card confirm-box">
+      <div class="confirm-icon">✓</div>
+      <h2>Request sent!</h2>
+      <p>We've received your booking request. You'll get a WhatsApp message once it's confirmed — usually within a few hours.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- CONFIG: reuse the same project as the rest of the site ----
+const SUPABASE_URL = "https://aneuljjitpxjvsfucwkq.supabase.co"; // same one used in bnbhq/index.html
+const SUPABASE_KEY = "sb_publishable_HLEeqpfnhWJ3kr_AHJIffA_9FOE0aHV"; // same anon/publishable key used elsewhere
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const SHOP_TZ_OFFSET_HOURS = 8; // SGT = UTC+8, used only for local date math below
+const DAYS_AHEAD = 10; // how many days forward the picker shows
+
+let SERVICES = [];
+let SHOP_HOURS = []; // by day_of_week
+let BUSY = [];        // existing live bookings (from public_busy_slots view)
+let selectedService = null;
+let selectedDate = null;   // Date object (local midnight)
+let selectedSlot = null;   // { start: Date, end: Date }
+
+function showError(msg) {
+  const el = document.getElementById('globalError');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function clearError() {
+  document.getElementById('globalError').classList.remove('show');
+}
+
+function goToStep(name) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-' + name).classList.add('active');
+}
+
+// ---------------- LOAD DATA ----------------
+async function loadServices() {
+  const { data, error } = await sb.from('services').select('*').eq('active', true).order('sort_order');
+  if (error) { showError('Could not load services. Please refresh.'); return; }
+  SERVICES = data;
+  renderServices();
+}
+
+async function loadShopHours() {
+  const { data, error } = await sb.from('shop_hours').select('*');
+  if (error) { showError('Could not load shop hours. Please refresh.'); return; }
+  SHOP_HOURS = data;
+}
+
+async function loadBusySlots() {
+  const { data, error } = await sb.from('public_busy_slots').select('*');
+  if (error) { showError('Could not load availability. Please refresh.'); return; }
+  BUSY = data.map(b => ({ start: new Date(b.start_time), end: new Date(b.end_time) }));
+}
+
+// ---------------- RENDER: services ----------------
+function renderServices() {
+  const el = document.getElementById('serviceList');
+  el.innerHTML = SERVICES.map(s => `
+    <div class="service-option" data-id="${s.id}" onclick="selectService('${s.id}')">
+      <div>
+        <div class="service-name">${s.name}</div>
+        <div class="service-meta">${s.duration_minutes} min</div>
+      </div>
+      <div class="service-price">${s.price ? '$' + Number(s.price).toFixed(0) : ''}</div>
+    </div>
+  `).join('');
+}
+
+function selectService(id) {
+  selectedService = SERVICES.find(s => s.id === id);
+  document.querySelectorAll('.service-option').forEach(el => {
+    el.classList.toggle('selected', el.dataset.id === id);
+  });
+  renderDayTabs();
+  goToStep('slot');
+}
+
+// ---------------- RENDER: day tabs + slots ----------------
+function renderDayTabs() {
+  const el = document.getElementById('dayTabs');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  let html = '';
+  for (let i = 0; i < DAYS_AHEAD; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() + i);
+    const dow = d.toLocaleDateString('en-SG', { weekday: 'short' });
+    const dnum = d.getDate();
+    html += `<div class="day-tab" data-idx="${i}" onclick="selectDay(${i})">
+      <div class="dow">${dow}</div><div class="dnum">${dnum}</div>
+    </div>`;
+  }
+  el.innerHTML = html;
+  selectDay(0);
+}
+
+function selectDay(idx) {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  selectedDate = new Date(today);
+  selectedDate.setDate(selectedDate.getDate() + idx);
+
+  document.querySelectorAll('.day-tab').forEach(el => {
+    el.classList.toggle('active', Number(el.dataset.idx) === idx);
+  });
+  renderSlots();
+}
+
+function renderSlots() {
+  const grid = document.getElementById('slotsGrid');
+  if (!selectedService) return;
+
+  const dow = selectedDate.getDay();
+  const hours = SHOP_HOURS.find(h => h.day_of_week === dow);
+  if (!hours || !hours.open_time || !hours.close_time) {
+    grid.innerHTML = '<div class="no-slots">Closed this day — pick another.</div>';
+    return;
+  }
+
+  const [openH, openM] = hours.open_time.split(':').map(Number);
+  const [closeH, closeM] = hours.close_time.split(':').map(Number);
+
+  const dayStart = new Date(selectedDate);
+  dayStart.setHours(openH, openM, 0, 0);
+  const dayEnd = new Date(selectedDate);
+  dayEnd.setHours(closeH, closeM, 0, 0);
+
+  const durationMs = selectedService.duration_minutes * 60000;
+  const slotStepMs = 15 * 60000; // offer slots on 15-min increments
+  const now = new Date();
+
+  const slots = [];
+  for (let t = new Date(dayStart); t.getTime() + durationMs <= dayEnd.getTime(); t = new Date(t.getTime() + slotStepMs)) {
+    const slotStart = new Date(t);
+    const slotEnd = new Date(t.getTime() + durationMs);
+    if (slotStart < now) continue; // no past slots
+
+    const overlaps = BUSY.some(b => slotStart < b.end && slotEnd > b.start);
+    slots.push({ start: slotStart, end: slotEnd, taken: overlaps });
+  }
+
+  if (slots.length === 0) {
+    grid.innerHTML = '<div class="no-slots">No slots left this day — pick another.</div>';
+    return;
+  }
+
+  grid.innerHTML = slots.map(s => {
+    const label = s.start.toLocaleTimeString('en-SG', { hour: 'numeric', minute: '2-digit' });
+    return `<button class="slot-btn" ${s.taken ? 'disabled' : ''}
+      onclick="selectSlot('${s.start.toISOString()}', '${s.end.toISOString()}', this)">${label}</button>`;
+  }).join('');
+}
+
+function selectSlot(startIso, endIso, btnEl) {
+  selectedSlot = { start: new Date(startIso), end: new Date(endIso) };
+  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+  btnEl.classList.add('selected');
+
+  document.getElementById('sumService').textContent = `${selectedService.name} (${selectedService.duration_minutes} min)`;
+  document.getElementById('sumSlot').textContent = selectedSlot.start.toLocaleString('en-SG', {
+    weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'
+  });
+  goToStep('details');
+}
+
+// ---------------- SUBMIT ----------------
+async function submitBooking() {
+  clearError();
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const notes = document.getElementById('custNotes').value.trim();
+
+  if (!name || !phone) {
+    showError('Please enter your name and phone number.');
+    return;
+  }
+  if (!selectedService || !selectedSlot) {
+    showError('Please select a service and time slot.');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  const { error } = await sb.from('bookings').insert({
+    service_id: selectedService.id,
+    customer_name: name,
+    customer_phone: phone,
+    notes: notes || null,
+    start_time: selectedSlot.start.toISOString(),
+    end_time: selectedSlot.end.toISOString(),
+    status: 'pending'
+  });
+
+  if (error) {
+    btn.disabled = false;
+    btn.textContent = 'Request This Slot';
+    if (error.message && error.message.includes('no_overlapping_live_bookings')) {
+      showError('Sorry, that slot was just taken. Please pick another time.');
+      await loadBusySlots();
+      renderSlots();
+      goToStep('slot');
+    } else {
+      showError('Something went wrong submitting your request. Please try again.');
+    }
+    return;
+  }
+
+  goToStep('done');
+}
+
+// ---------------- INIT ----------------
+(async function init() {
+  await Promise.all([loadServices(), loadShopHours(), loadBusySlots()]);
+})();
+</script>
+</body>
+</html>
