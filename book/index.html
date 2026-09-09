@@ -22,7 +22,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
 .wrap { max-width: 560px; margin: 0 auto; padding: 32px 20px 80px; }
-.header { margin-bottom: 28px; }
+.header { margin-bottom: 24px; }
 .header h1 { font-family: var(--font-display); font-size: 26px; font-weight: 600; margin-bottom: 4px; }
 .header p { color: var(--text2); font-size: 13.5px; }
 
@@ -31,36 +31,69 @@ html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif
 
 .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 20px; margin-bottom: 16px; }
 
-.service-option { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; cursor: pointer; transition: all .12s; }
-.service-option:hover { border-color: var(--border2); background: var(--bg3); }
-.service-option.selected { border-color: var(--accent); background: var(--bg3); }
-.service-name { font-weight: 600; font-size: 14.5px; margin-bottom: 3px; }
-.service-meta { font-size: 12px; color: var(--text3); }
-.service-price { font-weight: 700; font-size: 14px; }
+/* Big choice buttons (new vs existing customer) */
+.choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.choice-btn { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px 16px; text-align: center; cursor: pointer; box-shadow: var(--shadow); }
+.choice-btn:hover { border-color: var(--accent); }
+.choice-icon { font-size: 26px; margin-bottom: 10px; }
+.choice-title { font-weight: 700; font-size: 14.5px; margin-bottom: 4px; }
+.choice-sub { font-size: 12px; color: var(--text3); }
 
+.service-option, .bike-option { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; cursor: pointer; transition: all .12s; }
+.service-option:hover, .bike-option:hover { border-color: var(--border2); background: var(--bg3); }
+.service-option.selected, .bike-option.selected { border-color: var(--accent); background: var(--bg3); }
+.service-name, .bike-name { font-weight: 600; font-size: 14.5px; margin-bottom: 3px; }
+.service-meta, .bike-meta { font-size: 12px; color: var(--text3); }
+.service-price { font-weight: 700; font-size: 14px; }
+.bike-badge { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; padding: 3px 8px; border-radius: 20px; }
+.bike-badge.due { background: var(--red-bg); color: var(--red); }
+.bike-badge.ok { background: var(--green-bg); color: var(--green); }
+
+.add-new-row { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border: 1px dashed var(--border2); border-radius: var(--radius); cursor: pointer; color: var(--text2); font-weight: 600; font-size: 13.5px; }
+.add-new-row:hover { border-color: var(--accent); color: var(--accent); }
+
+.history-item { padding: 10px 0; border-bottom: 1px solid var(--border); }
+.history-item:last-child { border-bottom: none; }
+.history-date { font-size: 12px; color: var(--text3); }
+.history-service { font-weight: 600; font-size: 13.5px; margin: 2px 0; }
+.history-notes { font-size: 12.5px; color: var(--text2); }
+.no-history { color: var(--text3); font-size: 13px; padding: 10px 0; }
+
+/* Outlook-style day timeline */
 .day-tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; }
 .day-tab { flex-shrink: 0; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg2); cursor: pointer; text-align: center; min-width: 62px; }
 .day-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 .day-tab .dow { font-size: 10px; text-transform: uppercase; letter-spacing: .4px; opacity: .7; }
 .day-tab .dnum { font-size: 15px; font-weight: 700; }
 
-.slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.slot-btn { padding: 10px 6px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg2); cursor: pointer; font-size: 13px; font-weight: 600; text-align: center; }
-.slot-btn:hover { border-color: var(--accent); }
-.slot-btn.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
-.slot-btn:disabled { opacity: .3; cursor: not-allowed; text-decoration: line-through; }
-.no-slots { color: var(--text3); font-size: 13px; padding: 20px 0; text-align: center; }
+.timeline { position: relative; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.timeline-hour { display: flex; border-bottom: 1px solid var(--border); min-height: 56px; }
+.timeline-hour:last-child { border-bottom: none; }
+.timeline-hour-label { width: 56px; flex-shrink: 0; font-size: 11px; color: var(--text3); padding: 6px 8px; border-right: 1px solid var(--border); background: var(--bg3); }
+.timeline-hour-body { flex: 1; position: relative; padding: 4px 6px; display: flex; flex-direction: column; gap: 4px; }
+
+.slot-chip { padding: 8px 10px; border-radius: 5px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid var(--border2); background: var(--bg2); }
+.slot-chip:hover { border-color: var(--accent); }
+.slot-chip.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+.busy-block { padding: 8px 10px; border-radius: 5px; font-size: 12px; font-weight: 600; background: repeating-linear-gradient(135deg, #ece9e3, #ece9e3 6px, #e2ded5 6px, #e2ded5 12px); color: var(--text3); }
+.closed-note { color: var(--text3); font-size: 13px; padding: 20px; text-align: center; }
 
 .field { margin-bottom: 14px; }
 .field label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
-.field input, .field textarea { width: 100%; padding: 11px 12px; border: 1px solid var(--border2); border-radius: var(--radius); font-family: inherit; font-size: 14px; outline: none; }
-.field input:focus, .field textarea:focus { border-color: var(--accent); }
+.field input, .field textarea, .field select { width: 100%; padding: 11px 12px; border: 1px solid var(--border2); border-radius: var(--radius); font-family: inherit; font-size: 14px; outline: none; background: #fff; }
+.field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent); }
 .field textarea { resize: vertical; min-height: 70px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.photo-upload { border: 1px dashed var(--border2); border-radius: var(--radius); padding: 16px; text-align: center; cursor: pointer; color: var(--text2); font-size: 13px; }
+.photo-upload:hover { border-color: var(--accent); }
+.photo-previews { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.photo-preview { width: 64px; height: 64px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border); }
 
 .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; }
 .summary-row:last-child { border-bottom: none; }
 .summary-row span:first-child { color: var(--text2); }
-.summary-row span:last-child { font-weight: 600; }
+.summary-row span:last-child { font-weight: 600; text-align: right; }
 
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 13px 20px; border-radius: var(--radius); font-size: 14px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; width: 100%; }
 .btn-primary { background: var(--accent); color: #fff; }
@@ -75,6 +108,7 @@ html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif
 
 .error-box { background: var(--red-bg); color: var(--red); padding: 10px 12px; border-radius: var(--radius); font-size: 12.5px; margin-bottom: 14px; display: none; }
 .error-box.show { display: block; }
+.hint { font-size: 12px; color: var(--text3); margin-top: 6px; }
 </style>
 </head>
 <body>
@@ -82,52 +116,151 @@ html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif
 <div class="wrap">
   <div class="header">
     <h1>Book a Service</h1>
-    <p>Pick a service, choose a time, and we'll confirm your slot.</p>
+    <p>Tell us who you are, then pick a time that works.</p>
   </div>
 
   <div class="error-box" id="globalError"></div>
 
-  <!-- STEP 1: choose service -->
-  <div class="step active" id="step-service">
-    <div class="card">
-      <div id="serviceList"></div>
+  <!-- STEP 0: new vs existing -->
+  <div class="step active" id="step-start">
+    <div class="choice-grid">
+      <div class="choice-btn" onclick="goToStep('lookup')">
+        <div class="choice-icon">🔍</div>
+        <div class="choice-title">Existing Customer</div>
+        <div class="choice-sub">I've booked with you before</div>
+      </div>
+      <div class="choice-btn" onclick="goToStep('register')">
+        <div class="choice-icon">✨</div>
+        <div class="choice-title">New Customer</div>
+        <div class="choice-sub">First time here</div>
+      </div>
     </div>
   </div>
 
-  <!-- STEP 2: choose slot -->
+  <!-- STEP 1a: phone lookup -->
+  <div class="step" id="step-lookup">
+    <div class="card">
+      <div class="field">
+        <label>Your phone number</label>
+        <input type="tel" id="lookupPhone" placeholder="9123 4567">
+      </div>
+      <button class="btn btn-primary" onclick="doLookup()">Find My Account</button>
+      <div class="hint">We just match your number — no password needed.</div>
+    </div>
+    <button class="btn btn-secondary" onclick="goToStep('start')">← Back</button>
+  </div>
+
+  <!-- STEP 1b: pick which matched customer (rare, shared numbers) -->
+  <div class="step" id="step-pick-customer">
+    <div class="card">
+      <div id="customerMatches"></div>
+    </div>
+    <button class="btn btn-secondary" onclick="goToStep('lookup')">← Back</button>
+  </div>
+
+  <!-- STEP 2: existing customer's bikes -->
+  <div class="step" id="step-bikes">
+    <div class="card">
+      <div id="bikeList"></div>
+      <div class="add-new-row" onclick="goToStep('newBikeForExisting')" style="margin-top:6px;">
+        ＋ Add a new bike
+      </div>
+    </div>
+    <button class="btn btn-secondary" onclick="goToStep('lookup')">← Back</button>
+  </div>
+
+  <!-- STEP 3: bike detail / service history -->
+  <div class="step" id="step-bike-detail">
+    <div class="card" id="bikeDetailCard"></div>
+    <div class="card">
+      <div class="card-title" style="font-weight:700;font-size:13.5px;margin-bottom:8px;">Service History</div>
+      <div id="bikeHistory"></div>
+    </div>
+    <button class="btn btn-primary" onclick="goToStep('service')">Book a Service for This Bike</button>
+    <button class="btn btn-secondary" onclick="goToStep('bikes')">← Back to My Bikes</button>
+  </div>
+
+  <!-- STEP: register a new bike for an existing customer -->
+  <div class="step" id="step-newBikeForExisting">
+    <div class="card">
+      <div id="newBikeFormExisting"></div>
+    </div>
+    <button class="btn btn-primary" onclick="submitNewBike(false)">Save Bike & Continue</button>
+    <button class="btn btn-secondary" onclick="goToStep('bikes')">← Back</button>
+  </div>
+
+  <!-- STEP: new customer registration -->
+  <div class="step" id="step-register">
+    <div class="card">
+      <div class="field">
+        <label>Full name</label>
+        <input type="text" id="regName" placeholder="Jane Tan">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Phone (WhatsApp)</label>
+          <input type="tel" id="regPhone" placeholder="9123 4567">
+        </div>
+        <div class="field">
+          <label>Email (optional)</label>
+          <input type="email" id="regEmail" placeholder="jane@email.com">
+        </div>
+      </div>
+      <div class="field">
+        <label>Address (optional)</label>
+        <input type="text" id="regAddress" placeholder="Blk 123 Example Street, #01-01">
+      </div>
+    </div>
+    <div class="card">
+      <div id="newBikeFormNew"></div>
+    </div>
+    <button class="btn btn-primary" onclick="submitNewCustomer()">Continue</button>
+    <button class="btn btn-secondary" onclick="goToStep('start')">← Back</button>
+  </div>
+
+  <!-- STEP 4: choose service -->
+  <div class="step" id="step-service">
+    <div class="card">
+      <div id="serviceList"></div>
+    </div>
+    <button class="btn btn-secondary" id="serviceBackBtn" onclick="goToStep('bike-detail')">← Back</button>
+  </div>
+
+  <!-- STEP 5: timeline / slot picker -->
   <div class="step" id="step-slot">
     <div class="card">
       <div class="day-tabs" id="dayTabs"></div>
-      <div class="slots-grid" id="slotsGrid"></div>
+      <div id="timelineWrap"></div>
     </div>
     <button class="btn btn-secondary" onclick="goToStep('service')">← Back</button>
   </div>
 
-  <!-- STEP 3: your details -->
+  <!-- STEP 6: notes + confirm -->
   <div class="step" id="step-details">
     <div class="card">
       <div class="field">
-        <label>Your name</label>
-        <input type="text" id="custName" placeholder="Jane Tan">
-      </div>
-      <div class="field">
-        <label>Phone (WhatsApp)</label>
-        <input type="tel" id="custPhone" placeholder="9123 4567">
-      </div>
-      <div class="field">
         <label>Anything we should know? (optional)</label>
         <textarea id="custNotes" placeholder="e.g. clicking noise from rear wheel"></textarea>
+      </div>
+      <div class="field">
+        <label>Add photos (optional)</label>
+        <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+          📷 Tap to add photos of the bike / issue
+        </div>
+        <input type="file" id="photoInput" accept="image/*" multiple style="display:none" onchange="handlePhotoSelect(event)">
+        <div class="photo-previews" id="photoPreviews"></div>
       </div>
     </div>
     <div class="card">
       <div class="summary-row"><span>Service</span><span id="sumService"></span></div>
       <div class="summary-row"><span>Date & time</span><span id="sumSlot"></span></div>
+      <div class="summary-row"><span>Bike</span><span id="sumBike"></span></div>
     </div>
     <button class="btn btn-primary" id="submitBtn" onclick="submitBooking()">Request This Slot</button>
     <button class="btn btn-secondary" onclick="goToStep('slot')">← Back</button>
   </div>
 
-  <!-- STEP 4: confirmation -->
+  <!-- STEP 7: confirmation -->
   <div class="step" id="step-done">
     <div class="card confirm-box">
       <div class="confirm-icon">✓</div>
@@ -138,59 +271,266 @@ html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif
 </div>
 
 <script>
-// ---- CONFIG: reuse the same project as the rest of the site ----
-const SUPABASE_URL = "https://aneuljjitpxjvsfucwkq.supabase.co"; // same one used in bnbhq/index.html
-const SUPABASE_KEY = "sb_publishable_3HBGJIBmOxzpks_WV2YH9Q_ogbuU9UP"; // same anon/publishable key used elsewhere
+// ---- CONFIG ----
+const SUPABASE_URL = "https://aneuljjitpxjvsfucwkq.supabase.co";
+const SUPABASE_KEY = "sb_publishable_3HBGJIBmOxzpks_WV2YH9Q_ogbuU9UP";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const SHOP_TZ_OFFSET_HOURS = 8; // SGT = UTC+8, used only for local date math below
-const DAYS_AHEAD = 10; // how many days forward the picker shows
+const DAYS_AHEAD = 10;
+const PHOTO_BUCKET = "booking-photos";
 
 let SERVICES = [];
-let SHOP_HOURS = []; // by day_of_week
-let BUSY = [];        // existing live bookings (from public_busy_slots view)
+let SHOP_HOURS = [];
+let BUSY = [];
+
+let currentCustomer = null;   // { id, name, phone } or null (guest/new)
+let currentBike = null;       // { id, brand, model, ... } or null
+let pendingNewBike = null;    // bike fields collected before customer exists (new-customer flow)
 let selectedService = null;
-let selectedDate = null;   // Date object (local midnight)
-let selectedSlot = null;   // { start: Date, end: Date }
+let selectedDate = null;
+let selectedSlot = null;
+let uploadedPhotoUrls = [];
 
 function showError(msg) {
   const el = document.getElementById('globalError');
   el.textContent = msg;
   el.classList.add('show');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 function clearError() {
   document.getElementById('globalError').classList.remove('show');
 }
 
 function goToStep(name) {
+  clearError();
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
   document.getElementById('step-' + name).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ---------------- LOAD DATA ----------------
+// ================= LOOKUP FLOW =================
+async function doLookup() {
+  clearError();
+  const phoneRaw = document.getElementById('lookupPhone').value.trim();
+  if (!phoneRaw) { showError('Please enter your phone number.'); return; }
+  const phone = normalizePhone(phoneRaw);
+
+  const { data, error } = await sb
+    .from('public_customer_lookup')
+    .select('*')
+    .ilike('phone', `%${phone}%`);
+
+  if (error) { showError('Something went wrong looking that up. Please try again.'); return; }
+  if (!data || data.length === 0) {
+    showError("We couldn't find an account with that number. If this is your first visit, use New Customer instead.");
+    return;
+  }
+
+  if (data.length === 1) {
+    await selectCustomer(data[0]);
+  } else {
+    renderCustomerMatches(data);
+    goToStep('pick-customer');
+  }
+}
+
+function normalizePhone(p) {
+  return p.replace(/[^0-9]/g, '');
+}
+
+function renderCustomerMatches(list) {
+  document.getElementById('customerMatches').innerHTML = list.map(c => `
+    <div class="bike-option" onclick='selectCustomerById("${c.id}")'>
+      <div><div class="bike-name">${c.name}</div><div class="bike-meta">${c.phone}</div></div>
+    </div>
+  `).join('');
+  window._customerMatchCache = list;
+}
+
+async function selectCustomerById(id) {
+  const c = (window._customerMatchCache || []).find(x => x.id === id);
+  if (c) await selectCustomer(c);
+}
+
+async function selectCustomer(c) {
+  currentCustomer = c;
+  await loadBikesForCustomer(c.id);
+  goToStep('bikes');
+}
+
+// ================= BIKES LIST =================
+async function loadBikesForCustomer(customerId) {
+  const { data, error } = await sb
+    .from('public_customer_bikes')
+    .select('*')
+    .eq('customer_id', customerId);
+
+  if (error) { showError('Could not load your bikes.'); return; }
+  renderBikeList(data || []);
+}
+
+function renderBikeList(bikes) {
+  const el = document.getElementById('bikeList');
+  if (bikes.length === 0) {
+    el.innerHTML = `<div class="no-history">No bikes on file yet — add one below.</div>`;
+    window._bikeCache = [];
+    return;
+  }
+  window._bikeCache = bikes;
+  el.innerHTML = bikes.map(b => {
+    const due = isServiceDue(b);
+    return `
+    <div class="bike-option" onclick='openBikeDetail("${b.id}")'>
+      <div>
+        <div class="bike-name">${b.brand || ''} ${b.model || ''}</div>
+        <div class="bike-meta">${b.colour ? b.colour + ' · ' : ''}${b.last_service_date ? 'Last service ' + fmtDate(b.last_service_date) : 'No service history yet'}</div>
+      </div>
+      <div class="bike-badge ${due ? 'due' : 'ok'}">${due ? 'Service due' : 'Up to date'}</div>
+    </div>`;
+  }).join('');
+}
+
+function isServiceDue(b) {
+  if (!b.service_interval_km || !b.latest_mileage_km) return false;
+  // Simple heuristic placeholder — refine once mileage_logs is wired into this view further.
+  return false;
+}
+
+function fmtDate(iso) {
+  return new Date(iso).toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+async function openBikeDetail(bikeId) {
+  const bike = (window._bikeCache || []).find(b => b.id === bikeId);
+  if (!bike) return;
+  currentBike = bike;
+
+  document.getElementById('bikeDetailCard').innerHTML = `
+    <div class="bike-name" style="font-size:17px;margin-bottom:6px;">${bike.brand || ''} ${bike.model || ''}</div>
+    <div class="bike-meta">${bike.colour ? bike.colour + ' · ' : ''}${bike.size ? 'Size ' + bike.size : ''}</div>
+    <div class="bike-meta" style="margin-top:6px;">${bike.last_service_date ? 'Last serviced ' + fmtDate(bike.last_service_date) : 'No service history yet'}</div>
+  `;
+
+  const { data, error } = await sb
+    .from('public_bike_service_history')
+    .select('*')
+    .eq('bike_id', bikeId)
+    .order('start_time', { ascending: false });
+
+  const histEl = document.getElementById('bikeHistory');
+  if (error || !data || data.length === 0) {
+    histEl.innerHTML = `<div class="no-history">No past services recorded yet.</div>`;
+  } else {
+    histEl.innerHTML = data.map(h => `
+      <div class="history-item">
+        <div class="history-date">${fmtDate(h.start_time)}</div>
+        <div class="history-service">${h.service_name}</div>
+        ${h.report_notes ? `<div class="history-notes">${h.report_notes}</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  goToStep('bike-detail');
+}
+
+// ================= NEW BIKE (existing customer) =================
+function bikeFormHtml(prefix) {
+  return `
+    <div class="field-row">
+      <div class="field"><label>Brand</label><input type="text" id="${prefix}Brand" placeholder="e.g. Trek"></div>
+      <div class="field"><label>Model</label><input type="text" id="${prefix}Model" placeholder="e.g. Domane"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Colour</label><input type="text" id="${prefix}Colour" placeholder="e.g. Black"></div>
+      <div class="field"><label>Size (optional)</label><input type="text" id="${prefix}Size" placeholder="e.g. M"></div>
+    </div>
+    <div class="field"><label>Anything to note about this bike? (optional)</label><textarea id="${prefix}Notes" placeholder="e.g. custom wheelset, known issues"></textarea></div>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('newBikeFormExisting').innerHTML = '<div class="bike-name" style="margin-bottom:10px;">Add a New Bike</div>' + bikeFormHtml('nbe');
+  document.getElementById('newBikeFormNew').innerHTML = '<div class="bike-name" style="margin-bottom:10px;">Your Bike</div>' + bikeFormHtml('nbn') + '<div class="hint">You can add more bikes later — just start with one for now.</div>';
+});
+
+function readBikeForm(prefix) {
+  return {
+    brand: document.getElementById(prefix + 'Brand').value.trim(),
+    model: document.getElementById(prefix + 'Model').value.trim(),
+    colour: document.getElementById(prefix + 'Colour').value.trim(),
+    size: document.getElementById(prefix + 'Size').value.trim(),
+    notes: document.getElementById(prefix + 'Notes').value.trim(),
+  };
+}
+
+async function submitNewBike() {
+  clearError();
+  if (!currentCustomer) { showError('Please look up your account first.'); return; }
+  const bike = readBikeForm('nbe');
+  if (!bike.brand && !bike.model) { showError('Please enter at least a brand or model.'); return; }
+
+  const { data, error } = await sb.from('bikes').insert({
+    customer_id: currentCustomer.id,
+    brand: bike.brand || null,
+    model: bike.model || null,
+    colour: bike.colour || null,
+    size: bike.size || null,
+    notes: bike.notes || null
+  }).select().single();
+
+  if (error) { showError('Could not save bike: ' + error.message); return; }
+
+  currentBike = { id: data.id, brand: data.brand, model: data.model, colour: data.colour, size: data.size };
+  goToStep('service');
+  loadServices();
+}
+
+// ================= NEW CUSTOMER REGISTRATION =================
+async function submitNewCustomer() {
+  clearError();
+  const name = document.getElementById('regName').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const address = document.getElementById('regAddress').value.trim();
+
+  if (!name || !phone) { showError('Please enter your name and phone number.'); return; }
+
+  const { data: custData, error: custErr } = await sb.from('customers').insert({
+    name, phone, email: email || null, address: address || null
+  }).select().single();
+
+  if (custErr) { showError('Could not save your details: ' + custErr.message); return; }
+  currentCustomer = { id: custData.id, name: custData.name, phone: custData.phone };
+
+  const bike = readBikeForm('nbn');
+  if (bike.brand || bike.model) {
+    const { data: bikeData, error: bikeErr } = await sb.from('bikes').insert({
+      customer_id: currentCustomer.id,
+      brand: bike.brand || null,
+      model: bike.model || null,
+      colour: bike.colour || null,
+      size: bike.size || null,
+      notes: bike.notes || null
+    }).select().single();
+    if (!bikeErr) currentBike = bikeData;
+  }
+
+  goToStep('service');
+  loadServices();
+}
+
+// ================= SERVICES =================
 async function loadServices() {
   const { data, error } = await sb.from('services').select('*').eq('active', true).order('sort_order');
   if (error) { showError('Could not load services. Please refresh.'); return; }
   SERVICES = data;
   renderServices();
+  document.getElementById('serviceBackBtn').onclick = () =>
+    goToStep(currentBike ? 'bike-detail' : (currentCustomer ? 'bikes' : 'start'));
 }
 
-async function loadShopHours() {
-  const { data, error } = await sb.from('shop_hours').select('*');
-  if (error) { showError('Could not load shop hours. Please refresh.'); return; }
-  SHOP_HOURS = data;
-}
-
-async function loadBusySlots() {
-  const { data, error } = await sb.from('public_busy_slots').select('*');
-  if (error) { showError('Could not load availability. Please refresh.'); return; }
-  BUSY = data.map(b => ({ start: new Date(b.start_time), end: new Date(b.end_time) }));
-}
-
-// ---------------- RENDER: services ----------------
 function renderServices() {
-  const el = document.getElementById('serviceList');
-  el.innerHTML = SERVICES.map(s => `
+  document.getElementById('serviceList').innerHTML = SERVICES.map(s => `
     <div class="service-option" data-id="${s.id}" onclick="selectService('${s.id}')">
       <div>
         <div class="service-name">${s.name}</div>
@@ -201,28 +541,36 @@ function renderServices() {
   `).join('');
 }
 
-function selectService(id) {
+async function selectService(id) {
   selectedService = SERVICES.find(s => s.id === id);
-  document.querySelectorAll('.service-option').forEach(el => {
-    el.classList.toggle('selected', el.dataset.id === id);
-  });
+  document.querySelectorAll('.service-option').forEach(el => el.classList.toggle('selected', el.dataset.id === id));
+  await Promise.all([loadShopHours(), loadBusySlots()]);
   renderDayTabs();
   goToStep('slot');
 }
 
-// ---------------- RENDER: day tabs + slots ----------------
+// ================= TIMELINE CALENDAR =================
+async function loadShopHours() {
+  const { data, error } = await sb.from('shop_hours').select('*');
+  if (error) { showError('Could not load shop hours.'); return; }
+  SHOP_HOURS = data;
+}
+
+async function loadBusySlots() {
+  const { data, error } = await sb.from('public_busy_slots').select('*');
+  if (error) { showError('Could not load availability.'); return; }
+  BUSY = data.map(b => ({ start: new Date(b.start_time), end: new Date(b.end_time) }));
+}
+
 function renderDayTabs() {
   const el = document.getElementById('dayTabs');
-  const today = new Date();
-  today.setHours(0,0,0,0);
+  const today = new Date(); today.setHours(0,0,0,0);
   let html = '';
   for (let i = 0; i < DAYS_AHEAD; i++) {
-    const d = new Date(today);
-    d.setDate(d.getDate() + i);
-    const dow = d.toLocaleDateString('en-SG', { weekday: 'short' });
-    const dnum = d.getDate();
+    const d = new Date(today); d.setDate(d.getDate() + i);
     html += `<div class="day-tab" data-idx="${i}" onclick="selectDay(${i})">
-      <div class="dow">${dow}</div><div class="dnum">${dnum}</div>
+      <div class="dow">${d.toLocaleDateString('en-SG', { weekday: 'short' })}</div>
+      <div class="dnum">${d.getDate()}</div>
     </div>`;
   }
   el.innerHTML = html;
@@ -230,111 +578,142 @@ function renderDayTabs() {
 }
 
 function selectDay(idx) {
-  const today = new Date();
-  today.setHours(0,0,0,0);
-  selectedDate = new Date(today);
-  selectedDate.setDate(selectedDate.getDate() + idx);
-
-  document.querySelectorAll('.day-tab').forEach(el => {
-    el.classList.toggle('active', Number(el.dataset.idx) === idx);
-  });
-  renderSlots();
+  const today = new Date(); today.setHours(0,0,0,0);
+  selectedDate = new Date(today); selectedDate.setDate(selectedDate.getDate() + idx);
+  document.querySelectorAll('.day-tab').forEach(el => el.classList.toggle('active', Number(el.dataset.idx) === idx));
+  renderTimeline();
 }
 
-function renderSlots() {
-  const grid = document.getElementById('slotsGrid');
-  if (!selectedService) return;
-
+// Renders an Outlook-style hour-by-hour timeline for the selected day:
+// each open hour is a row; busy periods show as blocked chips, free
+// periods show as clickable slot chips sized to the service duration.
+function renderTimeline() {
+  const wrap = document.getElementById('timelineWrap');
   const dow = selectedDate.getDay();
   const hours = SHOP_HOURS.find(h => h.day_of_week === dow);
+
   if (!hours || !hours.open_time || !hours.close_time) {
-    grid.innerHTML = '<div class="no-slots">Closed this day — pick another.</div>';
+    wrap.innerHTML = `<div class="closed-note">Closed this day — pick another.</div>`;
     return;
   }
 
   const [openH, openM] = hours.open_time.split(':').map(Number);
   const [closeH, closeM] = hours.close_time.split(':').map(Number);
-
-  const dayStart = new Date(selectedDate);
-  dayStart.setHours(openH, openM, 0, 0);
-  const dayEnd = new Date(selectedDate);
-  dayEnd.setHours(closeH, closeM, 0, 0);
-
+  const dayStart = new Date(selectedDate); dayStart.setHours(openH, openM, 0, 0);
+  const dayEnd = new Date(selectedDate); dayEnd.setHours(closeH, closeM, 0, 0);
   const durationMs = selectedService.duration_minutes * 60000;
-  const slotStepMs = 15 * 60000; // offer slots on 15-min increments
+  const stepMs = 15 * 60000;
   const now = new Date();
 
-  const slots = [];
-  for (let t = new Date(dayStart); t.getTime() + durationMs <= dayEnd.getTime(); t = new Date(t.getTime() + slotStepMs)) {
-    const slotStart = new Date(t);
-    const slotEnd = new Date(t.getTime() + durationMs);
-    if (slotStart < now) continue; // no past slots
+  // Build one row per hour block between open and close.
+  let rows = '';
+  for (let h = new Date(dayStart); h < dayEnd; h.setHours(h.getHours() + 1)) {
+    const hourStart = new Date(h);
+    const hourEnd = new Date(Math.min(h.getTime() + 3600000, dayEnd.getTime()));
+    const label = hourStart.toLocaleTimeString('en-SG', { hour: 'numeric', minute: '2-digit' });
 
-    const overlaps = BUSY.some(b => slotStart < b.end && slotEnd > b.start);
-    slots.push({ start: slotStart, end: slotEnd, taken: overlaps });
+    // Does a busy booking overlap this hour row? Show it as a single block
+    // spanning its own label rather than per-15-min, matching Outlook's feel.
+    const busyInHour = BUSY.filter(b => b.start < hourEnd && b.end > hourStart);
+
+    let bodyHtml = '';
+    if (busyInHour.length > 0) {
+      bodyHtml += busyInHour.map(b => {
+        const s = b.start < hourStart ? hourStart : b.start;
+        const e = b.end > hourEnd ? hourEnd : b.end;
+        return `<div class="busy-block">Booked ${s.toLocaleTimeString('en-SG',{hour:'numeric',minute:'2-digit'})}–${e.toLocaleTimeString('en-SG',{hour:'numeric',minute:'2-digit'})}</div>`;
+      }).join('');
+    }
+
+    // Offer a bookable chip at the top of the hour if a full-duration slot
+    // fits starting exactly on the hour and doesn't overlap anything busy
+    // or the past. (Keeps the UI simple — one clear option per open hour;
+    // customer can also just try the next hour if this one shows booked.)
+    const slotStart = hourStart;
+    const slotEnd = new Date(slotStart.getTime() + durationMs);
+    const fits = slotEnd <= dayEnd;
+    const overlapsBusy = BUSY.some(b => slotStart < b.end && slotEnd > b.start);
+    const inPast = slotStart < now;
+
+    if (fits && !overlapsBusy && !inPast) {
+      bodyHtml += `<div class="slot-chip" onclick="selectSlot('${slotStart.toISOString()}','${slotEnd.toISOString()}', this)">
+        Available — book ${slotStart.toLocaleTimeString('en-SG',{hour:'numeric',minute:'2-digit'})}
+      </div>`;
+    } else if (busyInHour.length === 0) {
+      bodyHtml += `<div class="hint" style="padding:4px 2px;">No ${selectedService.duration_minutes}-min slot fits here</div>`;
+    }
+
+    rows += `<div class="timeline-hour">
+      <div class="timeline-hour-label">${label}</div>
+      <div class="timeline-hour-body">${bodyHtml}</div>
+    </div>`;
   }
 
-  if (slots.length === 0) {
-    grid.innerHTML = '<div class="no-slots">No slots left this day — pick another.</div>';
-    return;
-  }
-
-  grid.innerHTML = slots.map(s => {
-    const label = s.start.toLocaleTimeString('en-SG', { hour: 'numeric', minute: '2-digit' });
-    return `<button class="slot-btn" ${s.taken ? 'disabled' : ''}
-      onclick="selectSlot('${s.start.toISOString()}', '${s.end.toISOString()}', this)">${label}</button>`;
-  }).join('');
+  wrap.innerHTML = `<div class="timeline">${rows}</div>
+    <div class="hint" style="margin-top:8px;">Want a different start time within the hour? Message us on WhatsApp after requesting and we'll adjust.</div>`;
 }
 
-function selectSlot(startIso, endIso, btnEl) {
+function selectSlot(startIso, endIso, chipEl) {
   selectedSlot = { start: new Date(startIso), end: new Date(endIso) };
-  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-  btnEl.classList.add('selected');
+  document.querySelectorAll('.slot-chip').forEach(c => c.classList.remove('selected'));
+  chipEl.classList.add('selected');
 
   document.getElementById('sumService').textContent = `${selectedService.name} (${selectedService.duration_minutes} min)`;
-  document.getElementById('sumSlot').textContent = selectedSlot.start.toLocaleString('en-SG', {
-    weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'
-  });
+  document.getElementById('sumSlot').textContent = selectedSlot.start.toLocaleString('en-SG', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+  document.getElementById('sumBike').textContent = currentBike ? `${currentBike.brand || ''} ${currentBike.model || ''}`.trim() || '—' : '—';
+
   goToStep('details');
 }
 
-// ---------------- SUBMIT ----------------
+// ================= PHOTOS =================
+async function handlePhotoSelect(event) {
+  const files = Array.from(event.target.files || []);
+  const previews = document.getElementById('photoPreviews');
+
+  for (const file of files) {
+    const path = `${Date.now()}_${Math.random().toString(36).slice(2)}_${file.name}`;
+    const { error } = await sb.storage.from(PHOTO_BUCKET).upload(path, file);
+    if (error) { showError('Could not upload photo: ' + error.message); continue; }
+
+    const { data: pub } = sb.storage.from(PHOTO_BUCKET).getPublicUrl(path);
+    uploadedPhotoUrls.push(pub.publicUrl);
+
+    const img = document.createElement('img');
+    img.className = 'photo-preview';
+    img.src = pub.publicUrl;
+    previews.appendChild(img);
+  }
+}
+
+// ================= SUBMIT BOOKING =================
 async function submitBooking() {
   clearError();
-  const name = document.getElementById('custName').value.trim();
-  const phone = document.getElementById('custPhone').value.trim();
+  if (!selectedService || !selectedSlot) { showError('Please select a service and time slot.'); return; }
+  if (!currentCustomer) { showError('Something went wrong — please start again from the top.'); return; }
+
   const notes = document.getElementById('custNotes').value.trim();
-
-  if (!name || !phone) {
-    showError('Please enter your name and phone number.');
-    return;
-  }
-  if (!selectedService || !selectedSlot) {
-    showError('Please select a service and time slot.');
-    return;
-  }
-
   const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = 'Submitting…';
+  btn.disabled = true; btn.textContent = 'Submitting…';
 
   const { error } = await sb.from('bookings').insert({
     service_id: selectedService.id,
-    customer_name: name,
-    customer_phone: phone,
+    customer_id: currentCustomer.id,
+    bike_id: currentBike ? currentBike.id : null,
+    customer_name: currentCustomer.name,
+    customer_phone: currentCustomer.phone,
     notes: notes || null,
+    photo_urls: uploadedPhotoUrls.length ? uploadedPhotoUrls : null,
     start_time: selectedSlot.start.toISOString(),
     end_time: selectedSlot.end.toISOString(),
     status: 'pending'
   });
 
   if (error) {
-    btn.disabled = false;
-    btn.textContent = 'Request This Slot';
+    btn.disabled = false; btn.textContent = 'Request This Slot';
     if (error.message && error.message.includes('no_overlapping_live_bookings')) {
       showError('Sorry, that slot was just taken. Please pick another time.');
       await loadBusySlots();
-      renderSlots();
+      renderTimeline();
       goToStep('slot');
     } else {
       showError('Something went wrong submitting your request. Please try again.');
@@ -344,11 +723,6 @@ async function submitBooking() {
 
   goToStep('done');
 }
-
-// ---------------- INIT ----------------
-(async function init() {
-  await Promise.all([loadServices(), loadShopHours(), loadBusySlots()]);
-})();
 </script>
 </body>
 </html>
