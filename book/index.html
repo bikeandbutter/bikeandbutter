@@ -115,6 +115,9 @@ html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif
 
 <div class="wrap">
   <div class="header">
+    <div id="topBackRow" style="display:none;margin-bottom:10px;">
+      <button class="btn btn-secondary" style="width:auto;padding:8px 14px;margin-top:0;" onclick="goBack()">← Back</button>
+    </div>
     <h1>Book a Service</h1>
     <p>Tell us who you are, then pick a time that works.</p>
   </div>
@@ -301,11 +304,34 @@ function clearError() {
   document.getElementById('globalError').classList.remove('show');
 }
 
-function goToStep(name) {
+let stepHistory = [];
+let currentStepName = 'start';
+
+function goToStep(name, opts) {
+  opts = opts || {};
   clearError();
+  if (!opts.skipHistory && currentStepName !== name) {
+    stepHistory.push(currentStepName);
+  }
+  currentStepName = name;
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-  document.getElementById('step-' + name).classList.add('active');
+  const el = document.getElementById('step-' + name);
+  if (!el) { console.error('No step found for:', name); return; }
+  el.classList.add('active');
+
+  const backRow = document.getElementById('topBackRow');
+  backRow.style.display = (name === 'start') ? 'none' : 'flex';
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goBack() {
+  const prev = stepHistory.pop();
+  if (prev) {
+    goToStep(prev, { skipHistory: true });
+  } else {
+    goToStep('start', { skipHistory: true });
+  }
 }
 
 // ================= LOOKUP FLOW =================
@@ -360,12 +386,20 @@ async function selectCustomer(c) {
 
 // ================= BIKES LIST =================
 async function loadBikesForCustomer(customerId) {
+  const el = document.getElementById('bikeList');
+  el.innerHTML = `<div class="no-history">Loading your bikes…</div>`;
+
   const { data, error } = await sb
     .from('public_customer_bikes')
     .select('*')
     .eq('customer_id', customerId);
 
-  if (error) { showError('Could not load your bikes.'); return; }
+  if (error) {
+    console.error('loadBikesForCustomer error:', error);
+    el.innerHTML = `<div class="no-history">Could not load your bikes (${error.message}). Please try again or use the Add a new bike option below.</div>`;
+    window._bikeCache = [];
+    return;
+  }
   renderBikeList(data || []);
 }
 
@@ -544,21 +578,27 @@ function renderServices() {
 async function selectService(id) {
   selectedService = SERVICES.find(s => s.id === id);
   document.querySelectorAll('.service-option').forEach(el => el.classList.toggle('selected', el.dataset.id === id));
-  await Promise.all([loadShopHours(), loadBusySlots()]);
-  renderDayTabs();
   goToStep('slot');
+  document.getElementById('timelineWrap').innerHTML = `<div class="closed-note">Loading available times…</div>`;
+  try {
+    await Promise.all([loadShopHours(), loadBusySlots()]);
+    renderDayTabs();
+  } catch (err) {
+    console.error('selectService error:', err);
+    document.getElementById('timelineWrap').innerHTML = `<div class="closed-note">Could not load the calendar (${err.message || err}). Please go back and try again.</div>`;
+  }
 }
 
 // ================= TIMELINE CALENDAR =================
 async function loadShopHours() {
   const { data, error } = await sb.from('shop_hours').select('*');
-  if (error) { showError('Could not load shop hours.'); return; }
+  if (error) { console.error('loadShopHours:', error); throw error; }
   SHOP_HOURS = data;
 }
 
 async function loadBusySlots() {
   const { data, error } = await sb.from('public_busy_slots').select('*');
-  if (error) { showError('Could not load availability.'); return; }
+  if (error) { console.error('loadBusySlots:', error); throw error; }
   BUSY = data.map(b => ({ start: new Date(b.start_time), end: new Date(b.end_time) }));
 }
 
