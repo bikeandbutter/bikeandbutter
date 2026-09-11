@@ -9,47 +9,50 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <style>
 :root {
-  --bg: #f6f6f4; --bg2: #ffffff; --bg3: #eeede9;
-  --border: #e3e1da; --border2: #cfccc2;
-  --text: #14130f; --text2: #63605a; --text3: #9c988c;
-  --accent: #14130f; --green: #3f7d52; --green-bg: #edf3ee;
+  --bg: #f6f5f2; --bg2: #ffffff; --bg3: #f0eee8;
+  --border: #e5e2da; --border2: #d3cec1;
+  --text: #17160f; --text2: #625d51; --text3: #9c9384;
+  --accent: #17160f; --accent2: #bf5a2a; --accent2-bg: #fbeee5;
+  --green: #3f7d52; --green-bg: #edf3ee;
   --red: #b0392c; --red-bg: #f9ebe8;
-  --radius: 6px; --radius-lg: 10px;
+  --radius: 8px; --radius-lg: 14px;
   --font-display: 'Fraunces', Georgia, serif;
-  --shadow: 0 1px 3px rgba(20,19,15,.07), 0 1px 2px rgba(20,19,15,.04);
-  --shadow-md: 0 4px 10px rgba(20,19,15,.08), 0 2px 4px rgba(20,19,15,.04);
+  --shadow: 0 1px 3px rgba(23,22,15,.06), 0 1px 2px rgba(23,22,15,.04);
+  --shadow-md: 0 8px 20px rgba(23,22,15,.09), 0 2px 6px rgba(23,22,15,.05);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+body { background-image: radial-gradient(circle at 10% 0%, #fbf3ea 0%, transparent 45%), radial-gradient(circle at 90% 10%, #f2f6f1 0%, transparent 40%); background-attachment: fixed; }
 .wrap { max-width: 560px; margin: 0 auto; padding: 32px 20px 80px; }
 .header { margin-bottom: 24px; }
-.header h1 { font-family: var(--font-display); font-size: 26px; font-weight: 600; margin-bottom: 4px; }
+.header h1 { font-family: var(--font-display); font-size: 28px; font-weight: 600; margin-bottom: 4px; letter-spacing: -.3px; }
 .header p { color: var(--text2); font-size: 13.5px; }
 
 .step { display: none; }
 .step.active { display: block; }
 
-.card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 20px; margin-bottom: 16px; }
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 22px; margin-bottom: 16px; }
 
 /* Big choice buttons (new vs existing customer) */
 .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.choice-btn { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px 16px; text-align: center; cursor: pointer; box-shadow: var(--shadow); }
-.choice-btn:hover { border-color: var(--accent); }
-.choice-icon { font-size: 26px; margin-bottom: 10px; }
+.choice-btn { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 26px 16px; text-align: center; cursor: pointer; box-shadow: var(--shadow); transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease; }
+.choice-btn:hover { border-color: var(--accent2); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.choice-icon { width: 44px; height: 44px; margin: 0 auto 12px; border-radius: 50%; background: var(--accent2-bg); color: var(--accent2); display: flex; align-items: center; justify-content: center; }
 .choice-title { font-weight: 700; font-size: 14.5px; margin-bottom: 4px; }
 .choice-sub { font-size: 12px; color: var(--text3); }
 
-.service-option, .bike-option { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; cursor: pointer; transition: all .12s; }
-.service-option:hover, .bike-option:hover { border-color: var(--border2); background: var(--bg3); }
-.service-option.selected, .bike-option.selected { border-color: var(--accent); background: var(--bg3); }
+.service-option, .bike-option { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; cursor: pointer; transition: all .12s ease; }
+.service-option:hover, .bike-option:hover { border-color: var(--accent2); background: var(--bg3); transform: translateY(-1px); }
+.service-option.selected, .bike-option.selected { border-color: var(--accent2); background: var(--accent2-bg); }
 .service-name, .bike-name { font-weight: 600; font-size: 14.5px; margin-bottom: 3px; }
+.bike-name .bike-serial { font-weight: 400; font-size: 11.5px; color: var(--text3); margin-left: 6px; }
 .service-meta, .bike-meta { font-size: 12px; color: var(--text3); }
-.service-price { font-weight: 700; font-size: 14px; }
+.service-price { font-weight: 700; font-size: 14px; color: var(--accent2); }
 .bike-badge { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; padding: 3px 8px; border-radius: 20px; }
 .bike-badge.due { background: var(--red-bg); color: var(--red); }
 .bike-badge.ok { background: var(--green-bg); color: var(--green); }
 
-.add-new-row { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border: 1px dashed var(--border2); border-radius: var(--radius); cursor: pointer; color: var(--text2); font-weight: 600; font-size: 13.5px; }
+.add-new-row { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border: 1px dashed var(--border2); border-radius: var(--radius); cursor: pointer; color: var(--text2); font-weight: 600; font-size: 13.5px; }
 .add-new-row:hover { border-color: var(--accent); color: var(--accent); }
 
 .history-item { padding: 10px 0; border-bottom: 1px solid var(--border); }
@@ -62,7 +65,7 @@ html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif
 /* Outlook-style day timeline */
 .day-tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; }
 .day-tab { flex-shrink: 0; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg2); cursor: pointer; text-align: center; min-width: 62px; }
-.day-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.day-tab.active { background: var(--accent2); color: #fff; border-color: var(--accent2); }
 .day-tab .dow { font-size: 10px; text-transform: uppercase; letter-spacing: .4px; opacity: .7; }
 .day-tab .dnum { font-size: 15px; font-weight: 700; }
 
@@ -72,9 +75,9 @@ html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif
 .timeline-hour-label { width: 56px; flex-shrink: 0; font-size: 11px; color: var(--text3); padding: 6px 8px; border-right: 1px solid var(--border); background: var(--bg3); }
 .timeline-hour-body { flex: 1; position: relative; padding: 4px 6px; display: flex; flex-direction: column; gap: 4px; }
 
-.slot-chip { padding: 8px 10px; border-radius: 5px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid var(--border2); background: var(--bg2); }
-.slot-chip:hover { border-color: var(--accent); }
-.slot-chip.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+.slot-chip { padding: 8px 10px; border-radius: 5px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid var(--border2); background: var(--bg2); transition: all .1s ease; }
+.slot-chip:hover { border-color: var(--accent2); }
+.slot-chip.selected { background: var(--accent2); color: #fff; border-color: var(--accent2); }
 .busy-block { padding: 8px 10px; border-radius: 5px; font-size: 12px; font-weight: 600; background: repeating-linear-gradient(135deg, #ece9e3, #ece9e3 6px, #e2ded5 6px, #e2ded5 12px); color: var(--text3); }
 .closed-note { color: var(--text3); font-size: 13px; padding: 20px; text-align: center; }
 
@@ -95,10 +98,10 @@ html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif
 .summary-row span:first-child { color: var(--text2); }
 .summary-row span:last-child { font-weight: 600; text-align: right; }
 
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 13px 20px; border-radius: var(--radius); font-size: 14px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; width: 100%; }
-.btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:hover { opacity: .9; }
-.btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 13px 20px; border-radius: var(--radius); font-size: 14px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; width: 100%; transition: transform .1s ease, opacity .1s ease; }
+.btn-primary { background: var(--accent2); color: #fff; }
+.btn-primary:hover { opacity: .92; transform: translateY(-1px); }
+.btn-primary:disabled { opacity: .4; cursor: not-allowed; transform: none; }
 .btn-secondary { background: none; color: var(--text2); border: 1px solid var(--border2); margin-top: 8px; }
 
 .confirm-box { text-align: center; padding: 40px 20px; }
@@ -128,12 +131,12 @@ html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif
   <div class="step active" id="step-start">
     <div class="choice-grid">
       <div class="choice-btn" onclick="goToStep('lookup')">
-        <div class="choice-icon">🔍</div>
+        <div class="choice-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
         <div class="choice-title">Existing Customer</div>
         <div class="choice-sub">I've booked with you before</div>
       </div>
       <div class="choice-btn" onclick="goToStep('register')">
-        <div class="choice-icon">✨</div>
+        <div class="choice-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg></div>
         <div class="choice-title">New Customer</div>
         <div class="choice-sub">First time here</div>
       </div>
@@ -166,7 +169,8 @@ html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif
     <div class="card">
       <div id="bikeList"></div>
       <div class="add-new-row" onclick="goToStep('newBikeForExisting')" style="margin-top:6px;">
-        ＋ Add a new bike
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Add a new bike
       </div>
     </div>
     <button class="btn btn-secondary" onclick="goToStep('lookup')">← Back</button>
@@ -179,7 +183,7 @@ html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif
       <div class="card-title" style="font-weight:700;font-size:13.5px;margin-bottom:8px;">Service History</div>
       <div id="bikeHistory"></div>
     </div>
-    <button class="btn btn-primary" onclick="goToStep('service')">Book a Service for This Bike</button>
+    <button class="btn btn-primary" onclick="bookServiceForBike()">Book a Service for This Bike</button>
     <button class="btn btn-secondary" onclick="goToStep('bikes')">← Back to My Bikes</button>
   </div>
 
@@ -248,7 +252,8 @@ html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif
       <div class="field">
         <label>Add photos (optional)</label>
         <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
-          📷 Tap to add photos of the bike / issue
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          Tap to add photos of the bike / issue
         </div>
         <input type="file" id="photoInput" accept="image/*" multiple style="display:none" onchange="handlePhotoSelect(event)">
         <div class="photo-previews" id="photoPreviews"></div>
@@ -266,7 +271,7 @@ html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif
   <!-- STEP 7: confirmation -->
   <div class="step" id="step-done">
     <div class="card confirm-box">
-      <div class="confirm-icon">✓</div>
+      <div class="confirm-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg></div>
       <h2>Request sent!</h2>
       <p>We've received your booking request. You'll get a WhatsApp message once it's confirmed — usually within a few hours.</p>
     </div>
@@ -416,7 +421,7 @@ function renderBikeList(bikes) {
     return `
     <div class="bike-option" onclick='openBikeDetail("${b.id}")'>
       <div>
-        <div class="bike-name">${b.brand || ''} ${b.model || ''}</div>
+        <div class="bike-name">${b.brand || ''} ${b.model || ''}${b.serial_no ? `<span class="bike-serial">#${b.serial_no}</span>` : ''}</div>
         <div class="bike-meta">${b.colour ? b.colour + ' · ' : ''}${b.last_service_date ? 'Last service ' + fmtDate(b.last_service_date) : 'No service history yet'}</div>
       </div>
       <div class="bike-badge ${due ? 'due' : 'ok'}">${due ? 'Service due' : 'Up to date'}</div>
@@ -440,8 +445,8 @@ async function openBikeDetail(bikeId) {
   currentBike = bike;
 
   document.getElementById('bikeDetailCard').innerHTML = `
-    <div class="bike-name" style="font-size:17px;margin-bottom:6px;">${bike.brand || ''} ${bike.model || ''}</div>
-    <div class="bike-meta">${bike.colour ? bike.colour + ' · ' : ''}${bike.size ? 'Size ' + bike.size : ''}</div>
+    <div class="bike-name" style="font-size:18px;margin-bottom:4px;">${bike.brand || ''} ${bike.model || ''}${bike.serial_no ? `<span class="bike-serial">#${bike.serial_no}</span>` : ''}</div>
+    <div class="bike-meta">${[bike.colour, bike.size ? 'Size ' + bike.size : null].filter(Boolean).join(' · ')}</div>
     <div class="bike-meta" style="margin-top:6px;">${bike.last_service_date ? 'Last serviced ' + fmtDate(bike.last_service_date) : 'No service history yet'}</div>
   `;
 
@@ -554,6 +559,12 @@ async function submitNewCustomer() {
 }
 
 // ================= SERVICES =================
+async function bookServiceForBike() {
+  goToStep('service');
+  document.getElementById('serviceList').innerHTML = `<div class="no-history">Loading services…</div>`;
+  await loadServices();
+}
+
 async function loadServices() {
   const { data, error } = await sb.from('services').select('*').eq('active', true).order('sort_order');
   if (error) { showError('Could not load services. Please refresh.'); return; }
