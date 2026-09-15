@@ -762,7 +762,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
       <div class="tab-panel" id="tab-sale-editor">
         <div class="detail-header"><span class="back-link" onclick="switchTab('sales')">← Back to Sales</span></div>
         <div class="page-header"><div><div class="page-title">New Sale</div></div>
-          <div class="page-actions"><button class="btn btn-primary" onclick="saveSale()">Save Sale</button></div>
+          <div class="page-actions"><button class="btn btn-ghost" onclick="discardSaleDraft()">Discard draft</button><button class="btn btn-primary" onclick="saveSale()">Save Sale</button></div>
         </div>
         <div class="grid grid-sidebar">
           <div class="card"><div class="card-body">
@@ -815,7 +815,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
       <div class="tab-panel" id="tab-purchase-editor">
         <div class="detail-header"><span class="back-link" onclick="switchTab('purchases')">← Back to Purchases</span></div>
         <div class="page-header"><div><div class="page-title">New Purchase</div></div>
-          <div class="page-actions"><button class="btn btn-primary" onclick="savePurchase()">Save Purchase</button></div>
+          <div class="page-actions"><button class="btn btn-ghost" onclick="discardPurchaseDraft()">Discard draft</button><button class="btn btn-primary" onclick="savePurchase()">Save Purchase</button></div>
         </div>
         <div class="grid grid-sidebar">
           <div class="card"><div class="card-body">
@@ -2079,6 +2079,23 @@ function bikeCode(b) {
   return `${base}-${num}`;
 }
 
+/* ============ STOCK MOVEMENTS (audit log) ============ */
+// Every change to product_variants.qty should go through this function
+// instead of a raw .update() — it keeps qty in sync AND writes a
+// permanent record of why it changed, so mistakes can be traced and
+// reversed later instead of requiring a trip into Supabase directly.
+async function applyStockMovement(variantId, qtyChange, reason, referenceType, referenceId, note) {
+  const v = VARIANTS.find(x => x.id === variantId);
+  const newQty = (Number(v?.qty) || 0) + qtyChange;
+  await sb.from('product_variants').update({ qty: newQty }).eq('id', variantId);
+  await sb.from('stock_movements').insert({
+    variant_id: variantId, qty_change: qtyChange, reason,
+    reference_type: referenceType || null, reference_id: referenceId || null,
+    note: note || null
+  });
+  if (v) v.qty = newQty; // keep in-memory VARIANTS array in sync without a full reload
+}
+
 /* ============ PRODUCTS & VARIANTS ============ */
 let PRODUCTS = [];
 let VARIANTS = [];
@@ -2483,19 +2500,37 @@ function renderPurchases() {
   const rows = q ? PURCHASES.filter(p => (p.platform||'').toLowerCase().includes(q) || (p.ref||'').toLowerCase().includes(q)) : PURCHASES;
   if (!rows.length) { tbody.innerHTML = `<tr><td colspan="6" class="cell-muted">${q ? 'No purchases match “'+escapeHtml(q)+'”' : 'No purchases yet'}</td></tr>`; return; }
   tbody.innerHTML = rows.map(p => `
-    <tr class="clickable" onclick="openPurchaseDetail('${p.id}')">
+    <tr class="${p.voided ? '' : 'clickable'}" onclick="${p.voided ? '' : `openPurchaseDetail('${p.id}')`}" style="${p.voided ? 'opacity:.45;text-decoration:line-through' : ''}">
       <td>${formatDate(p.purchase_date)}</td>
       <td class="cell-strong">${escapeHtml(p.platform || '—')}</td>
       <td class="cell-muted">${escapeHtml(p.ref || '—')}</td>
       <td><span class="badge ${p.status==='received'?'badge-green':'badge-yellow'}">${escapeHtml(p.status)}</span></td>
       <td class="cell-strong">${money(p.total_sgd)}</td>
-      <td></td>
+      <td>${p.voided
+        ? `<span class="badge" style="text-decoration:none" title="${escapeHtml(p.voided_reason||'')}">Voided</span>`
+        : `<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); voidPurchase('${p.id}')">Void</button>`}</td>
     </tr>`).join('');
 }
 
 function blankPurchaseItem() { return { id: purchaseItemSeq++, variant_id: '', qty: 1, unit_cost: 0 }; }
 
-function openPurchaseEditor(prefillVariantId) {
+// A draft counts as "in progress" if any line has a variant picked, a
+// non-default qty/cost, or any header field has been touched.
+function purchaseDraftInProgress() {
+  if (currentPurchaseItems.some(it => it.variant_id || it.qty !== 1 || it.unit_cost !== 0)) return true;
+  const platform = document.getElementById('purchasePlatform');
+  return !!(platform && (platform.value || document.getElementById('purchaseRef').value));
+}
+
+function openPurchaseEditor(prefillVariantId, forceNew) {
+  if (!forceNew && !prefillVariantId && purchaseDraftInProgress()) {
+    // Resume the existing draft instead of wiping it — same fix as the
+    // sale editor: this screen was always resetting on reopen, which is
+    // why an in-progress purchase appeared to "vanish" after navigating away.
+    switchTab('purchase-editor');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    return;
+  }
   document.getElementById('purchaseId').value = '';
   document.getElementById('purchaseDate').value = new Date().toISOString().slice(0,10);
   document.getElementById('purchasePlatform').value = '';
@@ -2509,6 +2544,11 @@ function openPurchaseEditor(prefillVariantId) {
   renderPurchaseItems();
   switchTab('purchase-editor');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+}
+
+function discardPurchaseDraft() {
+  if (!confirm('Discard this purchase draft? This cannot be undone.')) return;
+  openPurchaseEditor(null, true);
 }
 
 function variantOptionsHtml(selected) {
@@ -2585,6 +2625,7 @@ function pickVariant(ctx, idx, variantId) {
   const overlay = document.getElementById('variantPickerOverlay');
   if (overlay) overlay.style.display = 'none';
   if (ctx === 'sale') updateSaleItem(idx, 'variant_id', variantId);
+  else if (ctx === 'purchase') updatePurchaseItem(idx, 'variant_id', variantId);
   else updateItem(idx, 'variant_id', variantId);
 }
 
@@ -2594,13 +2635,11 @@ function renderPurchaseItems() {
   const rate = parseFloat(document.getElementById('purchaseCnyRate').value) || 1;
   const el = document.getElementById('purchaseItemsList');
   el.innerHTML = currentPurchaseItems.map((it, idx) => `
-    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
-      <select onchange="updatePurchaseItem(${idx},'variant_id',this.value)" style="flex:1;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px">
-        <option value="">Select variant…</option>${variantOptionsHtml(it.variant_id)}
-      </select>
-      <input type="number" placeholder="Qty" value="${it.qty}" oninput="updatePurchaseItem(${idx},'qty',this.value)" style="width:60px;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px">
-      <input type="number" placeholder="Unit cost" value="${it.unit_cost}" oninput="updatePurchaseItem(${idx},'unit_cost',this.value)" style="width:90px;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px">
-      <div style="width:80px;text-align:right;font-size:12px;color:var(--text2)">${money((it.qty||0)*(it.unit_cost||0)*(currency==='SGD'?1:rate))}</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center" data-purchase-idx="${idx}">
+      ${variantPickerHtml('purchase', idx, it.variant_id, 'Search variant…')}
+      <input type="number" placeholder="Qty" value="${it.qty}" oninput="updatePurchaseItemQuiet(${idx},'qty',this.value)" style="width:60px;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px">
+      <input type="number" placeholder="Unit cost" value="${it.unit_cost}" oninput="updatePurchaseItemQuiet(${idx},'unit_cost',this.value)" style="width:90px;border:1px solid var(--border2);border-radius:6px;padding:7px 9px;font-size:12px">
+      <div class="line-total" style="width:80px;text-align:right;font-size:12px;color:var(--text2)">${money((it.qty||0)*(it.unit_cost||0)*(currency==='SGD'?1:rate))}</div>
       <button class="btn btn-ghost btn-sm" onclick="removePurchaseItem(${idx})">${ICON_TRASH}</button>
     </div>`).join('');
   const shipping = parseFloat(document.getElementById('purchaseShipping').value) || 0;
@@ -2608,7 +2647,22 @@ function renderPurchaseItems() {
   const itemsTotal = currentPurchaseItems.reduce((s,it) => s + (it.qty||0)*(it.unit_cost||0)*(currency==='SGD'?1:rate), 0);
   document.getElementById('purchaseTotalSgd').textContent = money(itemsTotal + shipping + misc);
 }
+// Full re-render — only needed when the variant itself changes (need to refresh the picker label).
 function updatePurchaseItem(idx, field, val) { currentPurchaseItems[idx][field] = field==='variant_id' ? val : parseFloat(val)||0; renderPurchaseItems(); }
+// Quiet update — used for qty/unit_cost keystrokes. Updates the line total
+// in place without touching the input elements, so typing never loses focus
+// (this was the cause of the "only one character at a time" bug).
+function updatePurchaseItemQuiet(idx, field, val) {
+  currentPurchaseItems[idx][field] = parseFloat(val) || 0;
+  const currency = document.getElementById('purchaseCurrency').value.trim().toUpperCase() || 'SGD';
+  const rate = parseFloat(document.getElementById('purchaseCnyRate').value) || 1;
+  const shipping = parseFloat(document.getElementById('purchaseShipping').value) || 0;
+  const misc = parseFloat(document.getElementById('purchaseMisc').value) || 0;
+  const itemsTotal = currentPurchaseItems.reduce((s,it) => s + (it.qty||0)*(it.unit_cost||0)*(currency==='SGD'?1:rate), 0);
+  document.getElementById('purchaseTotalSgd').textContent = money(itemsTotal + shipping + misc);
+  const row = document.querySelector(`[data-purchase-idx="${idx}"] .line-total`);
+  if (row) row.textContent = money((currentPurchaseItems[idx].qty||0)*(currentPurchaseItems[idx].unit_cost||0)*(currency==='SGD'?1:rate));
+}
 function addPurchaseItem() { currentPurchaseItems.push(blankPurchaseItem()); renderPurchaseItems(); }
 function removePurchaseItem(idx) { currentPurchaseItems.splice(idx,1); if(!currentPurchaseItems.length) currentPurchaseItems.push(blankPurchaseItem()); renderPurchaseItems(); }
 document.addEventListener('input', e => { if (['purchaseShipping','purchaseMisc','purchaseCurrency','purchaseCnyRate'].includes(e.target.id)) renderPurchaseItems(); });
@@ -2645,7 +2699,8 @@ async function savePurchase() {
       const oldWac = Number(v?.wac) || 0;
       const newQty = oldQty + it.qty;
       const newWac = newQty > 0 ? ((oldQty*oldWac) + (it.qty*unitCostSgd)) / newQty : unitCostSgd;
-      await sb.from('product_variants').update({ qty: newQty, wac: newWac, cost: unitCostSgd }).eq('id', it.variant_id);
+      await sb.from('product_variants').update({ wac: newWac, cost: unitCostSgd }).eq('id', it.variant_id);
+      await applyStockMovement(it.variant_id, it.qty, 'purchase', 'purchase', purchase.id);
     }
   }
   await loadProducts();
@@ -2680,6 +2735,58 @@ async function loadSales() {
   renderSales();
 }
 
+async function voidSale(saleId) {
+  const reason = prompt('Reason for voiding this sale?');
+  if (!reason || !reason.trim()) { if (reason !== null) alert('A reason is required to void a sale.'); return; }
+
+  const { data: items } = await sb.from('sale_items').select('variant_id, qty').eq('sale_id', saleId);
+  for (const it of (items || [])) {
+    await applyStockMovement(it.variant_id, it.qty, 'void_sale', 'sale', saleId, reason.trim());
+  }
+
+  const { data: entries } = await sb.from('accounting_entries').select('*').eq('source_type', 'sale').eq('source_id', saleId);
+  const reversals = (entries || []).map(e => ({
+    entry_date: new Date().toISOString().slice(0,10),
+    account: e.account, account_type: e.account_type,
+    entry_type: e.entry_type === 'debit' ? 'credit' : 'debit',
+    amount: e.amount, category: e.category,
+    source_type: 'sale', source_id: saleId,
+    memo: 'Void: ' + (e.memo || '')
+  }));
+  if (reversals.length) await sb.from('accounting_entries').insert(reversals);
+
+  await sb.from('sales').update({ voided: true, voided_reason: reason.trim(), voided_at: new Date().toISOString() }).eq('id', saleId);
+  await loadProducts();
+  await loadSales();
+  alert('Sale voided and stock restored.');
+}
+
+async function voidPurchase(purchaseId) {
+  const reason = prompt('Reason for voiding this purchase?');
+  if (!reason || !reason.trim()) { if (reason !== null) alert('A reason is required to void a purchase.'); return; }
+
+  const { data: items } = await sb.from('purchase_items').select('variant_id, qty').eq('purchase_id', purchaseId);
+  for (const it of (items || [])) {
+    await applyStockMovement(it.variant_id, -it.qty, 'void_purchase', 'purchase', purchaseId, reason.trim());
+  }
+
+  const { data: entries } = await sb.from('accounting_entries').select('*').eq('source_type', 'purchase').eq('source_id', purchaseId);
+  const reversals = (entries || []).map(e => ({
+    entry_date: new Date().toISOString().slice(0,10),
+    account: e.account, account_type: e.account_type,
+    entry_type: e.entry_type === 'debit' ? 'credit' : 'debit',
+    amount: e.amount, category: e.category,
+    source_type: 'purchase', source_id: purchaseId,
+    memo: 'Void: ' + (e.memo || '')
+  }));
+  if (reversals.length) await sb.from('accounting_entries').insert(reversals);
+
+  await sb.from('purchases').update({ voided: true, voided_reason: reason.trim(), voided_at: new Date().toISOString() }).eq('id', purchaseId);
+  await loadProducts();
+  await loadPurchases();
+  alert('Purchase voided and stock reversed.');
+}
+
 function renderSales() {
   const tbody = document.getElementById('saleRows');
   if (!tbody) return;
@@ -2688,19 +2795,37 @@ function renderSales() {
   const rows = SALES.filter(s => (!filter || s.source === filter) && (!q || (s.customer||'').toLowerCase().includes(q) || (s.ref||'').toLowerCase().includes(q)));
   if (!rows.length) { tbody.innerHTML = `<tr><td colspan="6" class="cell-muted">${q ? 'No sales match “'+escapeHtml(q)+'”' : 'No sales yet'}</td></tr>`; return; }
   tbody.innerHTML = rows.map(s => `
-    <tr class="clickable" onclick="openSaleDetail('${s.id}')">
+    <tr class="${s.voided ? '' : 'clickable'}" onclick="${s.voided ? '' : `openSaleDetail('${s.id}')`}" style="${s.voided ? 'opacity:.45;text-decoration:line-through' : ''}">
       <td>${formatDate(s.sale_date)}</td>
       <td><span class="badge badge-neutral">${escapeHtml(s.source || '—')}</span></td>
       <td class="cell-muted">${escapeHtml(s.customer || '—')}</td>
       <td>${money(s.gross)}</td>
       <td class="cell-strong">${money(s.net)}</td>
-      <td></td>
+      <td>${s.voided
+        ? `<span class="badge" style="text-decoration:none" title="${escapeHtml(s.voided_reason||'')}">Voided</span>`
+        : `<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); voidSale('${s.id}')">Void</button>`}</td>
     </tr>`).join('');
 }
 
 function blankSaleItem() { return { id: saleItemSeq++, variant_id: '', qty: 1, unit_price: 0 }; }
 
-function openSaleEditor() {
+// A draft counts as "in progress" if any line has a variant picked, a
+// non-default qty/price, or any header field has been touched.
+function saleDraftInProgress() {
+  if (currentSaleItems.some(it => it.variant_id || it.qty !== 1 || it.unit_price !== 0)) return true;
+  const src = document.getElementById('saleSource');
+  return !!(src && (src.value || document.getElementById('saleRef').value || document.getElementById('saleCustomer').value));
+}
+
+function openSaleEditor(forceNew) {
+  if (!forceNew && saleDraftInProgress()) {
+    // Resume the existing draft instead of wiping it — this fixes "my sale
+    // disappears when I click into another tab": the data was never
+    // actually gone, this button was just always resetting it on reopen.
+    switchTab('sale-editor');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    return;
+  }
   document.getElementById('saleId').value = '';
   document.getElementById('saleDate').value = new Date().toISOString().slice(0,10);
   document.getElementById('saleSource').value = '';
@@ -2714,6 +2839,11 @@ function openSaleEditor() {
   renderSaleItems();
   switchTab('sale-editor');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+}
+
+function discardSaleDraft() {
+  if (!confirm('Discard this sale draft? This cannot be undone.')) return;
+  openSaleEditor(true);
 }
 
 function renderSaleItems() {
@@ -2786,9 +2916,8 @@ async function saveSale() {
   for (const it of items) {
     await sb.from('sale_items').insert({ sale_id: sale.id, variant_id: it.variant_id, qty: it.qty, unit_price: it.unit_price });
     const v = VARIANTS.find(x => x.id === it.variant_id);
-    const newQty = (Number(v?.qty) || 0) - it.qty;
-    await sb.from('product_variants').update({ qty: newQty }).eq('id', it.variant_id);
     totalCogs += it.qty * (Number(v?.wac) || 0);
+    await applyStockMovement(it.variant_id, -it.qty, 'sale', 'sale', sale.id);
   }
   const saleDate = document.getElementById('saleDate').value || new Date().toISOString().slice(0,10);
   const source = document.getElementById('saleSource').value.trim() || 'Sale';
