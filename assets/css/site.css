@@ -1,0 +1,199 @@
+/* ==========================================================================
+   Bike & Butter — shared design system
+   Used by every page that has been moved to the new look (header, footer,
+   buttons, typography, layout helpers). Page-specific styles live in
+   assets/css/pages/.
+   ========================================================================== */
+
+/* ---- Fonts (self-hosted, latin subset) ---------------------------------- */
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/fonts/inter-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("/assets/fonts/barlow-condensed-latin-700-normal.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("/assets/fonts/barlow-condensed-latin-800-normal.woff2") format("woff2");
+  font-weight: 800; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("/assets/fonts/barlow-condensed-latin-800-italic.woff2") format("woff2");
+  font-weight: 800; font-style: italic; font-display: swap;
+}
+
+/* ---- Tokens ------------------------------------------------------------- */
+:root {
+  --yellow: #F8CC0A;          /* the butter on the saddle */
+  --yellow-dark: #E3B800;
+  --yellow-soft: #FFF6CC;
+  --ink: #111111;
+  --ink-2: #34332f;
+  --muted: #6b6a63;
+  --line: #E8E6DE;
+  --bg: #FFFFFF;
+  --bg-soft: #FAF9F5;
+
+  --font-display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --radius: 20px;
+  --radius-sm: 12px;
+  --max: 1200px;
+  --header-h: 72px;
+  --shadow: 0 1px 2px rgba(17,17,17,.05), 0 8px 24px rgba(17,17,17,.06);
+  --shadow-lg: 0 2px 4px rgba(17,17,17,.06), 0 18px 40px rgba(17,17,17,.12);
+}
+
+/* ---- Reset / base ------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 12px); }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+img, svg { max-width: 100%; display: block; }
+img { height: auto; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+h1, h2, h3, p { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 6px; }
+::selection { background: var(--yellow); color: var(--ink); }
+
+.wrap { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: 20px; }
+@media (min-width: 720px) { .wrap { padding-inline: 32px; } }
+
+.skip-link {
+  position: absolute; left: 12px; top: -60px; z-index: 200;
+  background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 10px; font-weight: 600;
+  transition: top .15s;
+}
+.skip-link:focus { top: 12px; }
+
+/* ---- Type --------------------------------------------------------------- */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-2);
+}
+.eyebrow::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--yellow); box-shadow: 0 0 0 3px var(--yellow-soft); }
+.display, .h2 {
+  font-family: var(--font-display); font-weight: 800; text-transform: uppercase;
+  line-height: .94; letter-spacing: .005em;
+}
+.h2 { font-size: clamp(2.4rem, 5.4vw, 4rem); }
+.lead { font-size: clamp(1.05rem, 1.6vw, 1.2rem); color: var(--ink-2); line-height: 1.65; }
+.hl { background: linear-gradient(transparent 58%, var(--yellow) 58%, var(--yellow) 92%, transparent 92%); padding-inline: .08em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* ---- Buttons ------------------------------------------------------------ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 14px 24px; border-radius: 999px; border: 2px solid transparent;
+  font-weight: 650; font-size: .95rem; line-height: 1; cursor: pointer; white-space: nowrap;
+  transition: transform .15s ease, background-color .15s ease, color .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+.btn-yellow { background: var(--yellow); color: var(--ink); box-shadow: 0 6px 18px rgba(248,204,10,.35); }
+.btn-yellow:hover { background: var(--yellow-dark); }
+.btn-dark { background: var(--ink); color: #fff; }
+.btn-dark:hover { background: #2a2a2a; }
+.btn-ghost { border-color: var(--ink); color: var(--ink); background: transparent; }
+.btn-ghost:hover { background: var(--ink); color: #fff; }
+.btn-light { background: #fff; color: var(--ink); }
+.btn-light:hover { background: var(--yellow); }
+.btn svg { width: 16px; height: 16px; flex: none; }
+
+/* ---- Header ------------------------------------------------------------- */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,.9);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px); backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom: 1px solid transparent; transition: border-color .2s, box-shadow .2s;
+}
+.site-header.is-scrolled { border-bottom-color: var(--line); box-shadow: 0 6px 20px rgba(17,17,17,.04); }
+.header-in { display: flex; align-items: center; gap: 20px; height: var(--header-h); }
+.brand { display: block; flex: none; }
+.brand img { height: 56px; width: auto; }
+.primary { display: none; margin-left: auto; gap: 2px; }
+.primary a { padding: 9px 14px; border-radius: 999px; font-size: .94rem; font-weight: 500; color: var(--ink-2); transition: background-color .15s, color .15s; }
+.primary a:hover { background: var(--bg-soft); color: var(--ink); }
+.primary a[aria-current="page"] { color: var(--ink); font-weight: 650; }
+.header-cta { display: none; padding: 12px 20px; }
+.menu-btn {
+  margin-left: auto; width: 46px; height: 46px; border-radius: 50%; border: 1.5px solid var(--line);
+  background: #fff; display: grid; place-items: center; cursor: pointer;
+}
+.menu-btn span, .menu-btn span::before, .menu-btn span::after {
+  display: block; width: 18px; height: 2px; background: var(--ink); border-radius: 2px; transition: transform .2s, opacity .2s; content: ""; position: relative;
+}
+.menu-btn span::before { position: absolute; top: -6px; }
+.menu-btn span::after { position: absolute; top: 6px; }
+.menu-btn[aria-expanded="true"] span { background: transparent; }
+.menu-btn[aria-expanded="true"] span::before { transform: translateY(6px) rotate(45deg); }
+.menu-btn[aria-expanded="true"] span::after { transform: translateY(-6px) rotate(-45deg); }
+
+.mobile-nav { position: absolute; left: 0; right: 0; top: 100%; max-height: calc(100vh - var(--header-h)); overflow-y: auto;
+  border-top: 1px solid var(--line); background: #fff; padding: 14px 20px 24px; box-shadow: 0 24px 40px rgba(17,17,17,.12); }
+.mobile-nav[hidden] { display: none; }
+.mobile-nav a.m-link {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 4px; border-bottom: 1px solid var(--line);
+  font-family: var(--font-display); font-weight: 800; font-size: 1.9rem; text-transform: uppercase; line-height: 1;
+}
+.mobile-nav .btn { width: 100%; margin-top: 18px; padding: 17px 24px; }
+
+@media (min-width: 960px) {
+  .primary { display: flex; }
+  .header-cta { display: inline-flex; }
+  .menu-btn, .mobile-nav { display: none !important; }
+}
+
+/* ---- Floating WhatsApp -------------------------------------------------- */
+.wa-float {
+  position: fixed; right: 16px; bottom: 16px; z-index: 90;
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--ink); color: #fff; padding: 13px 18px 13px 14px; border-radius: 999px;
+  font-weight: 650; font-size: .9rem; box-shadow: var(--shadow-lg);
+  transition: transform .15s, background-color .15s, color .15s;
+}
+.wa-float:hover { transform: translateY(-3px); background: var(--yellow); color: var(--ink); }
+.wa-float svg { width: 22px; height: 22px; color: var(--yellow); transition: color .15s; }
+.wa-float:hover svg { color: var(--ink); }
+@media (max-width: 520px) { .wa-float span { display: none; } .wa-float { padding: 14px; } }
+
+/* ---- Footer ------------------------------------------------------------- */
+.site-footer { background: var(--ink); color: #d9d8d2; margin-top: 0; }
+.footer-top { display: grid; gap: 40px; padding-block: 64px 40px; }
+.footer-brand img { width: 220px; height: auto; margin-bottom: 18px; }
+.footer-brand p { max-width: 34ch; color: #a8a79f; font-size: .95rem; }
+.footer-cols { display: grid; gap: 32px 24px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.footer-col h3 { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; letter-spacing: .06em; font-size: 1.15rem; color: var(--yellow); margin-bottom: 14px; }
+.footer-col li + li { margin-top: 9px; }
+.footer-col a { color: #d9d8d2; font-size: .95rem; transition: color .15s; }
+.footer-col a:hover { color: var(--yellow); }
+.footer-col address { font-style: normal; font-size: .95rem; line-height: 1.7; color: #d9d8d2; }
+.footer-bottom { border-top: 1px solid #2c2c2a; padding-block: 22px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; font-size: .85rem; color: #8b8a82; }
+@media (min-width: 900px) {
+  .footer-top { grid-template-columns: 1.1fr 2fr; }
+  .footer-cols { grid-template-columns: .9fr .9fr .9fr 1.5fr; }
+}
+
+/* ---- Scroll reveal (only when JS is present) ---------------------------- */
+.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+.js .reveal.is-in { opacity: 1; transform: none; }
+.js .reveal[data-delay="1"] { transition-delay: .08s; }
+.js .reveal[data-delay="2"] { transition-delay: .16s; }
+.js .reveal[data-delay="3"] { transition-delay: .24s; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: .001ms !important; animation-duration: .001ms !important; }
+  .js .reveal { opacity: 1; transform: none; }
+}

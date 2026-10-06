@@ -1,53 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Perf: preconnect -->
-  <link rel="preconnect" href="https://sheets.googleapis.com">
-  <link rel="preconnect" href="https://accounts.google.com">
-  <link rel="preconnect" href="https://www.googletagmanager.com">
-  <link rel="dns-prefetch" href="https://www.googleapis.com">
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-ZQJRHN886Z');
-</script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="home.css" />
-  <title>Bike & Butter — Road Bike & Triathlon Shop in Singapore</title>
-  <meta name="description" content="Bike & Butter is a Singapore bicycle shop specializing in road cycling and triathlon. Bike builds, repairs, servicing, components, apparel, and nutrition." />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://bikeandbutter.com/" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.className += " js";</script>
 
-  <!-- Open Graph (WhatsApp, Telegram, Facebook previews) -->
-  <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://bikeandbutter.com/" />
-  <meta property="og:title"       content="Bike & Butter — The Road Bike Archive" />
-  <meta property="og:description" content="Explore hundreds of road bikes from the world's finest brands. Bike & Butter is the definitive archive for road cycling enthusiasts." />
-  <meta property="og:image"       content="https://bikeandbutter.com/og-image.png" />
-  <meta property="og:site_name"   content="Bike &amp; Butter" />
+  <title>Bike &amp; Butter — Road &amp; Triathlon Bike Workshop in Singapore</title>
+  <meta name="description" content="Bike &amp; Butter builds, upgrades and services road and triathlon bikes in Jurong West, Singapore. Official SG distributor of 8LIEN carbon wheels, RSTRI cockpit parts and EVR apparel.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://bikeandbutter.com/">
+  <meta name="theme-color" content="#F8CC0A">
 
-  <!-- Twitter card -->
-  <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:title"       content="Bike & Butter — The Road Bike Archive" />
-  <meta name="twitter:description" content="Explore hundreds of road bikes from the world's finest brands. Bike & Butter is the definitive archive for road cycling enthusiasts." />
-  <meta name="twitter:image"       content="https://bikeandbutter.com/og-image.png" />
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Social previews (WhatsApp, Telegram, Facebook, X) -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bikeandbutter.com/">
+  <meta property="og:title" content="Bike &amp; Butter — Road &amp; Triathlon Bike Workshop in Singapore">
+  <meta property="og:description" content="We build, upgrade and tune road and triathlon bikes. Book a service online, or shop parts, apparel and nutrition on Shopee, Lazada and Carousell.">
+  <meta property="og:image" content="https://bikeandbutter.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Bike &amp; Butter">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Bike &amp; Butter — Road &amp; Triathlon Bike Workshop in Singapore">
+  <meta name="twitter:description" content="We build, upgrade and tune road and triathlon bikes in Singapore.">
+  <meta name="twitter:image" content="https://bikeandbutter.com/og-image.png">
 
-  <!-- Structured data: tells Google this is a real local business, and helps -->
-  <!-- link this website to the Bike & Butter Google Business Profile listing -->
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Performance: fonts + hero image are the only things needed for first paint -->
+  <link rel="preload" href="/assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/barlow-condensed-latin-800-italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" as="image" href="/assets/img/home/hero-1000.webp" imagesrcset="/assets/img/home/hero-560.webp 560w, /assets/img/home/hero-1000.webp 1000w" imagesizes="(min-width: 940px) 45vw, 92vw" fetchpriority="high">
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <link rel="stylesheet" href="/assets/css/pages/home.css">
+
+  <!-- Structured data: lets Google treat this as a local business and link it to the Business Profile -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "BicycleStore",
+    "@id": "https://bikeandbutter.com/#business",
     "name": "Bike & Butter",
-    "image": "https://bikeandbutter.com/og-image.png",
+    "description": "Workshop that builds, upgrades and services road and triathlon bikes in Singapore. Official distributor of 8LIEN, RSTRI and EVR.",
     "url": "https://bikeandbutter.com/",
+    "logo": "https://bikeandbutter.com/assets/img/logo-900.webp",
+    "image": "https://bikeandbutter.com/og-image.png",
     "telephone": "+65 8722 2610",
     "priceRange": "$$",
+    "areaServed": "Singapore",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "491 Jurong West Avenue 1",
@@ -55,6 +59,7 @@
       "postalCode": "640491",
       "addressCountry": "SG"
     },
+    "hasMap": "https://www.google.com/maps/search/?api=1&query=491+Jurong+West+Avenue+1+Singapore+640491",
     "openingHoursSpecification": [
       {
         "@type": "OpeningHoursSpecification",
@@ -64,224 +69,295 @@
       }
     ],
     "sameAs": [
-      "https://www.instagram.com/bikeandbutter/"
+      "https://www.instagram.com/bikeandbutter/",
+      "https://shopee.sg/shop/1784141511",
+      "https://www.lazada.sg/shop/bike-butter/",
+      "https://www.carousell.sg/u/bikeandbutter/"
     ]
   }
   </script>
-  <style>
-    /* ── Static hero background ── */
-    body {
-      background: #f9f9f7;
-      min-height: 100vh;
-    }
 
-    /* ── Nav ── */
-    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
-
-    /* ── Hero ── */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-
-    .hero-box { text-align: center; }
-
-    /* ── Background pattern ── */
-    .hero-bg {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      background-image:
-        radial-gradient(circle at 20% 35%, rgba(200,210,255,0.18) 0%, transparent 55%),
-        radial-gradient(circle at 80% 65%, rgba(255,220,180,0.15) 0%, transparent 50%);
-      pointer-events: none;
-    }
-
-    .hero {
-      position: relative;
-      z-index: 1;
-    }
-
-    /* User chip */
-    .user-chip {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 5px 10px;
-      border: 1px solid #e5e5e5;
-      border-radius: 999px;
-      background: #fff;
-      cursor: pointer;
-    }
-    .user-avatar {
-      width: 26px; height: 26px;
-      border-radius: 50%;
-      background: #111; color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 700;
-    }
-    .user-name { font-size: 12px; font-weight: 500; color: #111; white-space: nowrap; }
-    .user-menu {
-      position: absolute; top: 42px; right: 0;
-      background: #fff; border: 1px solid #eee; border-radius: 10px;
-      padding: 6px; min-width: 120px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-      display: none; z-index: 200;
-    }
-    .user-chip.open .user-menu { display: block; }
-    .user-menu a {
-      display: block; font-size: 12px; color: #d33;
-      padding: 6px 8px; border-radius: 6px; text-decoration: none;
-    }
-    .user-menu a:hover { background: #f6f6f6; }
-
-    /* Auth modal */
-    .auth-modal-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.45); z-index: 1000;
-      align-items: center; justify-content: center;
-    }
-    .auth-modal-overlay.open { display: flex; }
-    .auth-modal {
-      background: #fff; border-radius: 14px;
-      width: 360px; max-width: 95vw;
-      padding: 36px 32px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.18); text-align: center;
-    }
-    .auth-modal-btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      gap: 10px; width: 100%; padding: 11px 20px;
-      border: 1.5px solid #ddd; border-radius: 8px; background: #fff;
-      font-size: 13px; font-weight: 600; font-family: inherit;
-      cursor: pointer; color: #111; margin-bottom: 10px;
-    }
-    .auth-modal-cancel {
-      font-size: 12px; color: #bbb; cursor: pointer;
-      background: none; border: none; font-family: inherit;
-    }
-    .toast {
-      position: fixed; bottom: 24px; left: 50%;
-      transform: translateX(-50%) translateY(12px);
-      background: #111; color: #fff; font-size: 13px;
-      padding: 10px 18px; border-radius: 8px;
-      opacity: 0; pointer-events: none; transition: 0.2s; z-index: 999;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  </style>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZQJRHN886Z');
+  </script>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">
-    <a href="./" class="logo-link">
-      <div class="logo-icon">B</div>
-      Bike &amp; Butter
+<!-- @header -->
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap header-in">
+    <a class="brand" href="/" aria-label="Bike &amp; Butter — home">
+      <img src="/assets/img/logo-480.webp" alt="Bike &amp; Butter" width="480" height="280">
     </a>
+    <nav class="primary" aria-label="Primary">
+      <a href="/#services">Services</a>
+      <a href="/#brands">Brands</a>
+      <a href="/#shop">Shop</a>
+      <a href="/#visit">Visit</a>
+      <a href="/contact/">Contact</a>
+    </nav>
+    <a class="btn btn-yellow header-cta" href="/book/">Book a Service</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu"><span></span></button>
   </div>
-  <div class="nav-right">
-    <div class="nav-links">
-      <div class="nav-partners-wrap">
-        <a href="#" class="nav-partners-trigger">Our Brands
-          <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" width="10" height="10">
-            <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-        <div class="nav-partners-dropdown">
-          <a href="8lien/"><span class="nav-partner-dot" style="background:#ff677e;"></span>8LIEN</a>
-          <a href="rstri/"><span class="nav-partner-dot" style="background:#f5c518;"></span>RSTRI</a>
-          <a href="evr/"><span class="nav-partner-dot" style="background:#F26522;"></span>EVR</a>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile" hidden>
+    <a class="m-link" href="/#services">Services <span aria-hidden="true">→</span></a>
+    <a class="m-link" href="/#brands">Brands <span aria-hidden="true">→</span></a>
+    <a class="m-link" href="/#shop">Shop <span aria-hidden="true">→</span></a>
+    <a class="m-link" href="/#visit">Visit <span aria-hidden="true">→</span></a>
+    <a class="m-link" href="/contact/">Contact <span aria-hidden="true">→</span></a>
+    <a class="btn btn-yellow" href="/book/">Book a Service</a>
+  </nav>
+</header>
+<!-- @/header -->
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Road &amp; triathlon bike workshop · Singapore</span>
+        <h1>We build, upgrade &amp; tune <span class="hl">road &amp; tri bikes.</span></h1>
+        <p class="lead">Custom builds, performance upgrades and expert servicing from our Jurong West workshop — plus race-ready wheels, cockpit parts and kit from the brands we distribute.</p>
+        <div class="hero-actions">
+          <a class="btn btn-yellow" href="/book/">Book a Service
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#shop">Shop gear</a>
         </div>
       </div>
-      <a href="marketplace/">Marketplace</a>
-      <a href="bikeindex/">Bikes</a>
-      <a href="community/">Community</a>
-      <a href="feed/">Feed</a>
-      <a href="contact/">Contact Us</a>
+      <div class="hero-media">
+        <figure>
+          <img src="/assets/img/home/hero-1000.webp"
+               srcset="/assets/img/home/hero-560.webp 560w, /assets/img/home/hero-1000.webp 1000w"
+               sizes="(min-width: 940px) 45vw, 92vw"
+               width="1000" height="750" fetchpriority="high"
+               alt="Triathlete in an aero tuck on a red time-trial bike with a rear disc wheel">
+          <span class="hero-chip">Road · Triathlon · TT</span>
+        </figure>
+      </div>
     </div>
-    <div id="auth-area"></div>
-  </div>
-  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-<main>
+  </section>
 
-<div class="mobile-menu" id="mobile-menu">
-  <a href="8lien/" style="color:#ff677e;font-weight:600;">8LIEN 
-  <a href="rstri/" style="color:#f5c518;font-weight:600;">RSTRI 
-  <a href="evr/" style="color:#F26522;font-weight:600;">EVR 
-  <a href="marketplace/">Marketplace</a>
-  <a href="bikeindex/">Bikes</a>
-  <a href="community/">Community</a>
-  <a href="feed/">Feed</a>
-  <a href="contact/">Contact Us</a>
-</div>
+  <!-- TRUST BAR -->
+  <section class="trust" aria-label="Why Bike &amp; Butter">
+    <div class="wrap trust-grid">
+      <div class="trust-item"><strong>Official SG distributor</strong><span>8LIEN · RSTRI · EVR</span></div>
+      <div class="trust-item"><strong>Test rides</strong><span>Try 8LIEN carbon wheelsets before you buy</span></div>
+      <div class="trust-item"><strong>24-hour replies</strong><span>On every enquiry and booking request</span></div>
+      <div class="trust-item"><strong>Jurong West workshop</strong><span>Mon–Fri, 9am–6pm</span></div>
+    </div>
+  </section>
 
-<script>
-document.getElementById('nav-hamburger').addEventListener('click', function() {
-  document.getElementById('mobile-menu').classList.toggle('open');
-});
-document.querySelectorAll('#mobile-menu a').forEach(function(a) {
-  a.addEventListener('click', function() {
-    document.getElementById('mobile-menu').classList.remove('open');
-  });
-});
-</script>
+  <!-- SERVICES -->
+  <section class="section" id="services">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">What we do</span>
+        <h2 class="h2">Built right. <span class="hl">Tuned</span> to your ride.</h2>
+        <p class="lead">Whether you're chasing a podium or just want your bike to feel brand new, we handle it from first bolt to final torque check.</p>
+      </div>
+      <div class="cards-3">
+        <article class="service reveal">
+          <span class="num">01</span>
+          <h3>Custom builds</h3>
+          <p>From frame to finish line. We spec and assemble road and triathlon bikes around how you ride, what you race and what you want to spend.</p>
+          <a class="more" href="https://wa.me/6587222610?text=Hi%20Bike%20%26%20Butter%2C%20I%27d%20like%20to%20enquire%20about%20a%20custom%20build." target="_blank" rel="noopener">Start a build <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="service reveal" data-delay="1">
+          <span class="num">02</span>
+          <h3>Upgrades</h3>
+          <p>Lighter wheels, a cleaner cockpit, a better drivetrain. We recommend what will actually make you faster, then fit it properly.</p>
+          <a class="more" href="/8lien/">Explore wheelsets <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="service service--primary reveal" data-delay="2">
+          <span class="num">03</span>
+          <h3>Servicing &amp; repairs</h3>
+          <p>Tune-ups, repairs and pre-race checks for road and tri bikes. Book online, pick a slot, and we'll confirm it with you.</p>
+          <a class="btn btn-yellow" href="/book/">Book a Service</a>
+        </article>
+      </div>
+    </div>
+  </section>
 
-<!-- Background -->
-<div class="hero-bg"></div>
+  <!-- BRANDS -->
+  <section class="section brands" id="brands">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Our brands</span>
+        <h2 class="h2">Gear we <span class="hl">believe in.</span></h2>
+        <p class="lead">We're the official Singapore distributor for three performance brands.</p>
+      </div>
+      <div class="cards-3">
+        <a class="brand-card reveal" href="/8lien/">
+          <div class="photo"><img src="/assets/img/home/brand-8lien.webp" width="760" height="570" loading="lazy" alt="Cyclist riding a road bike fitted with deep carbon wheels"></div>
+          <div class="body">
+            <h3 class="brand-name"><i style="background:#ff677e"></i>8LIEN</h3>
+            <p>UCI-certified carbon-spoke wheelsets for road and triathlon, from SGD 1,550. Test rides available.</p>
+            <span class="more">Explore wheelsets <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+        <a class="brand-card reveal" data-delay="1" href="/rstri/">
+          <div class="photo"><img src="/assets/img/home/brand-rstri.webp" width="760" height="570" loading="lazy" alt="Two black CNC-machined RSTRI aerobar baseplates on a yellow backdrop"></div>
+          <div class="body">
+            <h3 class="brand-name"><i style="background:#f5c518"></i>RSTRI</h3>
+            <p>CNC-machined baseplates and bike-specific adapters for TT and triathlon cockpits. Made to fit, made to order.</p>
+            <span class="more">See the range <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+        <a class="brand-card reveal" data-delay="2" href="/evr/">
+          <div class="photo"><img src="/assets/img/home/brand-evr.webp" width="760" height="570" loading="lazy" alt="Close-up of EVR cycling bib shorts on a rider in a dark studio"></div>
+          <div class="body">
+            <h3 class="brand-name"><i style="background:#F26522"></i>EVR</h3>
+            <p>Race-tuned cycling apparel with Italian chamois pads, built for Singapore's heat. Order online.</p>
+            <span class="more">Shop apparel <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-box">
-    <div class="hero-title">BIKE & BUTTER</div>
-    <div class="hero-sub">The Road Bike Archive</div>
-    <div class="hero-meta" id="hero-meta"></div>
-    <button class="enter-btn" onclick="window.location.href='bikeindex/'">
-      Browse Collection
-    </button>
-  </div>
-  <div class="mobile-splash-links">
-    <a href="brands/">Brands</a>
-    <a href="community/">Community</a>
-    <a href="feed/">Feed</a>
-    <a href="marketplace/">Marketplace</a>
-    <a href="contact/">Contact Us</a>
-  </div>
-</div>
+  <!-- SHOP -->
+  <section class="section shop" id="shop">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Shop online</span>
+        <h2 class="h2">Parts, apparel &amp; <span class="hl">nutrition.</span></h2>
+        <p class="lead">Road cycling parts, kit and fuel — on the marketplaces you already use.</p>
+      </div>
+      <div class="shop-grid">
+        <a class="shop-tile reveal" href="https://shopee.sg/shop/1784141511" target="_blank" rel="noopener">
+          <div class="top"><h3>Shopee</h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></div>
+          <p>Visit our Shopee store</p>
+        </a>
+        <a class="shop-tile reveal" data-delay="1" href="https://www.lazada.sg/shop/bike-butter/" target="_blank" rel="noopener">
+          <div class="top"><h3>Lazada</h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></div>
+          <p>Visit our Lazada store</p>
+        </a>
+        <a class="shop-tile reveal" data-delay="2" href="https://www.carousell.sg/u/bikeandbutter/" target="_blank" rel="noopener">
+          <div class="top"><h3>Carousell</h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></div>
+          <p>Browse our Carousell listings</p>
+        </a>
+      </div>
+    </div>
+  </section>
 
-<div class="toast" id="toast"></div>
-<script src="auth.js"></script>
-<script>
-const SHEET_ID = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
-const API_KEY  = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
+  <!-- VISIT -->
+  <section class="section" id="visit">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Visit us</span>
+        <h2 class="h2">Come say <span class="hl">hi.</span></h2>
+      </div>
+      <div class="visit-grid">
+        <div class="visit-list reveal">
+          <div class="visit-row">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.500C5 14.800 12 21 12 21Z"/><circle cx="12" cy="9.500" r="2.500"/></svg></span>
+            <div><h3>Workshop</h3><p>491 Jurong West Avenue 1<br>Singapore 640491</p></div>
+          </div>
+          <div class="visit-row">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            <div><h3>Hours</h3><p>Monday – Friday, 9am – 6pm</p></div>
+          </div>
+          <div class="visit-row">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-8l-5 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/></svg></span>
+            <div><h3>WhatsApp</h3><p><a href="https://wa.me/6587222610?text=Hi%20Bike%20%26%20Butter%2C%20I%27d%20like%20to%20ask%20about%20" target="_blank" rel="noopener">+65 8722 2610</a></p></div>
+          </div>
+          <div class="visit-row">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.200" cy="6.800" r=".6" fill="currentColor"/></svg></span>
+            <div><h3>Instagram</h3><p><a href="https://www.instagram.com/bikeandbutter/" target="_blank" rel="noopener">@bikeandbutter</a></p></div>
+          </div>
+        </div>
+        <div class="map-card reveal" data-delay="1">
+          <div>
+            <h3>Find the workshop</h3>
+          </div>
+          <div style="display:grid;gap:20px;position:relative;z-index:1">
+            <p>Planning a visit or a test ride? Send us a message and we'll line it up.</p>
+            <a class="btn btn-dark" href="https://www.google.com/maps/search/?api=1&amp;query=491+Jurong+West+Avenue+1+Singapore+640491" target="_blank" rel="noopener">Open in Google Maps
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M5 4h7v7"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-// REMOVED: canvas plane + grid refs (scroller deleted)
-
-async function loadCounts() {
-  try {
-    const [bikeRes, brandRes] = await Promise.all([
-      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Database!B2:B?key=${API_KEY}`),
-      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Brands!B2:B?key=${API_KEY}`)
-    ]);
-    const bikeData  = await bikeRes.json();
-    const brandData = await brandRes.json();
-    const bikeCount  = ((bikeData.values  || []).slice(1)).filter(r => r[0]).length;
-    const brandCount = ((brandData.values || []).slice(1)).filter(r => r[0]).length;
-    document.getElementById('hero-meta').textContent = `${brandCount} brands · ${bikeCount} bikes`;
-  } catch (e) {
-    document.getElementById('hero-meta').textContent = '';
-  }
-}
-
-loadCounts();
-</script>
+  <!-- CTA -->
+  <section class="cta">
+    <div class="wrap cta-in">
+      <h2>Got a bike that needs love?</h2>
+      <div class="cta-actions">
+        <a class="btn btn-dark" href="/book/">Book a Service</a>
+        <a class="btn btn-light" href="https://wa.me/6587222610?text=Hi%20Bike%20%26%20Butter%2C%20I%27d%20like%20to%20ask%20about%20" target="_blank" rel="noopener">WhatsApp us</a>
+      </div>
+    </div>
+  </section>
 
 </main>
+
+<!-- @footer -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="/assets/img/logo-light-480.webp" alt="Bike &amp; Butter" width="480" height="280" loading="lazy">
+        <p>We build, upgrade and tune road and triathlon bikes in Singapore, and distribute 8LIEN, RSTRI and EVR.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h3>Explore</h3>
+          <ul>
+            <li><a href="/#services">Services</a></li>
+            <li><a href="/book/">Book a Service</a></li>
+            <li><a href="/#brands">Brands</a></li>
+            <li><a href="/contact/">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Brands</h3>
+          <ul>
+            <li><a href="/8lien/">8LIEN</a></li>
+            <li><a href="/rstri/">RSTRI</a></li>
+            <li><a href="/evr/">EVR</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Shop on</h3>
+          <ul>
+            <li><a href="https://shopee.sg/shop/1784141511" target="_blank" rel="noopener">Shopee</a></li>
+            <li><a href="https://www.lazada.sg/shop/bike-butter/" target="_blank" rel="noopener">Lazada</a></li>
+            <li><a href="https://www.carousell.sg/u/bikeandbutter/" target="_blank" rel="noopener">Carousell</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Visit</h3>
+          <address>
+            491 Jurong West Avenue 1<br>Singapore 640491<br>Mon–Fri, 9am–6pm<br>
+            <a href="https://wa.me/6587222610" target="_blank" rel="noopener">+65 8722 2610</a><br>
+            <a href="https://www.instagram.com/bikeandbutter/" target="_blank" rel="noopener">@bikeandbutter</a>
+          </address>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Bike &amp; Butter. All rights reserved.</span>
+      <span>Official Singapore distributor of 8LIEN, RSTRI and EVR.</span>
+    </div>
+  </div>
+</footer>
+<a class="wa-float" href="https://wa.me/6587222610?text=Hi%20Bike%20%26%20Butter%2C%20I%27d%20like%20to%20ask%20about%20" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5 3h14a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-8.2L5.6 21.6A.8.8 0 0 1 4.300 21v-3A3 3 0 0 1 2 15V6a3 3 0 0 1 3-3Zm3 6.200a1.200 1.200 0 1 0 0 2.400 1.200 1.200 0 0 0 0-2.400Zm4 0a1.200 1.200 0 1 0 0 2.400 1.200 1.200 0 0 0 0-2.400Zm4 0a1.200 1.200 0 1 0 0 2.400 1.200 1.200 0 0 0 0-2.400Z"/></svg>
+  <span>WhatsApp us</span>
+</a>
+<!-- @/footer -->
+
+<script src="/assets/js/site.js" defer></script>
 </body>
 </html>

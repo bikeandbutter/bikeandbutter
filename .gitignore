@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Local tooling
+node_modules/
+*.log
+
+# Secrets — never commit these (Supabase / HitPay / Gmail keys live in `supabase secrets`)
+.env
+.env.*
+
+# Supabase CLI local state
+supabase/.temp/
