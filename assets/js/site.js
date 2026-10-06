@@ -34,6 +34,9 @@
     }
   });
 
+  /* Footer year */
+  document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
+
   /* Reveal on scroll */
   var items = document.querySelectorAll(".reveal");
   if (!items.length) return;
