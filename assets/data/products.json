@@ -1,0 +1,900 @@
+{
+ "shipping": {
+  "freeOver": 150,
+  "flat": 15
+ },
+ "products": [
+  {
+   "id": "aether-3",
+   "name": "8LIEN AETHER 3",
+   "brand": "8LIEN",
+   "cat": "wheels",
+   "category": "Wheelsets",
+   "price": 2099,
+   "unit": "set",
+   "badge": "",
+   "purchasable": true,
+   "summary": "Sub-1kg climbing wheelset. The lightest build in the AETHER range.",
+   "benefits": [
+    "30/35 front/rear depth, 980g per set",
+    "Best for climbing",
+    "Gen 4 carbon spokes, 2g each, for stiffness without the weight",
+    "UCI certified, tubeless ready, 25mm internal width"
+   ],
+   "included": [
+    "Front and rear wheel (1 set)",
+    "Carbon spokes fitted",
+    "Your choice of freehub",
+    "TPI ceramic bearings"
+   ],
+   "description": [
+    {
+     "h": "Intro",
+     "p": "AETHER is 8LIEN's carbon-spoke wheel platform: four builds on one design, from a sub-1kg climber to a deep aero build. T1100 and M40X carbon, UCI certified."
+    },
+    {
+     "h": "Technology",
+     "p": "Gen 4 carbon spokes weigh 2g each and deliver a stiffness-to-weight ratio steel or alloy can't match. Carbon doesn't accumulate fatigue over thousands of kilometres, and the blade-thin spokes cut drag at speed."
+    },
+    {
+     "h": "Construction",
+     "p": "T1100 carbon handles toughness across conditions while M40X reinforces the spoke holes and rim walls for sharp acceleration and cornering. Tested to 90 joules, more than double the UCI standard."
+    }
+   ],
+   "tech": [
+    [
+     "Best for",
+     "Climbing"
+    ],
+    [
+     "Weight",
+     "980g"
+    ],
+    [
+     "Front depth",
+     "30mm"
+    ],
+    [
+     "Rear depth",
+     "35mm"
+    ],
+    [
+     "Internal width",
+     "25mm"
+    ],
+    [
+     "Rider limit",
+     "90kg"
+    ],
+    [
+     "UCI certified",
+     "Yes"
+    ],
+    [
+     "Spokes",
+     "Gen 4 carbon, 2g each"
+    ],
+    [
+     "Bearings",
+     "TPI ceramic"
+    ],
+    [
+     "Brake interface",
+     "Disc, centerlock"
+    ],
+    [
+     "Tubeless",
+     "Ready"
+    ]
+   ],
+   "variants": {
+    "label": "Freehub",
+    "options": [
+     "Shimano 10/11/12s",
+     "SRAM XDR",
+     "Campagnolo N3W"
+    ]
+   },
+   "images": [
+    "/assets/img/products/aether-3-1.webp",
+    "/assets/img/home/s-road.webp",
+    "/assets/img/home/g4.webp"
+   ]
+  },
+  {
+   "id": "aether-4",
+   "name": "8LIEN AETHER 4",
+   "brand": "8LIEN",
+   "cat": "wheels",
+   "category": "Wheelsets",
+   "price": 2099,
+   "unit": "set",
+   "badge": "",
+   "purchasable": true,
+   "summary": "The versatile middle ground: aero enough for fast flats, light enough for the climbs.",
+   "benefits": [
+    "40/45 front/rear depth, 1,020g per set",
+    "Best for all-round",
+    "Gen 4 carbon spokes, 2g each, for stiffness without the weight",
+    "UCI certified, tubeless ready, 25mm internal width"
+   ],
+   "included": [
+    "Front and rear wheel (1 set)",
+    "Carbon spokes fitted",
+    "Your choice of freehub",
+    "TPI ceramic bearings"
+   ],
+   "description": [
+    {
+     "h": "Intro",
+     "p": "AETHER is 8LIEN's carbon-spoke wheel platform: four builds on one design, from a sub-1kg climber to a deep aero build. T1100 and M40X carbon, UCI certified."
+    },
+    {
+     "h": "Technology",
+     "p": "Gen 4 carbon spokes weigh 2g each and deliver a stiffness-to-weight ratio steel or alloy can't match. Carbon doesn't accumulate fatigue over thousands of kilometres, and the blade-thin spokes cut drag at speed."
+    },
+    {
+     "h": "Construction",
+     "p": "T1100 carbon handles toughness across conditions while M40X reinforces the spoke holes and rim walls for sharp acceleration and cornering. Tested to 90 joules, more than double the UCI standard."
+    }
+   ],
+   "tech": [
+    [
+     "Best for",
+     "All-round"
+    ],
+    [
+     "Weight",
+     "1,020g"
+    ],
+    [
+     "Front depth",
+     "40mm"
+    ],
+    [
+     "Rear depth",
+     "45mm"
+    ],
+    [
+     "Internal width",
+     "25mm"
+    ],
+    [
+     "Rider limit",
+     "90kg"
+    ],
+    [
+     "UCI certified",
+     "Yes"
+    ],
+    [
+     "Spokes",
+     "Gen 4 carbon, 2g each"
+    ],
+    [
+     "Bearings",
+     "TPI ceramic"
+    ],
+    [
+     "Brake interface",
+     "Disc, centerlock"
+    ],
+    [
+     "Tubeless",
+     "Ready"
+    ]
+   ],
+   "variants": {
+    "label": "Freehub",
+    "options": [
+     "Shimano 10/11/12s",
+     "SRAM XDR",
+     "Campagnolo N3W"
+    ]
+   },
+   "images": [
+    "/assets/img/products/aether-4-1.webp",
+    "/assets/img/home/s-road.webp",
+    "/assets/img/home/g4.webp"
+   ]
+  },
+  {
+   "id": "aether-5",
+   "name": "8LIEN AETHER 5",
+   "brand": "8LIEN",
+   "cat": "wheels",
+   "category": "Wheelsets",
+   "price": 2099,
+   "unit": "set",
+   "badge": "Most popular",
+   "purchasable": true,
+   "summary": "The sweet spot, and our best-selling AETHER build. Fast on the flat, confident on climbs.",
+   "benefits": [
+    "45/50 front/rear depth, 1,040g per set",
+    "Best for all-round",
+    "Gen 4 carbon spokes, 2g each, for stiffness without the weight",
+    "UCI certified, tubeless ready, 25mm internal width"
+   ],
+   "included": [
+    "Front and rear wheel (1 set)",
+    "Carbon spokes fitted",
+    "Your choice of freehub",
+    "TPI ceramic bearings"
+   ],
+   "description": [
+    {
+     "h": "Intro",
+     "p": "AETHER is 8LIEN's carbon-spoke wheel platform: four builds on one design, from a sub-1kg climber to a deep aero build. T1100 and M40X carbon, UCI certified."
+    },
+    {
+     "h": "Technology",
+     "p": "Gen 4 carbon spokes weigh 2g each and deliver a stiffness-to-weight ratio steel or alloy can't match. Carbon doesn't accumulate fatigue over thousands of kilometres, and the blade-thin spokes cut drag at speed."
+    },
+    {
+     "h": "Construction",
+     "p": "T1100 carbon handles toughness across conditions while M40X reinforces the spoke holes and rim walls for sharp acceleration and cornering. Tested to 90 joules, more than double the UCI standard."
+    }
+   ],
+   "tech": [
+    [
+     "Best for",
+     "All-round"
+    ],
+    [
+     "Weight",
+     "1,040g"
+    ],
+    [
+     "Front depth",
+     "45mm"
+    ],
+    [
+     "Rear depth",
+     "50mm"
+    ],
+    [
+     "Internal width",
+     "25mm"
+    ],
+    [
+     "Rider limit",
+     "100kg"
+    ],
+    [
+     "UCI certified",
+     "Yes"
+    ],
+    [
+     "Spokes",
+     "Gen 4 carbon, 2g each"
+    ],
+    [
+     "Bearings",
+     "TPI ceramic"
+    ],
+    [
+     "Brake interface",
+     "Disc, centerlock"
+    ],
+    [
+     "Tubeless",
+     "Ready"
+    ]
+   ],
+   "variants": {
+    "label": "Freehub",
+    "options": [
+     "Shimano 10/11/12s",
+     "SRAM XDR",
+     "Campagnolo N3W"
+    ]
+   },
+   "images": [
+    "/assets/img/products/aether-5-1.webp",
+    "/assets/img/home/s-road.webp",
+    "/assets/img/home/g4.webp"
+   ]
+  },
+  {
+   "id": "aether-6",
+   "name": "8LIEN AETHER 6",
+   "brand": "8LIEN",
+   "cat": "wheels",
+   "category": "Wheelsets",
+   "price": 2099,
+   "unit": "set",
+   "badge": "",
+   "purchasable": true,
+   "summary": "Maximum aero advantage for flat roads, crits and any effort where depth is everything.",
+   "benefits": [
+    "50/60 front/rear depth, 1,110g per set",
+    "Best for aero / flat",
+    "Gen 4 carbon spokes, 2g each, for stiffness without the weight",
+    "UCI certified, tubeless ready, 25mm internal width"
+   ],
+   "included": [
+    "Front and rear wheel (1 set)",
+    "Carbon spokes fitted",
+    "Your choice of freehub",
+    "TPI ceramic bearings"
+   ],
+   "description": [
+    {
+     "h": "Intro",
+     "p": "AETHER is 8LIEN's carbon-spoke wheel platform: four builds on one design, from a sub-1kg climber to a deep aero build. T1100 and M40X carbon, UCI certified."
+    },
+    {
+     "h": "Technology",
+     "p": "Gen 4 carbon spokes weigh 2g each and deliver a stiffness-to-weight ratio steel or alloy can't match. Carbon doesn't accumulate fatigue over thousands of kilometres, and the blade-thin spokes cut drag at speed."
+    },
+    {
+     "h": "Construction",
+     "p": "T1100 carbon handles toughness across conditions while M40X reinforces the spoke holes and rim walls for sharp acceleration and cornering. Tested to 90 joules, more than double the UCI standard."
+    }
+   ],
+   "tech": [
+    [
+     "Best for",
+     "Aero / flat"
+    ],
+    [
+     "Weight",
+     "1,110g"
+    ],
+    [
+     "Front depth",
+     "50mm"
+    ],
+    [
+     "Rear depth",
+     "60mm"
+    ],
+    [
+     "Internal width",
+     "25mm"
+    ],
+    [
+     "Rider limit",
+     "100kg"
+    ],
+    [
+     "UCI certified",
+     "Yes"
+    ],
+    [
+     "Spokes",
+     "Gen 4 carbon, 2g each"
+    ],
+    [
+     "Bearings",
+     "TPI ceramic"
+    ],
+    [
+     "Brake interface",
+     "Disc, centerlock"
+    ],
+    [
+     "Tubeless",
+     "Ready"
+    ]
+   ],
+   "variants": {
+    "label": "Freehub",
+    "options": [
+     "Shimano 10/11/12s",
+     "SRAM XDR",
+     "Campagnolo N3W"
+    ]
+   },
+   "images": [
+    "/assets/img/products/aether-6-1.webp",
+    "/assets/img/home/s-road.webp",
+    "/assets/img/home/g4.webp"
+   ]
+  },
+  {
+   "id": "l3w",
+   "name": "8LIEN L3W",
+   "brand": "8LIEN",
+   "cat": "wheels",
+   "category": "Wheelsets",
+   "price": 1550,
+   "unit": "set",
+   "badge": "",
+   "purchasable": true,
+   "summary": "The lightest L-series build. Shallow depth for pure climbing.",
+   "benefits": [
+    "30/35mm front/rear depth",
+    "Raw, coating-free carbon finish",
+    "25mm internal width, optimised for 28–32mm tyres",
+    "45T star ratchet hub and TPI ceramic bearings"
+   ],
+   "included": [
+    "Front and rear wheel (1 set)",
+    "Carbon spokes fitted",
+    "Your choice of freehub"
+   ],
+   "description": [
+    {
+     "h": "Intro",
+     "p": "The L-series is built for riders who want more tyre, more grip and more control without giving up speed. Coating-free raw carbon with a wide 25mm internal width."
+    },
+    {
+     "h": "Finish",
+     "p": "No paint, no lacquer. The raw carbon finish saves weight and gives each wheelset an honest, industrial look."
+    },
+    {
+     "h": "Hub and bearings",
+     "p": "A 45T star ratchet hub gives instant power transfer with near-zero dead band, and TPI ceramic bearings lower rolling resistance."
+    }
+   ],
+   "tech": [
+    [
+     "Best for",
+     "Climbing"
+    ],
+    [
+     "Front depth",
+     "30mm"
+    ],
+    [
+     "Rear depth",
+     "35mm"
+    ],
+    [
+     "Internal width",
+     "25mm"
+    ],
+    [
+     "Finish",
+     "Raw carbon"
+    ],
+    [
+     "Hub",
+     "45T star ratchet"
+    ],
+    [
+     "Bearings",
+     "TPI ceramic"
+    ],
+    [
+     "Brake interface",
+     "Disc, centerlock"
+    ],
+    [
+     "Tubeless",
+     "Yes"
+    ]
+   ],
+   "variants": {
+    "label": "Freehub",
+    "options": [
+     "Shimano 10/11/12s",
+     "SRAM XDR",
+     "Campagnolo N3W"
+    ]
+   },
+   "images": [
+    "/assets/img/products/l3w-1.webp",
+    "/assets/img/home/s-road.webp",
+    "/assets/img/home/g4.webp"
+   ]
+  },
+  {
+   "id": "l5w",
+   "name": "8LIEN L5W",
+   "brand": "8LIEN",
+   "cat": "wheels",
+   "category": "Wheelsets",
+   "price": 1550,
+   "unit": "set",
+   "badge": "Most popular",
+   "purchasable": true,
+   "summary": "The all-round sweet spot: aero on the flat, capable on the climbs.",
+   "benefits": [
+    "45/50mm front/rear depth",
+    "Raw, coating-free carbon finish",
+    "25mm internal width, optimised for 28–32mm tyres",
+    "45T star ratchet hub and TPI ceramic bearings"
+   ],
+   "included": [
+    "Front and rear wheel (1 set)",
+    "Carbon spokes fitted",
+    "Your choice of freehub"
+   ],
+   "description": [
+    {
+     "h": "Intro",
+     "p": "The L-series is built for riders who want more tyre, more grip and more control without giving up speed. Coating-free raw carbon with a wide 25mm internal width."
+    },
+    {
+     "h": "Finish",
+     "p": "No paint, no lacquer. The raw carbon finish saves weight and gives each wheelset an honest, industrial look."
+    },
+    {
+     "h": "Hub and bearings",
+     "p": "A 45T star ratchet hub gives instant power transfer with near-zero dead band, and TPI ceramic bearings lower rolling resistance."
+    }
+   ],
+   "tech": [
+    [
+     "Best for",
+     "All-round / aero"
+    ],
+    [
+     "Front depth",
+     "45mm"
+    ],
+    [
+     "Rear depth",
+     "50mm"
+    ],
+    [
+     "Internal width",
+     "25mm"
+    ],
+    [
+     "Finish",
+     "Raw carbon"
+    ],
+    [
+     "Hub",
+     "45T star ratchet"
+    ],
+    [
+     "Bearings",
+     "TPI ceramic"
+    ],
+    [
+     "Brake interface",
+     "Disc, centerlock"
+    ],
+    [
+     "Tubeless",
+     "Yes"
+    ]
+   ],
+   "variants": {
+    "label": "Freehub",
+    "options": [
+     "Shimano 10/11/12s",
+     "SRAM XDR",
+     "Campagnolo N3W"
+    ]
+   },
+   "images": [
+    "/assets/img/products/l5w-1.webp",
+    "/assets/img/home/s-road.webp",
+    "/assets/img/home/g4.webp"
+   ]
+  },
+  {
+   "id": "l6w",
+   "name": "8LIEN L6W",
+   "brand": "8LIEN",
+   "cat": "wheels",
+   "category": "Wheelsets",
+   "price": 1550,
+   "unit": "set",
+   "badge": "",
+   "purchasable": true,
+   "summary": "Maximum aero depth in the L-series, for flat roads and crits.",
+   "benefits": [
+    "50/60mm front/rear depth",
+    "Raw, coating-free carbon finish",
+    "25mm internal width, optimised for 28–32mm tyres",
+    "45T star ratchet hub and TPI ceramic bearings"
+   ],
+   "included": [
+    "Front and rear wheel (1 set)",
+    "Carbon spokes fitted",
+    "Your choice of freehub"
+   ],
+   "description": [
+    {
+     "h": "Intro",
+     "p": "The L-series is built for riders who want more tyre, more grip and more control without giving up speed. Coating-free raw carbon with a wide 25mm internal width."
+    },
+    {
+     "h": "Finish",
+     "p": "No paint, no lacquer. The raw carbon finish saves weight and gives each wheelset an honest, industrial look."
+    },
+    {
+     "h": "Hub and bearings",
+     "p": "A 45T star ratchet hub gives instant power transfer with near-zero dead band, and TPI ceramic bearings lower rolling resistance."
+    }
+   ],
+   "tech": [
+    [
+     "Best for",
+     "Aero / flat"
+    ],
+    [
+     "Front depth",
+     "50mm"
+    ],
+    [
+     "Rear depth",
+     "60mm"
+    ],
+    [
+     "Internal width",
+     "25mm"
+    ],
+    [
+     "Finish",
+     "Raw carbon"
+    ],
+    [
+     "Hub",
+     "45T star ratchet"
+    ],
+    [
+     "Bearings",
+     "TPI ceramic"
+    ],
+    [
+     "Brake interface",
+     "Disc, centerlock"
+    ],
+    [
+     "Tubeless",
+     "Yes"
+    ]
+   ],
+   "variants": {
+    "label": "Freehub",
+    "options": [
+     "Shimano 10/11/12s",
+     "SRAM XDR",
+     "Campagnolo N3W"
+    ]
+   },
+   "images": [
+    "/assets/img/products/l6w-1.webp",
+    "/assets/img/home/s-road.webp",
+    "/assets/img/home/g4.webp"
+   ]
+  },
+  {
+   "id": "aero-x8",
+   "name": "8LIEN AERO X8",
+   "brand": "8LIEN",
+   "cat": "wheels",
+   "category": "Triathlon wheels",
+   "price": 1700,
+   "unit": "wheel",
+   "badge": "",
+   "purchasable": true,
+   "summary": "950g full-carbon disc rear wheel for the bike leg.",
+   "benefits": [
+    "950g full disc rear wheel, sold as a single wheel",
+    "T1000 carbon, the highest grade in commercial production",
+    "No spoke drag: one of the highest-return aero upgrades for TT and triathlon",
+    "TPI ceramic bearings for lower rolling resistance"
+   ],
+   "included": [
+    "1 rear disc wheel",
+    "Your choice of freehub",
+    "TPI ceramic bearings"
+   ],
+   "description": [
+    {
+     "h": "Intro",
+     "p": "A full-carbon disc rear wheel built for sustained speed, from T1 to the finish line."
+    },
+    {
+     "h": "Full disc advantage",
+     "p": "A full disc eliminates spoke drag entirely, and disc wheels become more efficient the faster you ride. At typical triathlon pace of 35–45 km/h the Aero X8 is in its element."
+    }
+   ],
+   "tech": [
+    [
+     "Type",
+     "Full disc rear wheel"
+    ],
+    [
+     "Weight",
+     "950g"
+    ],
+    [
+     "Internal width",
+     "21mm"
+    ],
+    [
+     "External width",
+     "27mm"
+    ],
+    [
+     "Carbon grade",
+     "T1000"
+    ],
+    [
+     "Bearings",
+     "TPI ceramic"
+    ],
+    [
+     "Brake interface",
+     "Disc, centerlock"
+    ],
+    [
+     "Tubeless",
+     "Yes"
+    ],
+    [
+     "Best for",
+     "TT / triathlon bike leg"
+    ]
+   ],
+   "variants": {
+    "label": "Freehub",
+    "options": [
+     "Shimano 10/11/12s",
+     "SRAM XDR",
+     "Campagnolo N3W"
+    ]
+   },
+   "images": [
+    "/assets/img/products/aero-x8-1.webp",
+    "/assets/img/home/s-road.webp",
+    "/assets/img/home/g4.webp"
+   ]
+  },
+  {
+   "id": "rstri-aerocoach-angle",
+   "name": "RSTRI Aerocoach Angle Adaptor",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "unit",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Shiv TT — Aerocoach bar angle adaptor",
+   "benefits": [
+    "CNC-machined from billet aluminium",
+    "Fits the Specialized Shiv TT (2016–2025)",
+    "No shimming, no stack compromise",
+    "In stock in Singapore"
+   ],
+   "included": [
+    "1 adaptor / plate",
+    "Hardware as supplied by RSTRI"
+   ],
+   "description": [
+    {
+     "h": "Intro",
+     "p": "CNC-machined angle adaptor for mounting the Aerocoach aerobar onto the Specialized Shiv TT fork crown. Precision-fit interface, no shimming. Matte black anodised finish."
+    }
+   ],
+   "tech": [
+    [
+     "Frame",
+     "Specialized Shiv TT, 2016–2025"
+    ],
+    [
+     "Material",
+     "Billet aluminium, CNC machined"
+    ],
+    [
+     "Tolerance",
+     "±0.1mm"
+    ],
+    [
+     "Finish",
+     "Matte black anodised"
+    ]
+   ],
+   "variants": null,
+   "images": [
+    "/assets/img/products/rstri-aerocoach-angle-1.webp",
+    "/assets/img/home/g3.webp",
+    "/assets/img/home/g6.webp"
+   ]
+  },
+  {
+   "id": "rstri-vision-angle",
+   "name": "RSTRI Vision TFE Angle Adaptor",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "unit",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Shiv TT — Vision TFE angle adaptor",
+   "benefits": [
+    "CNC-machined from billet aluminium",
+    "Fits the Specialized Shiv TT (2016–2025)",
+    "No shimming, no stack compromise",
+    "In stock in Singapore"
+   ],
+   "included": [
+    "1 adaptor / plate",
+    "Hardware as supplied by RSTRI"
+   ],
+   "description": [
+    {
+     "h": "Intro",
+     "p": "Fork adaptor block designed for the Vision TFE aerobar on the Specialized Shiv TT. Direct-mount fit, no stack compromise. CNC-machined billet aluminium, hard anodised black."
+    }
+   ],
+   "tech": [
+    [
+     "Frame",
+     "Specialized Shiv TT, 2016–2025"
+    ],
+    [
+     "Material",
+     "Billet aluminium, CNC machined"
+    ],
+    [
+     "Tolerance",
+     "±0.1mm"
+    ],
+    [
+     "Finish",
+     "Matte black anodised"
+    ]
+   ],
+   "variants": null,
+   "images": [
+    "/assets/img/products/rstri-vision-angle-1.webp",
+    "/assets/img/home/g3.webp",
+    "/assets/img/home/g6.webp"
+   ]
+  },
+  {
+   "id": "rstri-vision-base",
+   "name": "RSTRI Vision TFE Base Plate",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "unit",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Shiv TT — Vision TFE base plate",
+   "benefits": [
+    "CNC-machined from billet aluminium",
+    "Fits the Specialized Shiv TT (2016–2025)",
+    "No shimming, no stack compromise",
+    "In stock in Singapore"
+   ],
+   "included": [
+    "1 adaptor / plate",
+    "Hardware as supplied by RSTRI"
+   ],
+   "description": [
+    {
+     "h": "Intro",
+     "p": "Wide-format CNC baseplate for the Vision TFE aerobar system on the Specialized Shiv TT. Latticed slot pattern for precise lateral adjustment. Matte black CNC-machined aluminium."
+    }
+   ],
+   "tech": [
+    [
+     "Frame",
+     "Specialized Shiv TT, 2016–2025"
+    ],
+    [
+     "Material",
+     "Billet aluminium, CNC machined"
+    ],
+    [
+     "Tolerance",
+     "±0.1mm"
+    ],
+    [
+     "Finish",
+     "Matte black anodised"
+    ]
+   ],
+   "variants": null,
+   "images": [
+    "/assets/img/products/rstri-vision-base-1.webp",
+    "/assets/img/home/g3.webp",
+    "/assets/img/home/g6.webp"
+   ]
+  }
+ ]
+}

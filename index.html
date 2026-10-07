@@ -36,6 +36,7 @@
   <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/site.css">
   <link rel="stylesheet" href="/assets/css/pages/home.css">
+  <link rel="stylesheet" href="/assets/css/store.css">
 
   <!-- Structured data: lets Google treat this as a local business and link it to the Business Profile -->
   <script type="application/ld+json">
@@ -93,26 +94,28 @@
   <div class="header-in">
     <div class="header-l">
       <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu-overlay" aria-label="Open menu"><span class="bars"></span><span class="label">Menu</span></button>
+      <a class="header-link label" href="/shop/">Shop</a>
       <a class="header-link label" href="/#services">Services</a>
-      <a class="header-link label" href="/#brands">Brands</a>
     </div>
     <a class="brand" href="/" aria-label="Bike &amp; Butter — home">
       <img src="/assets/img/logo-light-480.webp" alt="Bike &amp; Butter" width="480" height="280">
     </a>
     <div class="header-r">
       <a class="header-link label" href="/contact/">Contact</a>
+      <a class="icon-btn bag-btn" href="/checkout/" data-cart-open aria-label="Open bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 8.5h15v11h-15zM8.5 8.5V7a3.5 3.5 0 0 1 7 0v1.5"/></svg><span class="count" data-cart-count hidden>0</span></a>
       <a class="btn btn-glass header-book" href="/book/">Book</a>
     </div>
   </div>
 </header>
 <nav class="menu-overlay" id="menu-overlay" aria-label="Main menu" hidden>
   <div class="menu-links">
+    <a href="/shop/">Shop <span class="label">All</span></a>
     <a href="/#brands">Brands <span class="label">3</span></a>
     <a class="sub" href="/8lien/">8LIEN — carbon wheels</a>
     <a class="sub" href="/rstri/">RSTRI — cockpit adapters</a>
     <a class="sub" href="/evr/">EVR — apparel</a>
     <a href="/#services">Services</a>
-    <a href="/#shop">Shop online</a>
+    <a href="/#shop">Marketplaces</a>
     <a href="/#visit">Visit the workshop</a>
     <a href="/contact/">Contact</a>
   </div>
@@ -150,10 +153,10 @@
     <div class="picker-grid">
       <div class="picker-stage" data-stage><img src="/assets/img/home/s-road.webp" width="720" height="900" alt="Road"><div class="stage-in"><span class="label" data-stage-cap>Road</span><a class="btn btn-glass" data-stage-link href="/8lien/#series">Explore</a></div></div>
       <ul class="picker-list">
-        <li><a class="pick" data-pick href="/8lien/#series" data-img="/assets/img/home/s-road.webp" data-alt="Road" data-cap="Road"><span class="num label">01</span><img src="/assets/img/home/t-road.webp" width="360" height="450" loading="lazy" alt=""><span class="name">Road<small>Builds, wheels and tune-ups</small></span><span class="arr label" aria-hidden="true">→</span></a></li>
-        <li><a class="pick" data-pick href="/rstri/" data-img="/assets/img/home/s-tri.webp" data-alt="Triathlon" data-cap="Triathlon"><span class="num label">02</span><img src="/assets/img/home/t-tri.webp" width="360" height="450" loading="lazy" alt=""><span class="name">Triathlon<small>Time-trial and tri setups</small></span><span class="arr label" aria-hidden="true">→</span></a></li>
-        <li><a class="pick" data-pick href="/8lien/" data-img="/assets/img/home/s-wheels.webp" data-alt="Carbon wheels" data-cap="Carbon wheels"><span class="num label">03</span><img src="/assets/img/home/t-wheels.webp" width="360" height="450" loading="lazy" alt=""><span class="name">Carbon wheels<small>8LIEN wheelsets</small></span><span class="arr label" aria-hidden="true">→</span></a></li>
-        <li><a class="pick" data-pick href="/rstri/#products" data-img="/assets/img/home/s-cockpit.webp" data-alt="Cockpit parts" data-cap="Cockpit parts"><span class="num label">04</span><img src="/assets/img/home/t-cockpit.webp" width="360" height="450" loading="lazy" alt=""><span class="name">Cockpit parts<small>RSTRI CNC adapters</small></span><span class="arr label" aria-hidden="true">→</span></a></li>
+        <li><a class="pick" data-pick href="/shop/?cat=wheels" data-img="/assets/img/home/s-road.webp" data-alt="Road" data-cap="Road"><span class="num label">01</span><img src="/assets/img/home/t-road.webp" width="360" height="450" loading="lazy" alt=""><span class="name">Road<small>Builds, wheels and tune-ups</small></span><span class="arr label" aria-hidden="true">→</span></a></li>
+        <li><a class="pick" data-pick href="/shop/?cat=cockpit" data-img="/assets/img/home/s-tri.webp" data-alt="Triathlon" data-cap="Triathlon"><span class="num label">02</span><img src="/assets/img/home/t-tri.webp" width="360" height="450" loading="lazy" alt=""><span class="name">Triathlon<small>Time-trial and tri setups</small></span><span class="arr label" aria-hidden="true">→</span></a></li>
+        <li><a class="pick" data-pick href="/shop/?cat=wheels" data-img="/assets/img/home/s-wheels.webp" data-alt="Carbon wheels" data-cap="Carbon wheels"><span class="num label">03</span><img src="/assets/img/home/t-wheels.webp" width="360" height="450" loading="lazy" alt=""><span class="name">Carbon wheels<small>8LIEN wheelsets</small></span><span class="arr label" aria-hidden="true">→</span></a></li>
+        <li><a class="pick" data-pick href="/shop/?cat=cockpit" data-img="/assets/img/home/s-cockpit.webp" data-alt="Cockpit parts" data-cap="Cockpit parts"><span class="num label">04</span><img src="/assets/img/home/t-cockpit.webp" width="360" height="450" loading="lazy" alt=""><span class="name">Cockpit parts<small>RSTRI CNC adapters</small></span><span class="arr label" aria-hidden="true">→</span></a></li>
         <li><a class="pick" data-pick href="/evr/" data-img="/assets/img/home/s-apparel.webp" data-alt="Apparel" data-cap="Apparel"><span class="num label">05</span><img src="/assets/img/home/t-apparel.webp" width="360" height="450" loading="lazy" alt=""><span class="name">Apparel<small>EVR kit, socks and more</small></span><span class="arr label" aria-hidden="true">→</span></a></li>
         <li><a class="pick" data-pick href="/book/" data-img="/assets/img/home/s-service.webp" data-alt="Servicing" data-cap="Servicing"><span class="num label">06</span><img src="/assets/img/home/t-service.webp" width="360" height="450" loading="lazy" alt=""><span class="name">Servicing<small>Book a slot online</small></span><span class="arr label" aria-hidden="true">→</span></a></li>
       </ul>
@@ -162,29 +165,29 @@
 
   <!-- FEATURED -->
   <section class="products-band" id="featured" aria-labelledby="feat-h">
-    <div class="sec-head"><h2 id="feat-h" class="label">Featured gear</h2><a class="label more" href="/8lien/">View all</a></div>
+    <div class="sec-head"><h2 id="feat-h" class="label">Featured gear</h2><a class="label more" href="/shop/">View all</a></div>
     <div class="products">
-      <a class="product reveal" href="/8lien/#series">
+      <a class="product reveal" href="/shop/product/?id=aether-6">
         <div class="img"><img src="/assets/img/home/p-aether6.webp" width="800" height="1000" loading="lazy" alt="8LIEN AETHER 6 carbon wheelset"></div>
         <div class="info"><div class="row"><span class="label">8LIEN AETHER 6</span><span class="label">SGD 2,099</span></div><div class="cat">Aero wheelset · 50/60mm</div></div>
       </a>
-      <a class="product reveal" href="/8lien/#series">
+      <a class="product reveal" href="/shop/product/?id=l5w">
         <div class="img"><img src="/assets/img/home/p-l5w.webp" width="800" height="1000" loading="lazy" alt="8LIEN L5W raw carbon wheelset"></div>
         <div class="info"><div class="row"><span class="label">8LIEN L5W</span><span class="label">SGD 1,550</span></div><div class="cat">All-round wheelset · 45/50mm</div></div>
       </a>
-      <a class="product reveal" href="/8lien/#series">
+      <a class="product reveal" href="/shop/product/?id=aero-x8">
         <div class="img"><img src="/assets/img/home/p-aerox8.webp" width="800" height="1000" loading="lazy" alt="8LIEN Aero X8 full disc rear wheel"></div>
         <div class="info"><div class="row"><span class="label">8LIEN AERO X8</span><span class="label">SGD 1,700</span></div><div class="cat">Disc rear wheel · Triathlon</div></div>
       </a>
-      <a class="product reveal" href="/8lien/#series">
+      <a class="product reveal" href="/shop/product/?id=l3w">
         <div class="img"><img src="/assets/img/home/p-l3w.webp" width="800" height="1000" loading="lazy" alt="8LIEN L3W climbing wheelset"></div>
         <div class="info"><div class="row"><span class="label">8LIEN L3W</span><span class="label">SGD 1,550</span></div><div class="cat">Climbing wheelset · 30/35mm</div></div>
       </a>
-      <a class="product reveal" href="/8lien/#series">
+      <a class="product reveal" href="/shop/product/?id=l6w">
         <div class="img"><img src="/assets/img/home/p-l6w.webp" width="800" height="1000" loading="lazy" alt="8LIEN L6W aero wheelset"></div>
         <div class="info"><div class="row"><span class="label">8LIEN L6W</span><span class="label">SGD 1,550</span></div><div class="cat">Aero wheelset · 50/60mm</div></div>
       </a>
-      <a class="product reveal" href="/rstri/#products">
+      <a class="product reveal" href="/shop/product/?id=rstri-vision-base">
         <div class="img"><img src="/assets/img/home/p-rstri.webp" width="800" height="1000" loading="lazy" alt="RSTRI CNC-machined Vision TFE base plate and angle adaptor"></div>
         <div class="info"><div class="row"><span class="label">RSTRI VISION TFE</span><span class="label">Enquire</span></div><div class="cat">Cockpit adaptor · CNC machined</div></div>
       </a>
@@ -301,6 +304,7 @@
       <div class="footer-col">
         <h3>Explore</h3>
         <ul>
+          <li><a href="/shop/">Shop all</a></li>
           <li><a href="/8lien/">8LIEN</a></li>
           <li><a href="/rstri/">RSTRI</a></li>
           <li><a href="/evr/">EVR</a></li>
@@ -323,5 +327,6 @@
 <!-- @/footer -->
 
 <script src="/assets/js/site.js" defer></script>
+<script src="/assets/js/store.js" defer></script>
 </body>
 </html>
