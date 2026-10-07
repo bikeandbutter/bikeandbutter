@@ -42,7 +42,8 @@
 .pick .name { font-size: clamp(1.15rem, 2vw, 1.6rem); font-weight: 300; letter-spacing: -0.01em; line-height: 1.2; }
 .pick .name small { display: block; font-size: 12px; color: var(--muted); letter-spacing: 0; margin-top: 2px; font-weight: 400; }
 .pick .arr { opacity: .5; transition: transform .25s, opacity .25s; }
-.pick:hover, .pick.is-on { padding-left: 10px; }
+.pick:hover .name, .pick.is-on .name { transform: translateX(8px); }
+.pick .name { transition: transform .25s; }
 .pick:hover img, .pick.is-on img { filter: none; }
 .pick:hover .arr, .pick.is-on .arr { opacity: 1; transform: translateX(4px); color: var(--yellow); }
 @media (min-width: 900px) {
