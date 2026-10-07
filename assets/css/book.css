@@ -1,0 +1,81 @@
+/* Book a service — dark restyle. Same class names as the booking script; scoped under .bk */
+.bk { --b-bg2: #1a1a1a; --b-bg3: #222; --border: rgba(255,255,255,.16); --border2: rgba(255,255,255,.28);
+  --text: #f2f2ef; --text2: #c9c9c4; --text3: #8d8d88; --accent: #f2f2ef; --accent2: #F8CC0A; --accent2-bg: rgba(248,204,10,.1);
+  --green: #6fcf8a; --green-bg: rgba(111,207,138,.12); --red: #ff8a80; --red-bg: rgba(255,138,128,.12); --radius: 3px; --radius-lg: 4px;
+  --bg2: var(--b-bg2); --bg3: var(--b-bg3); --font-display: var(--font); }
+.bk { padding: 120px var(--pad) 90px; min-height: 100svh; color: var(--text); font-size: 14px; }
+.bk .wrap { max-width: 600px; margin: 0 auto; padding: 0; }
+.bk .header { margin-bottom: 30px; }
+.bk .header h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 300; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 10px; }
+.bk .header p { color: var(--text2); font-size: 15px; font-weight: 300; }
+.bk .step { display: none; }
+.bk .step.active { display: block; }
+.bk .card { background: transparent; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; margin-bottom: 14px; display: block; }
+.bk .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.bk .choice-btn { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px 16px; text-align: center; cursor: pointer; transition: border-color .2s, background-color .2s; }
+.bk .choice-btn:hover { border-color: var(--accent2); background: var(--accent2-bg); }
+.bk .choice-icon { width: 44px; height: 44px; margin: 0 auto 14px; border-radius: 50%; border: 1px solid var(--border2); color: var(--accent2); display: flex; align-items: center; justify-content: center; }
+.bk .choice-title { font-weight: 500; font-size: 15px; margin-bottom: 4px; }
+.bk .choice-sub { font-size: 12px; color: var(--text3); }
+.bk .service-option, .bk .bike-option { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; cursor: pointer; transition: border-color .2s, background-color .2s; }
+.bk .service-option:hover, .bk .bike-option:hover { border-color: var(--accent2); background: var(--b-bg3); }
+.bk .service-option.selected, .bk .bike-option.selected { border-color: var(--accent2); background: var(--accent2-bg); }
+.bk .service-name, .bk .bike-name { font-weight: 500; font-size: 15px; margin-bottom: 3px; }
+.bk .bike-name .bike-serial { font-weight: 400; font-size: 11.5px; color: var(--text3); margin-left: 6px; }
+.bk .service-meta, .bk .bike-meta { font-size: 12px; color: var(--text3); }
+.bk .service-price { font-weight: 500; font-size: 14px; color: var(--accent2); }
+.bk .bike-badge { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .1em; padding: 4px 8px; border-radius: 3px; }
+.bk .bike-badge.due { background: var(--red-bg); color: var(--red); }
+.bk .bike-badge.ok { background: var(--green-bg); color: var(--green); }
+.bk .add-new-row { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border: 1px dashed var(--border2); border-radius: var(--radius); cursor: pointer; color: var(--text2); font-size: 13px; }
+.bk .add-new-row:hover { border-color: var(--accent2); color: var(--accent2); }
+.bk .history-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.bk .history-item:last-child { border-bottom: none; }
+.bk .history-date { font-size: 12px; color: var(--text3); }
+.bk .history-service { font-weight: 500; font-size: 14px; margin: 2px 0; }
+.bk .history-notes { font-size: 12.5px; color: var(--text2); }
+.bk .no-history { color: var(--text3); font-size: 13px; padding: 10px 0; }
+.bk .day-tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; }
+.bk .day-tab { flex-shrink: 0; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: transparent; cursor: pointer; text-align: center; min-width: 62px; }
+.bk .day-tab.active { background: var(--accent2); color: #111; border-color: var(--accent2); }
+.bk .day-tab .dow { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; opacity: .7; }
+.bk .day-tab .dnum { font-size: 15px; font-weight: 500; }
+.bk .timeline { position: relative; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.bk .timeline-hour { display: flex; border-bottom: 1px solid var(--border); min-height: 56px; }
+.bk .timeline-hour:last-child { border-bottom: none; }
+.bk .timeline-hour-label { width: 56px; flex-shrink: 0; font-size: 11px; color: var(--text3); padding: 6px 8px; border-right: 1px solid var(--border); background: var(--b-bg3); }
+.bk .timeline-hour-body { flex: 1; position: relative; padding: 4px 6px; display: flex; flex-direction: column; gap: 4px; }
+.bk .slot-chip { padding: 8px 10px; border-radius: 3px; font-size: 12.5px; cursor: pointer; border: 1px solid var(--border2); background: transparent; transition: all .15s ease; }
+.bk .slot-chip:hover { border-color: var(--accent2); }
+.bk .slot-chip.selected { background: var(--accent2); color: #111; border-color: var(--accent2); }
+.bk .busy-block { padding: 8px 10px; border-radius: 3px; font-size: 12px; background: repeating-linear-gradient(135deg, #1f1f1f, #1f1f1f 6px, #272727 6px, #272727 12px); color: var(--text3); }
+.bk .closed-note { color: var(--text3); font-size: 13px; padding: 20px; text-align: center; }
+.bk .field { display: block; margin-bottom: 14px; }
+.bk .field label { display: block; font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+.bk .field input, .bk .field textarea, .bk .field select { width: 100%; padding: 14px 14px; border: 1px solid var(--border); border-radius: var(--radius); font-family: inherit; font-size: 15px; outline: none; background: transparent; color: var(--text); }
+.bk .field input:focus, .bk .field textarea:focus, .bk .field select:focus { border-color: rgba(255,255,255,.6); }
+.bk .field select option { color: #111; }
+.bk .field textarea { resize: vertical; min-height: 84px; }
+.bk .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.bk .photo-upload { border: 1px dashed var(--border2); border-radius: var(--radius); padding: 16px; text-align: center; cursor: pointer; color: var(--text2); font-size: 13px; }
+.bk .photo-upload:hover { border-color: var(--accent2); }
+.bk .photo-previews { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.bk .photo-preview { width: 64px; height: 64px; border-radius: 3px; object-fit: cover; border: 1px solid var(--border); }
+.bk .summary-row { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.bk .summary-row:last-child { border-bottom: none; }
+.bk .summary-row span:first-child { color: var(--text3); }
+.bk .summary-row span:last-child { text-align: right; }
+.bk .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 17px 20px; border-radius: var(--radius); font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; border: 1px solid transparent; font-family: inherit; transition: background-color .2s, color .2s; }
+.bk .btn-primary { background: var(--paper); color: #111; }
+.bk .btn-primary:hover { background: var(--yellow); }
+.bk .btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+.bk .btn-secondary { background: transparent; color: var(--text2); border-color: var(--border); margin-top: 8px; }
+.bk .btn-secondary:hover { color: #111; background: var(--paper); }
+.bk .confirm-box { text-align: center; padding: 44px 20px; }
+.bk .confirm-icon { margin-bottom: 14px; }
+.bk .confirm-box h2 { font-size: 26px; font-weight: 300; margin-bottom: 10px; }
+.bk .confirm-box p { color: var(--text2); font-size: 14px; line-height: 1.6; }
+.bk .error-box { background: var(--red-bg); color: var(--red); padding: 12px 14px; border-radius: var(--radius); font-size: 13px; margin-bottom: 14px; display: none; }
+.bk .error-box.show { display: block; }
+.bk .hint { font-size: 12px; color: var(--text3); margin-top: 10px; }
+.bk a { text-decoration: underline; }

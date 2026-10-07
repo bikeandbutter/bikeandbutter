@@ -1,298 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Perf: preconnect -->
-  <link rel="preconnect" href="https://sheets.googleapis.com">
-  <link rel="preconnect" href="https://accounts.google.com">
-  <link rel="preconnect" href="https://www.googletagmanager.com">
-  <link rel="dns-prefetch" href="https://www.googleapis.com">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-ZQJRHN886Z');
-</script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="../style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.className += " js";</script>
   <title>Contact — Bike & Butter</title>
-  <meta name="description" content="Get in touch with the Bike & Butter team. We'd love to hear from you." />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://bikeandbutter.com/contact/" />
-  <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://bikeandbutter.com/contact/" />
-  <meta property="og:title"       content="Contact Us — Bike & Butter" />
-  <meta property="og:description" content="Get in touch with the Bike & Butter team. We'd love to hear from you." />
-  <meta property="og:image"       content="https://bikeandbutter.com/og-image.png" />
-  <meta property="og:site_name"   content="Bike &amp; Butter" />
-  <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:title"       content="Contact Us — Bike & Butter" />
-  <meta name="twitter:description" content="Get in touch with the Bike & Butter team. We'd love to hear from you." />
-  <meta name="twitter:image"       content="https://bikeandbutter.com/og-image.png" />
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <style>
-    .contact-layout { max-width: 560px; margin: 0 auto; padding: 48px 24px 80px; }
-    .contact-header { margin-bottom: 36px; }
-    .contact-header-sub { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #bbb; margin-bottom: 10px; }
-    .contact-header-title { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; color: #111; margin-bottom: 8px; }
-    .contact-header-desc { font-size: 13px; color: #999; line-height: 1.6; }
-    .enquiry-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 28px; }
-    .enquiry-tab { background: none; border: 1px solid #e0e0e0; border-radius: 20px; padding: 6px 14px; font-size: 12px; cursor: pointer; color: #555; font-family: inherit; transition: all 0.15s; }
-    .enquiry-tab:hover { border-color: #111; color: #111; }
-    .enquiry-tab.active { background: #111; color: #fff; border-color: #111; }
-    .contact-form { display: flex; flex-direction: column; gap: 16px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: #999; }
-    .form-group input, .form-group select, .form-group textarea { border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px 12px; font-size: 13px; font-family: inherit; color: #111; background: #fafafa; outline: none; transition: border-color 0.15s, background 0.15s; width: 100%; }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #111; background: #fff; }
-    .form-group input::placeholder, .form-group textarea::placeholder { color: #bbb; }
-    .form-group textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
-    .offer-field { display: none; }
-    .offer-field.visible { display: flex; }
-    .bike-field { display: none; }
-    .bike-field.visible { display: flex; }
-    .prefill-banner { background: #f5f5f5; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #555; display: none; align-items: center; justify-content: space-between; gap: 8px; }
-    .prefill-banner.visible { display: flex; }
-    .prefill-banner strong { color: #111; }
-    .prefill-clear { background: none; border: none; font-size: 11px; color: #bbb; cursor: pointer; padding: 0; font-family: inherit; }
-    .prefill-clear:hover { color: #111; }
-    .submit-btn { background: #111; color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 13px; font-family: inherit; font-weight: 600; cursor: pointer; transition: opacity 0.15s; margin-top: 4px; }
-    .submit-btn:hover { opacity: 0.85; }
-    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .success-box { display: none; background: #f5f5f5; border-radius: 12px; padding: 40px 32px; text-align: center; margin-top: 24px; }
-    .success-box.visible { display: block; }
-    .success-icon { font-size: 28px; margin-bottom: 12px; }
-    .success-title { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 6px; }
-    .success-desc { font-size: 13px; color: #999; line-height: 1.6; }
-    .success-back { display: inline-block; margin-top: 20px; font-size: 12px; color: #555; text-decoration: underline; cursor: pointer; }
-    .error-msg { font-size: 12px; color: #e00000; display: none; }
-    .error-msg.visible { display: block; }
-  </style>
+  <meta name="description" content="Message Bike & Butter about custom builds, wheels, parts or servicing. Jurong West workshop, Singapore. WhatsApp +65 8722 2610.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://bikeandbutter.com/contact/">
+  <meta name="theme-color" content="#121212">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Contact — Bike & Butter">
+  <meta property="og:description" content="Message Bike & Butter about custom builds, wheels, parts or servicing. Jurong West workshop, Singapore. WhatsApp +65 8722 2610.">
+  <meta property="og:image" content="https://bikeandbutter.com/og-image.png">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <link rel="stylesheet" href="/assets/css/store.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZQJRHN886Z');
+  </script>
 </head>
-<body>
+<body class="page-shell">
 
-<nav>
-  <div class="nav-logo">
-    <a href="../" class="logo-link">
-      <div class="logo-icon">B</div>
-      Bike &amp; Butter
+<!-- @header -->
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="header-in">
+    <div class="header-l">
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu-overlay" aria-label="Open menu"><span class="bars"></span><span class="label">Menu</span></button>
+      <a class="header-link label" href="/shop/">Shop</a>
+      <a class="header-link label" href="/#services">Services</a>
+    </div>
+    <a class="brand" href="/" aria-label="Bike &amp; Butter — home">
+      <img src="/assets/img/logo-light-480.webp" alt="Bike &amp; Butter" width="480" height="280">
     </a>
-  </div>
-  <div class="nav-right">
-    <div class="nav-links">
-      <div class="nav-partners-wrap">
-        <a href="#" class="nav-partners-trigger">Our Brands
-          <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" width="10" height="10">
-            <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-        <div class="nav-partners-dropdown">
-          <a href="../8lien/"><span class="nav-partner-dot" style="background:#ff677e;"></span>8LIEN</a>
-          <a href="../rstri/"><span class="nav-partner-dot" style="background:#f5c518;"></span>RSTRI</a>
-          <a href="../evr/"><span class="nav-partner-dot" style="background:#F26522;"></span>EVR</a>
-        </div>
-      </div>
-      <a href="../marketplace/">Marketplace</a>
-      <a href="../book/">Book a Service</a>
-      <a href="../contact/" class="active">Contact Us</a>
+    <div class="header-r">
+      <a class="header-link label" href="/contact/">Contact</a>
+      <a class="icon-btn bag-btn" href="/checkout/" data-cart-open aria-label="Open bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 8.5h15v11h-15zM8.5 8.5V7a3.5 3.5 0 0 1 7 0v1.5"/></svg><span class="count" data-cart-count hidden>0</span></a>
+      <a class="btn btn-glass header-book" href="/book/">Book</a>
     </div>
-    <div id="auth-area"></div>
   </div>
-  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
+</header>
+<nav class="menu-overlay" id="menu-overlay" aria-label="Main menu" hidden>
+  <div class="menu-links">
+    <a href="/shop/">Shop <span class="label">All</span></a>
+    <a href="/#brands">Brands <span class="label">3</span></a>
+    <a class="sub" href="/8lien/">8LIEN — carbon wheels</a>
+    <a class="sub" href="/rstri/">RSTRI — cockpit adapters</a>
+    <a class="sub" href="/evr/">EVR — apparel</a>
+    <a href="/#services">Services</a>
+    <a href="/#shop">Marketplaces</a>
+    <a href="/#visit">Visit the workshop</a>
+    <a href="/contact/">Contact</a>
+  </div>
+  <div class="menu-side">
+    <a class="btn btn-light" href="/book/">Book a service</a>
+    <address>
+      491 Jurong West Avenue 1<br>Singapore 640491<br>Mon–Fri, 9am–6pm<br>
+      <a href="https://wa.me/6587222610" target="_blank" rel="noopener">+65 8722 2610</a><br>
+      <a href="https://www.instagram.com/bikeandbutter/" target="_blank" rel="noopener">@bikeandbutter</a>
+    </address>
+  </div>
 </nav>
-<main>
+<!-- @/header -->
 
-<div class="mobile-menu" id="mobile-menu">
-  <a href="../8lien/" style="color:#ff677e;font-weight:600;">8LIEN 
-  <a href="../rstri/" style="color:#f5c518;font-weight:600;">RSTRI 
-  <a href="../evr/" style="color:#F26522;font-weight:600;">EVR 
-  <a href="../marketplace/">Marketplace</a>
-  <a href="../book/">Book a Service</a>
-  <a href="../contact/" class="active">Contact Us</a>
-</div>
-
-<script>
-document.getElementById('nav-hamburger').addEventListener('click', function() {
-  document.getElementById('mobile-menu').classList.toggle('open');
-});
-document.querySelectorAll('#mobile-menu a').forEach(function(a) {
-  a.addEventListener('click', function() {
-    document.getElementById('mobile-menu').classList.remove('open');
-  });
-});
-</script>
-
-<div class="breadcrumb">
-  <a href="../">Home</a>
-  <span>›</span>
-  <span class="breadcrumb-current">Contact</span>
-</div>
-
-<div class="contact-layout">
-  <div class="contact-header">
-    <p class="contact-header-sub">Get in touch</p>
-    <h1 class="contact-header-title">Contact Us</h1>
-    <p class="contact-header-desc">Questions, offers, or just want to talk bikes — we're here. We'll get back to you within 24 hours.</p>
-  </div>
-
-  <div class="prefill-banner" id="prefill-banner">
-    <span>Enquiring about: <strong id="prefill-bike-name">—</strong></span>
-    <button class="prefill-clear" onclick="clearPrefill()">✕ Clear</button>
-  </div>
-
-  <div class="enquiry-tabs" id="enquiry-tabs">
-    <button class="enquiry-tab active" data-type="General Enquiry">General Enquiry</button>
-    <button class="enquiry-tab" data-type="Make an Offer">Make an Offer</button>
-    <button class="enquiry-tab" data-type="Ask a Question">Ask a Question</button>
-    <button class="enquiry-tab" data-type="Request a Viewing">Request a Viewing</button>
-  </div>
-
-  <div id="form-wrapper">
-    <div class="contact-form" id="contact-form">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Your Name *</label>
-          <input type="text" id="field-name" placeholder="Jane Smith" />
+<main id="main" class="cpage">
+  <div class="cgrid">
+    <section class="cinfo">
+      <p class="label label-muted">Contact</p>
+      <h1 class="display">Tell us about your bike</h1>
+      <p class="clead">Custom build, wheel upgrade, part enquiry or a service you'd like booked in. We reply on WhatsApp and email within 24 hours on working days.</p>
+      <dl class="cdl">
+        <div><dt class="label">WhatsApp</dt><dd><a href="https://wa.me/6587222610?text=Hi%20Bike%20%26%20Butter%2C%20I%27d%20like%20to%20ask%20about%20" target="_blank" rel="noopener">+65 8722 2610</a></dd></div>
+        <div><dt class="label">Workshop</dt><dd>491 Jurong West Avenue 1<br>Singapore 640491</dd></div>
+        <div><dt class="label">Hours</dt><dd>Monday to Friday, 9am to 6pm</dd></div>
+        <div><dt class="label">Instagram</dt><dd><a href="https://www.instagram.com/bikeandbutter/" target="_blank" rel="noopener">@bikeandbutter</a></dd></div>
+      </dl>
+      <div class="cactions"><a class="btn btn-light" href="/book/">Book a service</a><a class="btn btn-line" href="https://www.google.com/maps/search/?api=1&amp;query=491+Jurong+West+Avenue+1+Singapore+640491" target="_blank" rel="noopener">Get directions</a></div>
+    </section>
+    <section class="cform" aria-label="Send a message">
+      <form id="contact-form" novalidate>
+        <div class="topics" role="group" aria-label="What is this about?">
+          <button type="button" class="topic is-on" data-type="General Enquiry">General</button>
+          <button type="button" class="topic" data-type="Custom Build">Custom build</button>
+          <button type="button" class="topic" data-type="Wheels &amp; Parts">Wheels &amp; parts</button>
+          <button type="button" class="topic" data-type="Servicing &amp; Repairs">Servicing</button>
         </div>
-        <div class="form-group">
-          <label>Email Address *</label>
-          <input type="email" id="field-email" placeholder="jane@email.com" />
-        </div>
+        <div class="field"><label class="label label-muted" for="f-name">Full name</label><input id="f-name" name="name" autocomplete="name"></div>
+        <div class="field"><label class="label label-muted" for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
+        <div class="field"><label class="label label-muted" for="f-phone">Phone (optional)</label><input id="f-phone" name="phone" type="tel" autocomplete="tel"></div>
+        <div class="field"><label class="label label-muted" for="f-msg">Message</label><textarea id="f-msg" name="message" placeholder="Tell us what you're looking for…"></textarea></div>
+        <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn btn-light" id="f-submit" type="submit" style="width:100%;padding:20px">Send message</button>
+        <p class="ferr" id="f-err" role="alert"></p>
+      </form>
+      <div class="csuccess" id="f-ok" hidden>
+        <p class="label">Message sent</p>
+        <p class="clead">Thanks, we've got it. We'll reply within 24 hours on working days. For anything urgent, WhatsApp us on +65 8722 2610.</p>
+        <a class="btn btn-line" href="/">Back to home</a>
       </div>
-      <div class="form-group">
-        <label>Phone Number <span style="color:#bbb;font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
-        <input type="tel" id="field-phone" placeholder="+65 9123 4567" />
-      </div>
-      <div class="form-group bike-field" id="bike-field">
-        <label>Which Bike?</label>
-        <input type="text" id="field-bike" placeholder="e.g. Specialized Tarmac SL8" />
-      </div>
-      <div class="form-group offer-field" id="offer-field">
-        <label>Your Offer</label>
-        <input type="text" id="field-offer" placeholder="e.g. SGD 8,500" />
-      </div>
-      <div class="form-group">
-        <label id="message-label">Message *</label>
-        <textarea id="field-message" placeholder="Tell us what you're looking for..."></textarea>
-      </div>
-      <span class="error-msg" id="error-msg">Please fill in all required fields.</span>
-      <button class="submit-btn" id="submit-btn" onclick="submitForm()">Send Message</button>
-    </div>
-
-    <div class="success-box" id="success-box">
-      <div class="success-icon">✓</div>
-      <div class="success-title">Message sent!</div>
-      <div class="success-desc">Thanks for reaching out. We'll get back to you at your email address within 24 hours.</div>
-      <span class="success-back" onclick="resetForm()">Send another message</span>
-    </div>
+    </section>
   </div>
-</div>
-
-<div class="toast" id="toast"></div>
-<script src="../auth.js"></script>
-<script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyD5oir2beAnURC3hy56VCA4vIaJXuu6KoGlNmF03cyXEzqSwbAzqZOH9yiKdYGlEYQ/exec";
-
-let activeType    = 'General Enquiry';
-let prefillBikeId = null;
-
-function prefillFromAuth() {
-  if (!window.currentUser) return;
-  const nameEl  = document.getElementById('field-name');
-  const emailEl = document.getElementById('field-email');
-  if (nameEl  && !nameEl.value)  nameEl.value  = window.currentUser.name  || '';
-  if (emailEl && !emailEl.value) emailEl.value = window.currentUser.email || '';
-}
-
-window.addEventListener('bb-auth-change', prefillFromAuth);
-document.addEventListener('DOMContentLoaded', prefillFromAuth);
-
-function readUrlParams() {
-  const params   = new URLSearchParams(window.location.search);
-  const bikeName = params.get('bike');
-  const bikeId   = params.get('id');
-  const type     = params.get('type');
-  if (bikeName) {
-    document.getElementById('field-bike').value = decodeURIComponent(bikeName);
-    document.getElementById('prefill-bike-name').textContent = decodeURIComponent(bikeName);
-    document.getElementById('prefill-banner').classList.add('visible');
-    prefillBikeId = bikeId || null;
-  }
-  if (type) setActiveType(decodeURIComponent(type));
-}
-
-function clearPrefill() {
-  document.getElementById('field-bike').value = '';
-  document.getElementById('prefill-banner').classList.remove('visible');
-  prefillBikeId = null;
-  window.history.replaceState({}, '', 'contact.html');
-}
-
-document.querySelectorAll('.enquiry-tab').forEach(tab => {
-  tab.addEventListener('click', () => setActiveType(tab.dataset.type));
-});
-
-function setActiveType(type) {
-  activeType = type;
-  document.querySelectorAll('.enquiry-tab').forEach(t => {
-    t.classList.toggle('active', t.dataset.type === type);
-  });
-  const showBike = ['Make an Offer', 'Ask a Question', 'Request a Viewing'].includes(type);
-  document.getElementById('bike-field').classList.toggle('visible', showBike);
-  document.getElementById('offer-field').classList.toggle('visible', type === 'Make an Offer');
-  const placeholders = {
-    'General Enquiry':   "Tell us what you're looking for...",
-    'Make an Offer':     'Any additional details about your offer...',
-    'Ask a Question':    'What would you like to know about this bike?',
-    'Request a Viewing': 'Let us know your preferred date and time...',
-  };
-  document.getElementById('field-message').placeholder = placeholders[type] || '';
-  const labels = {
-    'Make an Offer':     'Additional Notes',
-    'Request a Viewing': 'Preferred Date & Time *',
-  };
-  document.getElementById('message-label').textContent = labels[type] || 'Message *';
-}
-
-function submitForm() {
-  authGuard(
-    async () => {
-      const name    = document.getElementById('field-name').value.trim();
-      const email   = document.getElementById('field-email').value.trim();
-      const phone   = document.getElementById('field-phone').value.trim();
-      const bike    = document.getElementById('field-bike').value.trim();
-      const offer   = document.getElementById('field-offer').value.trim();
-      const message = document.getElementById('field-message').value.trim();
-      const errorEl = document.getElementById('error-msg');
-      const btn     = document.getElementById('submit-btn');
-      if (!name || !email || !message) { errorEl.classList.add('visible'); return; }
-      errorEl.classList.remove('visible');
-      btn.disabled    = true;
-      btn.textContent = 'Sending...';
-      const timestamp = new Date().toLocaleString('en-SG', { timeZone: 'Asia/Singapore' });
-      try {
-        await fetch(SCRIPT_URL, {
-          method: 'POST', mode: 'no-cors',
-          body: JSON.stringify({ timestamp, name, email, phone, type: activeType, bike, offer, message, bikeId: prefillBikeId || '' })
-        });
-      } catch (err) { console.error(err); }
-      document.getElementById('contact-form').style.display = 'none';
-      document.getElementById('enquiry-tabs').style.display = 'none';
-      document.getElementById('success-box').classList.add('visible');
-    },
-    'Sign in to send a message',
-    'You need to be signed in to contact us.'
-  );
-}
-
-function resetForm() { location.reload(); }
-readUrlParams();
-</script>
-
 </main>
+
+<!-- @footer -->
+<footer class="site-footer">
+  <div class="footer-in">
+    <div class="footer-grid">
+      <div class="footer-col footer-news">
+        <h3>Newsletter</h3>
+        <p class="lead">New arrivals, restocks and workshop news. No spam.</p>
+        <form data-newsletter novalidate>
+          <div class="nl-row">
+            <input type="email" name="email" placeholder="Email address" autocomplete="email" required aria-label="Email address">
+            <button type="submit">Subscribe</button>
+          </div>
+          <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <label class="nl-consent"><input type="checkbox" name="consent" required> <span>I agree to receive emails from Bike &amp; Butter and understand I can unsubscribe at any time.</span></label>
+          <p class="nl-msg" role="status" aria-live="polite"></p>
+        </form>
+        <address>
+          491 Jurong West Avenue 1, Singapore 640491<br>
+          Mon–Fri, 9am–6pm<br>
+          <a href="https://wa.me/6587222610" target="_blank" rel="noopener">+65 8722 2610</a> ·
+          <a href="https://www.instagram.com/bikeandbutter/" target="_blank" rel="noopener">@bikeandbutter</a>
+        </address>
+      </div>
+      <div class="footer-col">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="/book/">Book a service</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="https://wa.me/6587222610" target="_blank" rel="noopener">WhatsApp us</a></li>
+          <li><a href="/#visit">Find the workshop</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="/shop/">Shop all</a></li>
+          <li><a href="/8lien/">8LIEN</a></li>
+          <li><a href="/rstri/">RSTRI</a></li>
+          <li><a href="/evr/">EVR</a></li>
+          <li><a href="https://shopee.sg/shop/1784141511" target="_blank" rel="noopener">Shopee</a></li>
+          <li><a href="https://www.lazada.sg/shop/bike-butter/" target="_blank" rel="noopener">Lazada</a></li>
+          <li><a href="https://www.carousell.sg/u/bikeandbutter/" target="_blank" rel="noopener">Carousell</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Bike &amp; Butter</span>
+      <span>Official Singapore distributor of 8LIEN, RSTRI and EVR</span>
+      <span>Singapore · SGD</span>
+    </div>
+  </div>
+</footer>
+<a class="chat-fab" href="https://wa.me/6587222610?text=Hi%20Bike%20%26%20Butter%2C%20I%27d%20like%20to%20ask%20about%20" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5 3h14a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-8.2L5.6 21.6A.8.8 0 0 1 4.300 21v-3A3 3 0 0 1 2 15V6a3 3 0 0 1 3-3Zm3 6.200a1.200 1.200 0 1 0 0 2.400 1.200 1.200 0 0 0 0-2.400Zm4 0a1.200 1.200 0 1 0 0 2.400 1.200 1.200 0 0 0 0-2.400Zm4 0a1.200 1.200 0 1 0 0 2.400 1.200 1.200 0 0 0 0-2.400Z"/></svg>
+</a>
+<!-- @/footer -->
+
+<script src="/assets/js/site.js" defer></script>
+<script src="/assets/js/store.js" defer></script>
+<script src="/assets/js/contact.js" defer></script>
 </body>
 </html>
