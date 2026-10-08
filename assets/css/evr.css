@@ -70,3 +70,5 @@
 .evr-d-img{position:relative;display:block}.evr-d-img img{position:absolute;inset:0;width:100%;height:100%;padding:3%}
 @media(min-width:900px){.evr-d{min-height:calc(100svh - 84px)}.evr-d-img{position:relative;top:auto;height:auto;min-height:0;align-self:stretch}}
 .evr-ranges{align-items:stretch}.evr-range{height:100%}
+.evr-ranges{border-bottom:1px solid var(--line);align-items:start}
+.evr-range{border-bottom:0;height:auto}
