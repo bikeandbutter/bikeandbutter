@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>document.documentElement.className += " js";</script>
-  <title>Contact — Bike & Butter</title>
-  <meta name="description" content="Message Bike & Butter about custom builds, wheels, parts or servicing. Jurong West workshop, Singapore. WhatsApp +65 8722 2610.">
+  <title>Help and FAQ — Bike & Butter</title>
+  <meta name="description" content="Answers about delivery, orders and payment, products, servicing and returns from Bike & Butter, Singapore.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://bikeandbutter.com/contact/">
+  <link rel="canonical" href="https://bikeandbutter.com/help/">
   <meta name="theme-color" content="#121212">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Contact — Bike & Butter">
-  <meta property="og:description" content="Message Bike & Butter about custom builds, wheels, parts or servicing. Jurong West workshop, Singapore. WhatsApp +65 8722 2610.">
+  <meta property="og:title" content="Help and FAQ — Bike & Butter">
+  <meta property="og:description" content="Answers about delivery, orders and payment, products, servicing and returns from Bike & Butter, Singapore.">
   <meta property="og:image" content="https://bikeandbutter.com/og-image.png">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
@@ -73,43 +73,17 @@
 </nav>
 <!-- @/header -->
 
-<main id="main" class="cpage">
-  <div class="cgrid">
-    <section class="cinfo">
-      <p class="label label-muted">Contact</p>
-      <h1 class="display">Tell us about your bike</h1>
-      <p class="clead">Custom build, wheel upgrade, part enquiry or a service you'd like booked in. We reply on WhatsApp and email within 24 hours on working days.</p>
-      <dl class="cdl">
-        <div><dt class="label">WhatsApp</dt><dd><a href="https://wa.me/6587222610?text=Hi%20Bike%20%26%20Butter%2C%20I%27d%20like%20to%20ask%20about%20" target="_blank" rel="noopener">+65 8722 2610</a></dd></div>
-        <div><dt class="label">Workshop</dt><dd>491 Jurong West Avenue 1<br>Singapore 640491</dd></div>
-        <div><dt class="label">Hours</dt><dd>Monday to Friday, 9am to 6pm</dd></div>
-        <div><dt class="label">Instagram</dt><dd><a href="https://www.instagram.com/bikeandbutter/" target="_blank" rel="noopener">@bikeandbutter</a></dd></div>
-      </dl>
-      <div class="cactions"><a class="btn btn-light" href="/book/">Book a service</a><a class="btn btn-line" href="https://www.google.com/maps/search/?api=1&amp;query=491+Jurong+West+Avenue+1+Singapore+640491" target="_blank" rel="noopener">Get directions</a></div>
-    </section>
-    <section class="cform" aria-label="Send a message">
-      <form id="contact-form" novalidate>
-        <div class="topics" role="group" aria-label="What is this about?">
-          <button type="button" class="topic is-on" data-type="General Enquiry">General</button>
-          <button type="button" class="topic" data-type="Custom Build">Custom build</button>
-          <button type="button" class="topic" data-type="Wheels &amp; Parts">Wheels &amp; parts</button>
-          <button type="button" class="topic" data-type="Servicing &amp; Repairs">Servicing</button>
-        </div>
-        <div class="field"><label class="label label-muted" for="f-name">Full name</label><input id="f-name" name="name" autocomplete="name"></div>
-        <div class="field"><label class="label label-muted" for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
-        <div class="field"><label class="label label-muted" for="f-phone">Phone (optional)</label><input id="f-phone" name="phone" type="tel" autocomplete="tel"></div>
-        <div class="field"><label class="label label-muted" for="f-msg">Message</label><textarea id="f-msg" name="message" placeholder="Tell us what you're looking for…"></textarea></div>
-        <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <button class="btn btn-light" id="f-submit" type="submit" style="width:100%;padding:20px">Send message</button>
-        <p class="ferr" id="f-err" role="alert"></p>
-      </form>
-      <div class="csuccess" id="f-ok" hidden>
-        <p class="label">Message sent</p>
-        <p class="clead">Thanks, we've got it. We'll reply within 24 hours on working days. For anything urgent, WhatsApp us on +65 8722 2610.</p>
-        <a class="btn btn-line" href="/">Back to home</a>
-      </div>
-    </section>
-  </div>
+<main id="main" class="helppage">
+  <section class="help-hero">
+    <h1>How can we help?</h1>
+    <form class="help-search" role="search" onsubmit="return false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="help-q" placeholder="Search…" aria-label="Search help" autocomplete="off"></form>
+  </section>
+  <section class="help-body">
+    <p class="label label-muted" id="help-label">Topics</p>
+    <div class="topic-grid" id="help-topics"></div>
+    <div class="faq-list" id="help-list" hidden></div>
+    <div class="help-foot"><p class="clead">Can't find what you need?</p><div class="cactions"><a class="btn btn-light" href="https://wa.me/6587222610" target="_blank" rel="noopener">WhatsApp us</a><a class="btn btn-line" href="/contact/">Send a message</a></div></div>
+  </section>
 </main>
 
 <!-- @footer -->
@@ -172,6 +146,6 @@
 
 <script src="/assets/js/site.js" defer></script>
 <script src="/assets/js/store.js" defer></script>
-<script src="/assets/js/contact.js" defer></script>
+<script src="/assets/js/help.js" defer></script>
 </body>
 </html>

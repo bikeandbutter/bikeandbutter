@@ -1,0 +1,130 @@
+{
+ "topics": [
+  {
+   "id": "shipping",
+   "title": "Shipping and delivery",
+   "img": "/assets/img/home/g4.webp",
+   "qa": [
+    [
+     "How much does delivery cost?",
+     "Orders of S$150 or more ship free. Orders under S$150 pay a flat S$15, shown in your bag before you check out."
+    ],
+    [
+     "Can I collect my order from the workshop instead?",
+     "Message us on WhatsApp before you order at +65 8722 2610 and we'll confirm whether collection works for your items. The workshop is at 491 Jurong West Avenue 1, open Monday to Friday, 9am to 6pm."
+    ],
+    [
+     "Do you deliver outside Singapore?",
+     "Our online checkout is set up for orders in Singapore. If you're elsewhere, WhatsApp us and we'll see what we can do."
+    ]
+   ]
+  },
+  {
+   "id": "orders",
+   "title": "Order and payment",
+   "img": "/assets/img/home/g8.webp",
+   "qa": [
+    [
+     "How do I pay?",
+     "Add your items to the bag, go to checkout and enter your details. You'll then be sent to a secure HitPay page to pay online."
+    ],
+    [
+     "Will I get a confirmation?",
+     "Yes. You'll see a confirmation page when payment completes, and we'll email you the order details."
+    ],
+    [
+     "I need to change or cancel my order.",
+     "Message us on WhatsApp as soon as you can, quoting your order number, and we'll help."
+    ],
+    [
+     "My payment didn't go through.",
+     "Your order is saved but not confirmed until payment completes. You can try again from the shop, or WhatsApp us and we'll help you finish it."
+    ]
+   ]
+  },
+  {
+   "id": "products",
+   "title": "Product information",
+   "img": "/assets/img/home/g1.webp",
+   "qa": [
+    [
+     "Which 8LIEN wheelset is right for me?",
+     "For climbing, look at the AETHER 3 or L3W (30/35mm). For all-round riding, the AETHER 4 or 5 and the L5W (40 to 50mm). For flat roads and crits, the AETHER 6 or L6W (50/60mm). For the triathlon bike leg, the Aero X8 disc rear wheel. Not sure? Tell us how you ride and we'll recommend one."
+    ],
+    [
+     "Which freehubs are available?",
+     "Shimano 10/11/12-speed, SRAM XDR and Campagnolo N3W. You choose when you order."
+    ],
+    [
+     "Are the wheels UCI certified and tubeless ready?",
+     "The AETHER wheels are UCI certified and tubeless ready. The L-series and Aero X8 are tubeless compatible. See each product's technical info for details."
+    ],
+    [
+     "Will an RSTRI part fit my bike?",
+     "RSTRI parts are machined for one specific fork each. The Specialized Shiv TT (2016 to 2025) is in stock now. For any other frame, enquire with your bike model and we'll confirm."
+    ]
+   ]
+  },
+  {
+   "id": "service",
+   "title": "Servicing and bookings",
+   "img": "/assets/img/home/g7.webp",
+   "qa": [
+    [
+     "How do I book a service?",
+     "Use the Book page: tell us who you are, choose a service and pick a time that works. We'll confirm on WhatsApp, usually within a few hours."
+    ],
+    [
+     "What do you work on?",
+     "We build, upgrade and service road and triathlon bikes."
+    ],
+    [
+     "Can I test ride wheels before buying?",
+     "Yes, test rides are available at our Jurong West workshop. Message us to arrange a time."
+    ],
+    [
+     "Where are you and when are you open?",
+     "491 Jurong West Avenue 1, Singapore 640491. Monday to Friday, 9am to 6pm."
+    ]
+   ]
+  },
+  {
+   "id": "returns",
+   "title": "Returns and warranty",
+   "img": "/assets/img/home/g12.webp",
+   "qa": [
+    [
+     "What is your returns policy?",
+     "Returns and warranty terms depend on the product and brand. Message us on WhatsApp before you order and we'll confirm the terms for the item you're looking at."
+    ],
+    [
+     "Something is wrong with my order.",
+     "WhatsApp us on +65 8722 2610 with your order number and a photo if you can, and we'll sort it out."
+    ]
+   ]
+  },
+  {
+   "id": "common",
+   "title": "Common questions",
+   "img": "/assets/img/home/g9.webp",
+   "qa": [
+    [
+     "Are you an official distributor?",
+     "Yes. Bike & Butter is the official Singapore distributor of 8LIEN, RSTRI and EVR."
+    ],
+    [
+     "How quickly do you reply?",
+     "We aim to reply within 24 hours on working days, usually much faster on WhatsApp."
+    ],
+    [
+     "Where else can I buy?",
+     "Parts, apparel and nutrition are also on our Shopee, Lazada and Carousell stores."
+    ],
+    [
+     "Do you sell EVR apparel online?",
+     "Browse the EVR range on its own page and enquire for sizing and pricing."
+    ]
+   ]
+  }
+ ]
+}
