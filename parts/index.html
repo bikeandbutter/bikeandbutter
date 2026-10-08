@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>document.documentElement.className += " js";</script>
-  <title>Shop — Bike & Butter</title>
-  <meta name="description" content="Shop 8LIEN carbon wheels, RSTRI cockpit parts, EVR apparel and more from Bike & Butter, Singapore.">
+  <title>Parts & more — Bike & Butter</title>
+  <meta name="description" content="Shimano groupsets, drivetrain, tyres, tubes, brakes, saddles and nutrition from Bike & Butter, Singapore. Enquire to order.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://bikeandbutter.com/shop/">
+  <link rel="canonical" href="https://bikeandbutter.com/parts/">
   <meta name="theme-color" content="#121212">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Shop — Bike & Butter">
-  <meta property="og:description" content="Shop 8LIEN carbon wheels, RSTRI cockpit parts, EVR apparel and more from Bike & Butter, Singapore.">
+  <meta property="og:title" content="Parts & more — Bike & Butter">
+  <meta property="og:description" content="Shimano groupsets, drivetrain, tyres, tubes, brakes, saddles and nutrition from Bike & Butter, Singapore. Enquire to order.">
   <meta property="og:image" content="https://bikeandbutter.com/og-image.png">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
@@ -74,15 +74,17 @@
 </nav>
 <!-- @/header -->
 
-<main id="main">
-  <section class="tiles" aria-label="Shop by brand">
-    <a class="tile" href="/8lien/"><img src="/assets/img/home/banner-wheels.webp" alt="" loading="eager"><div class="tile-in"><span class="label">Carbon wheels</span><h2>8LIEN</h2><p>UCI-certified carbon-spoke wheelsets for road and triathlon.</p></div></a>
-    <a class="tile" href="/rstri/"><img src="/assets/img/home/banner-rstri.webp" alt="" loading="eager"><div class="tile-in"><span class="label">Cockpit parts</span><h2>RSTRI</h2><p>CNC-machined baseplates and adaptors. Find the parts for your bike.</p></div></a>
-    <a class="tile" href="/evr/"><img src="/assets/img/home/b-evr.webp" alt="" loading="lazy"><div class="tile-in"><span class="label">Apparel</span><h2>EVR</h2><p>Jerseys, bibs, jackets, gloves and accessories. Enquire for sizing.</p></div></a>
-    <a class="tile" href="/parts/"><img src="/assets/img/home/s-cockpit.webp" alt="" loading="lazy"><div class="tile-in"><span class="label">Everything else</span><h2>Parts &amp; more</h2><p>Groupsets, drivetrain, tyres, brakes, saddles and nutrition.</p></div></a>
+<main id="main" data-scope="parts">
+  <section class="page-hero" aria-label="Parts">
+    <img data-hero-img src="/assets/img/home/s-cockpit.webp" alt="">
+    <div class="page-hero-in"><span class="label" data-hero-label>Parts &amp; more</span><p data-hero-text></p></div>
+  </section>
+  <section class="grid-wrap" aria-label="Products">
+    <div class="grid-bar label"><span data-count></span><span>Prices in SGD · Enquire to order</span></div>
+    <div class="cards" data-grid></div>
   </section>
 </main>
-<script>window.BNB_NO_SHOP = true;</script>
+<button type="button" class="refine-fab label" data-refine>Refine</button>
 
 <!-- @footer -->
 <footer class="site-footer">

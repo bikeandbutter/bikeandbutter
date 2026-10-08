@@ -32,7 +32,7 @@
 .pgrid { display: grid; background: #fafafa; color: #111; }
 .pgallery { position: relative; background: #fafafa; }
 .pfig { margin: 0; aspect-ratio: 1 / 1; overflow: hidden; background: #f4f4f2; }
-.pfig img { width: 100%; height: 100%; object-fit: cover; }
+.pfig img { width: 100%; height: 100%; object-fit: contain; }
 .pthumbs { display: none; }
 .pinfo { background: #fff; }
 .pinfo-in { padding: 28px var(--pad) 56px; display: grid; gap: 18px; align-content: start; }
@@ -72,7 +72,7 @@
 @media (min-width: 900px) {
   .pgrid { grid-template-columns: 1.15fr 1fr; align-items: start; }
   .pgallery { padding-left: 70px; }
-  .pfig-main { aspect-ratio: 1 / 1.05; }
+  .pfig-main { aspect-ratio: 1 / 1; }
   .pthumbs { display: grid; gap: 10px; position: sticky; top: 50vh; transform: translateY(-50%); float: left; margin-left: -56px; width: 40px; z-index: 3; height: 0; align-content: center; }
   .pthumb { width: 40px; height: 50px; padding: 0; border: 0; background: #f4f4f2; opacity: .5; cursor: pointer; overflow: hidden; }
   .pthumb.is-on, .pthumb:hover { opacity: 1; }
@@ -198,8 +198,30 @@
 }
 
 /* denser shop grid */
-.cards[data-grid] .card-info { padding: 10px 12px 14px; }
-.cards[data-grid] .card-info .row { flex-direction: column; gap: 3px; }
-@media (min-width: 600px) { .cards[data-grid] { grid-template-columns: repeat(3, 1fr); } .cards[data-grid] .card:nth-child(n) { border-right: 1px solid var(--line-dark); } }
-@media (min-width: 900px) { .cards[data-grid] { grid-template-columns: repeat(4, 1fr); } }
-@media (min-width: 1300px) { .cards[data-grid] { grid-template-columns: repeat(5, 1fr); } }
+.cards[data-grid] .card-info, .cards[data-rf-grid] .card-info { padding: 10px 12px 14px; }
+.cards[data-grid] .card-info .row, .cards[data-rf-grid] .card-info .row { flex-direction: column; gap: 3px; }
+@media (min-width: 600px) { .cards[data-grid], .cards[data-rf-grid] { grid-template-columns: repeat(3, 1fr); } .cards[data-grid] .card:nth-child(n), .cards[data-rf-grid] .card:nth-child(n) { border-right: 1px solid var(--line-dark); } }
+@media (min-width: 900px) { .cards[data-grid], .cards[data-rf-grid] { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1300px) { .cards[data-grid], .cards[data-rf-grid] { grid-template-columns: repeat(5, 1fr); } }
+
+/* shop landing tiles */
+.tiles { display: grid; grid-template-columns: 1fr; background: var(--bg); }
+.tile { position: relative; display: block; min-height: 52svh; overflow: hidden; color: #fff; border-bottom: 1px solid var(--line); }
+.tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) brightness(.62); transition: transform .8s ease, filter .4s; }
+.tile:hover img { transform: scale(1.04); filter: grayscale(1) brightness(.75); }
+.tile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.1), rgba(0,0,0,.65)); }
+.tile-in { position: absolute; z-index: 2; left: 0; right: 0; bottom: 0; padding: clamp(20px, 3vw, 36px) var(--pad); display: grid; gap: 10px; }
+.tile-in h2 { font-weight: 300; font-size: clamp(2rem, 4.5vw, 4rem); line-height: 1; letter-spacing: -.02em; }
+.tile-in p { font-size: 15px; font-weight: 300; color: #dcdcd7; max-width: 30em; line-height: 1.45; }
+.tile-in .label { color: var(--yellow); }
+@media (min-width: 900px) { .tiles { grid-template-columns: 1fr 1fr; } .tile { min-height: 46svh; border-right: 1px solid var(--line); } .tile:nth-child(2n) { border-right: 0; } }
+
+/* RSTRI finder */
+.finder { display: grid; gap: 14px; padding: 0 var(--pad) 22px; }
+.finder-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.finder select, .finder input[type=search] { border: 1px solid var(--line-dark); background: #fff; padding: 12px 14px; font: inherit; font-size: 14px; border-radius: 4px; color: #111; min-width: 220px; }
+.finder .chips button { border: 1px solid var(--line-dark); background: none; padding: 8px 14px; border-radius: 99px; font: inherit; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; color: #111; }
+.finder .chips button.on { background: #111; color: #fff; border-color: #111; }
+.finder-note { padding: 0 var(--pad) 18px; font-size: 13px; color: #6f6f6a; line-height: 1.5; max-width: 60em; }
+.finder-empty { padding: 48px var(--pad); text-align: center; color: #6f6f6a; }
+.fit-tag { font-size: 11px; color: #8a8a85; }

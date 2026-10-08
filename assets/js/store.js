@@ -137,7 +137,7 @@
 
   /* ---------- shop (collection) ---------- */
   var CATS = {
-    all: { label: "All products", text: "Race-ready wheels and cockpit parts from the brands we distribute in Singapore, plus workshop builds and servicing.", img: "/assets/img/home/banner-wheels.webp" },
+    all: { label: "Parts & more", text: "Groupsets, drivetrain, tyres, brakes, saddles and nutrition. Message us to confirm availability and we will order what you need.", img: "/assets/img/home/s-cockpit.webp" },
     wheels: { label: "Wheelsets", text: "UCI-certified carbon-spoke wheelsets from 8LIEN for road and triathlon, with Shimano, SRAM XDR and Campagnolo N3W freehub options.", img: "/assets/img/home/banner-wheels.webp" },
     cockpit: { label: "Cockpit parts", text: "CNC-machined baseplates and adaptors from RSTRI, plus aero bars, adapters and bar tape for road and triathlon bikes.", img: "/assets/img/home/s-cockpit.webp" },
     groupsets: { label: "Groupsets", text: "Shimano Dura-Ace, Ultegra and 105 groupsets, mechanical and Di2.", img: "/assets/img/home/banner-wheels.webp" },
@@ -161,19 +161,21 @@
     var grid = $("[data-grid]"); if (!grid) return;
     var params = new URLSearchParams(location.search);
     var state = { cat: params.get("cat") || "all", brand: "all", sort: "featured" };
-    function apply() {
+    var PART_CATS = ["groupsets", "drivetrain", "tyres", "brakes", "saddles", "nutrition", "accessories"];
+    var inScope = function (p) { return p.brand !== "8LIEN" && p.brand !== "RSTRI"; };
+        function apply() {
       var c = CATS[state.cat] || CATS.all;
       $("[data-hero-label]").textContent = c.label; $("[data-hero-text]").textContent = c.text;
       var hi = $("[data-hero-img]"); if (hi.getAttribute("src") !== c.img) hi.src = c.img;
-      var list = DATA.products.filter(function (p) { return (state.cat === "all" || p.cat === state.cat) && (state.brand === "all" || p.brand === state.brand); });
+      var list = DATA.products.filter(function (p) { return inScope(p) && (state.cat === "all" || p.cat === state.cat) && (state.brand === "all" || p.brand === state.brand); });
       if (state.sort === "low") list.sort(function (a, b) { return (a.price == null) - (b.price == null) || a.price - b.price; });
       if (state.sort === "high") list.sort(function (a, b) { return (a.price == null) - (b.price == null) || b.price - a.price; });
-      grid.innerHTML = list.map(cardHtml).join("") + '<a class="card card-link" href="/evr/"><div class="card-img card-img-text"><span class="label">EVR apparel</span><p>Jerseys, bibs, jackets and accessories. Browse the full range and enquire for sizing and pricing.</p><span class="btn btn-line">View EVR</span></div><div class="card-info"><div class="row"><span class="label">EVR range</span><span class="label">Enquire</span></div><div class="cat">Apparel</div></div></a>';
+      grid.innerHTML = list.map(cardHtml).join("");
       $("[data-count]").textContent = list.length + " products";
     }
     function refine() {
-      var cats = Object.keys(CATS).map(function (k) { return '<label class="opt"><input type="radio" name="cat" value="' + k + '"' + (state.cat === k ? " checked" : "") + '><span>' + CATS[k].label + '</span></label>'; }).join("");
-      var brands = ["all"].concat(DATA.products.map(function (x) { return x.brand; }).filter(function (b, i, a) { return a.indexOf(b) === i; }).sort()).map(function (b) { return '<label class="opt"><input type="radio" name="brand" value="' + b + '"' + (state.brand === b ? " checked" : "") + '><span>' + (b === "all" ? "All brands" : b) + '</span></label>'; }).join("");
+      var cats = ["all"].concat(PART_CATS).map(function (k) { return '<label class="opt"><input type="radio" name="cat" value="' + k + '"' + (state.cat === k ? " checked" : "") + '><span>' + CATS[k].label + '</span></label>'; }).join("");
+      var brands = ["all"].concat(DATA.products.filter(inScope).map(function (x) { return x.brand; }).filter(function (b, i, a) { return a.indexOf(b) === i; }).sort()).map(function (b) { return '<label class="opt"><input type="radio" name="brand" value="' + b + '"' + (state.brand === b ? " checked" : "") + '><span>' + (b === "all" ? "All brands" : b) + '</span></label>'; }).join("");
       var sorts = [["featured", "Featured"], ["low", "Price: low to high"], ["high", "Price: high to low"]].map(function (s) { return '<label class="opt"><input type="radio" name="sort" value="' + s[0] + '"' + (state.sort === s[0] ? " checked" : "") + '><span>' + s[1] + '</span></label>'; }).join("");
       openSide("Refine", '<div class="refine"><h3 class="label">Category</h3>' + cats + '<h3 class="label">Brand</h3>' + brands + '<h3 class="label">Sort</h3>' + sorts + '<button type="button" class="btn btn-dark" data-side-close>Show results</button></div>');
       $$(".refine input").forEach(function (i) { i.addEventListener("change", function () { state[i.name] = i.value; apply(); }); });
@@ -209,7 +211,7 @@
       '<div class="prow"><h1 class="pname">' + esc(p.name) + '</h1><p class="pprice" data-pprice>' + (p.price != null ? money(vprice(p, variant)) + (p.unit ? '<small> / ' + esc(p.unit) + '</small>' : "") : "Enquire") + '</p></div>' +
       '<p class="psum">' + esc(p.summary) + '</p>' + variants +
       (p.purchasable ? '<button type="button" class="btn btn-dark btn-wide" data-add>Add to bag <span data-add-price>' + money(p.price) + '</span></button>' : '<a class="btn btn-dark btn-wide" data-enquire href="' + enquireUrl(p) + '" target="_blank" rel="noopener">Enquire on WhatsApp</a>') +
-      '<div class="pbox"><p class="label"><span class="live"></span>' + (p.brand === "RSTRI" ? "In stock in Singapore. Free delivery over S$" + DATA.shipping.freeOver : p.brand === "8LIEN" ? "Official Singapore distributor. Free delivery over S$" + DATA.shipping.freeOver : "Message us to confirm availability. Free delivery over S$" + DATA.shipping.freeOver) + ' <button type="button" class="ul" data-open="pay">Read more</button></p>' +
+      '<div class="pbox"><p class="label"><span class="live"></span>' + (p.brand === "RSTRI" ? "Made to order after your enquiry. Free delivery over S$" + DATA.shipping.freeOver : p.brand === "8LIEN" ? "Official Singapore distributor. Free delivery over S$" + DATA.shipping.freeOver : "Message us to confirm availability. Free delivery over S$" + DATA.shipping.freeOver) + ' <button type="button" class="ul" data-open="pay">Read more</button></p>' +
       '<p class="label">Test rides and fitting at our Jurong West workshop <a class="ul" href="/#visit">Read more</a></p></div>' +
       (p.benefits.length ? '<h2 class="label label-muted lbl">Benefits</h2><ul class="bullets">' + p.benefits.map(function (b) { return "<li>" + esc(b) + "</li>"; }).join("") + '</ul>' : "") +
       (p.included.length ? '<h2 class="label label-muted lbl">What\'s included</h2><ul class="bullets">' + p.included.map(function (b) { return "<li>" + esc(b) + "</li>"; }).join("") + '</ul>' : "") +
@@ -237,6 +239,42 @@
     var more = DATA.products.filter(function (x) { return x.id !== p.id; }).sort(function (a, b) { return (b.cat === p.cat) - (a.cat === p.cat); }).slice(0, 3);
     var mp = $("[data-more]"); if (mp) mp.innerHTML = more.map(cardHtml).join("");
     if (window.gtag) gtag("event", "view_item", { items: [{ item_id: p.id, item_name: p.name }] });
+  }
+
+
+  /* ---------- RSTRI finder ---------- */
+  function initFinder() {
+    var root = $("[data-rf]"); if (!root) return;
+    var items = DATA.products.filter(function (p) { return p.brand === "RSTRI"; });
+    var state = { bike: "", type: "", q: "" };
+    var bikes = items.filter(function (p) { return p.kind !== "saddle" && p.bike !== "Universal"; }).map(function (p) { return p.bike; });
+    var saddles = items.filter(function (p) { return p.kind === "saddle"; }).map(function (p) { return p.bike; });
+    var uniq = function (a) { return a.filter(function (x, i) { return a.indexOf(x) === i; }).sort(); };
+    var types = uniq(items.map(function (p) { return p.ptype; }));
+    $("[data-rf-bike]").innerHTML = '<option value="">All bikes</option><optgroup label="Frames">' + uniq(bikes).map(function (b) { return '<option>' + esc(b) + '</option>'; }).join("") + '</optgroup><optgroup label="Saddles (BTS mounts)">' + uniq(saddles).map(function (b) { return '<option>' + esc(b) + '</option>'; }).join("") + '</optgroup>';
+    $("[data-rf-type]").innerHTML = '<button type="button" data-t="" class="on">All parts</button>' + types.map(function (t) { return '<button type="button" data-t="' + esc(t) + '">' + esc(t) + '</button>'; }).join("");
+    var grid = $("[data-rf-grid]"), count = $("[data-rf-count]"), empty = $("[data-rf-empty]");
+    function card(p) {
+      var img = p.images && p.images[0];
+      return '<a class="card" href="/shop/product/?id=' + esc(p.id) + '"><div class="card-img">' + imgTag(img, p.name, "", 'width="800" height="800" loading="lazy"') + '</div><div class="card-info"><div class="row"><span class="label">' + esc(p.ptype + " — " + p.bike) + '</span><span class="label">Enquire</span></div><div class="cat">' + esc(p.fit ? p.fit : (p.kind === "saddle" ? "Saddle mount" : "")) + '</div></div></a>';
+    }
+    function apply() {
+      var q = state.q.trim().toLowerCase();
+      var list = items.filter(function (p) {
+        if (state.type && p.ptype !== state.type) return false;
+        if (state.bike && !(p.bike === state.bike || p.bike === "Universal")) return false;
+        if (q && (p.name + " " + p.bike + " " + p.ptype).toLowerCase().indexOf(q) < 0 && p.bike !== "Universal") return false;
+        return true;
+      });
+      grid.innerHTML = list.map(card).join("");
+      count.textContent = list.length + (list.length === 1 ? " part" : " parts") + (state.bike ? " for " + state.bike : "");
+      empty.hidden = list.length > 0;
+      $$("[data-rf-type] button", root).forEach(function (b) { b.classList.toggle("on", b.dataset.t === state.type); });
+    }
+    $("[data-rf-bike]").addEventListener("change", function (e) { state.bike = e.target.value; apply(); });
+    $("[data-rf-q]").addEventListener("input", function (e) { state.q = e.target.value; apply(); });
+    $("[data-rf-type]").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; state.type = b.dataset.t; apply(); });
+    apply();
   }
 
   /* ---------- checkout ---------- */
@@ -296,6 +334,6 @@
 
   /* ---------- boot ---------- */
   updateBadge();
-  load().then(function () { buildCartDrawer(); renderCart(); initShop(); initBrandGrids(); initProduct(); initCheckout(); updateBadge(); });
+  load().then(function () { buildCartDrawer(); renderCart(); initShop(); initBrandGrids(); initFinder(); initProduct(); initCheckout(); updateBadge(); });
   window.BNB = { openCart: function () { load().then(openCart); }, cart: cart };
 })();

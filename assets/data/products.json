@@ -742,7 +742,7 @@
   },
   {
    "id": "rstri-aerocoach-angle",
-   "name": "RSTRI Aerocoach Angle Adaptor",
+   "name": "RSTRI Angle Adaptor — Specialized Shiv TT (Aerocoach)",
    "brand": "RSTRI",
    "cat": "cockpit",
    "category": "Cockpit parts",
@@ -788,13 +788,16 @@
    "variants": null,
    "images": [
     "/assets/img/products/rstri-aerocoach-angle-1.webp",
-    "/assets/img/home/g3.webp",
-    "/assets/img/home/g6.webp"
-   ]
+    "/assets/img/products/rstri-aerocoach-angle-2.webp",
+    "/assets/img/products/rstri-aerocoach-angle-3.webp"
+   ],
+   "ptype": "Angle adaptor",
+   "bike": "Specialized Shiv",
+   "fit": "Aerocoach"
   },
   {
    "id": "rstri-vision-angle",
-   "name": "RSTRI Vision TFE Angle Adaptor",
+   "name": "RSTRI Angle Adaptor — Specialized Shiv TT (Vision TFE)",
    "brand": "RSTRI",
    "cat": "cockpit",
    "category": "Cockpit parts",
@@ -839,14 +842,15 @@
    ],
    "variants": null,
    "images": [
-    "/assets/img/products/rstri-vision-angle-1.webp",
-    "/assets/img/home/g3.webp",
-    "/assets/img/home/g6.webp"
-   ]
+    "/assets/img/products/rstri-vision-angle-1.webp"
+   ],
+   "ptype": "Angle adaptor",
+   "bike": "Specialized Shiv",
+   "fit": "Vision TFE"
   },
   {
    "id": "rstri-vision-base",
-   "name": "RSTRI Vision TFE Base Plate",
+   "name": "RSTRI Baseplate — Specialized Shiv TT (Vision TFE)",
    "brand": "RSTRI",
    "cat": "cockpit",
    "category": "Cockpit parts",
@@ -892,9 +896,11 @@
    "variants": null,
    "images": [
     "/assets/img/products/rstri-vision-base-1.webp",
-    "/assets/img/home/g3.webp",
-    "/assets/img/home/g6.webp"
-   ]
+    "/assets/img/products/rstri-vision-base-2.webp"
+   ],
+   "ptype": "Baseplate",
+   "bike": "Specialized Shiv",
+   "fit": "Vision TFE"
   },
   {
    "id": "shimano-resin-disc-brake-pad-lo5a-rf-with-fin",
@@ -2356,7 +2362,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2369,7 +2375,10 @@
     "/assets/img/products/rstri-baseplate-giant-trinity-stock-5.webp",
     "/assets/img/products/rstri-baseplate-giant-trinity-stock-6.webp",
     "/assets/img/products/rstri-baseplate-giant-trinity-stock-7.webp"
-   ]
+   ],
+   "ptype": "Baseplate",
+   "bike": "Giant Trinity",
+   "fit": "Stock"
   },
   {
    "id": "rstri-baseplate-lowering-kit-giant-trinity-stock",
@@ -2381,7 +2390,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2392,7 +2401,10 @@
     "/assets/img/products/rstri-baseplate-lowering-kit-giant-trinity-stock-3.webp",
     "/assets/img/products/rstri-baseplate-lowering-kit-giant-trinity-stock-4.webp",
     "/assets/img/products/rstri-baseplate-lowering-kit-giant-trinity-stock-5.webp"
-   ]
+   ],
+   "ptype": "Lowering kit",
+   "bike": "Giant Trinity",
+   "fit": "Stock"
   },
   {
    "id": "rstri-angle-spacer-giant-trinity-stock",
@@ -2404,7 +2416,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2417,7 +2429,10 @@
     "/assets/img/products/rstri-angle-spacer-giant-trinity-stock-5.webp",
     "/assets/img/products/rstri-angle-spacer-giant-trinity-stock-6.webp",
     "/assets/img/products/rstri-angle-spacer-giant-trinity-stock-7.webp"
-   ]
+   ],
+   "ptype": "Angle spacer",
+   "bike": "Giant Trinity",
+   "fit": "Stock"
   },
   {
    "id": "rstri-bta-giant-trinity",
@@ -2429,7 +2444,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2441,7 +2456,10 @@
     "/assets/img/products/rstri-bta-giant-trinity-4.webp",
     "/assets/img/products/rstri-bta-giant-trinity-5.webp",
     "/assets/img/products/rstri-bta-giant-trinity-6.webp"
-   ]
+   ],
+   "ptype": "BTA",
+   "bike": "Giant Trinity",
+   "fit": ""
   },
   {
    "id": "rstri-baseplate-specialized-shiv-tri-universal",
@@ -2453,7 +2471,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2467,11 +2485,14 @@
     "/assets/img/products/rstri-baseplate-specialized-shiv-tri-universal-6.webp",
     "/assets/img/products/rstri-baseplate-specialized-shiv-tri-universal-7.webp",
     "/assets/img/products/rstri-baseplate-specialized-shiv-tri-universal-8.webp"
-   ]
+   ],
+   "ptype": "Baseplate",
+   "bike": "Specialized Shiv",
+   "fit": "Universal"
   },
   {
    "id": "rstri-baseplate-adaptor-narrow-specialized-shiv-tt-universal",
-   "name": "RSTRI Baseplate Adaptor Narrow — Specialized Shiv TT (Universal)",
+   "name": "RSTRI Baseplate Adaptor (Narrow) — Specialized Shiv TT (Universal)",
    "brand": "RSTRI",
    "cat": "cockpit",
    "category": "Cockpit parts",
@@ -2479,7 +2500,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2491,7 +2512,10 @@
     "/assets/img/products/rstri-baseplate-adaptor-narrow-specialized-shiv-tt-universal-4.webp",
     "/assets/img/products/rstri-baseplate-adaptor-narrow-specialized-shiv-tt-universal-5.webp",
     "/assets/img/products/rstri-baseplate-adaptor-narrow-specialized-shiv-tt-universal-6.webp"
-   ]
+   ],
+   "ptype": "Baseplate adaptor",
+   "bike": "Specialized Shiv",
+   "fit": "Universal"
   },
   {
    "id": "rstri-angle-spacer-specialized-shiv-tt-universal",
@@ -2503,7 +2527,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2514,7 +2538,10 @@
     "/assets/img/products/rstri-angle-spacer-specialized-shiv-tt-universal-3.webp",
     "/assets/img/products/rstri-angle-spacer-specialized-shiv-tt-universal-4.webp",
     "/assets/img/products/rstri-angle-spacer-specialized-shiv-tt-universal-5.webp"
-   ]
+   ],
+   "ptype": "Angle spacer",
+   "bike": "Specialized Shiv",
+   "fit": "Universal"
   },
   {
    "id": "rstri-baseplate-canyon-speedmax-stock",
@@ -2526,7 +2553,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2538,7 +2565,10 @@
     "/assets/img/products/rstri-baseplate-canyon-speedmax-stock-4.webp",
     "/assets/img/products/rstri-baseplate-canyon-speedmax-stock-5.webp",
     "/assets/img/products/rstri-baseplate-canyon-speedmax-stock-6.webp"
-   ]
+   ],
+   "ptype": "Baseplate",
+   "bike": "Canyon Speedmax",
+   "fit": "Stock"
   },
   {
    "id": "rstri-computer-mount-canyon-speedmax-stock",
@@ -2550,7 +2580,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2559,7 +2589,10 @@
     "/assets/img/products/rstri-computer-mount-canyon-speedmax-stock-1.webp",
     "/assets/img/products/rstri-computer-mount-canyon-speedmax-stock-2.webp",
     "/assets/img/products/rstri-computer-mount-canyon-speedmax-stock-3.webp"
-   ]
+   ],
+   "ptype": "Computer mount",
+   "bike": "Canyon Speedmax",
+   "fit": "Stock"
   },
   {
    "id": "rstri-shifter-holder-canyon-speedmax-stock",
@@ -2571,7 +2604,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2583,7 +2616,10 @@
     "/assets/img/products/rstri-shifter-holder-canyon-speedmax-stock-4.webp",
     "/assets/img/products/rstri-shifter-holder-canyon-speedmax-stock-5.webp",
     "/assets/img/products/rstri-shifter-holder-canyon-speedmax-stock-6.webp"
-   ]
+   ],
+   "ptype": "Shifter holder",
+   "bike": "Canyon Speedmax",
+   "fit": "Stock"
   },
   {
    "id": "rstri-angle-spacer-canyon-speedmax-stock",
@@ -2595,7 +2631,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2608,11 +2644,14 @@
     "/assets/img/products/rstri-angle-spacer-canyon-speedmax-stock-5.webp",
     "/assets/img/products/rstri-angle-spacer-canyon-speedmax-stock-6.webp",
     "/assets/img/products/rstri-angle-spacer-canyon-speedmax-stock-7.webp"
-   ]
+   ],
+   "ptype": "Angle spacer",
+   "bike": "Canyon Speedmax",
+   "fit": "Stock"
   },
   {
    "id": "rstri-baseplate-cervelo-p5-p5x-p3x-px-universal",
-   "name": "RSTRI Baseplate — Cervelo P5 P5X P3X PX (Universal)",
+   "name": "RSTRI Baseplate — Cervélo P5 / P5X / P3X / PX (Universal)",
    "brand": "RSTRI",
    "cat": "cockpit",
    "category": "Cockpit parts",
@@ -2620,7 +2659,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2630,7 +2669,10 @@
     "/assets/img/products/rstri-baseplate-cervelo-p5-p5x-p3x-px-universal-2.webp",
     "/assets/img/products/rstri-baseplate-cervelo-p5-p5x-p3x-px-universal-3.webp",
     "/assets/img/products/rstri-baseplate-cervelo-p5-p5x-p3x-px-universal-4.webp"
-   ]
+   ],
+   "ptype": "Baseplate",
+   "bike": "Cervélo P-series",
+   "fit": "Universal"
   },
   {
    "id": "rstri-baseplate-cadex-stock",
@@ -2642,14 +2684,17 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
    "tech": [],
    "images": [
     "/assets/img/products/rstri-baseplate-cadex-stock-1.webp"
-   ]
+   ],
+   "ptype": "Baseplate",
+   "bike": "Cadex",
+   "fit": "Stock"
   },
   {
    "id": "rstri-bts-ism-ps1-0-15",
@@ -2661,7 +2706,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2670,11 +2715,15 @@
     "/assets/img/products/rstri-bts-ism-ps1-0-15-1.webp",
     "/assets/img/products/rstri-bts-ism-ps1-0-15-2.webp",
     "/assets/img/products/rstri-bts-ism-ps1-0-15-3.webp"
-   ]
+   ],
+   "ptype": "BTS",
+   "bike": "ISM PS1.0",
+   "fit": "",
+   "kind": "saddle"
   },
   {
    "id": "rstri-angle-spacer-pinarello-bollide-aerocoach",
-   "name": "RSTRI Angle Spacer — Pinarello Bollide (Aerocoach)",
+   "name": "RSTRI Angle Spacer — Pinarello Bolide (Aerocoach)",
    "brand": "RSTRI",
    "cat": "cockpit",
    "category": "Cockpit parts",
@@ -2682,7 +2731,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2692,11 +2741,14 @@
     "/assets/img/products/rstri-angle-spacer-pinarello-bollide-aerocoach-2.webp",
     "/assets/img/products/rstri-angle-spacer-pinarello-bollide-aerocoach-3.webp",
     "/assets/img/products/rstri-angle-spacer-pinarello-bollide-aerocoach-4.webp"
-   ]
+   ],
+   "ptype": "Angle spacer",
+   "bike": "Pinarello Bolide",
+   "fit": "Aerocoach"
   },
   {
    "id": "rstri-baseplate-pinarello-bollide-vision-winow",
-   "name": "RSTRI Baseplate — Pinarello Bollide (Vision/Winow)",
+   "name": "RSTRI Baseplate — Pinarello Bolide (Vision/Winow)",
    "brand": "RSTRI",
    "cat": "cockpit",
    "category": "Cockpit parts",
@@ -2704,14 +2756,17 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
    "tech": [],
    "images": [
     "/assets/img/products/rstri-baseplate-pinarello-bollide-vision-winow-1.webp"
-   ]
+   ],
+   "ptype": "Baseplate",
+   "bike": "Pinarello Bolide",
+   "fit": "Vision/Winow"
   },
   {
    "id": "rstri-baseplate-factor-hanzo-stock",
@@ -2723,7 +2778,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2735,7 +2790,10 @@
     "/assets/img/products/rstri-baseplate-factor-hanzo-stock-4.webp",
     "/assets/img/products/rstri-baseplate-factor-hanzo-stock-5.webp",
     "/assets/img/products/rstri-baseplate-factor-hanzo-stock-6.webp"
-   ]
+   ],
+   "ptype": "Baseplate",
+   "bike": "Factor Hanzo",
+   "fit": "Stock"
   },
   {
    "id": "rstri-baseplate-quickpro-tt-one-stock",
@@ -2747,7 +2805,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2759,11 +2817,14 @@
     "/assets/img/products/rstri-baseplate-quickpro-tt-one-stock-4.webp",
     "/assets/img/products/rstri-baseplate-quickpro-tt-one-stock-5.webp",
     "/assets/img/products/rstri-baseplate-quickpro-tt-one-stock-6.webp"
-   ]
+   ],
+   "ptype": "Baseplate",
+   "bike": "QuickPro TT One",
+   "fit": "Stock"
   },
   {
    "id": "rstri-angle-spacer-quintanaroo-stock",
-   "name": "RSTRI Angle Spacer — Quintanaroo (Stock)",
+   "name": "RSTRI Angle Spacer — Quintana Roo (Stock)",
    "brand": "RSTRI",
    "cat": "cockpit",
    "category": "Cockpit parts",
@@ -2771,7 +2832,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2780,7 +2841,10 @@
     "/assets/img/products/rstri-angle-spacer-quintanaroo-stock-1.webp",
     "/assets/img/products/rstri-angle-spacer-quintanaroo-stock-2.webp",
     "/assets/img/products/rstri-angle-spacer-quintanaroo-stock-3.webp"
-   ]
+   ],
+   "ptype": "Angle spacer",
+   "bike": "Quintana Roo",
+   "fit": "Stock"
   },
   {
    "id": "rstri-bts-selle-italia-watt",
@@ -2792,7 +2856,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2806,7 +2870,11 @@
     "/assets/img/products/rstri-bts-selle-italia-watt-6.webp",
     "/assets/img/products/rstri-bts-selle-italia-watt-7.webp",
     "/assets/img/products/rstri-bts-selle-italia-watt-8.webp"
-   ]
+   ],
+   "ptype": "BTS",
+   "bike": "Selle Italia Watt",
+   "fit": "",
+   "kind": "saddle"
   },
   {
    "id": "rstri-angle-spacer-trek-speed-concept-universal",
@@ -2818,7 +2886,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2827,7 +2895,10 @@
     "/assets/img/products/rstri-angle-spacer-trek-speed-concept-universal-1.webp",
     "/assets/img/products/rstri-angle-spacer-trek-speed-concept-universal-2.webp",
     "/assets/img/products/rstri-angle-spacer-trek-speed-concept-universal-3.webp"
-   ]
+   ],
+   "ptype": "Angle spacer",
+   "bike": "Trek Speed Concept",
+   "fit": "Universal"
   },
   {
    "id": "rstri-baseplate-trek-speed-concept-universal",
@@ -2839,7 +2910,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2849,7 +2920,10 @@
     "/assets/img/products/rstri-baseplate-trek-speed-concept-universal-2.webp",
     "/assets/img/products/rstri-baseplate-trek-speed-concept-universal-3.webp",
     "/assets/img/products/rstri-baseplate-trek-speed-concept-universal-4.webp"
-   ]
+   ],
+   "ptype": "Baseplate",
+   "bike": "Trek Speed Concept",
+   "fit": "Universal"
   },
   {
    "id": "rstri-bts-sitero",
@@ -2861,7 +2935,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2870,7 +2944,11 @@
     "/assets/img/products/rstri-bts-sitero-1.webp",
     "/assets/img/products/rstri-bts-sitero-2.webp",
     "/assets/img/products/rstri-bts-sitero-3.webp"
-   ]
+   ],
+   "ptype": "BTS",
+   "bike": "Sitero",
+   "fit": "",
+   "kind": "saddle"
   },
   {
    "id": "rstri-bts-trek-bontrager-hilo-comp",
@@ -2882,7 +2960,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2890,7 +2968,11 @@
    "images": [
     "/assets/img/products/rstri-bts-trek-bontrager-hilo-comp-1.webp",
     "/assets/img/products/rstri-bts-trek-bontrager-hilo-comp-2.webp"
-   ]
+   ],
+   "ptype": "BTS",
+   "bike": "Bontrager Hilo Comp",
+   "fit": "",
+   "kind": "saddle"
   },
   {
    "id": "rstri-computer-mount-universal-vision-tfe",
@@ -2902,7 +2984,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2913,7 +2995,10 @@
     "/assets/img/products/rstri-computer-mount-universal-vision-tfe-3.webp",
     "/assets/img/products/rstri-computer-mount-universal-vision-tfe-4.webp",
     "/assets/img/products/rstri-computer-mount-universal-vision-tfe-5.webp"
-   ]
+   ],
+   "ptype": "Computer mount",
+   "bike": "Universal",
+   "fit": "Vision TFE"
   },
   {
    "id": "rstri-bta-all-in-one",
@@ -2925,7 +3010,7 @@
    "unit": "",
    "badge": "",
    "purchasable": false,
-   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "summary": "CNC-machined RSTRI part. Made to order. Our mechanic recommends the best set-up for your bike, then we order the parts in for you.",
    "benefits": [],
    "included": [],
    "description": [],
@@ -2939,7 +3024,10 @@
     "/assets/img/products/rstri-bta-all-in-one-6.webp",
     "/assets/img/products/rstri-bta-all-in-one-7.webp",
     "/assets/img/products/rstri-bta-all-in-one-8.webp"
-   ]
+   ],
+   "ptype": "BTA",
+   "bike": "Universal",
+   "fit": ""
   }
  ]
 }
