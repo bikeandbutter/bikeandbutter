@@ -1,0 +1,49 @@
+/* EVR apparel store */
+.evr-hero{padding:120px var(--pad) 0;color:#fff;display:grid;gap:36px}
+.evr-hero-in{display:grid;gap:16px;max-width:760px}
+.evr-hero h1{font-weight:300;font-size:clamp(2.4rem,7vw,5.5rem);line-height:1;letter-spacing:-.02em}
+.evr-hero p{font-weight:300;font-size:clamp(1rem,1.5vw,1.25rem);color:#cfcfca;line-height:1.5}
+.evr-ranges{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--line)}
+.evr-range{padding:18px 16px 22px 0;border-bottom:1px solid var(--line);cursor:pointer;background:none;color:#fff;text-align:left;border-left:0;border-right:0;border-top:0;font:inherit}
+.evr-range b{display:block;font-weight:400;font-size:15px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.evr-range span{font-size:13px;color:#a9a9a4;line-height:1.4;font-weight:300}
+.evr-range:hover b,.evr-range.on b{color:var(--yellow)}
+@media(min-width:900px){.evr-ranges{grid-template-columns:repeat(5,1fr)}.evr-range{padding-right:24px}}
+.evr-bar{background:#fafafa;color:#111;padding:14px var(--pad);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:30;border-bottom:1px solid var(--line-dark)}
+.evr-chips{display:flex;gap:6px;flex-wrap:wrap}
+.evr-chips button{border:1px solid var(--line-dark);background:none;padding:8px 14px;border-radius:99px;font:inherit;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;color:#111}
+.evr-chips button.on{background:#111;color:#fff;border-color:#111}
+.evr-filters{display:flex;gap:8px;flex-wrap:wrap}
+.evr-filters select{border:1px solid var(--line-dark);background:#fff;padding:9px 10px;font:inherit;font-size:13px;border-radius:4px;color:#111}
+.evr-cards .card-img{background:#f1f1ef}
+.evr-cards .card-img img{object-fit:contain;padding:6%}
+.evr-sw{display:flex;gap:5px;align-items:center;margin-top:6px;flex-wrap:wrap}
+.evr-sw i{width:12px;height:12px;border-radius:50%;border:1px solid rgba(0,0,0,.2);display:block}
+.evr-sw small{font-size:11px;color:#8a8a85}
+.evr-empty{background:#fafafa;color:#6f6f6a;padding:60px var(--pad);text-align:center}
+#evr-detail{background:#fafafa;color:#111;padding-top:84px}
+.evr-d{display:grid}
+.evr-d-img{background:#f1f1ef;aspect-ratio:1/1;display:grid;place-items:center}
+.evr-d-img img{width:100%;height:100%;object-fit:contain;padding:5%}
+.evr-d-in{background:#fff;padding:28px var(--pad) 56px;display:grid;gap:18px;align-content:start}
+.evr-d-in h1{font-weight:400;font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.15}
+.evr-back{background:none;border:0;font:inherit;cursor:pointer;color:#6f6f6a;padding:0;text-align:left}
+.evr-cols{display:flex;gap:10px;flex-wrap:wrap}
+.evr-col{width:62px;cursor:pointer;border:1px solid var(--line-dark);background:#f1f1ef;padding:0;border-radius:4px;overflow:hidden;opacity:.85}
+.evr-col img{width:100%;aspect-ratio:1;object-fit:contain;display:block}
+.evr-col.on{border-color:#111;opacity:1;outline:1px solid #111}
+.evr-sizes{display:flex;gap:8px;flex-wrap:wrap}
+.evr-sizes button{min-width:48px;padding:11px 12px;border:1px solid var(--line-dark);background:#fff;font:inherit;font-size:13px;cursor:pointer;border-radius:4px}
+.evr-sizes button.on{background:#111;color:#fff;border-color:#111}
+.evr-note{font-size:13px;color:#6f6f6a;line-height:1.5}
+.evr-d-in .btn{justify-content:center}
+.evr-acc{border-top:1px solid var(--line-dark)}
+.evr-acc summary{padding:16px 0;cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+.evr-acc summary::after{content:"+"}
+.evr-acc[open] summary::after{content:"–"}
+.evr-acc img{width:100%;margin-bottom:16px}
+.evr-tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;display:block;overflow-x:auto}
+.evr-tbl td,.evr-tbl th{padding:8px 10px;border-bottom:1px solid var(--line-dark);text-align:left;white-space:nowrap;font-weight:400}
+.evr-rel{padding:40px 0 0}
+@media(min-width:900px){.evr-d{grid-template-columns:1.2fr 1fr}.evr-d-img{aspect-ratio:auto;min-height:calc(100svh - 84px);position:sticky;top:84px;align-self:start;height:calc(100svh - 84px)}.evr-d-in{padding:48px 48px 80px}}
+#evr-list{background:#fafafa}
