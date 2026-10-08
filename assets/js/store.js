@@ -21,6 +21,7 @@
   function imgTag(src, alt, cls, extra) {
     return '<img ' + (cls ? 'class="' + cls + '" ' : "") + 'src="' + esc(src) + '" alt="' + esc(alt || "") + '" ' + (extra || "") + ' onerror="this.onerror=null;this.src=\'' + PLACEHOLDER + '\'">';
   }
+  function vprice(p, v) { return p.variants && p.variants.prices && p.variants.prices[v] != null ? p.variants.prices[v] : p.price; }
   function priceLabel(p) { return p.price == null ? "Enquire" : money(p.price); }
   function enquireUrl(p, variant) {
     return WA + encodeURIComponent("Hi Bike & Butter, I'd like to enquire about the " + p.name + (variant ? " (" + variant + ")" : "") + ".");
@@ -138,11 +139,23 @@
   var CATS = {
     all: { label: "All products", text: "Race-ready wheels and cockpit parts from the brands we distribute in Singapore, plus workshop builds and servicing.", img: "/assets/img/home/banner-wheels.webp" },
     wheels: { label: "Wheelsets", text: "UCI-certified carbon-spoke wheelsets from 8LIEN for road and triathlon, with Shimano, SRAM XDR and Campagnolo N3W freehub options.", img: "/assets/img/home/banner-wheels.webp" },
-    cockpit: { label: "Cockpit parts", text: "CNC-machined baseplates and adaptors from RSTRI for time-trial and triathlon cockpits.", img: "/assets/img/home/s-cockpit.webp" }
+    cockpit: { label: "Cockpit parts", text: "CNC-machined baseplates and adaptors from RSTRI, plus aero bars, adapters and bar tape for road and triathlon bikes.", img: "/assets/img/home/s-cockpit.webp" },
+    groupsets: { label: "Groupsets", text: "Shimano Dura-Ace, Ultegra and 105 groupsets, mechanical and Di2.", img: "/assets/img/home/banner-wheels.webp" },
+    drivetrain: { label: "Drivetrain", text: "Chains, cassettes and cranksets from Shimano and Elilee.", img: "/assets/img/home/banner-wheels.webp" },
+    tyres: { label: "Tyres & tubes", text: "Road and tubeless tyres, TPU inner tubes and valve kits from Continental, Michelin, Vittoria, Schwalbe and more.", img: "/assets/img/home/banner-wheels.webp" },
+    brakes: { label: "Brakes", text: "Disc brake pads, centre-lock rotors and cleaner.", img: "/assets/img/home/banner-wheels.webp" },
+    saddles: { label: "Saddles", text: "Lightweight carbon-fibre saddles.", img: "/assets/img/home/banner-wheels.webp" },
+    nutrition: { label: "Nutrition", text: "Energy gels, carbohydrate gummies and oat bars.", img: "/assets/img/home/banner-wheels.webp" },
+    accessories: { label: "Accessories", text: "Bottle cages, batteries and small parts.", img: "/assets/img/home/banner-wheels.webp" }
   };
+  function fromPrice(p) {
+    var v = p.variants && p.variants.prices ? Object.keys(p.variants.prices).map(function (k) { return p.variants.prices[k]; }) : [];
+    if (v.length && Math.min.apply(null, v) !== Math.max.apply(null, v)) return "From " + money(Math.min.apply(null, v));
+    return p.price == null ? "Enquire" : money(p.price);
+  }
   function cardHtml(p) {
     return '<a class="card" href="/shop/product/?id=' + esc(p.id) + '"><div class="card-img">' + (p.badge ? '<span class="tag">' + esc(p.badge) + '</span>' : "") + imgTag(p.images[0], p.name, "", 'width="800" height="1000" loading="lazy"') + '</div>' +
-      '<div class="card-info"><div class="row"><span class="label">' + esc(p.name) + '</span><span class="label">' + (p.price == null ? "Enquire" : money(p.price)) + '</span></div><div class="cat">' + esc(p.category) + '</div></div></a>';
+      '<div class="card-info"><div class="row"><span class="label">' + esc(p.name) + '</span><span class="label">' + fromPrice(p) + '</span></div><div class="cat">' + esc(p.category) + '</div></div></a>';
   }
   function initShop() {
     var grid = $("[data-grid]"); if (!grid) return;
@@ -160,7 +173,7 @@
     }
     function refine() {
       var cats = Object.keys(CATS).map(function (k) { return '<label class="opt"><input type="radio" name="cat" value="' + k + '"' + (state.cat === k ? " checked" : "") + '><span>' + CATS[k].label + '</span></label>'; }).join("");
-      var brands = ["all", "8LIEN", "RSTRI"].map(function (b) { return '<label class="opt"><input type="radio" name="brand" value="' + b + '"' + (state.brand === b ? " checked" : "") + '><span>' + (b === "all" ? "All brands" : b) + '</span></label>'; }).join("");
+      var brands = ["all"].concat(DATA.products.map(function (x) { return x.brand; }).filter(function (b, i, a) { return a.indexOf(b) === i; }).sort()).map(function (b) { return '<label class="opt"><input type="radio" name="brand" value="' + b + '"' + (state.brand === b ? " checked" : "") + '><span>' + (b === "all" ? "All brands" : b) + '</span></label>'; }).join("");
       var sorts = [["featured", "Featured"], ["low", "Price: low to high"], ["high", "Price: high to low"]].map(function (s) { return '<label class="opt"><input type="radio" name="sort" value="' + s[0] + '"' + (state.sort === s[0] ? " checked" : "") + '><span>' + s[1] + '</span></label>'; }).join("");
       openSide("Refine", '<div class="refine"><h3 class="label">Category</h3>' + cats + '<h3 class="label">Brand</h3>' + brands + '<h3 class="label">Sort</h3>' + sorts + '<button type="button" class="btn btn-dark" data-side-close>Show results</button></div>');
       $$(".refine input").forEach(function (i) { i.addEventListener("change", function () { state[i.name] = i.value; apply(); }); });
@@ -193,14 +206,14 @@
     root.innerHTML =
       '<div class="pgrid"><div class="pgallery">' + (imgs.length > 1 ? '<div class="pthumbs">' + thumbs + '</div>' : "") + gallery + (p.badge ? '<span class="tag tag-dark">' + esc(p.badge) + '</span>' : "") + '</div>' +
       '<div class="pinfo"><div class="pinfo-in"><p class="label label-muted">' + esc(p.category) + '</p>' +
-      '<div class="prow"><h1 class="pname">' + esc(p.name) + '</h1><p class="pprice">' + (p.price != null ? money(p.price) + (p.unit ? '<small> / ' + esc(p.unit) + '</small>' : "") : "Enquire") + '</p></div>' +
+      '<div class="prow"><h1 class="pname">' + esc(p.name) + '</h1><p class="pprice" data-pprice>' + (p.price != null ? money(vprice(p, variant)) + (p.unit ? '<small> / ' + esc(p.unit) + '</small>' : "") : "Enquire") + '</p></div>' +
       '<p class="psum">' + esc(p.summary) + '</p>' + variants +
       (p.purchasable ? '<button type="button" class="btn btn-dark btn-wide" data-add>Add to bag <span data-add-price>' + money(p.price) + '</span></button>' : '<a class="btn btn-dark btn-wide" data-enquire href="' + enquireUrl(p) + '" target="_blank" rel="noopener">Enquire on WhatsApp</a>') +
-      '<div class="pbox"><p class="label"><span class="live"></span>' + (p.brand === "RSTRI" ? "In stock in Singapore. Free delivery over S$" + DATA.shipping.freeOver : "Official Singapore distributor. Free delivery over S$" + DATA.shipping.freeOver) + ' <button type="button" class="ul" data-open="pay">Read more</button></p>' +
+      '<div class="pbox"><p class="label"><span class="live"></span>' + (p.brand === "RSTRI" ? "In stock in Singapore. Free delivery over S$" + DATA.shipping.freeOver : p.brand === "8LIEN" ? "Official Singapore distributor. Free delivery over S$" + DATA.shipping.freeOver : "Message us to confirm availability. Free delivery over S$" + DATA.shipping.freeOver) + ' <button type="button" class="ul" data-open="pay">Read more</button></p>' +
       '<p class="label">Test rides and fitting at our Jurong West workshop <a class="ul" href="/#visit">Read more</a></p></div>' +
-      '<h2 class="label label-muted lbl">Benefits</h2><ul class="bullets">' + p.benefits.map(function (b) { return "<li>" + esc(b) + "</li>"; }).join("") + '</ul>' +
-      '<h2 class="label label-muted lbl">What\'s included</h2><ul class="bullets">' + p.included.map(function (b) { return "<li>" + esc(b) + "</li>"; }).join("") + '</ul>' +
-      '<div class="paccs">' + [["desc", "Description"], ["tech", "Technical info"], ["inc", "What's included"], ["pay", "Payment, delivery & returns"]].map(function (a) { return '<button type="button" class="pacc" data-open="' + a[0] + '"><span class="plus">+</span><span class="label">' + a[1].replace("&", "&amp;") + '</span></button>'; }).join("") + '</div>' +
+      (p.benefits.length ? '<h2 class="label label-muted lbl">Benefits</h2><ul class="bullets">' + p.benefits.map(function (b) { return "<li>" + esc(b) + "</li>"; }).join("") + '</ul>' : "") +
+      (p.included.length ? '<h2 class="label label-muted lbl">What\'s included</h2><ul class="bullets">' + p.included.map(function (b) { return "<li>" + esc(b) + "</li>"; }).join("") + '</ul>' : "") +
+      '<div class="paccs">' + [["desc", "Description"], ["tech", "Technical info"], ["inc", "What's included"], ["pay", "Payment, delivery & returns"]].filter(function (a) { return a[0] === "pay" || (a[0] === "desc" && p.description.length) || (a[0] === "tech" && p.tech.length) || (a[0] === "inc" && p.included.length); }).map(function (a) { return '<button type="button" class="pacc" data-open="' + a[0] + '"><span class="plus">+</span><span class="label">' + a[1].replace("&", "&amp;") + '</span></button>'; }).join("") + '</div>' +
       '</div></div></div>';
     /* sticky mini bar */
     var mini = document.createElement("div"); mini.className = "minibar"; mini.hidden = true;
@@ -211,7 +224,7 @@
     function doAdd() { if (p.purchasable) { add(p, variant, 1); openCart(); } else window.open(enquireUrl(p, variant), "_blank", "noopener"); }
     $(".mb-add", mini).addEventListener("click", doAdd);
     var addBtn = $("[data-add]"); if (addBtn) addBtn.addEventListener("click", doAdd);
-    $$("input[name=variant]", root).forEach(function (r) { r.addEventListener("change", function () { variant = r.value; var en = $("[data-enquire]"); if (en) en.href = enquireUrl(p, variant); }); });
+    $$("input[name=variant]", root).forEach(function (r) { r.addEventListener("change", function () { variant = r.value; var pp = $("[data-pprice]"); if (pp && p.price != null) pp.firstChild.textContent = money(vprice(p, variant)); var ap = $("[data-add-price]"); if (ap) ap.textContent = money(vprice(p, variant)); var en = $("[data-enquire]"); if (en) en.href = enquireUrl(p, variant); }); });
     $$("[data-thumb]", root).forEach(function (b) { b.addEventListener("click", function () { $$("[data-thumb]", root).forEach(function (x) { x.classList.toggle("is-on", x === b); }); var t = $("#pimg-" + b.dataset.thumb); if (t) t.scrollIntoView({ behavior: "smooth", block: "start" }); }); });
     var sections = {
       desc: ["Description", p.description.map(function (d) { return '<h3 class="label">' + esc(d.h) + '</h3><p>' + esc(d.p) + '</p>'; }).join("")],

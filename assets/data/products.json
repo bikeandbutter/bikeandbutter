@@ -895,6 +895,2051 @@
     "/assets/img/home/g3.webp",
     "/assets/img/home/g6.webp"
    ]
+  },
+  {
+   "id": "shimano-resin-disc-brake-pad-lo5a-rf-with-fin",
+   "name": "Shimano Resin Disc Brake Pad LO5A-RF with Fin",
+   "brand": "Shimano",
+   "cat": "brakes",
+   "category": "Brakes",
+   "price": 23.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-resin-disc-brake-pad-lo5a-rf-with-fin-1.webp",
+    "/assets/img/products/shimano-resin-disc-brake-pad-lo5a-rf-with-fin-2.webp",
+    "/assets/img/products/shimano-resin-disc-brake-pad-lo5a-rf-with-fin-3.webp"
+   ]
+  },
+  {
+   "id": "vittoria-corsa-pro-speed-tlr-tyre",
+   "name": "Vittoria Corsa PRO Speed TLR Road Bike Tyre",
+   "brand": "Vittoria",
+   "cat": "tyres",
+   "category": "Tyres & tubes",
+   "price": 110.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/vittoria-corsa-pro-speed-tlr-tyre-1.webp",
+    "/assets/img/products/vittoria-corsa-pro-speed-tlr-tyre-2.webp",
+    "/assets/img/products/vittoria-corsa-pro-speed-tlr-tyre-3.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "29mm"
+    ],
+    "prices": {
+     "29mm": 110.0
+    }
+   }
+  },
+  {
+   "id": "continental-grand-prix-gp5000-clincher-tyre",
+   "name": "Continental Grand Prix GP5000 Clincher Road Bike Tyre",
+   "brand": "Continental",
+   "cat": "tyres",
+   "category": "Tyres & tubes",
+   "price": 80.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/continental-grand-prix-gp5000-clincher-tyre-1.webp",
+    "/assets/img/products/continental-grand-prix-gp5000-clincher-tyre-2.webp",
+    "/assets/img/products/continental-grand-prix-gp5000-clincher-tyre-3.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "30mm",
+     "23mm",
+     "25mm",
+     "28mm"
+    ],
+    "prices": {
+     "30mm": 80.0,
+     "23mm": 80.0,
+     "25mm": 80.0,
+     "28mm": 80.0
+    }
+   }
+  },
+  {
+   "id": "seer-eva-silicone-bar-tape",
+   "name": "SEER EVA Silicone Road Bike Bar Tape",
+   "brand": "SEER",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": 16.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/seer-eva-silicone-bar-tape-1.webp",
+    "/assets/img/products/seer-eva-silicone-bar-tape-2.webp",
+    "/assets/img/products/seer-eva-silicone-bar-tape-3.webp",
+    "/assets/img/products/seer-eva-silicone-bar-tape-4.webp",
+    "/assets/img/products/seer-eva-silicone-bar-tape-5.webp",
+    "/assets/img/products/seer-eva-silicone-bar-tape-6.webp",
+    "/assets/img/products/seer-eva-silicone-bar-tape-7.webp",
+    "/assets/img/products/seer-eva-silicone-bar-tape-8.webp",
+    "/assets/img/products/seer-eva-silicone-bar-tape-9.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "Green",
+     "Pink",
+     "Black Superlite",
+     "Photochromic Purple",
+     "Celeste on Black",
+     "Black Sparkle",
+     "Black on Black",
+     "White on White",
+     "Celeste on White"
+    ],
+    "prices": {
+     "Green": 16.0,
+     "Pink": 16.0,
+     "Black Superlite": 30.0,
+     "Photochromic Purple": 16.0,
+     "Celeste on Black": 16.0,
+     "Black Sparkle": 16.0,
+     "Black on Black": 16.0,
+     "White on White": 16.0,
+     "Celeste on White": 16.0
+    }
+   }
+  },
+  {
+   "id": "shimano-ultegra-chain-cn-m8100",
+   "name": "Shimano Ultegra Chain CN-M8100 12-Speed",
+   "brand": "Shimano",
+   "cat": "drivetrain",
+   "category": "Drivetrain",
+   "price": 58.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-ultegra-chain-cn-m8100-1.webp",
+    "/assets/img/products/shimano-ultegra-chain-cn-m8100-2.webp",
+    "/assets/img/products/shimano-ultegra-chain-cn-m8100-3.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "116 Links",
+     "126 Links"
+    ],
+    "prices": {
+     "116 Links": 58.0,
+     "126 Links": 58.0
+    }
+   }
+  },
+  {
+   "id": "shimano-dura-ace-chain-cn-m9100",
+   "name": "Shimano Dura-Ace Chain CN-M9100 12-Speed",
+   "brand": "Shimano",
+   "cat": "drivetrain",
+   "category": "Drivetrain",
+   "price": 68.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-dura-ace-chain-cn-m9100-1.webp",
+    "/assets/img/products/shimano-dura-ace-chain-cn-m9100-2.webp",
+    "/assets/img/products/shimano-dura-ace-chain-cn-m9100-3.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "116 Links",
+     "126 Links"
+    ],
+    "prices": {
+     "116 Links": 68.0,
+     "126 Links": 68.0
+    }
+   }
+  },
+  {
+   "id": "continental-grand-prix-gp5000-as-tr-tubeless-tyre",
+   "name": "Continental Grand Prix GP5000 AS TR Tubeless Road Bike Tyre",
+   "brand": "Continental",
+   "cat": "tyres",
+   "category": "Tyres & tubes",
+   "price": 90.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/continental-grand-prix-gp5000-as-tr-tubeless-tyre-1.webp",
+    "/assets/img/products/continental-grand-prix-gp5000-as-tr-tubeless-tyre-2.webp",
+    "/assets/img/products/continental-grand-prix-gp5000-as-tr-tubeless-tyre-3.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "32mm"
+    ],
+    "prices": {
+     "32mm": 90.0
+    }
+   }
+  },
+  {
+   "id": "michelin-power-cup-tyre-clincher",
+   "name": "Michelin Power Cup Road Bike Tyre Clincher",
+   "brand": "Michelin",
+   "cat": "tyres",
+   "category": "Tyres & tubes",
+   "price": 80.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/michelin-power-cup-tyre-clincher-1.webp",
+    "/assets/img/products/michelin-power-cup-tyre-clincher-2.webp",
+    "/assets/img/products/michelin-power-cup-tyre-clincher-3.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "Black,30mm",
+     "Cream,28mm",
+     "Cream,30mm",
+     "Black,28mm"
+    ],
+    "prices": {
+     "Black,30mm": 80.0,
+     "Cream,28mm": 80.0,
+     "Cream,30mm": 80.0,
+     "Black,28mm": 80.0
+    }
+   }
+  },
+  {
+   "id": "michelin-power-cup-tlr-tyre-tubeless",
+   "name": "Michelin Power Cup TLR Road Bike Tyre Tubeless",
+   "brand": "Michelin",
+   "cat": "tyres",
+   "category": "Tyres & tubes",
+   "price": 110.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/michelin-power-cup-tlr-tyre-tubeless-1.webp",
+    "/assets/img/products/michelin-power-cup-tlr-tyre-tubeless-2.webp",
+    "/assets/img/products/michelin-power-cup-tlr-tyre-tubeless-3.webp",
+    "/assets/img/products/michelin-power-cup-tlr-tyre-tubeless-4.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "Black,30mm",
+     "Cream,28mm",
+     "Cream,30mm",
+     "Black,28mm"
+    ],
+    "prices": {
+     "Black,30mm": 110.0,
+     "Cream,28mm": 110.0,
+     "Cream,30mm": 110.0,
+     "Black,28mm": 110.0
+    }
+   }
+  },
+  {
+   "id": "elilee-x310-carbon-crankset",
+   "name": "Elilee X310 Carbon Crankset",
+   "brand": "Elilee",
+   "cat": "drivetrain",
+   "category": "Drivetrain",
+   "price": 429.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/elilee-x310-carbon-crankset-1.webp",
+    "/assets/img/products/elilee-x310-carbon-crankset-2.webp",
+    "/assets/img/products/elilee-x310-carbon-crankset-3.webp",
+    "/assets/img/products/elilee-x310-carbon-crankset-4.webp",
+    "/assets/img/products/elilee-x310-carbon-crankset-5.webp",
+    "/assets/img/products/elilee-x310-carbon-crankset-6.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "DUB,145mm",
+     "24mm,165mm",
+     "24mm,145mm",
+     "24mm,172.5mm",
+     "24mm,160mm",
+     "DUB,167.5mm",
+     "DUB,150mm",
+     "DUB,160mm",
+     "DUB,155mm",
+     "DUB,165mm",
+     "DUB,172.5mm",
+     "DUB,170mm",
+     "24mm,150mm",
+     "24mm,155mm",
+     "24mm,170mm",
+     "24mm,167.5mm"
+    ],
+    "prices": {
+     "DUB,145mm": 429.0,
+     "24mm,165mm": 519.0,
+     "24mm,145mm": 519.0,
+     "24mm,172.5mm": 519.0,
+     "24mm,160mm": 519.0,
+     "DUB,167.5mm": 429.0,
+     "DUB,150mm": 429.0,
+     "DUB,160mm": 429.0,
+     "DUB,155mm": 429.0,
+     "DUB,165mm": 429.0,
+     "DUB,172.5mm": 429.0,
+     "DUB,170mm": 429.0,
+     "24mm,150mm": 519.0,
+     "24mm,155mm": 519.0,
+     "24mm,170mm": 519.0,
+     "24mm,167.5mm": 519.0
+    }
+   }
+  },
+  {
+   "id": "panasonic-3v-lithium-coin-battery-cr1632-cr2032",
+   "name": "Panasonic 3V Lithium Coin Battery CR1632 / CR2032",
+   "brand": "Panasonic",
+   "cat": "accessories",
+   "category": "Accessories",
+   "price": 4.2,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/panasonic-3v-lithium-coin-battery-cr1632-cr2032-1.webp",
+    "/assets/img/products/panasonic-3v-lithium-coin-battery-cr1632-cr2032-2.webp",
+    "/assets/img/products/panasonic-3v-lithium-coin-battery-cr1632-cr2032-3.webp",
+    "/assets/img/products/panasonic-3v-lithium-coin-battery-cr1632-cr2032-4.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "CR2302,3",
+     "CR1632,1",
+     "CR1632,2",
+     "CR1632,3",
+     "CR2302,1",
+     "CR2302,2"
+    ],
+    "prices": {
+     "CR2302,3": 12.0,
+     "CR1632,1": 4.7,
+     "CR1632,2": 9.5,
+     "CR1632,3": 13.6,
+     "CR2302,1": 4.2,
+     "CR2302,2": 8.2
+    }
+   }
+  },
+  {
+   "id": "wolf-s-disc-brake-rotor-cleaner",
+   "name": "WOLF'S Disc Brake Rotor Cleaner",
+   "brand": "WOLF'S",
+   "cat": "brakes",
+   "category": "Brakes",
+   "price": 2.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/wolf-s-disc-brake-rotor-cleaner-1.webp",
+    "/assets/img/products/wolf-s-disc-brake-rotor-cleaner-2.webp",
+    "/assets/img/products/wolf-s-disc-brake-rotor-cleaner-3.webp",
+    "/assets/img/products/wolf-s-disc-brake-rotor-cleaner-4.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "12g",
+     "80g"
+    ],
+    "prices": {
+     "12g": 2.0,
+     "80g": 10.0
+    }
+   }
+  },
+  {
+   "id": "ridenow-ultralight-tpu-inner-tube-24g",
+   "name": "Ridenow UltraLight TPU Bicycle Inner Tube 24g Metal Valve Stem 700C",
+   "brand": "Ridenow",
+   "cat": "tyres",
+   "category": "Tyres & tubes",
+   "price": 15.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-24g-1.webp",
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-24g-2.webp",
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-24g-3.webp",
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-24g-4.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "65mm",
+     "85mm",
+     "45mm"
+    ],
+    "prices": {
+     "65mm": 15.0,
+     "85mm": 15.0,
+     "45mm": 15.0
+    }
+   }
+  },
+  {
+   "id": "ridenow-ultralight-tpu-inner-tube-36g",
+   "name": "Ridenow UltraLight TPU Bicycle Inner Tube 36g Metal Valve Stem 700C",
+   "brand": "Ridenow",
+   "cat": "tyres",
+   "category": "Tyres & tubes",
+   "price": 15.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-36g-1.webp",
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-36g-2.webp",
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-36g-3.webp",
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-36g-4.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "65mm",
+     "85mm",
+     "45mm"
+    ],
+    "prices": {
+     "65mm": 15.0,
+     "85mm": 15.0,
+     "45mm": 15.0
+    }
+   }
+  },
+  {
+   "id": "schwalbe-clik-valve-quick-release-nozzle-conversion-kit",
+   "name": "Schwalbe Clik Valve Quick Release Nozzle Conversion Kit",
+   "brand": "Schwalbe",
+   "cat": "tyres",
+   "category": "Tyres & tubes",
+   "price": 17.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/schwalbe-clik-valve-quick-release-nozzle-conversion-kit-1.webp",
+    "/assets/img/products/schwalbe-clik-valve-quick-release-nozzle-conversion-kit-2.webp",
+    "/assets/img/products/schwalbe-clik-valve-quick-release-nozzle-conversion-kit-3.webp",
+    "/assets/img/products/schwalbe-clik-valve-quick-release-nozzle-conversion-kit-4.webp",
+    "/assets/img/products/schwalbe-clik-valve-quick-release-nozzle-conversion-kit-5.webp",
+    "/assets/img/products/schwalbe-clik-valve-quick-release-nozzle-conversion-kit-6.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "Valve Only",
+     "V+Pump Head Adaptor",
+     "V+Pump Head"
+    ],
+    "prices": {
+     "Valve Only": 17.0,
+     "V+Pump Head Adaptor": 39.0,
+     "V+Pump Head": 39.0
+    }
+   }
+  },
+  {
+   "id": "shimano-ultegra-rt-cl800-disc-brake-rotor-center-lock",
+   "name": "Shimano Ultegra RT-CL800 Disc Brake Rotor Center Lock",
+   "brand": "Shimano",
+   "cat": "brakes",
+   "category": "Brakes",
+   "price": 55.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-ultegra-rt-cl800-disc-brake-rotor-center-lock-1.webp",
+    "/assets/img/products/shimano-ultegra-rt-cl800-disc-brake-rotor-center-lock-2.webp",
+    "/assets/img/products/shimano-ultegra-rt-cl800-disc-brake-rotor-center-lock-3.webp",
+    "/assets/img/products/shimano-ultegra-rt-cl800-disc-brake-rotor-center-lock-4.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "160mm",
+     "140mm"
+    ],
+    "prices": {
+     "160mm": 55.0,
+     "140mm": 55.0
+    }
+   }
+  },
+  {
+   "id": "shimano-dura-ace-rt-cl900-disc-brake-rotor-center-lock",
+   "name": "Shimano Dura-Ace RT-CL900 Disc Brake Rotor Center Lock",
+   "brand": "Shimano",
+   "cat": "brakes",
+   "category": "Brakes",
+   "price": 69.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-dura-ace-rt-cl900-disc-brake-rotor-center-lock-1.webp",
+    "/assets/img/products/shimano-dura-ace-rt-cl900-disc-brake-rotor-center-lock-2.webp",
+    "/assets/img/products/shimano-dura-ace-rt-cl900-disc-brake-rotor-center-lock-3.webp",
+    "/assets/img/products/shimano-dura-ace-rt-cl900-disc-brake-rotor-center-lock-4.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "140mm",
+     "160mm"
+    ],
+    "prices": {
+     "140mm": 69.0,
+     "160mm": 69.0
+    }
+   }
+  },
+  {
+   "id": "continental-grand-prix-gp5000-s-tr-tubeless-tyre",
+   "name": "Continental Grand Prix GP5000 S TR Tubeless Road Bike Tyre",
+   "brand": "Continental",
+   "cat": "tyres",
+   "category": "Tyres & tubes",
+   "price": 95.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/continental-grand-prix-gp5000-s-tr-tubeless-tyre-1.webp",
+    "/assets/img/products/continental-grand-prix-gp5000-s-tr-tubeless-tyre-2.webp",
+    "/assets/img/products/continental-grand-prix-gp5000-s-tr-tubeless-tyre-3.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "28mm",
+     "30mm",
+     "32mm",
+     "25mm"
+    ],
+    "prices": {
+     "28mm": 95.0,
+     "30mm": 95.0,
+     "32mm": 95.0,
+     "25mm": 95.0
+    }
+   }
+  },
+  {
+   "id": "winsports-energy-gel-45g",
+   "name": "WiNSPORTS Energy Gel 45g",
+   "brand": "WiNSPORTS",
+   "cat": "nutrition",
+   "category": "Nutrition",
+   "price": 11.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Sold in a Pack of 5. Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/winsports-energy-gel-45g-1.webp",
+    "/assets/img/products/winsports-energy-gel-45g-2.webp",
+    "/assets/img/products/winsports-energy-gel-45g-3.webp",
+    "/assets/img/products/winsports-energy-gel-45g-4.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "Apple",
+     "Lemon",
+     "Orange",
+     "White Grape"
+    ],
+    "prices": {
+     "Apple": 11.0,
+     "Lemon": 11.0,
+     "Orange": 11.0,
+     "White Grape": 11.0
+    }
+   }
+  },
+  {
+   "id": "shimano-pro-sport-control-team-bar-tape-prta0057",
+   "name": "Shimano Pro Sport Control Team Bar Tape PRTA0057",
+   "brand": "Shimano",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": 28.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-pro-sport-control-team-bar-tape-prta0057-1.webp",
+    "/assets/img/products/shimano-pro-sport-control-team-bar-tape-prta0057-2.webp",
+    "/assets/img/products/shimano-pro-sport-control-team-bar-tape-prta0057-3.webp",
+    "/assets/img/products/shimano-pro-sport-control-team-bar-tape-prta0057-4.webp"
+   ]
+  },
+  {
+   "id": "shimano-pro-classic-comfort-bar-tape-prta0048",
+   "name": "Shimano Pro Classic Comfort Bar Tape PRTA0048",
+   "brand": "Shimano",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": 18.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-pro-classic-comfort-bar-tape-prta0048-1.webp",
+    "/assets/img/products/shimano-pro-classic-comfort-bar-tape-prta0048-2.webp",
+    "/assets/img/products/shimano-pro-classic-comfort-bar-tape-prta0048-3.webp",
+    "/assets/img/products/shimano-pro-classic-comfort-bar-tape-prta0048-4.webp"
+   ]
+  },
+  {
+   "id": "shimano-pro-sport-control-bar-tape-prta0001",
+   "name": "Shimano Pro Sport Control Bar Tape PRTA0001",
+   "brand": "Shimano",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": 32.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-pro-sport-control-bar-tape-prta0001-1.webp",
+    "/assets/img/products/shimano-pro-sport-control-bar-tape-prta0001-2.webp",
+    "/assets/img/products/shimano-pro-sport-control-bar-tape-prta0001-3.webp"
+   ]
+  },
+  {
+   "id": "winsports-carbohydrate-gummies-42-5g",
+   "name": "WiNSPORTS Carbohydrate Gummies 42.5g",
+   "brand": "WiNSPORTS",
+   "cat": "nutrition",
+   "category": "Nutrition",
+   "price": 23.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Sold in a Box of 10. Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/winsports-carbohydrate-gummies-42-5g-1.webp",
+    "/assets/img/products/winsports-carbohydrate-gummies-42-5g-2.webp",
+    "/assets/img/products/winsports-carbohydrate-gummies-42-5g-3.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "White Grape",
+     "Lemon"
+    ],
+    "prices": {
+     "White Grape": 23.0,
+     "Lemon": 23.0
+    }
+   }
+  },
+  {
+   "id": "winsports-protein-energy-oat-bar-22g",
+   "name": "WiNSPORTS Protein Energy Oat Bar 22g",
+   "brand": "WiNSPORTS",
+   "cat": "nutrition",
+   "category": "Nutrition",
+   "price": 22.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Sold in a Box of 10. Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/winsports-protein-energy-oat-bar-22g-1.webp",
+    "/assets/img/products/winsports-protein-energy-oat-bar-22g-2.webp",
+    "/assets/img/products/winsports-protein-energy-oat-bar-22g-3.webp"
+   ]
+  },
+  {
+   "id": "shimano-ultegra-cassette-cs-r8101",
+   "name": "Shimano Ultegra Cassette CS-R8101 12-Speed",
+   "brand": "Shimano",
+   "cat": "drivetrain",
+   "category": "Drivetrain",
+   "price": 95.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-ultegra-cassette-cs-r8101-1.webp",
+    "/assets/img/products/shimano-ultegra-cassette-cs-r8101-2.webp",
+    "/assets/img/products/shimano-ultegra-cassette-cs-r8101-3.webp",
+    "/assets/img/products/shimano-ultegra-cassette-cs-r8101-4.webp",
+    "/assets/img/products/shimano-ultegra-cassette-cs-r8101-5.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "11-34T",
+     "11-30T"
+    ],
+    "prices": {
+     "11-34T": 95.0,
+     "11-30T": 95.0
+    }
+   }
+  },
+  {
+   "id": "shimano-dura-ace-cassette-cs-r9200",
+   "name": "Shimano Dura-Ace Cassette CS-R9200 12-Speed",
+   "brand": "Shimano",
+   "cat": "drivetrain",
+   "category": "Drivetrain",
+   "price": 375.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-dura-ace-cassette-cs-r9200-1.webp",
+    "/assets/img/products/shimano-dura-ace-cassette-cs-r9200-2.webp",
+    "/assets/img/products/shimano-dura-ace-cassette-cs-r9200-3.webp",
+    "/assets/img/products/shimano-dura-ace-cassette-cs-r9200-4.webp",
+    "/assets/img/products/shimano-dura-ace-cassette-cs-r9200-5.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "11-30T",
+     "11-34T"
+    ],
+    "prices": {
+     "11-30T": 375.0,
+     "11-34T": 375.0
+    }
+   }
+  },
+  {
+   "id": "winow-aero-bar-angle-adapter-10-15-20-25",
+   "name": "WINOW Aero Bar Angle Adapter 10° / 15° / 20° / 25° (ARB02 Compatible)",
+   "brand": "WINOW",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": 55.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/winow-aero-bar-angle-adapter-10-15-20-25-1.webp",
+    "/assets/img/products/winow-aero-bar-angle-adapter-10-15-20-25-2.webp",
+    "/assets/img/products/winow-aero-bar-angle-adapter-10-15-20-25-3.webp",
+    "/assets/img/products/winow-aero-bar-angle-adapter-10-15-20-25-4.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "25°",
+     "10°",
+     "15°",
+     "20°"
+    ],
+    "prices": {
+     "25°": 55.0,
+     "10°": 55.0,
+     "15°": 55.0,
+     "20°": 55.0
+    }
+   }
+  },
+  {
+   "id": "winow-aero-carbon-handlebar-arb02",
+   "name": "WINOW Aero Carbon Handlebar ARB02 (Triathlon / TT)",
+   "brand": "WINOW",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": 350.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/winow-aero-carbon-handlebar-arb02-1.webp",
+    "/assets/img/products/winow-aero-carbon-handlebar-arb02-2.webp",
+    "/assets/img/products/winow-aero-carbon-handlebar-arb02-3.webp",
+    "/assets/img/products/winow-aero-carbon-handlebar-arb02-4.webp",
+    "/assets/img/products/winow-aero-carbon-handlebar-arb02-5.webp",
+    "/assets/img/products/winow-aero-carbon-handlebar-arb02-6.webp",
+    "/assets/img/products/winow-aero-carbon-handlebar-arb02-7.webp",
+    "/assets/img/products/winow-aero-carbon-handlebar-arb02-8.webp",
+    "/assets/img/products/winow-aero-carbon-handlebar-arb02-9.webp",
+    "/assets/img/products/winow-aero-carbon-handlebar-arb02-10.webp",
+    "/assets/img/products/winow-aero-carbon-handlebar-arb02-11.webp",
+    "/assets/img/products/winow-aero-carbon-handlebar-arb02-12.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "Matte Mechanical,S",
+     "Gloss Mechanical,M",
+     "Matte Di2,M",
+     "Gloss Mechanical,L",
+     "Matte Mechanical,M",
+     "Matte Di2,L",
+     "Gloss Di2,S",
+     "Gloss Di2,M",
+     "Matte Mechanical,L",
+     "Gloss Mechanical,S",
+     "Gloss Di2,L",
+     "Matte Di2,S"
+    ],
+    "prices": {
+     "Matte Mechanical,S": 350.0,
+     "Gloss Mechanical,M": 350.0,
+     "Matte Di2,M": 350.0,
+     "Gloss Mechanical,L": 350.0,
+     "Matte Mechanical,M": 350.0,
+     "Matte Di2,L": 350.0,
+     "Gloss Di2,S": 350.0,
+     "Gloss Di2,M": 350.0,
+     "Matte Mechanical,L": 350.0,
+     "Gloss Mechanical,S": 350.0,
+     "Gloss Di2,L": 350.0,
+     "Matte Di2,S": 350.0
+    }
+   }
+  },
+  {
+   "id": "chaoyang-arisun-storm-r1-clincher-tyre",
+   "name": "CHAOYANG ARISUN STORM R1 Clincher Road Bike Tyre",
+   "brand": "CHAOYANG",
+   "cat": "tyres",
+   "category": "Tyres & tubes",
+   "price": 48.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/chaoyang-arisun-storm-r1-clincher-tyre-1.webp",
+    "/assets/img/products/chaoyang-arisun-storm-r1-clincher-tyre-2.webp",
+    "/assets/img/products/chaoyang-arisun-storm-r1-clincher-tyre-3.webp",
+    "/assets/img/products/chaoyang-arisun-storm-r1-clincher-tyre-4.webp",
+    "/assets/img/products/chaoyang-arisun-storm-r1-clincher-tyre-5.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "30mm",
+     "28mm"
+    ],
+    "prices": {
+     "30mm": 48.0,
+     "28mm": 48.0
+    }
+   }
+  },
+  {
+   "id": "mixed-full-carbon-fiber-saddle-packlight-5d",
+   "name": "MIXED Full Carbon Fiber Saddle Packlight 5D",
+   "brand": "MIXED",
+   "cat": "saddles",
+   "category": "Saddles",
+   "price": 39.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-5d-1.webp",
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-5d-2.webp",
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-5d-3.webp",
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-5d-4.webp",
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-5d-5.webp"
+   ]
+  },
+  {
+   "id": "mixed-full-carbon-fiber-saddle-packlight-6d",
+   "name": "MIXED Full Carbon Fiber Saddle Packlight 6D",
+   "brand": "MIXED",
+   "cat": "saddles",
+   "category": "Saddles",
+   "price": 39.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-6d-1.webp",
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-6d-2.webp",
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-6d-3.webp",
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-6d-4.webp",
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-6d-5.webp"
+   ]
+  },
+  {
+   "id": "mixed-full-carbon-fiber-saddle-packlight-7d",
+   "name": "MIXED Full Carbon Fiber Saddle Packlight 7D",
+   "brand": "MIXED",
+   "cat": "saddles",
+   "category": "Saddles",
+   "price": 39.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-7d-1.webp",
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-7d-2.webp",
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-7d-3.webp",
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-7d-4.webp",
+    "/assets/img/products/mixed-full-carbon-fiber-saddle-packlight-7d-5.webp"
+   ]
+  },
+  {
+   "id": "shimano-105-di2-r7170-groupset",
+   "name": "Shimano 105 Di2 R7170 Groupset",
+   "brand": "Shimano",
+   "cat": "groupsets",
+   "category": "Groupsets",
+   "price": 1500.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-105-di2-r7170-groupset-1.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-2.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-3.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-4.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-5.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-6.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-7.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-8.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-9.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-10.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-11.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-12.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-13.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-14.webp",
+    "/assets/img/products/shimano-105-di2-r7170-groupset-15.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "165mm & 52-36T,140mm",
+     "170mm & 52-36T,140mm",
+     "165mm & 52-36T,160mm",
+     "172.5mm & 50-34T,160mm",
+     "172.5mm & 52-36T,140mm",
+     "172.5mm & 50-34T,140mm",
+     "172.5mm & 52-36T,160mm",
+     "170mm & 50-34T,140mm",
+     "165mm & 50-34T,140mm",
+     "170mm & 50-34T,160mm",
+     "165mm & 50-34T,160mm",
+     "170mm & 52-36T,160mm"
+    ],
+    "prices": {
+     "165mm & 52-36T,140mm": 1500.0,
+     "170mm & 52-36T,140mm": 1500.0,
+     "165mm & 52-36T,160mm": 1500.0,
+     "172.5mm & 50-34T,160mm": 1500.0,
+     "172.5mm & 52-36T,140mm": 1500.0,
+     "172.5mm & 50-34T,140mm": 1500.0,
+     "172.5mm & 52-36T,160mm": 1500.0,
+     "170mm & 50-34T,140mm": 1500.0,
+     "165mm & 50-34T,140mm": 1500.0,
+     "170mm & 50-34T,160mm": 1500.0,
+     "165mm & 50-34T,160mm": 1500.0,
+     "170mm & 52-36T,160mm": 1500.0
+    }
+   }
+  },
+  {
+   "id": "shimano-ultegra-di2-r8170-groupset",
+   "name": "Shimano Ultegra Di2 R8170 Groupset",
+   "brand": "Shimano",
+   "cat": "groupsets",
+   "category": "Groupsets",
+   "price": 2300.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-ultegra-di2-r8170-groupset-1.webp",
+    "/assets/img/products/shimano-ultegra-di2-r8170-groupset-2.webp",
+    "/assets/img/products/shimano-ultegra-di2-r8170-groupset-3.webp",
+    "/assets/img/products/shimano-ultegra-di2-r8170-groupset-4.webp",
+    "/assets/img/products/shimano-ultegra-di2-r8170-groupset-5.webp",
+    "/assets/img/products/shimano-ultegra-di2-r8170-groupset-6.webp",
+    "/assets/img/products/shimano-ultegra-di2-r8170-groupset-7.webp",
+    "/assets/img/products/shimano-ultegra-di2-r8170-groupset-8.webp",
+    "/assets/img/products/shimano-ultegra-di2-r8170-groupset-9.webp",
+    "/assets/img/products/shimano-ultegra-di2-r8170-groupset-10.webp",
+    "/assets/img/products/shimano-ultegra-di2-r8170-groupset-11.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "165mm & 50-34T,11-30T",
+     "172.5mm & 52-36T,11-34T",
+     "170mm & 50-34T,11-30T",
+     "172.5mm & 50-34T,11-34T",
+     "165mm & 52-36T,11-30T",
+     "172.5mm & 50-34T,11-30T",
+     "170mm & 52-36T,11-34T",
+     "170mm & 50-34T,11-34T",
+     "172.5mm & 52-36T,11-30T",
+     "170mm & 52-36T,11-30T",
+     "165mm & 50-34T,11-34T",
+     "165mm & 52-36T,11-34T"
+    ],
+    "prices": {
+     "165mm & 50-34T,11-30T": 2300.0,
+     "172.5mm & 52-36T,11-34T": 2300.0,
+     "170mm & 50-34T,11-30T": 2300.0,
+     "172.5mm & 50-34T,11-34T": 2300.0,
+     "165mm & 52-36T,11-30T": 2300.0,
+     "172.5mm & 50-34T,11-30T": 2300.0,
+     "170mm & 52-36T,11-34T": 2300.0,
+     "170mm & 50-34T,11-34T": 2300.0,
+     "172.5mm & 52-36T,11-30T": 2300.0,
+     "170mm & 52-36T,11-30T": 2300.0,
+     "165mm & 50-34T,11-34T": 2300.0,
+     "165mm & 52-36T,11-34T": 2300.0
+    }
+   }
+  },
+  {
+   "id": "shimano-dura-ace-di2-r9270-groupset",
+   "name": "Shimano Dura-Ace Di2 R9270 Groupset",
+   "brand": "Shimano",
+   "cat": "groupsets",
+   "category": "Groupsets",
+   "price": 3400.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-dura-ace-di2-r9270-groupset-1.webp",
+    "/assets/img/products/shimano-dura-ace-di2-r9270-groupset-2.webp",
+    "/assets/img/products/shimano-dura-ace-di2-r9270-groupset-3.webp",
+    "/assets/img/products/shimano-dura-ace-di2-r9270-groupset-4.webp",
+    "/assets/img/products/shimano-dura-ace-di2-r9270-groupset-5.webp",
+    "/assets/img/products/shimano-dura-ace-di2-r9270-groupset-6.webp",
+    "/assets/img/products/shimano-dura-ace-di2-r9270-groupset-7.webp",
+    "/assets/img/products/shimano-dura-ace-di2-r9270-groupset-8.webp",
+    "/assets/img/products/shimano-dura-ace-di2-r9270-groupset-9.webp",
+    "/assets/img/products/shimano-dura-ace-di2-r9270-groupset-10.webp",
+    "/assets/img/products/shimano-dura-ace-di2-r9270-groupset-11.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "172.5mm & 53-39T",
+     "172.5mm & 52-36T",
+     "172.5mm & 54-40T",
+     "170mm & 52-36T",
+     "165mm & 53-39T",
+     "165mm & 52-36T",
+     "172.5mm & 50-34T",
+     "165mm & 54-40T",
+     "170mm & 50-34T",
+     "165mm & 50-34T",
+     "170mm & 53-39T",
+     "170mm & 54-40T"
+    ],
+    "prices": {
+     "172.5mm & 53-39T": 3400.0,
+     "172.5mm & 52-36T": 3400.0,
+     "172.5mm & 54-40T": 3400.0,
+     "170mm & 52-36T": 3400.0,
+     "165mm & 53-39T": 3400.0,
+     "165mm & 52-36T": 3400.0,
+     "172.5mm & 50-34T": 3400.0,
+     "165mm & 54-40T": 3400.0,
+     "170mm & 50-34T": 3400.0,
+     "165mm & 50-34T": 3400.0,
+     "170mm & 53-39T": 3400.0,
+     "170mm & 54-40T": 3400.0
+    }
+   }
+  },
+  {
+   "id": "shimano-105-mechanical-r7120-groupset",
+   "name": "Shimano 105 Mechanical R7120 12v Groupset",
+   "brand": "Shimano",
+   "cat": "groupsets",
+   "category": "Groupsets",
+   "price": 950.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/shimano-105-mechanical-r7120-groupset-1.webp",
+    "/assets/img/products/shimano-105-mechanical-r7120-groupset-2.webp",
+    "/assets/img/products/shimano-105-mechanical-r7120-groupset-3.webp",
+    "/assets/img/products/shimano-105-mechanical-r7120-groupset-4.webp",
+    "/assets/img/products/shimano-105-mechanical-r7120-groupset-5.webp",
+    "/assets/img/products/shimano-105-mechanical-r7120-groupset-6.webp",
+    "/assets/img/products/shimano-105-mechanical-r7120-groupset-7.webp",
+    "/assets/img/products/shimano-105-mechanical-r7120-groupset-8.webp",
+    "/assets/img/products/shimano-105-mechanical-r7120-groupset-9.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "172.5mm & 52-36T,11-36T",
+     "165mm & 52-36T,11-36T",
+     "172.5mm & 50-34T,11-36T",
+     "172.5mm & 52-36T,11-34T",
+     "170mm & 52-36T,11-34T",
+     "175mm & 52-36T,11-34T",
+     "172.5mm & 50-34T,11-34T",
+     "175mm & 50-34T,11-34T",
+     "175mm & 52-36T,11-36T",
+     "170mm & 52-36T,11-36T",
+     "165mm & 50-34T,11-34T",
+     "170mm & 50-34T,11-34T",
+     "165mm & 52-36T,11-34T",
+     "170mm & 50-34T,11-36T",
+     "165mm & 50-34T,11-36T",
+     "175mm & 50-34T,11-36T"
+    ],
+    "prices": {
+     "172.5mm & 52-36T,11-36T": 950.0,
+     "165mm & 52-36T,11-36T": 950.0,
+     "172.5mm & 50-34T,11-36T": 950.0,
+     "172.5mm & 52-36T,11-34T": 950.0,
+     "170mm & 52-36T,11-34T": 950.0,
+     "175mm & 52-36T,11-34T": 950.0,
+     "172.5mm & 50-34T,11-34T": 950.0,
+     "175mm & 50-34T,11-34T": 950.0,
+     "175mm & 52-36T,11-36T": 950.0,
+     "170mm & 52-36T,11-36T": 950.0,
+     "165mm & 50-34T,11-34T": 950.0,
+     "170mm & 50-34T,11-34T": 950.0,
+     "165mm & 52-36T,11-34T": 950.0,
+     "170mm & 50-34T,11-36T": 950.0,
+     "165mm & 50-34T,11-36T": 950.0,
+     "175mm & 50-34T,11-36T": 950.0
+    }
+   }
+  },
+  {
+   "id": "ridenow-ultralight-tpu-inner-tube-36g-black",
+   "name": "Ridenow UltraLight TPU Bicycle Inner Tube 36g Metal Valve Stem 700C (Black)",
+   "brand": "Ridenow",
+   "cat": "tyres",
+   "category": "Tyres & tubes",
+   "price": 15.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-36g-black-1.webp",
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-36g-black-2.webp",
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-36g-black-3.webp",
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-36g-black-4.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "85mm",
+     "45mm",
+     "65mm"
+    ],
+    "prices": {
+     "85mm": 15.0,
+     "45mm": 15.0,
+     "65mm": 15.0
+    }
+   }
+  },
+  {
+   "id": "ridenow-ultralight-tpu-inner-tube-24g-black",
+   "name": "Ridenow UltraLight TPU Bicycle Inner Tube 24g Metal Valve Stem 700C (Black)",
+   "brand": "Ridenow",
+   "cat": "tyres",
+   "category": "Tyres & tubes",
+   "price": 15.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-24g-black-1.webp",
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-24g-black-2.webp",
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-24g-black-3.webp",
+    "/assets/img/products/ridenow-ultralight-tpu-inner-tube-24g-black-4.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "65mm",
+     "85mm",
+     "45mm"
+    ],
+    "prices": {
+     "65mm": 15.0,
+     "85mm": 15.0,
+     "45mm": 15.0
+    }
+   }
+  },
+  {
+   "id": "evr-ultra-lightweight-carbon-fibre-bottle-cage",
+   "name": "EVR Ultra Lightweight Carbon Fibre Bottle Cage",
+   "brand": "EVR",
+   "cat": "accessories",
+   "category": "Accessories",
+   "price": 24.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/evr-ultra-lightweight-carbon-fibre-bottle-cage-1.webp",
+    "/assets/img/products/evr-ultra-lightweight-carbon-fibre-bottle-cage-2.webp",
+    "/assets/img/products/evr-ultra-lightweight-carbon-fibre-bottle-cage-3.webp",
+    "/assets/img/products/evr-ultra-lightweight-carbon-fibre-bottle-cage-4.webp",
+    "/assets/img/products/evr-ultra-lightweight-carbon-fibre-bottle-cage-5.webp"
+   ]
+  },
+  {
+   "id": "vittoria-corsa-pro-tubeless-tlr-tyre",
+   "name": "Vittoria Corsa PRO Tubeless TLR Road Bike Tyre",
+   "brand": "Vittoria",
+   "cat": "tyres",
+   "category": "Tyres & tubes",
+   "price": 110.0,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "Available from our Jurong West workshop. Message us for availability and fitting.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/vittoria-corsa-pro-tubeless-tlr-tyre-1.webp",
+    "/assets/img/products/vittoria-corsa-pro-tubeless-tlr-tyre-2.webp",
+    "/assets/img/products/vittoria-corsa-pro-tubeless-tlr-tyre-3.webp",
+    "/assets/img/products/vittoria-corsa-pro-tubeless-tlr-tyre-4.webp"
+   ],
+   "variants": {
+    "label": "Option",
+    "options": [
+     "29mm"
+    ],
+    "prices": {
+     "29mm": 110.0
+    }
+   }
+  },
+  {
+   "id": "rstri-baseplate-giant-trinity-stock",
+   "name": "RSTRI Baseplate — Giant Trinity (Stock)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-baseplate-giant-trinity-stock-1.webp",
+    "/assets/img/products/rstri-baseplate-giant-trinity-stock-2.webp",
+    "/assets/img/products/rstri-baseplate-giant-trinity-stock-3.webp",
+    "/assets/img/products/rstri-baseplate-giant-trinity-stock-4.webp",
+    "/assets/img/products/rstri-baseplate-giant-trinity-stock-5.webp",
+    "/assets/img/products/rstri-baseplate-giant-trinity-stock-6.webp",
+    "/assets/img/products/rstri-baseplate-giant-trinity-stock-7.webp"
+   ]
+  },
+  {
+   "id": "rstri-baseplate-lowering-kit-giant-trinity-stock",
+   "name": "RSTRI Baseplate Lowering Kit — Giant Trinity (Stock)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-baseplate-lowering-kit-giant-trinity-stock-1.webp",
+    "/assets/img/products/rstri-baseplate-lowering-kit-giant-trinity-stock-2.webp",
+    "/assets/img/products/rstri-baseplate-lowering-kit-giant-trinity-stock-3.webp",
+    "/assets/img/products/rstri-baseplate-lowering-kit-giant-trinity-stock-4.webp",
+    "/assets/img/products/rstri-baseplate-lowering-kit-giant-trinity-stock-5.webp"
+   ]
+  },
+  {
+   "id": "rstri-angle-spacer-giant-trinity-stock",
+   "name": "RSTRI Angle Spacer — Giant Trinity (Stock)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-angle-spacer-giant-trinity-stock-1.webp",
+    "/assets/img/products/rstri-angle-spacer-giant-trinity-stock-2.webp",
+    "/assets/img/products/rstri-angle-spacer-giant-trinity-stock-3.webp",
+    "/assets/img/products/rstri-angle-spacer-giant-trinity-stock-4.webp",
+    "/assets/img/products/rstri-angle-spacer-giant-trinity-stock-5.webp",
+    "/assets/img/products/rstri-angle-spacer-giant-trinity-stock-6.webp",
+    "/assets/img/products/rstri-angle-spacer-giant-trinity-stock-7.webp"
+   ]
+  },
+  {
+   "id": "rstri-bta-giant-trinity",
+   "name": "RSTRI BTA — Giant Trinity",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-bta-giant-trinity-1.webp",
+    "/assets/img/products/rstri-bta-giant-trinity-2.webp",
+    "/assets/img/products/rstri-bta-giant-trinity-3.webp",
+    "/assets/img/products/rstri-bta-giant-trinity-4.webp",
+    "/assets/img/products/rstri-bta-giant-trinity-5.webp",
+    "/assets/img/products/rstri-bta-giant-trinity-6.webp"
+   ]
+  },
+  {
+   "id": "rstri-baseplate-specialized-shiv-tri-universal",
+   "name": "RSTRI Baseplate — Specialized Shiv TRI (Universal)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-baseplate-specialized-shiv-tri-universal-1.webp",
+    "/assets/img/products/rstri-baseplate-specialized-shiv-tri-universal-2.webp",
+    "/assets/img/products/rstri-baseplate-specialized-shiv-tri-universal-3.webp",
+    "/assets/img/products/rstri-baseplate-specialized-shiv-tri-universal-4.webp",
+    "/assets/img/products/rstri-baseplate-specialized-shiv-tri-universal-5.webp",
+    "/assets/img/products/rstri-baseplate-specialized-shiv-tri-universal-6.webp",
+    "/assets/img/products/rstri-baseplate-specialized-shiv-tri-universal-7.webp",
+    "/assets/img/products/rstri-baseplate-specialized-shiv-tri-universal-8.webp"
+   ]
+  },
+  {
+   "id": "rstri-baseplate-adaptor-narrow-specialized-shiv-tt-universal",
+   "name": "RSTRI Baseplate Adaptor Narrow — Specialized Shiv TT (Universal)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-baseplate-adaptor-narrow-specialized-shiv-tt-universal-1.webp",
+    "/assets/img/products/rstri-baseplate-adaptor-narrow-specialized-shiv-tt-universal-2.webp",
+    "/assets/img/products/rstri-baseplate-adaptor-narrow-specialized-shiv-tt-universal-3.webp",
+    "/assets/img/products/rstri-baseplate-adaptor-narrow-specialized-shiv-tt-universal-4.webp",
+    "/assets/img/products/rstri-baseplate-adaptor-narrow-specialized-shiv-tt-universal-5.webp",
+    "/assets/img/products/rstri-baseplate-adaptor-narrow-specialized-shiv-tt-universal-6.webp"
+   ]
+  },
+  {
+   "id": "rstri-angle-spacer-specialized-shiv-tt-universal",
+   "name": "RSTRI Angle Spacer — Specialized Shiv TT (Universal)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-angle-spacer-specialized-shiv-tt-universal-1.webp",
+    "/assets/img/products/rstri-angle-spacer-specialized-shiv-tt-universal-2.webp",
+    "/assets/img/products/rstri-angle-spacer-specialized-shiv-tt-universal-3.webp",
+    "/assets/img/products/rstri-angle-spacer-specialized-shiv-tt-universal-4.webp",
+    "/assets/img/products/rstri-angle-spacer-specialized-shiv-tt-universal-5.webp"
+   ]
+  },
+  {
+   "id": "rstri-baseplate-canyon-speedmax-stock",
+   "name": "RSTRI Baseplate — Canyon Speedmax (Stock)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-baseplate-canyon-speedmax-stock-1.webp",
+    "/assets/img/products/rstri-baseplate-canyon-speedmax-stock-2.webp",
+    "/assets/img/products/rstri-baseplate-canyon-speedmax-stock-3.webp",
+    "/assets/img/products/rstri-baseplate-canyon-speedmax-stock-4.webp",
+    "/assets/img/products/rstri-baseplate-canyon-speedmax-stock-5.webp",
+    "/assets/img/products/rstri-baseplate-canyon-speedmax-stock-6.webp"
+   ]
+  },
+  {
+   "id": "rstri-computer-mount-canyon-speedmax-stock",
+   "name": "RSTRI Computer Mount — Canyon Speedmax (Stock)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-computer-mount-canyon-speedmax-stock-1.webp",
+    "/assets/img/products/rstri-computer-mount-canyon-speedmax-stock-2.webp",
+    "/assets/img/products/rstri-computer-mount-canyon-speedmax-stock-3.webp"
+   ]
+  },
+  {
+   "id": "rstri-shifter-holder-canyon-speedmax-stock",
+   "name": "RSTRI Shifter Holder — Canyon Speedmax (Stock)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-shifter-holder-canyon-speedmax-stock-1.webp",
+    "/assets/img/products/rstri-shifter-holder-canyon-speedmax-stock-2.webp",
+    "/assets/img/products/rstri-shifter-holder-canyon-speedmax-stock-3.webp",
+    "/assets/img/products/rstri-shifter-holder-canyon-speedmax-stock-4.webp",
+    "/assets/img/products/rstri-shifter-holder-canyon-speedmax-stock-5.webp",
+    "/assets/img/products/rstri-shifter-holder-canyon-speedmax-stock-6.webp"
+   ]
+  },
+  {
+   "id": "rstri-angle-spacer-canyon-speedmax-stock",
+   "name": "RSTRI Angle Spacer — Canyon Speedmax (Stock)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-angle-spacer-canyon-speedmax-stock-1.webp",
+    "/assets/img/products/rstri-angle-spacer-canyon-speedmax-stock-2.webp",
+    "/assets/img/products/rstri-angle-spacer-canyon-speedmax-stock-3.webp",
+    "/assets/img/products/rstri-angle-spacer-canyon-speedmax-stock-4.webp",
+    "/assets/img/products/rstri-angle-spacer-canyon-speedmax-stock-5.webp",
+    "/assets/img/products/rstri-angle-spacer-canyon-speedmax-stock-6.webp",
+    "/assets/img/products/rstri-angle-spacer-canyon-speedmax-stock-7.webp"
+   ]
+  },
+  {
+   "id": "rstri-baseplate-cervelo-p5-p5x-p3x-px-universal",
+   "name": "RSTRI Baseplate — Cervelo P5 P5X P3X PX (Universal)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-baseplate-cervelo-p5-p5x-p3x-px-universal-1.webp",
+    "/assets/img/products/rstri-baseplate-cervelo-p5-p5x-p3x-px-universal-2.webp",
+    "/assets/img/products/rstri-baseplate-cervelo-p5-p5x-p3x-px-universal-3.webp",
+    "/assets/img/products/rstri-baseplate-cervelo-p5-p5x-p3x-px-universal-4.webp"
+   ]
+  },
+  {
+   "id": "rstri-baseplate-cadex-stock",
+   "name": "RSTRI Baseplate — Cadex (Stock)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-baseplate-cadex-stock-1.webp"
+   ]
+  },
+  {
+   "id": "rstri-bts-ism-ps1-0-15",
+   "name": "RSTRI BTS — ISM PS1.0 15",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-bts-ism-ps1-0-15-1.webp",
+    "/assets/img/products/rstri-bts-ism-ps1-0-15-2.webp",
+    "/assets/img/products/rstri-bts-ism-ps1-0-15-3.webp"
+   ]
+  },
+  {
+   "id": "rstri-angle-spacer-pinarello-bollide-aerocoach",
+   "name": "RSTRI Angle Spacer — Pinarello Bollide (Aerocoach)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-angle-spacer-pinarello-bollide-aerocoach-1.webp",
+    "/assets/img/products/rstri-angle-spacer-pinarello-bollide-aerocoach-2.webp",
+    "/assets/img/products/rstri-angle-spacer-pinarello-bollide-aerocoach-3.webp",
+    "/assets/img/products/rstri-angle-spacer-pinarello-bollide-aerocoach-4.webp"
+   ]
+  },
+  {
+   "id": "rstri-baseplate-pinarello-bollide-vision-winow",
+   "name": "RSTRI Baseplate — Pinarello Bollide (Vision/Winow)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-baseplate-pinarello-bollide-vision-winow-1.webp"
+   ]
+  },
+  {
+   "id": "rstri-baseplate-factor-hanzo-stock",
+   "name": "RSTRI Baseplate — Factor Hanzo (Stock)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-baseplate-factor-hanzo-stock-1.webp",
+    "/assets/img/products/rstri-baseplate-factor-hanzo-stock-2.webp",
+    "/assets/img/products/rstri-baseplate-factor-hanzo-stock-3.webp",
+    "/assets/img/products/rstri-baseplate-factor-hanzo-stock-4.webp",
+    "/assets/img/products/rstri-baseplate-factor-hanzo-stock-5.webp",
+    "/assets/img/products/rstri-baseplate-factor-hanzo-stock-6.webp"
+   ]
+  },
+  {
+   "id": "rstri-baseplate-quickpro-tt-one-stock",
+   "name": "RSTRI Baseplate — QuickPro TT One (Stock)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-baseplate-quickpro-tt-one-stock-1.webp",
+    "/assets/img/products/rstri-baseplate-quickpro-tt-one-stock-2.webp",
+    "/assets/img/products/rstri-baseplate-quickpro-tt-one-stock-3.webp",
+    "/assets/img/products/rstri-baseplate-quickpro-tt-one-stock-4.webp",
+    "/assets/img/products/rstri-baseplate-quickpro-tt-one-stock-5.webp",
+    "/assets/img/products/rstri-baseplate-quickpro-tt-one-stock-6.webp"
+   ]
+  },
+  {
+   "id": "rstri-angle-spacer-quintanaroo-stock",
+   "name": "RSTRI Angle Spacer — Quintanaroo (Stock)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-angle-spacer-quintanaroo-stock-1.webp",
+    "/assets/img/products/rstri-angle-spacer-quintanaroo-stock-2.webp",
+    "/assets/img/products/rstri-angle-spacer-quintanaroo-stock-3.webp"
+   ]
+  },
+  {
+   "id": "rstri-bts-selle-italia-watt",
+   "name": "RSTRI BTS — Selle Italia Watt",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-bts-selle-italia-watt-1.webp",
+    "/assets/img/products/rstri-bts-selle-italia-watt-2.webp",
+    "/assets/img/products/rstri-bts-selle-italia-watt-3.webp",
+    "/assets/img/products/rstri-bts-selle-italia-watt-4.webp",
+    "/assets/img/products/rstri-bts-selle-italia-watt-5.webp",
+    "/assets/img/products/rstri-bts-selle-italia-watt-6.webp",
+    "/assets/img/products/rstri-bts-selle-italia-watt-7.webp",
+    "/assets/img/products/rstri-bts-selle-italia-watt-8.webp"
+   ]
+  },
+  {
+   "id": "rstri-angle-spacer-trek-speed-concept-universal",
+   "name": "RSTRI Angle Spacer — Trek Speed Concept (Universal)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-angle-spacer-trek-speed-concept-universal-1.webp",
+    "/assets/img/products/rstri-angle-spacer-trek-speed-concept-universal-2.webp",
+    "/assets/img/products/rstri-angle-spacer-trek-speed-concept-universal-3.webp"
+   ]
+  },
+  {
+   "id": "rstri-baseplate-trek-speed-concept-universal",
+   "name": "RSTRI Baseplate — Trek Speed Concept (Universal)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-baseplate-trek-speed-concept-universal-1.webp",
+    "/assets/img/products/rstri-baseplate-trek-speed-concept-universal-2.webp",
+    "/assets/img/products/rstri-baseplate-trek-speed-concept-universal-3.webp",
+    "/assets/img/products/rstri-baseplate-trek-speed-concept-universal-4.webp"
+   ]
+  },
+  {
+   "id": "rstri-bts-sitero",
+   "name": "RSTRI BTS — Sitero",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-bts-sitero-1.webp",
+    "/assets/img/products/rstri-bts-sitero-2.webp",
+    "/assets/img/products/rstri-bts-sitero-3.webp"
+   ]
+  },
+  {
+   "id": "rstri-bts-trek-bontrager-hilo-comp",
+   "name": "RSTRI BTS — Trek Bontrager Hilo Comp",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-bts-trek-bontrager-hilo-comp-1.webp",
+    "/assets/img/products/rstri-bts-trek-bontrager-hilo-comp-2.webp"
+   ]
+  },
+  {
+   "id": "rstri-computer-mount-universal-vision-tfe",
+   "name": "RSTRI Computer Mount — Universal (Vision TFE)",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-computer-mount-universal-vision-tfe-1.webp",
+    "/assets/img/products/rstri-computer-mount-universal-vision-tfe-2.webp",
+    "/assets/img/products/rstri-computer-mount-universal-vision-tfe-3.webp",
+    "/assets/img/products/rstri-computer-mount-universal-vision-tfe-4.webp",
+    "/assets/img/products/rstri-computer-mount-universal-vision-tfe-5.webp"
+   ]
+  },
+  {
+   "id": "rstri-bta-all-in-one",
+   "name": "RSTRI BTA — All In One",
+   "brand": "RSTRI",
+   "cat": "cockpit",
+   "category": "Cockpit parts",
+   "price": null,
+   "unit": "",
+   "badge": "",
+   "purchasable": false,
+   "summary": "CNC-machined RSTRI cockpit adapter. In stock in Singapore. Message us to confirm fit for your bike and current pricing.",
+   "benefits": [],
+   "included": [],
+   "description": [],
+   "tech": [],
+   "images": [
+    "/assets/img/products/rstri-bta-all-in-one-1.webp",
+    "/assets/img/products/rstri-bta-all-in-one-2.webp",
+    "/assets/img/products/rstri-bta-all-in-one-3.webp",
+    "/assets/img/products/rstri-bta-all-in-one-4.webp",
+    "/assets/img/products/rstri-bta-all-in-one-5.webp",
+    "/assets/img/products/rstri-bta-all-in-one-6.webp",
+    "/assets/img/products/rstri-bta-all-in-one-7.webp",
+    "/assets/img/products/rstri-bta-all-in-one-8.webp"
+   ]
   }
  ]
 }
