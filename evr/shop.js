@@ -38,7 +38,7 @@
         p.cols = cols; p.title = title(p.name);
         p.min = Math.min.apply(null, prices); p.max = Math.max.apply(null, prices);
         p.sizes = p.size_run ? p.size_run.split(",").map(function (s) { return s.trim(); }).filter(Boolean) : [];
-        bySku[p.sku] = p; return p;
+        p.slug = p.id.slice(0, 8); bySku[p.slug] = p; return p;
       }).filter(function (p) { return p.cols.length; });
     });
   }
@@ -76,36 +76,36 @@
   }
   function priceTxt(p) { return p.min === p.max ? money(p.min) : "From " + money(p.min); }
   function card(p) {
-    return '<a class="card" href="/evr/?sku=' + encodeURIComponent(p.sku) + '" data-sku="' + esc(p.sku) + '"><div class="card-img"><img loading="lazy" src="' + img(p.cols[0].image_path) + '" alt="' + esc(p.title) + '" onerror="this.onerror=null;this.src=\'/assets/img/products/placeholder.webp\'"></div><div class="card-info"><div class="row"><span>' + esc(p.title) + "</span><span>" + priceTxt(p) + '</span></div><span class="cat">' + esc((RLABEL[p.range] || p.range) + " · " + p.category + " · " + (GLABEL[p.gender] || p.gender)) + '</span><span class="cat">' + p.cols.length + (p.cols.length === 1 ? " colour" : " colours") + "</span></div></a>";
+    return '<a class="card" href="/evr/?p=' + p.slug + '" data-sku="' + esc(p.slug) + '"><div class="card-img"><img loading="lazy" src="' + img(p.cols[0].image_path) + '" alt="' + esc(p.title) + '" onerror="this.onerror=null;this.src=\'/assets/img/products/placeholder.webp\'"></div><div class="card-info"><div class="row"><span>' + esc(p.title) + "</span><span>" + priceTxt(p) + '</span></div><span class="cat">' + esc((RLABEL[p.range] || p.range) + " · " + p.category + " · " + (GLABEL[p.gender] || p.gender)) + '</span><span class="cat">' + p.cols.length + (p.cols.length === 1 ? " colour" : " colours") + "</span></div></a>";
   }
 
   function show(sku, push) {
     var p = bySku[sku], L = $("#evr-list"), D = $("#evr-detail");
     if (!p) { L.hidden = false; D.hidden = true; document.title = "EVR Cycling Apparel — Bike & Butter"; return; }
-    if (push) history.pushState({ sku: sku }, "", "/evr/?sku=" + encodeURIComponent(sku));
+    if (push) history.pushState({ sku: sku }, "", "/evr/?p=" + sku);
     document.title = p.title + " — EVR — Bike & Butter";
     var st = { c: p.cols[0], s: "" };
     L.hidden = true; $(".evr-hero").hidden = true; D.hidden = false; window.scrollTo(0, 0);
-    var ct = charts[sku], chart = "";
+    var ct = charts[p.sku], chart = "";
     if (ct && ct.length) chart = ct.map(function (t) { return '<p class="label">' + esc(t.title || "Size guide") + '</p><table class="evr-tbl"><tr><th></th>' + t.headers.map(function (h) { return "<th>" + esc(h) + "</th>"; }).join("") + "</tr>" + t.rows.map(function (r) { return "<tr><th>" + esc(r.label) + "</th>" + r.values.map(function (v) { return "<td>" + esc(v) + "</td>"; }).join("") + "</tr>"; }).join("") + "</table>"; }).join("");
     if (p.size_chart_url) chart += '<img loading="lazy" src="/evr/' + encodeURI(p.size_chart_url) + '" alt="Size chart" onerror="this.remove()">';
     D.innerHTML = '<div class="evr-d"><div class="evr-d-img"><img data-main alt="' + esc(p.title) + '"></div><div class="evr-d-in">' +
       '<button class="evr-back label" type="button" data-back>← All EVR</button>' +
       '<span class="label label-muted">' + esc((RLABEL[p.range] || p.range) + " · " + p.category + " · " + (GLABEL[p.gender] || p.gender)) + "</span>" +
-      "<h1>" + esc(p.title) + '</h1><div class="prow"><span data-price></span><span class="label label-muted">SKU ' + esc(p.sku) + "</span></div>" +
+      "<h1>" + esc(p.title) + '</h1><div class="prow"><span data-price></span></div>' +
       '<div><p class="label">Colour: <span data-cname></span></p><div class="evr-cols" data-cols></div></div>' +
       (p.sizes.length ? '<div><p class="label">Size</p><div class="evr-sizes" data-sizes></div></div>' : "") +
       '<a class="btn btn-dark" data-wa target="_blank" rel="noopener">Enquire on WhatsApp</a>' +
-      '<p class="evr-note">Made to order. Message us your size and we will confirm availability, price and delivery time, then arrange payment by PayNow. Not sure of your size? Send your height and weight and we will recommend one.</p>' +
+      '<p class="evr-note">Enquire with your preferred colour and size and we will confirm availability and pricing. Unsure of your size? Send us your height and weight and we will recommend a fit.</p>' +
       (chart ? '<details class="evr-acc"><summary class="label">Size guide</summary><div>' + chart + "</div></details>" : "") +
-      '<details class="evr-acc"><summary class="label">Delivery &amp; payment</summary><p class="evr-note" style="padding-bottom:16px">Items are ordered in for you after payment, so please allow extra lead time. We deliver across Singapore. Payment by PayNow. Contact us for exact timing.</p></details>' +
+      '<details class="evr-acc"><summary class="label">Delivery &amp; payment</summary><p class="evr-note" style="padding-bottom:16px">Orders are placed with our supplier only after full payment has been received via PayNow. Once your order has been placed, we will advise you of the estimated delivery date. Delivery is available across Singapore. Please note that all items are made to order and are not available for immediate collection.</p></details>' +
       "</div></div>";
     function draw() {
       var v = st.c, pr = Number(v.price_sgd || p.price_sgd);
       $("[data-main]", D).src = img(v.image_path);
       $("[data-price]", D).textContent = money(pr);
       $("[data-cname]", D).textContent = v.colour;
-      var msg = "Hi Bike & Butter, I'd like to enquire about EVR " + p.title + " (" + p.sku + "), colour " + v.colour + (st.s ? ", size " + st.s : "") + ", " + money(pr) + ". ";
+      var msg = "Hi Bike & Butter, I'd like to enquire about EVR " + p.title + ", colour " + v.colour + (st.s ? ", size " + st.s : "") + ", " + money(pr) + ". ";
       $("[data-wa]", D).href = "https://wa.me/" + WA + "?text=" + encodeURIComponent(msg);
       D.querySelectorAll("[data-ci]").forEach(function (b) { b.classList.toggle("on", b.dataset.ci === v.colour); });
       D.querySelectorAll("[data-si]").forEach(function (b) { b.classList.toggle("on", b.dataset.si === st.s); });
@@ -121,7 +121,7 @@
     draw();
   }
   function route() {
-    var sku = new URLSearchParams(location.search).get("sku");
+    var sku = new URLSearchParams(location.search).get("p");
     if (sku && bySku[sku]) return show(sku, false);
     $("#evr-detail").hidden = true; $("#evr-list").hidden = false; $(".evr-hero").hidden = false;
     document.title = "EVR Cycling Apparel — Bike & Butter";
