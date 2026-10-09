@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>document.documentElement.className += " js";</script>
-  <title>Order confirmation — Bike & Butter</title>
-  <meta name="description" content="Your Bike & Butter order.">
-  <meta name="robots" content="noindex, nofollow">
-  <link rel="canonical" href="https://bikeandbutter.com/evr/order-confirmation.html">
+  <title>Workshop — Bike & Butter</title>
+  <meta name="description" content="Custom builds, upgrades, servicing and repairs for road and triathlon bikes at the Bike & Butter workshop in Jurong West, Singapore.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://bikeandbutter.com/workshop/">
   <meta name="theme-color" content="#121212">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Order confirmation — Bike & Butter">
-  <meta property="og:description" content="Your Bike & Butter order.">
+  <meta property="og:title" content="Workshop — Bike & Butter">
+  <meta property="og:description" content="Custom builds, upgrades, servicing and repairs for road and triathlon bikes at the Bike & Butter workshop in Jurong West, Singapore.">
   <meta property="og:image" content="https://bikeandbutter.com/og-image.png">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
@@ -20,6 +20,7 @@
   <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/site.css">
   <link rel="stylesheet" href="/assets/css/store.css">
+  <link rel="stylesheet" href="/assets/css/workshop.css?v=1">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -74,14 +75,36 @@
 </nav>
 <!-- @/header -->
 
-<main id="main" class="copage">
-  <div class="confirm">
-    <p class="label label-muted" id="status-kicker">Order</p>
-    <h1 class="display" id="status-title">Checking your order…</h1>
-    <p class="clead" id="status-desc">One moment while we confirm your payment status.</p>
-    <p class="confirm-ref label" id="order-ref" hidden></p>
-    <div class="cactions" style="justify-content:center"><a class="btn btn-light" href="/shop/">Continue shopping</a><a class="btn btn-line" href="https://wa.me/6587222610" target="_blank" rel="noopener">WhatsApp us</a></div>
-  </div>
+<main id="main">
+  <section class="page-hero" aria-label="Workshop">
+    <img src="/assets/img/home/s-service.webp" alt="" fetchpriority="high">
+    <div class="page-hero-in"><span class="label">The workshop</span><p>Builds, upgrades and servicing for road and triathlon bikes, done properly in Jurong West.</p></div>
+  </section>
+
+  <section class="ws-sec" id="services" aria-labelledby="ws-h">
+    <div class="ws-head"><span class="label">What we do</span><h1 id="ws-h">From first bolt to final torque check.</h1></div>
+    <div class="ws-list">
+      <div class="ws-row"><span class="label">01</span><h2>Custom builds</h2><p>We spec and assemble road and triathlon bikes around how you ride, what you race and what you want to spend.</p><a class="btn btn-line" target="_blank" rel="noopener" href="https://wa.me/6587222610?text=Hi%20Bike%20%26%20Butter%2C%20I%27d%20like%20to%20enquire%20about%20a%20custom%20build.">Enquire about a build</a></div>
+      <div class="ws-row"><span class="label">02</span><h2>Upgrades</h2><p>Lighter wheels, a cleaner cockpit, a better drivetrain. We recommend what will actually make you faster, then fit it properly. Carbon wheels from 8LIEN, cockpit parts from RSTRI and Shimano components are all available through us.</p><a class="btn btn-line" href="/shop/">Browse the shop</a></div>
+      <div class="ws-row"><span class="label">03</span><h2>Servicing and repairs</h2><p>Tune-ups, repairs and pre-race checks for road and tri bikes. Book online, pick a slot, and we will confirm it with you.</p><a class="btn btn-glass" href="/book/">Book a service</a></div>
+    </div>
+  </section>
+
+  <section class="ws-sec ws-light" aria-labelledby="ws-how">
+    <div class="ws-head"><span class="label">How it works</span><h2 id="ws-how">Simple, and in writing.</h2></div>
+    <ol class="ws-steps">
+      <li><b>Book or message us</b><span>Pick a slot on the booking page or WhatsApp us. Tell us the bike and what it needs.</span></li>
+      <li><b>We confirm</b><span>We reply to confirm the slot and anything we need to know before you arrive.</span></li>
+      <li><b>Drop off at the workshop</b><span>Bring the bike to Jurong West during opening hours. We check it over with you.</span></li>
+      <li><b>Collect when ready</b><span>We let you know when it is done, ready to ride.</span></li>
+    </ol>
+    <p class="ws-note">Want to try wheels before you buy? Ask us about test rides when you message.</p>
+  </section>
+
+  <section class="ws-visit" aria-label="Visit">
+    <div><span class="label">Visit us</span><h2>491 Jurong West Avenue 1<br>Singapore 640491</h2><p>Monday to Friday, 9am to 6pm</p></div>
+    <div class="ws-actions"><a class="btn btn-glass" href="/book/">Book a service</a><a class="btn btn-line" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=491+Jurong+West+Avenue+1+Singapore+640491">Get directions</a><a class="btn btn-line" target="_blank" rel="noopener" href="https://wa.me/6587222610">WhatsApp +65 8722 2610</a></div>
+  </section>
 </main>
 
 <!-- @footer -->
@@ -147,15 +170,5 @@
 
 <script src="/assets/js/site.js" defer></script>
 <script src="/assets/js/store.js" defer></script>
-<script>
-(function(){
-  var q=new URLSearchParams(location.search),order=q.get("order"),status=q.get("status");
-  var k=document.getElementById("status-kicker"),t=document.getElementById("status-title"),d=document.getElementById("status-desc"),r=document.getElementById("order-ref");
-  if(order){r.textContent="Order "+order;r.hidden=false;}
-  if(status==="completed"){k.textContent="Payment received";t.textContent="Thank you for your order";d.textContent="We've received your payment and will be in touch shortly to confirm shipment details. A confirmation email is on its way.";try{localStorage.removeItem("bnb_cart_v1");}catch(e){}}
-  else if(status==="failed"||status==="cancelled"){k.textContent="Payment not completed";t.textContent="That didn't go through";d.textContent="Your order is saved but not yet confirmed. You can try again from the shop, or WhatsApp us and we'll help you complete it.";}
-  else{k.textContent="Order received";t.textContent="We're confirming your payment";d.textContent="You'll get an email confirmation shortly once your payment is processed.";}
-})();
-</script>
 </body>
 </html>

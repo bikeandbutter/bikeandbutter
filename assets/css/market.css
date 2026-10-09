@@ -1,0 +1,53 @@
+/* Bikes for sale */
+.mk-hero{padding:120px var(--pad) 40px;color:#fff;display:grid;gap:16px;max-width:none}
+.mk-hero h1{font-weight:300;font-size:clamp(2.4rem,7vw,5.5rem);line-height:1;letter-spacing:-.02em;max-width:12em}
+.mk-hero p{font-weight:300;font-size:clamp(1rem,1.5vw,1.25rem);color:#cfcfca;line-height:1.5;max-width:40em}
+#mk-list,#mk-detail{background:#fafafa;color:#111}
+.mk-bar{padding:14px var(--pad);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line-dark);border-top:1px solid var(--line-dark)}
+.mk-chips{display:flex;gap:6px;flex-wrap:wrap}
+.mk-chips button{border:1px solid var(--line-dark);background:none;padding:8px 14px;border-radius:99px;font:inherit;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;color:#111}
+.mk-chips button.on{background:#111;color:#fff;border-color:#111}
+.mk-bar select{border:1px solid var(--line-dark);background:#fff;padding:9px 10px;font:inherit;font-size:13px;border-radius:4px;color:#111}
+.mk-grid{display:grid;grid-template-columns:repeat(1,1fr)}
+@media(min-width:600px){.mk-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1000px){.mk-grid{grid-template-columns:repeat(3,1fr)}}
+.mk-card{display:block;color:#111;border-right:1px solid var(--line-dark);border-bottom:1px solid var(--line-dark);background:#fff}
+.mk-card .mk-img{aspect-ratio:4/3;background:#f1f1ef;position:relative;overflow:hidden}
+.mk-card .mk-img img{width:100%;height:100%;object-fit:cover;display:block}
+.mk-tag{position:absolute;top:12px;left:12px;background:#111;color:#fff;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px}
+.mk-tag.y{background:var(--yellow);color:#111}
+.mk-card.is-sold .mk-img img{filter:grayscale(1);opacity:.6}
+.mk-info{padding:14px 16px 20px;display:grid;gap:4px}
+.mk-info .row{display:flex;justify-content:space-between;gap:12px;font-size:15px}
+.mk-info .row span:last-child{font-weight:500;white-space:nowrap}
+.mk-info small{color:#6f6f6a;font-size:12px;letter-spacing:.04em}
+.mk-empty{padding:72px var(--pad);display:grid;gap:16px;justify-items:start;max-width:46em}
+.mk-empty h2{font-weight:300;font-size:clamp(1.5rem,3vw,2.2rem)}
+.mk-empty p{color:#55554f;line-height:1.55}
+.mk-cta{display:grid;gap:0;background:#121212;color:#fff;border-top:1px solid var(--line)}
+.mk-cta>div{padding:36px var(--pad);display:grid;gap:12px;justify-items:start;border-bottom:1px solid var(--line)}
+.mk-cta h3{font-weight:300;font-size:clamp(1.3rem,2.4vw,1.8rem)}
+.mk-cta p{color:#b9b9b4;font-weight:300;line-height:1.5;max-width:30em}
+@media(min-width:800px){.mk-cta{grid-template-columns:1fr 1fr}.mk-cta>div+div{border-left:1px solid var(--line)}}
+#mk-detail{padding-top:84px}
+.mk-d{display:grid;grid-template-columns:minmax(0,1fr)}
+.mk-gal{background:#f1f1ef;display:grid;align-content:start}
+.mk-main{aspect-ratio:4/3;position:relative;overflow:hidden;background:#ebebe8}
+.mk-main img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.mk-thumbs{display:flex;gap:8px;padding:10px;overflow-x:auto}
+.mk-thumbs button{flex:0 0 76px;padding:0;border:1px solid var(--line-dark);background:#fff;cursor:pointer;opacity:.8}
+.mk-thumbs button.on{border-color:#111;opacity:1;outline:1px solid #111}
+.mk-thumbs img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.mk-d-in{background:#fff;padding:28px var(--pad) 56px;display:grid;gap:18px;align-content:start}
+.mk-d-in h1{font-weight:400;font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.15}
+.mk-price{font-size:1.4rem}
+.mk-back{background:none;border:0;font:inherit;cursor:pointer;color:#6f6f6a;padding:0;text-align:left}
+.mk-d-in .btn{justify-content:center}
+.mk-note{font-size:13px;color:#6f6f6a;line-height:1.5}
+.mk-specs{border-top:1px solid var(--line-dark);margin:0}
+.mk-specs div{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--line-dark);font-size:14px}
+.mk-specs dt{color:#6f6f6a}.mk-specs dd{margin:0;text-align:right}
+@media(min-width:900px){.mk-d{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}.mk-gal{position:sticky;top:84px;align-self:start}.mk-d-in{padding:48px 48px 80px}}
+[hidden]{display:none!important}
+/* home teaser */
+.bike-teaser{background:#121212;color:#fff}

@@ -1,307 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Perf: preconnect -->
-  <link rel="preconnect" href="https://sheets.googleapis.com">
-  <link rel="preconnect" href="https://accounts.google.com">
-  <link rel="preconnect" href="https://www.googletagmanager.com">
-  <link rel="dns-prefetch" href="https://www.googleapis.com">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-ZQJRHN886Z');
-</script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="../style.css" />
-  <title>Marketplace — Bike & Butter</title>
-  <meta name="description" content="Buy and sell road bikes on the Bike & Butter marketplace. Find great deals from cyclists in the community." />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://bikeandbutter.com/marketplace/" />
-  <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://bikeandbutter.com/marketplace/" />
-  <meta property="og:title"       content="Marketplace — Bike & Butter" />
-  <meta property="og:description" content="Buy and sell road bikes on the Bike & Butter marketplace." />
-  <meta property="og:image"       content="https://bikeandbutter.com/og-image.png" />
-  <meta property="og:site_name"   content="Bike &amp; Butter" />
-  <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:title"       content="Marketplace — Bike & Butter" />
-  <meta name="twitter:description" content="Buy and sell road bikes on the Bike & Butter marketplace." />
-  <meta name="twitter:image"       content="https://bikeandbutter.com/og-image.png" />
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <style>
-    .mp-hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 220px; border-bottom: 1px solid #ebebeb; }
-    .mp-hero-left { padding: 44px 40px; border-right: 1px solid #ebebeb; display: flex; flex-direction: column; justify-content: space-between; }
-    .mp-hero-eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #656565; }
-    .mp-hero-title { font-size: 52px; font-weight: 700; letter-spacing: -2px; color: #111; line-height: 1; margin-top: 12px; }
-    .mp-hero-right { padding: 44px 40px; display: flex; flex-direction: column; justify-content: space-between; }
-    .mp-hero-desc { font-size: 14px; color: #666; line-height: 1.6; max-width: 380px; }
-    .mp-hero-stats { display: flex; gap: 32px; }
-    .mp-stat-num { font-size: 28px; font-weight: 700; color: #111; letter-spacing: -1px; }
-    .mp-stat-label { font-size: 11px; color: #656565; margin-top: 2px; }
-    .sell-banner { background: #111; color: #fff; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #000; }
-    .sell-banner p { font-size: 13px; color: #bbb; }
-    .sell-banner strong { color: #fff; }
-    .sell-btn { background: #fff; color: #111; border: none; padding: 9px 20px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; letter-spacing: 0.3px; transition: background 0.15s; white-space: nowrap; flex-shrink: 0; }
-    .sell-btn:hover { background: #f0f0f0; }
-    .mp-filter-bar { padding: 14px 40px; border-bottom: 1px solid #ebebeb; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-    .mp-filter-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .mp-results-count { font-size: 13px; color: #aaa; white-space: nowrap; min-width: 80px; }
-    .mp-filter-right { display: flex; align-items: center; gap: 10px; }
-    .mp-search { border: 1px solid #e0e0e0; border-radius: 20px; padding: 7px 16px; font-size: 13px; font-family: inherit; color: #111; outline: none; width: 220px; background: #fafafa; transition: border-color 0.15s, background 0.15s; }
-    .mp-search::placeholder { color: #bbb; }
-    .mp-search:focus { border-color: #111; background: #fff; }
-    .mp-sort { border: 1px solid #e0e0e0; border-radius: 6px; padding: 6px 10px; font-size: 12px; color: #555; font-family: inherit; background: #fff; cursor: pointer; outline: none; }
-    .mp-sort:hover { border-color: #111; }
-    .mp-listings { padding: 24px 40px 60px; display: flex; flex-direction: column; gap: 14px; }
-    .mp-loading { padding: 60px 0; text-align: center; color: #bbb; font-size: 13px; }
-    .mp-card { display: grid; grid-template-columns: 220px 1fr auto; border: 1px solid #ebebeb; border-radius: 12px; overflow: hidden; transition: box-shadow 0.2s; background: #fff; cursor: pointer; color: inherit; }
-    .mp-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-color: #ddd; }
-    .mp-card.is-sold { opacity: 0.6; cursor: default; }
-    .mp-card.is-sold:hover { box-shadow: none; border-color: #ebebeb; }
-    .mp-card-img { width: 220px; height: 150px; overflow: hidden; position: relative; flex-shrink: 0; }
-    .mp-card-img img { width: 100%; height: 100%; object-fit: contain; display: block; background: #fafafa; }
-    .sold-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; }
-    .sold-overlay-text { font-size: 40px; font-weight: 800; letter-spacing: 4px; color: #fff; text-transform: uppercase; border: 6px solid #fff; padding: 4px 14px; border-radius: 4px; line-height: 1.2; opacity: 0.95; }
-    .mp-card-badge { position: absolute; top: 10px; left: 10px; background: #111; color: #fff; font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 3px; letter-spacing: 0.5px; text-transform: uppercase; }
-    .mp-card-badge.used { background: #555; }
-    .mp-card-badge.parts { background: #2e5c8a; }
-    .mp-card-body { padding: 20px 24px; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
-    .mp-card-meta { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
-    .mp-card-name { font-size: 16px; font-weight: 600; color: #111; margin-bottom: 4px; line-height: 1.3; }
-    .mp-card-desc { font-size: 12px; color: #888; line-height: 1.5; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; text-overflow: ellipsis; }
-    .mp-card-footer { display: flex; align-items: center; gap: 16px; margin-top: 12px; }
-    .mp-card-seller { font-size: 11px; color: #bbb; }
-    .mp-card-seller span { color: #777; font-weight: 500; }
-    .mp-card-right { padding: 20px 24px; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; border-left: 1px solid #f0f0f0; min-width: 180px; }
-    .mp-card-price { font-size: 20px; font-weight: 700; color: #111; letter-spacing: -0.5px; text-align: right; }
-    .mp-card-price-note { font-size: 11px; color: #bbb; text-align: right; margin-top: 2px; }
-    .mp-card-actions { display: flex; flex-direction: column; gap: 7px; width: 100%; }
-    .mp-btn { width: 100%; padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: inherit; border: 1px solid #e0e0e0; background: #fff; color: #111; transition: all 0.15s; text-align: center; }
-    .mp-btn:hover { border-color: #111; }
-    .mp-btn.primary { background: #111; color: #fff; border-color: #111; }
-    .mp-btn.primary:hover { background: #333; }
-    @media (max-width: 768px) {
-      .mp-hero { grid-template-columns: 1fr; }
-      .mp-hero-left { border-right: none; border-bottom: 1px solid #ebebeb; padding: 28px 20px; }
-      .mp-hero-right { padding: 24px 20px; }
-      .mp-hero-title { font-size: 36px; }
-      .sell-banner { padding: 14px 20px; gap: 12px; flex-wrap: wrap; }
-      .mp-filter-bar { padding: 14px 20px; }
-      .mp-search { width: 160px; }
-      .mp-listings { padding: 16px 20px 40px; }
-      .mp-card { grid-template-columns: 1fr; }
-      .mp-card-img { width: 100%; height: 200px; }
-      .mp-card-right { border-left: none; border-top: 1px solid #f0f0f0; flex-direction: row; align-items: center; min-width: unset; padding: 14px 20px; }
-      .mp-card-actions { flex-direction: row; width: auto; }
-      .mp-btn { width: auto; white-space: nowrap; }
-    }
-  </style>
-</head>
-<body>
-
-<nav>
-  <div class="nav-logo">
-    <a href="../" class="logo-link">
-      <div class="logo-icon">B</div>
-      Bike &amp; Butter
-    </a>
-  </div>
-  <div class="nav-right">
-    <div class="nav-links">
-      <div class="nav-partners-wrap">
-        <a href="#" class="nav-partners-trigger">Our Brands
-          <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" width="10" height="10">
-            <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-        <div class="nav-partners-dropdown">
-          <a href="../8lien/"><span class="nav-partner-dot" style="background:#ff677e;"></span>8LIEN</a>
-          <a href="../rstri/"><span class="nav-partner-dot" style="background:#f5c518;"></span>RSTRI</a>
-          <a href="../evr/"><span class="nav-partner-dot" style="background:#F26522;"></span>EVR</a>
-        </div>
-      </div>
-      <a href="../marketplace/" class="active">Marketplace</a>
-      <a href="../book/">Book a Service</a>
-      <a href="../contact/">Contact Us</a>
-    </div>
-    <div id="auth-area"></div>
-  </div>
-  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-<main>
-
-<div class="mobile-menu" id="mobile-menu">
-  <a href="../8lien/" style="color:#ff677e;font-weight:600;">8LIEN 
-  <a href="../rstri/" style="color:#f5c518;font-weight:600;">RSTRI 
-  <a href="../evr/" style="color:#F26522;font-weight:600;">EVR 
-  <a href="../marketplace/" class="active">Marketplace</a>
-  <a href="../book/">Book a Service</a>
-  <a href="../contact/">Contact Us</a>
-</div>
-
-<script>
-document.getElementById('nav-hamburger').addEventListener('click', function() {
-  document.getElementById('mobile-menu').classList.toggle('open');
-});
-document.querySelectorAll('#mobile-menu a').forEach(function(a) {
-  a.addEventListener('click', function() {
-    document.getElementById('mobile-menu').classList.remove('open');
-  });
-});
-</script>
-
-  <div class="mp-hero">
-    <div class="mp-hero-left">
-      <p class="mp-hero-eyebrow">Bike &amp; Butter</p>
-      <h1 class="mp-hero-title">Market&shy;place</h1>
-    </div>
-    <div class="mp-hero-right">
-      <p class="mp-hero-desc">Buy and sell complete bikes, parts, and gear — sourced directly from our community and the shop floor. Every listing is verified by the Bike &amp; Butter team.</p>
-      <div class="mp-hero-stats">
-        <div><div class="mp-stat-num" id="stat-active">—</div><div class="mp-stat-label">Active listings</div></div>
-        <div><div class="mp-stat-num" id="stat-total">—</div><div class="mp-stat-label">Total listings</div></div>
-        <div><div class="mp-stat-num" id="stat-sold">—</div><div class="mp-stat-label">Sold</div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="sell-banner">
-    <p><strong>Got something to sell?</strong> &nbsp;Drop it with us — we'll list it, handle enquiries, and help you close the deal.</p>
-    <button class="sell-btn" onclick="window.location.href='../sell/'">List an Item →</button>
-  </div>
-
-  <div class="mp-filter-bar">
-    <div class="mp-filter-left">
-      <span class="mp-results-count" id="results-count">— listings</span>
-      <div class="filters">
-        <button class="filter-btn active" data-filter="All">All</button>
-        <button class="filter-btn" data-filter="Complete Bike">Complete Bikes</button>
-        <button class="filter-btn" data-filter="Parts">Parts</button>
-        <button class="filter-btn" data-filter="Accessories">Accessories</button>
-      </div>
-    </div>
-    <div class="mp-filter-right">
-      <input type="text" class="mp-search" id="mp-search" placeholder="Search listings…" />
-      <label for="mp-sort" class="sr-only">Sort listings</label>
-      <select class="mp-sort" id="mp-sort">
-        <option value="newest">Newest</option>
-        <option value="price-asc">Price: Low → High</option>
-        <option value="price-desc">Price: High → Low</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="mp-listings" id="mp-listings">
-    <div class="mp-loading">Loading listings…</div>
-  </div>
-
-  <div class="toast" id="toast"></div>
-  <script src="../auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.className += " js";</script>
+  <title>Bikes for sale — Bike & Butter</title>
+  <meta name="description" content="Complete road and triathlon bikes for sale from the Bike & Butter workshop in Singapore. Viewings and test rides by appointment.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://bikeandbutter.com/marketplace/">
+  <meta name="theme-color" content="#121212">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Bikes for sale — Bike & Butter">
+  <meta property="og:description" content="Complete road and triathlon bikes for sale from the Bike & Butter workshop in Singapore.">
+  <meta property="og:image" content="https://bikeandbutter.com/og-image.png">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <link rel="stylesheet" href="/assets/css/store.css">
+  <link rel="stylesheet" href="/assets/css/market.css?v=1">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
   <script>
-const SHEET_ID = '19fTMhMZsNgd-F9RazoKFQ15aGEOUEhrhFpnhDB6cgs0';
-const API_KEY  = 'AIzaSyCsMCVvRAh2D2N-U2wuiYMVyE9Ah8qtGY8';
-const WA_NUMBER = '6591234567';
-const MP_RANGE = 'Marketplace!B2:W';
-let allListings = [];
-let activeFilter = 'All';
-
-async function fetchListings() {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${MP_RANGE}?key=${API_KEY}`;
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    if (!data.values || data.values.length < 2) { showEmpty('No listings yet.'); return; }
-    const headers = data.values[0].map(h => h.trim());
-    allListings = data.values.slice(1).map(row => {
-      let obj = {};
-      headers.forEach((h, i) => { obj[h] = row[i] || ''; });
-      return {
-        id: obj['ID'] || '', name: obj['Name'] || '', brand: obj['Brand'] || '',
-        category: obj['Category'] || '', price: obj['Price'] || '', currency: obj['Currency'] || 'SGD',
-        condition: obj['Condition'] || '', description: obj['Description'] || '',
-        photo: obj['Photo_1'] || '', status: (obj['Status'] || 'Active').trim(), seller: 'Bike & Butter',
-      };
-    });
-    updateStats();
-    renderListings();
-  } catch (err) { console.error(err); showEmpty('Error loading listings.'); }
-}
-
-function updateStats() {
-  const total = allListings.length;
-  const sold  = allListings.filter(i => i.status.toLowerCase() === 'sold').length;
-  document.getElementById('stat-active').textContent = total - sold;
-  document.getElementById('stat-total').textContent  = total;
-  document.getElementById('stat-sold').textContent   = sold;
-}
-
-function renderListings() {
-  const search = document.getElementById('mp-search').value.toLowerCase();
-  let filtered = allListings.filter(item => {
-    const matchFilter = activeFilter === 'All' || item.category.toLowerCase() === activeFilter.toLowerCase();
-    const matchSearch = !search || item.name.toLowerCase().includes(search) || item.brand.toLowerCase().includes(search) || item.description.toLowerCase().includes(search);
-    return matchFilter && matchSearch;
-  });
-  filtered.sort((a, b) => (a.status.toLowerCase() !== 'sold' ? 0 : 1) - (b.status.toLowerCase() !== 'sold' ? 0 : 1));
-  const sortMode = document.getElementById('mp-sort').value;
-  if (sortMode === 'price-asc') {
-    filtered.sort((a, b) => { const aS = a.status.toLowerCase() === 'sold' ? 1 : 0, bS = b.status.toLowerCase() === 'sold' ? 1 : 0; if (aS !== bS) return aS - bS; return (parseFloat(a.price)||0)-(parseFloat(b.price)||0); });
-  } else if (sortMode === 'price-desc') {
-    filtered.sort((a, b) => { const aS = a.status.toLowerCase() === 'sold' ? 1 : 0, bS = b.status.toLowerCase() === 'sold' ? 1 : 0; if (aS !== bS) return aS - bS; return (parseFloat(b.price)||0)-(parseFloat(a.price)||0); });
-  }
-  const container = document.getElementById('mp-listings');
-  if (!filtered.length) { container.innerHTML = '<div class="mp-loading">No results.</div>'; return; }
-  container.innerHTML = filtered.map(buildCard).join('');
-  document.getElementById('results-count').textContent = `${filtered.length} listings`;
-}
-
-function buildCard(item) {
-  const isSold = item.status.toLowerCase() === 'sold';
-  const price = item.price ? `${item.currency || ''} ${String(item.price)}` : 'POA';
-  const img = item.photo ? item.photo : 'https://placehold.co/220x150?text=No+Photo';
-  const soldOverlay = isSold ? `<div class="sold-overlay"><div class="sold-overlay-text">Sold</div></div>` : '';
-  const cardClick = isSold ? '' : `onclick="goToProduct('${item.id}')"`;
-  const cardClass = isSold ? 'mp-card is-sold' : 'mp-card';
-  const actionsHtml = isSold
-    ? `<div class="mp-card-price-note" style="font-size:12px;color:#aaa;">This item has been sold</div>`
-    : `<div class="mp-card-actions">
-        <button class="mp-btn primary" onclick='event.stopPropagation(); handleOffer(${JSON.stringify(item.name)})'>Offer</button>
-        <button class="mp-btn" onclick='event.stopPropagation(); handleMessage(${JSON.stringify(item.name)})'>Message</button>
-      </div>`;
-  return `<div class="${cardClass}" ${cardClick}>
-    <div class="mp-card-img"><img src="${img}" alt="${item.name}" />${soldOverlay}</div>
-    <div class="mp-card-body">
-      <p class="mp-card-meta">${item.brand} · ${item.condition}</p>
-      <p class="mp-card-name">${item.name}</p>
-      <p class="mp-card-desc">${item.description}</p>
-    </div>
-    <div class="mp-card-right">
-      <div><div class="mp-card-price">${price}</div></div>
-      ${actionsHtml}
-    </div>
-  </div>`;
-}
-
-function handleOffer(itemName) {
-  authGuard(() => window.location.href = '../contact/?type=Make%20an%20Offer&bike=' + encodeURIComponent(itemName), 'Sign in to make an offer', 'You need to be signed in to make an offer.');
-}
-function handleMessage(itemName) {
-  authGuard(() => window.location.href = '../contact/?type=Ask%20a%20Question&bike=' + encodeURIComponent(itemName), 'Sign in to ask a question', 'You need to be signed in to send a message.');
-}
-function showEmpty(msg) { document.getElementById('mp-listings').innerHTML = `<div class="mp-loading">${msg}</div>`; }
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); activeFilter = btn.dataset.filter; renderListings(); });
-});
-document.getElementById('mp-search').addEventListener('input', renderListings);
-document.getElementById('mp-sort').addEventListener('change', renderListings);
-fetchListings();
-function goToProduct(id) { window.location.href = `../product/?id=${id}`; }
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZQJRHN886Z');
   </script>
+</head>
+<body class="page-shell">
+
+<!-- @header -->
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="header-in">
+    <div class="header-l">
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu-overlay" aria-label="Open menu"><span class="bars"></span><span class="label">Menu</span></button>
+      <a class="header-link label" href="/shop/">Shop</a>
+      <a class="header-link label" href="/workshop/">Services</a>
+    </div>
+    <a class="brand" href="/" aria-label="Bike &amp; Butter — home">
+      <img src="/assets/img/logo-light-480.webp" alt="Bike &amp; Butter" width="480" height="280">
+    </a>
+    <div class="header-r">
+      <a class="header-link label" href="/contact/">Contact</a>
+      <a class="icon-btn bag-btn" href="/checkout/" data-cart-open aria-label="Open bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 8.5h15v11h-15zM8.5 8.5V7a3.5 3.5 0 0 1 7 0v1.5"/></svg><span class="count" data-cart-count hidden>0</span></a>
+      <a class="btn btn-glass header-book" href="/book/">Book</a>
+    </div>
+  </div>
+</header>
+<nav class="menu-overlay" id="menu-overlay" aria-label="Main menu" hidden>
+  <div class="menu-links">
+    <a href="/shop/">Shop <span class="label">All</span></a>
+    <a href="/#brands">Brands <span class="label">3</span></a>
+    <a class="sub" href="/8lien/">8LIEN — carbon wheels</a>
+    <a class="sub" href="/rstri/">RSTRI — cockpit adapters</a>
+    <a class="sub" href="/evr/">EVR — apparel</a>
+    <a class="sub" href="/parts/">Parts &amp; more</a>
+    <a href="/workshop/">Services</a>
+    <a href="/marketplace/">Bikes for sale</a>
+    <a href="/#visit">Visit us</a>
+    <a href="/help/">Help &amp; FAQ</a>
+    <a href="/contact/">Contact</a>
+  </div>
+  <div class="menu-side">
+    <a class="btn btn-light" href="/book/">Book a service</a>
+    <address>
+      491 Jurong West Avenue 1<br>Singapore 640491<br>Mon–Fri, 9am–6pm<br>
+      <a href="https://wa.me/6587222610" target="_blank" rel="noopener">+65 8722 2610</a><br>
+      <a href="https://www.instagram.com/bikeandbutter/" target="_blank" rel="noopener">@bikeandbutter</a>
+    </address>
+  </div>
+</nav>
+<!-- @/header -->
+
+<main id="main">
+  <section class="mk-hero" data-hero aria-label="Bikes for sale">
+    <span class="label">Marketplace</span>
+    <h1>Bikes we have built, tuned and are ready to pass on.</h1>
+    <p>Complete road and triathlon bikes from the workshop. Every bike is checked over by our mechanics before it is listed. Viewings and test rides by appointment.</p>
+  </section>
+  <div id="mk-list">
+    <div class="mk-bar" data-bar hidden>
+      <div class="mk-chips" data-types></div>
+      <div style="display:flex;gap:12px;align-items:center"><span class="label" data-mk-count></span>
+      <select data-sort aria-label="Sort"><option value="">Newest</option><option value="lo">Price: low to high</option><option value="hi">Price: high to low</option></select></div>
+    </div>
+    <div class="mk-grid" data-mk-grid hidden></div>
+    <p class="mk-empty" data-nomatch hidden>No bikes match this filter.</p>
+    <div class="mk-empty" data-empty hidden>
+      <h2>No bikes listed right now.</h2>
+      <p>New bikes come in regularly and sell quickly, often before they are listed. Message us with what you are after (road, triathlon, size, budget) and we will tell you the moment something suitable arrives.</p>
+      <a class="btn btn-dark" target="_blank" rel="noopener" href="https://wa.me/6587222610?text=Hi%20Bike%20%26%20Butter%2C%20I%27m%20looking%20for%20a%20bike.%20">Tell us what you are looking for</a>
+    </div>
+    <div class="mk-cta">
+      <div><h3>Looking for something specific?</h3><p>We can source and build a bike to your spec, or keep an eye out for one.</p><a class="btn btn-glass" target="_blank" rel="noopener" href="https://wa.me/6587222610?text=Hi%20Bike%20%26%20Butter%2C%20I%27d%20like%20help%20finding%20a%20bike.">WhatsApp us</a></div>
+      <div><h3>Selling or trading in your bike?</h3><p>Tell us about it. If it suits us we will make you an offer.</p><a class="btn btn-glass" target="_blank" rel="noopener" href="https://wa.me/6587222610?text=Hi%20Bike%20%26%20Butter%2C%20I%27d%20like%20to%20sell%20my%20bike.">Tell us about your bike</a></div>
+    </div>
+  </div>
+  <div id="mk-detail" hidden></div>
 </main>
+
+<!-- @footer -->
+<footer class="site-footer">
+  <div class="footer-in">
+    <div class="footer-grid">
+      <div class="footer-col footer-news">
+        <h3>Newsletter</h3>
+        <p class="lead">A few emails a year: bikes for sale, restocks and workshop holiday closures. No spam.</p>
+        <form data-newsletter novalidate>
+          <div class="nl-row">
+            <input type="email" name="email" placeholder="Email address" autocomplete="email" required aria-label="Email address">
+            <button type="submit">Subscribe</button>
+          </div>
+          <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <label class="nl-consent"><input type="checkbox" name="consent" required> <span>I agree to receive emails from Bike &amp; Butter and understand I can unsubscribe at any time.</span></label>
+          <p class="nl-msg" role="status" aria-live="polite"></p>
+        </form>
+        <address>
+          491 Jurong West Avenue 1, Singapore 640491<br>
+          Mon–Fri, 9am–6pm<br>
+          <a href="https://wa.me/6587222610" target="_blank" rel="noopener">+65 8722 2610</a> ·
+          <a href="https://www.instagram.com/bikeandbutter/" target="_blank" rel="noopener">@bikeandbutter</a>
+        </address>
+      </div>
+      <div class="footer-col">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="/workshop/">Workshop</a></li>
+          <li><a href="/book/">Book a service</a></li>
+          <li><a href="/help/">Help &amp; FAQ</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="https://wa.me/6587222610" target="_blank" rel="noopener">WhatsApp us</a></li>
+          <li><a href="/#visit">Find the workshop</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="/shop/">Shop all</a></li>
+          <li><a href="/8lien/">8LIEN</a></li>
+          <li><a href="/rstri/">RSTRI</a></li>
+          <li><a href="/evr/">EVR</a></li>
+          <li><a href="/parts/">Parts &amp; more</a></li>
+          <li><a href="/marketplace/">Bikes for sale</a></li>
+          <li><a href="https://shopee.sg/shop/1784141511" target="_blank" rel="noopener">Shopee</a></li>
+          <li><a href="https://www.lazada.sg/shop/bike-butter/" target="_blank" rel="noopener">Lazada</a></li>
+          <li><a href="https://www.carousell.sg/u/bikeandbutter/" target="_blank" rel="noopener">Carousell</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Bike &amp; Butter</span>
+      <span>Official Singapore distributor of 8LIEN, RSTRI and EVR</span>
+      <span>Singapore · SGD</span>
+    </div>
+  </div>
+</footer>
+<a class="chat-fab" href="https://wa.me/6587222610?text=Hi%20Bike%20%26%20Butter%2C%20I%27d%20like%20to%20ask%20about%20" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5 3h14a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-8.2L5.6 21.6A.8.8 0 0 1 4.300 21v-3A3 3 0 0 1 2 15V6a3 3 0 0 1 3-3Zm3 6.200a1.200 1.200 0 1 0 0 2.400 1.200 1.200 0 0 0 0-2.400Zm4 0a1.200 1.200 0 1 0 0 2.400 1.200 1.200 0 0 0 0-2.400Zm4 0a1.200 1.200 0 1 0 0 2.400 1.200 1.200 0 0 0 0-2.400Z"/></svg>
+</a>
+<!-- @/footer -->
+
+<script src="/assets/js/site.js" defer></script>
+<script src="/assets/js/store.js" defer></script>
+<script src="/assets/js/market.js?v=1" defer></script>
 </body>
 </html>

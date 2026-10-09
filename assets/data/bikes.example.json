@@ -1,0 +1,20 @@
+{
+  "_how_to": "Copy one block from 'bikes' into bikes.json. Photos go in assets/img/bikes/ named <id>-1.webp, <id>-2.webp ... The first photo is the cover. status: available | reserved | sold. Leave price as null to show 'Enquire for price'.",
+  "bikes": [
+    {
+      "id": "example-road-bike",
+      "name": "Example Brand Model Name",
+      "brand": "Example Brand",
+      "type": "Road",
+      "year": 2022,
+      "size": "54cm",
+      "condition": "Pre-owned, excellent",
+      "price": 4200,
+      "status": "available",
+      "summary": "One line that shows on the card.",
+      "description": ["First paragraph about the bike.", "Second paragraph: what we have done to it, service history, upgrades."],
+      "specs": [["Frame", "Carbon"], ["Groupset", "Shimano Ultegra Di2 R8170"], ["Wheels", "8LIEN AETHER 4"], ["Brakes", "Disc"], ["Weight", "7.9kg"]],
+      "images": ["example-road-bike-1.webp", "example-road-bike-2.webp"]
+    }
+  ]
+}
