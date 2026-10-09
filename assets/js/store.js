@@ -96,9 +96,9 @@
   }
   function policyHtml() {
     var s = DATA.shipping;
-    return '<p><strong class="label">Payment</strong><br>Pay securely online by card or PayNow through HitPay after you place your order.</p>' +
+    return '<p><strong class="label">Payment</strong><br>Pay by card or PayNow through HitPay at checkout. For enquiry items we accept PayNow and bank transfer once your order is confirmed.</p>' +
       '<p><strong class="label">Delivery</strong><br>Orders of ' + money(s.freeOver) + ' or more ship free. Orders under ' + money(s.freeOver) + ' pay a flat ' + money(s.flat) + '. Questions? WhatsApp +65 8722 2610, Mon–Fri 9am–6pm.</p>' +
-      '<p><strong class="label">Returns</strong><br>Message us on WhatsApp before ordering if you have questions about returns or warranty.</p>';
+      '<p><strong class="label">Returns</strong><br>We don&rsquo;t offer returns as standard, so message us on WhatsApp if anything is wrong and we&rsquo;ll find a solution. Manufacturer warranty applies where available. See our <a href="/terms/">terms</a>.</p>';
   }
   function openCart() {
     buildCartDrawer(); closeSide(); renderCart();
