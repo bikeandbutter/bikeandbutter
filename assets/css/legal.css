@@ -1,0 +1,10 @@
+.legal{padding:130px var(--pad) 80px;background:#fafafa;color:#111;max-width:none}
+.lg-head,.lg-sec,.lg-foot{max-width:44rem}
+.lg-head{display:grid;gap:12px;margin-bottom:28px}
+.lg-head h1{font-weight:300;font-size:clamp(2rem,5vw,3.4rem);line-height:1.05;letter-spacing:-.02em}
+.lg-date{color:#6f6f6a;font-size:13px}
+.lg-sec{border-top:1px solid var(--line-dark);padding:24px 0}
+.lg-sec h2{font-weight:400;font-size:1.15rem;margin-bottom:10px}
+.lg-sec p{color:#3d3d39;line-height:1.65;margin:0 0 10px}
+.lg-foot{border-top:1px solid var(--line-dark);padding-top:20px;color:#55554f}
+.legal a{text-decoration:underline}

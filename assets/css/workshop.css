@@ -18,3 +18,6 @@
 .ws-visit p{color:#b9b9b4}
 .ws-actions{display:flex;flex-wrap:wrap;gap:10px}
 @media(min-width:900px){.ws-visit{grid-template-columns:1fr auto;align-items:end}}
+.ws-facts{list-style:none;margin:24px 0 0;padding:0;display:grid;gap:8px;color:#3d3d39}
+.ws-facts li::before{content:"— ";color:#8a8a85}
+.ws-note a{text-decoration:underline}

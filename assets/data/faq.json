@@ -7,15 +7,19 @@
    "qa": [
     [
      "How much does delivery cost?",
-     "Orders of S$150 or more ship free. Orders under S$150 pay a flat S$15, shown in your bag before you check out."
+     "Delivery within Singapore is free on orders of S$150 or more. Orders under S$150 pay a flat S$15, shown in your bag before you check out."
     ],
     [
      "Can I collect my order from the workshop instead?",
-     "Message us on WhatsApp before you order at +65 8722 2610 and we'll confirm whether collection works for your items. The workshop is at 491 Jurong West Avenue 1, open Monday to Friday, 9am to 6pm."
+     "Yes. Collection from our workshop at 491 Jurong West Avenue 1 is free of charge, Monday to Friday, 9am to 6pm. We'll let you know when your order is ready."
+    ],
+    [
+     "How long will my order take?",
+     "Items we order in for you, such as RSTRI parts and EVR apparel, typically take around 2 to 4 weeks. We'll confirm the estimated delivery date once your order has been placed with our supplier."
     ],
     [
      "Do you deliver outside Singapore?",
-     "Our online checkout is set up for orders in Singapore. If you're elsewhere, WhatsApp us and we'll see what we can do."
+     "Not at the moment. We currently deliver within Singapore only, but we are working on overseas shipping. WhatsApp us if you are overseas and we'll let you know where we are."
     ]
    ]
   },
@@ -26,19 +30,19 @@
    "qa": [
     [
      "How do I pay?",
-     "Add your items to the bag, go to checkout and enter your details. You'll then be sent to a secure HitPay page to pay online."
+     "We accept PayNow and bank transfer. Once your order or quote is confirmed, we'll send you the payment details. Where online checkout is available, you'll be sent to a secure HitPay page instead."
     ],
     [
-     "Will I get a confirmation?",
-     "Yes. You'll see a confirmation page when payment completes, and we'll email you the order details."
+     "When do I pay?",
+     "For products, payment is made when your order is confirmed. Items we order in from our suppliers are placed only after payment has been received. For workshop jobs, simple jobs are paid on completion, and larger jobs such as full builds usually need a deposit first. Your mechanic will confirm this in your quote."
     ],
     [
-     "I need to change or cancel my order.",
-     "Message us on WhatsApp as soon as you can, quoting your order number, and we'll help."
+     "Can I change or cancel my order?",
+     "Once an order is confirmed and paid, we generally cannot cancel it, as we place it with our suppliers straight away. If you need a change, message us on WhatsApp as soon as possible and we'll see what we can do."
     ],
     [
      "My payment didn't go through.",
-     "Your order is saved but not confirmed until payment completes. You can try again from the shop, or WhatsApp us and we'll help you finish it."
+     "Your order is not confirmed until payment is received. You can try again, or WhatsApp us and we'll help you finish it."
     ]
    ]
   },
@@ -71,16 +75,40 @@
    "img": "/assets/img/home/g7.webp",
    "qa": [
     [
-     "How do I book a service?",
-     "Use the Book page: tell us who you are, choose a service and pick a time that works. We'll confirm on WhatsApp, usually within a few hours."
+     "What do you work on?",
+     "Our focus is road and triathlon bikes: servicing, repairs, upgrades and full builds."
     ],
     [
-     "What do you work on?",
-     "We build, upgrade and service road and triathlon bikes."
+     "How much does a service cost?",
+     "We don't have fixed packages. Every job is quoted after you enquire and our mechanic has looked at the bike's condition and the work and parts involved."
+    ],
+    [
+     "How long will my bike take?",
+     "Usually one to two weeks, depending on the work. Bigger jobs, such as full builds, can take longer. Your mechanic will give you an estimate with your quote."
+    ],
+    [
+     "Do I pay a deposit?",
+     "For larger jobs like full builds we usually take a deposit. For simple upgrades we usually don't. Otherwise payment is due when the job is complete. The quote will state which applies to you."
+    ],
+    [
+     "Can I bring my own parts?",
+     "Yes. You can bring your own parts, or we can order them in for you."
+    ],
+    [
+     "Can you collect or deliver my bike?",
+     "Our workshop works on a drop-off basis. If you can't make it, we can arrange a Lalamove pickup and return. The cost, and the risk during transit, is borne by the bike owner."
+    ],
+    [
+     "Is the work guaranteed?",
+     "Yes. We give a 1-year warranty on our workmanship. It doesn't cover crash damage, or work done by anyone other than us."
+    ],
+    [
+     "How do I book a service?",
+     "Use the Book a service page to pick a slot, or WhatsApp us. We'll confirm the booking with you."
     ],
     [
      "Can I test ride wheels before buying?",
-     "Yes, test rides are available at our Jurong West workshop. Message us to arrange a time."
+     "Ask us when you message and we'll see what is available. Test rides are by appointment."
     ],
     [
      "Where are you and when are you open?",
@@ -95,11 +123,38 @@
    "qa": [
     [
      "What is your returns policy?",
-     "Returns and warranty terms depend on the product and brand. Message us on WhatsApp before you order and we'll confirm the terms for the item you're looking at."
+     "We don't offer returns as standard, as many of our items are ordered in specially for you. If something isn't right, WhatsApp us and we'll work out the best solution together. Made-to-order items (RSTRI and EVR) and parts that have already been fitted can't be returned. For other items in new, unused condition we'll consider a return, with any collection or delivery cost (for example by Lalamove) covered by the customer."
     ],
     [
      "Something is wrong with my order.",
-     "WhatsApp us on +65 8722 2610 with your order number and a photo if you can, and we'll sort it out."
+     "Tell us as soon as possible on WhatsApp with your order number and a photo. We'll diagnose the issue and find a solution case by case."
+    ],
+    [
+     "Is there a warranty?",
+     "Yes. Products carry the manufacturer's warranty where one applies, and we handle claims with the manufacturer on your behalf. Our workshop work carries a 1-year workmanship warranty."
+    ],
+    [
+     "What does the warranty not cover?",
+     "Crash damage, and parts or work fitted by someone other than us."
+    ]
+   ]
+  },
+  {
+   "id": "bikes",
+   "title": "Buying and selling bikes",
+   "img": "/assets/img/home/g3.webp",
+   "qa": [
+    [
+     "Are your bikes sold as-is?",
+     "Yes, bikes are sold as-is. You are welcome to view and test ride a bike before you decide."
+    ],
+    [
+     "Can I reserve a bike with a deposit?",
+     "We don't take deposits at the moment. Payment in full is collected once the deal is agreed."
+    ],
+    [
+     "Can I sell or trade in my bike?",
+     "We review bikes case by case. Our mechanic looks at your bike in person first. If it suits us, we agree a price with you, suggest a selling price, and list it on our website and Carousell. A small fee applies when it sells. Message us on WhatsApp to start."
     ]
    ]
   },
@@ -121,8 +176,8 @@
      "Parts, apparel and nutrition are also on our Shopee, Lazada and Carousell stores."
     ],
     [
-     "Do you sell EVR apparel online?",
-     "Browse the EVR range on its own page and enquire for sizing and pricing."
+     "How do I order EVR apparel?",
+     "Browse the EVR range, then WhatsApp us your size. Each item is ordered in for you after payment is received, and we'll advise the estimated delivery date once it's placed."
     ]
    ]
   }
