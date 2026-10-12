@@ -297,6 +297,41 @@ tbody tr.clickable:hover { background: var(--bg3); }
 .inv-footer .line strong { font-weight: 800; }
 .inv-footer-qr { width: 120px; height: 120px; object-fit: contain; flex-shrink: 0; background: white; padding: 4px; border-radius: 4px; }
 
+/* ===== Quotation / Invoice document — hub-style layout in B&B black / white / yellow ===== */
+.dq-header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:3px solid #111;margin-bottom:20px}
+.dq-brand{display:flex;align-items:center;gap:14px}
+.dq-logo{height:58px;width:auto;object-fit:contain}
+.dq-co{font-size:17px;font-weight:900;color:#111;letter-spacing:-.3px}
+.dq-co-d{font-size:10px;color:#666;line-height:1.6;margin-top:2px}
+.dq-title{font-size:30px;font-weight:900;letter-spacing:-.5px;color:#111;text-align:right;line-height:1}
+.dq-title span{display:block;height:5px;width:64px;background:#F8CC0A;margin:8px 0 0 auto}
+.dq-meta{display:grid;grid-template-columns:1fr auto;gap:24px;margin-bottom:20px}
+.dq-lbl{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#111;margin-bottom:5px}
+.dq-name{font-size:14px;font-weight:800;color:#111}
+.dq-addr{font-size:11.5px;color:#555;line-height:1.6}
+.dq-ref{display:grid;grid-template-columns:max-content max-content;column-gap:14px;row-gap:4px;align-content:start;justify-self:end}
+.dq-ref .k{font-size:11px;color:#666;text-align:right;white-space:nowrap}
+.dq-ref .v{font-size:12.5px;font-weight:800;color:#111;text-align:right;white-space:nowrap}
+.dq-bottom{display:grid;grid-template-columns:1fr 250px;gap:32px;margin-top:18px;padding-top:14px;border-top:3px solid #111;align-items:start}
+.dq-pay-sub{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#888;margin:9px 0 3px}
+.dq-pay-row{font-size:11.5px;color:#444;line-height:1.65}
+.dq-pay-row b{color:#111;font-weight:800}
+.dq-note{font-size:10.5px;color:#666;font-style:italic;margin-top:9px;line-height:1.5}
+.dq-valid{font-size:11px;color:#444;margin-top:8px;line-height:1.5}
+.dq-valid b{color:#111}
+.dq-right .inv-totals{margin-top:0}
+.dq-right .inv-totals-inner{width:100%}
+.dq-qr{display:flex;flex-direction:column;align-items:center;margin-top:12px}
+.dq-qr img{width:120px;height:120px;object-fit:contain}
+.dq-qr div{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;margin-top:3px;color:#111}
+.tot-row.dep{background:#FFF6CC;border-bottom:none;border-left:4px solid #F8CC0A;padding:6px 8px;font-weight:800;color:#111;margin-top:8px}
+.tot-row.bal{color:#444;border-bottom:none}
+.dq-footer{flex-shrink:0;background:#F8CC0A;padding:12px 44px;display:flex;justify-content:space-between;align-items:center;font-size:10.5px;color:#111;font-weight:700}
+.dq-footer .pg{font-weight:600;letter-spacing:1px}
+.inv-table th{font-size:9.5px;text-transform:uppercase;letter-spacing:1.2px}
+.qt-status{border:1px solid var(--border2,#ccc);border-radius:6px;padding:3px 6px;font-size:12px;font-family:inherit;background:var(--bg,#fff);color:inherit}
+.qt-expired{color:#c0392b;font-size:10px;font-weight:700;margin-left:4px}
+
 .svc-infobar { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid #ddd; border-radius: 6px; overflow: hidden; margin: 16px 0 20px; }
 .svc-infobar > div { padding: 9px 12px; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; }
 .svc-infobar > div:nth-child(4n) { border-right: none; }
@@ -390,7 +425,8 @@ tbody tr.clickable:hover { background: var(--bg3); }
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Sales</div>
-        <button class="nav-item" data-tab="invoices" onclick="switchTab('invoices')"><span class="nav-icon">INV</span> Invoices</button>
+        <button class="nav-item" data-tab="quotations" onclick="switchTab('quotations')"><span class="nav-icon">QT</span> Quotations</button>
+         <button class="nav-item" data-tab="invoices" onclick="switchTab('invoices')"><span class="nav-icon">INV</span> Invoices</button>
         <button class="nav-item" data-tab="sales" onclick="switchTab('sales')"><span class="nav-icon">SLS</span> Sales</button>
       </div>
       <div class="nav-group">
@@ -601,6 +637,9 @@ tbody tr.clickable:hover { background: var(--bg3); }
                 </select>
               </div>
               <div style="font-size:11px;color:#666;margin-top:-4px">Parts below only deduct stock if a linked invoice is chosen.</div>
+              <div class="ie-field" style="margin-top:8px"><label>Link to quotation (optional)</label>
+                <select id="svcQuotationId"><option value="">— No linked quotation —</option></select>
+              </div>
             </div>
 
             <div class="ie-section">
@@ -647,6 +686,20 @@ tbody tr.clickable:hover { background: var(--bg3); }
           </div>
         </div>
       </div>
+      <div class="tab-panel" id="tab-quotations">
+        <div class="page-header">
+          <div><div class="page-title">Quotations</div><div class="page-subtitle">Quote jobs and parts, ask for a deposit, then convert the accepted quote into an invoice</div></div>
+          <div class="page-actions"><button class="btn btn-primary" onclick="openQuotationEditor()">+ New Quotation</button></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="search-input" style="width:380px"><input type="text" id="quoteSearch" placeholder="Search quote no. or customer…" oninput="renderQuotations()"></div></div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Quote No.</th><th>Customer</th><th>Date</th><th>Valid Until</th><th>Total</th><th>Deposit</th><th>Status</th><th>Invoice</th><th></th></tr></thead>
+            <tbody id="quoteRows"><tr><td colspan="9" class="cell-muted">Loading…</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
       <div class="tab-panel" id="tab-invoices">
         <div class="page-header">
           <div><div class="page-title">Invoices</div><div class="page-subtitle">Create, edit, and print invoices — with revisions</div></div>
@@ -664,22 +717,30 @@ tbody tr.clickable:hover { background: var(--bg3); }
       <div class="tab-panel" id="tab-invoice-editor" style="padding:0;overflow:hidden;">
         <div class="ie-app">
           <div class="ie-editor" id="ieEditorPane">
-            <span class="ie-back" onclick="switchTab('invoices')">← Back to Invoices</span>
+            <span class="ie-back" id="ieBackLink" onclick="ieGoBack()">← Back to Invoices</span>
             <div class="ie-title" id="invEditorTitle">New Invoice</div>
             <div class="ie-sub" id="invEditorSub">Not yet saved</div>
 
             <input type="hidden" id="invId">
 
             <div class="ie-section">
-              <div class="ie-section-title">Invoice Details</div>
+              <div class="ie-section-title" id="ieDetailsTitle">Invoice Details</div>
               <div class="ie-field">
-                <label>Invoice Number &amp; Revision</label>
+                <label id="ieNumLabel">Invoice Number &amp; Revision</label>
                 <div class="ie-invnum-wrap">
-                  <div class="ie-field"><input type="text" id="invSavedNo" placeholder="e.g. INVBB0826003" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
+                  <div class="ie-field"><input type="text" id="invSavedNo" placeholder="e.g. BNB-INV1026001" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
                   <div class="ie-field ie-rev-field"><input type="text" id="invRevSuffix" placeholder="-01"></div>
                 </div>
               </div>
-              <div class="ie-field"><label>Date</label><input type="date" id="invDate" oninput="renderInvoicePreview()"></div>
+              <div class="ie-field"><label>Date</label><input type="date" id="invDate" oninput="ieOnDateChange()"></div>
+              <div id="ieQuoteFields" style="display:none">
+                <div class="ie-row-2">
+                  <div class="ie-field"><label>Valid until</label><input type="date" id="qtValidUntil" oninput="ieOnValidManual()"></div>
+                  <div class="ie-field"><label>Status</label><select id="qtStatus"><option value="draft">Draft</option><option value="sent">Sent</option><option value="accepted">Accepted</option><option value="declined">Declined</option></select></div>
+                </div>
+              </div>
+              <input type="hidden" id="invQuotationId"><input type="hidden" id="invQuoteRef">
+              <div id="ieInvQuoteBadge" style="display:none;margin-top:6px;font-size:11px;color:#4ade80"></div>
             </div>
 
             <div class="ie-section">
@@ -709,11 +770,20 @@ tbody tr.clickable:hover { background: var(--bg3); }
             </div>
 
             <div class="ie-section">
-              <div class="ie-section-title">Invoice-level discount</div>
+              <div class="ie-section-title" id="ieDiscTitle">Invoice-level discount</div>
               <div class="ie-row-2">
                 <div class="ie-field"><label>Label</label><input type="text" id="invDiscLabel" placeholder="e.g. Loyalty Discount" oninput="renderInvoicePreview()"></div>
                 <div class="ie-field"><label>Percent</label><input type="number" id="invDiscPct" placeholder="%" oninput="renderInvoicePreview()"></div>
               </div>
+            </div>
+
+            <div class="ie-section" id="ieDepositSection" style="display:none">
+              <div class="ie-section-title">Deposit required</div>
+              <div class="ie-row-2">
+                <div class="ie-field"><label>Type</label><select id="qtDepType" onchange="ieDocChanged()"><option value="pct">Percentage (%)</option><option value="amt">Fixed amount ($)</option></select></div>
+                <div class="ie-field"><label>Value</label><input type="number" id="qtDepValue" min="0" step="any" placeholder="e.g. 30" oninput="ieDocChanged()"></div>
+              </div>
+              <div id="qtDepReadout" style="font-size:12px;color:#f6ca14;margin-top:6px"></div>
             </div>
 
             <div class="ie-section">
@@ -722,7 +792,8 @@ tbody tr.clickable:hover { background: var(--bg3); }
             </div>
 
             <div class="ie-btn-row">
-              <button class="ie-save-btn" onclick="saveInvoice()">Save</button>
+              <button class="ie-save-btn" id="ieConvertBtn" style="display:none" onclick="ieConvertCurrentQuote()">→ Invoice</button>
+              <button class="ie-save-btn" onclick="saveDoc()">Save</button>
               <button class="ie-print-btn" onclick="printInvoice()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Save &amp; Print PDF</button>
             </div>
           </div>
@@ -1131,7 +1202,7 @@ function switchTab(tab) {
   if (panel) panel.classList.add('active');
   const navBtn = document.querySelector('.nav-item[data-tab="' + tab + '"]');
   if (navBtn) navBtn.classList.add('active');
-  const titles = { dashboard: 'Dashboard', crm: 'Customers & Bikes', servicing: 'Servicing', invoices: 'Invoices', sales: 'Sales', products: 'Products & Stock', accounting: 'Accounting', settings: 'Settings' };
+  const titles = { dashboard: 'Dashboard', crm: 'Customers & Bikes', servicing: 'Servicing', invoices: 'Invoices', quotations: 'Quotations', sales: 'Sales', products: 'Products & Stock', accounting: 'Accounting', settings: 'Settings' };
   document.getElementById('topbarTitle').textContent = titles[tab] || tab;
   if (tab === 'servicing') loadServicingList();
 }
@@ -1150,6 +1221,7 @@ async function loadAll() {
     renderDashboard();
     renderCustomers();
     await loadInvoices();
+    await loadQuotations();
     await loadProducts();
     renderDashboard(); // re-run now that PRODUCTS/VARIANTS are loaded (low stock panel needs them)
     await loadPurchases();
@@ -1462,58 +1534,13 @@ async function printCombined(serviceRecordId) {
   const { data: items } = await sb.from('invoice_items').select('*').eq('invoice_id', s.invoice_id).order('sort_order');
   const b = BIKES.find(x => x.id === s.bike_id);
   const c = CUSTOMERS.find(x => x.id === (s.customer_id || (b ? b.customer_id : null)));
-  let sn = 1;
-  (items || []).forEach(it => {
-    const lineTotal = it.qty * it.unit_price;
-    rowsHtml += `<tr><td>${sn++}</td><td>${escapeHtml(it.description)}</td><td style="text-align:center">${it.qty}</td><td style="text-align:right">${money(it.unit_price)}</td><td style="text-align:right">${money(lineTotal)}</td></tr>`;
-    (it.subs||[]).forEach(sub => rowsHtml += `<tr><td></td><td style="padding-left:20px;color:#666;font-size:12px;font-style:italic">${escapeHtml(sub.text)}</td><td></td><td></td><td></td></tr>`);
-    (it.discounts||[]).forEach(d => { const amt = -(lineTotal * (d.value||0)/100); rowsHtml += `<tr><td>-</td><td>${escapeHtml(d.label)} (${d.value}%)</td><td style="text-align:center">1</td><td style="text-align:right">${money(amt)}</td><td style="text-align:right">${money(amt)}</td></tr>`; });
-  });
-
-  const style = `<style>
-    .pc-page { width:794px; min-height:1122px; box-sizing:border-box; font-family:'Inter',Arial,Helvetica,sans-serif; color:#111; background:#fff; padding:40px 44px; }
-    .pc-page .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
-    .pc-page .brand-logo{height:56px;width:auto;object-fit:contain;object-position:left}
-    .pc-page .uen{color:#666;font-size:11px;text-align:right;margin-top:4px}
-    .pc-page h1{font-size:26px;text-align:center;margin:24px 0 18px;font-weight:800}
-    .pc-page .partybox{display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px}
-    .pc-page .label{color:#888;font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
-    .pc-page table{width:100%;border-collapse:collapse;margin-top:16px}
-    .pc-page th{border-bottom:2px solid #000;text-align:left;padding:7px 6px;font-size:10.5px;text-transform:uppercase}
-    .pc-page td{padding:7px 6px;font-size:13px;border-bottom:1px solid #e5e5e5}
-    .pc-page .totalrow td{border-top:2px solid #000;border-bottom:none;font-weight:800;font-size:16px;padding-top:10px}
-    .pc-page .footer-bar{background:#f6ca14;margin-top:36px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-radius:2px}
-    .pc-page .footer-note{font-size:11px;max-width:420px}
-    .pc-page .footer-qr{width:22mm;height:22mm;background:#fff;padding:1.5mm;flex-shrink:0}
-    .pc-page .section-title{font-size:20px;font-weight:800;margin:0 0 4px;font-family:Georgia,serif}
-    .pc-page .section-sub{font-size:12px;color:#666;margin-bottom:20px}
-    .pc-page h3{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#666;margin:18px 0 6px}
-    .pc-page li{font-size:13px;margin-bottom:3px}
-  </style>`;
-
-  const page1 = `<div class="pc-page">
-    <div class="header">
-      <img class="brand-logo" src="${BNB_LOGO_DATA_URI}" alt="Bike&amp;Butter">
-      <div class="uen">UEN: 53521776E</div>
-    </div>
-    <h1>INVOICE</h1>
-    <div class="partybox">
-      <div><div class="label">Billed to</div><strong>${escapeHtml(inv.customer_name)}</strong><br>Singapore</div>
-      <div style="text-align:right"><div class="label">Invoice No.</div><strong>${escapeHtml(inv.full_invoice_no)}</strong><br><span style="color:#888;font-size:11px">Date: ${formatDate(inv.invoice_date)}</span></div>
-    </div>
-    <table><thead><tr><th>S/N</th><th>Description</th><th style="text-align:center">Qty</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Total</th></tr></thead>
-    <tbody>${rowsHtml}<tr class="totalrow"><td colspan="3"></td><td>Total</td><td style="text-align:right">${money(inv.total)}</td></tr></tbody></table>
-    <div class="footer-bar">
-      <div class="footer-note">Payment can be made via PayNow by scanning the QR code or using UEN <strong>53521776E</strong>. Please remember to include your <strong>Invoice Number</strong> in the remarks when making payment.</div>
-      <img class="footer-qr" src="${BNB_QR_DATA_URI}" alt="PayNow QR">
-    </div>
-  </div>`;
+  const invPages = buildInvoicePagesFromData(invoiceDataFromRecord(inv, items || []));
 
   const page2 = buildServiceReportPage(s, b, c);
 
   const container = makeOffscreenContainer();
   try {
-    container.innerHTML = style + page1 + page2;
+    container.innerHTML = invPages.join('') + page2;
     await new Promise(r => setTimeout(r, 50));
     const pageEls = Array.from(container.querySelectorAll('.pc-page, .inv-page'));
     await downloadPdfFromPages(pageEls, (inv.full_invoice_no || 'invoice') + ' - Invoice + Report.pdf');
@@ -1624,6 +1651,7 @@ async function svcOnCustomerChange() {
   const custId = document.getElementById('svcCustomerSelect').value;
   svcPopulateBikeSelect(custId, null);
   await svcPopulateInvoiceSelect(custId, null);
+  svcPopulateQuotationSelect(custId, null);
   renderServicePreview();
 }
 async function svcPopulateInvoiceSelect(customerId, selectedInvoiceId) {
@@ -1638,6 +1666,21 @@ async function svcPopulateInvoiceSelect(customerId, selectedInvoiceId) {
 }
 async function svcOnInvoiceChange() {
   await svcPullPartsFromInvoice(false);
+  // If the chosen invoice was created from a quotation, link that quotation too (when none chosen yet)
+  const invId = document.getElementById('svcInvoiceId').value;
+  const inv = INVOICES.find(i => i.id === invId);
+  const qSel = document.getElementById('svcQuotationId');
+  if (inv && inv.quotation_id && qSel && !qSel.value && [...qSel.options].some(o => o.value === inv.quotation_id)) qSel.value = inv.quotation_id;
+}
+function svcPopulateQuotationSelect(customerId, selectedId) {
+  const sel = document.getElementById('svcQuotationId');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— No linked quotation —</option>';
+  const c = CUSTOMERS.find(x => x.id === customerId);
+  if (!c) return;
+  QUOTATIONS.filter(q => q.customer_id === customerId || q.customer_name === c.name).forEach(q => {
+    sel.innerHTML += `<option value="${q.id}" ${q.id === selectedId ? 'selected' : ''}>${escapeHtml(q.full_quotation_no || q.quotation_no || '')} — ${formatDate(q.quotation_date)} (${money(q.total)}) · ${escapeHtml(q.status || '')}</option>`;
+  });
 }
 async function svcPullPartsFromInvoice(force) {
   const invoiceId = document.getElementById('svcInvoiceId').value;
@@ -1709,6 +1752,7 @@ async function openServiceModal(bikeId, recordId) {
   svcPopulateCustomerSelect(custId);
   svcPopulateBikeSelect(custId, effectiveBikeId);
   await svcPopulateInvoiceSelect(custId, record ? record.invoice_id : '');
+  svcPopulateQuotationSelect(custId, record ? record.quotation_id : '');
 
   document.getElementById('svcDate').value = record ? record.service_date : new Date().toISOString().slice(0,10);
   document.getElementById('svcMechanic').value = record ? (record.mechanic || '') : '';
@@ -1741,7 +1785,7 @@ async function nextServiceReportNumber() {
   const now = new Date();
   const mm = String(now.getMonth()+1).padStart(2,'0');
   const yy = String(now.getFullYear()).slice(-2);
-  const prefix = 'SRBB' + mm + yy;
+  const prefix = 'BNB-SR' + mm + yy;
   const { data } = await sb.from('service_records').select('report_no').ilike('report_no', prefix + '%').order('report_no', { ascending: false }).limit(1);
   let seq = 1;
   if (data && data.length) {
@@ -1776,6 +1820,7 @@ async function saveService() {
     watch_items: document.getElementById('svcWatchItems').value.trim() || null,
     next_service_due: document.getElementById('svcNextDue').value || null,
     invoice_id: invoiceId,
+    quotation_id: document.getElementById('svcQuotationId').value || null,
     checklist: currentServiceChecklist,
     parts_used: validParts,
     photos: currentServicePhotos,
@@ -2986,26 +3031,7 @@ async function quickPrintInvoice(id, btnEl) {
     const { data: inv, error } = await sb.from('invoices').select('*').eq('id', id).single();
     if (error || !inv) { alert('Could not load invoice.'); return; }
     const { data: items } = await sb.from('invoice_items').select('*').eq('invoice_id', id).order('sort_order');
-    const invDisc = (inv.invoice_discounts || [])[0];
-
-    const addrLines = [];
-    if (inv.address_line1) addrLines.push(inv.address_line1);
-    if (inv.address_line2) addrLines.push(inv.address_line2);
-    addrLines.push('Singapore' + (inv.postal_code ? ' ' + inv.postal_code : ''));
-
-    const data = {
-      fullInvNo: inv.full_invoice_no || inv.invoice_no,
-      date: formatDate(inv.invoice_date) || '—',
-      name: inv.customer_name || 'Customer Name',
-      addrLines,
-      remarks: inv.remarks,
-      items: (items || []).map(it => ({
-        desc: it.description, qty: it.qty, price: it.unit_price,
-        subs: it.subs || [], discounts: it.discounts || []
-      })),
-      discPct: invDisc ? invDisc.value : 0,
-      discLabel: invDisc ? invDisc.label : ''
-    };
+    const data = invoiceDataFromRecord(inv, items || []);
 
     container = makeOffscreenContainer();
     container.innerHTML = buildInvoicePagesFromData(data).join('');
@@ -3057,71 +3083,173 @@ function calcGrandTotal() {
   return subtotal;
 }
 
-async function openInvoiceEditor(invoiceId) {
-  document.getElementById('invId').value = '';
-  document.getElementById('invSavedNo').value = '';
-  document.getElementById('invRevSuffix').value = '';
-  document.getElementById('invCustomerName').value = '';
-  document.getElementById('invDate').value = new Date().toISOString().slice(0,10);
-  document.getElementById('invAddr1').value = '';
-  document.getElementById('invAddr2').value = '';
-  document.getElementById('invPostal').value = '';
-  document.getElementById('invRemarks').value = '';
-  document.getElementById('invDiscLabel').value = '';
-  document.getElementById('invDiscPct').value = '';
+/* ---- Shared Invoice / Quotation editor. docMode decides which table, labels and extra fields are used. ---- */
+let docMode = 'invoice';
+let qtValidAuto = true;
+
+function openInvoiceEditor(id) { return openDocEditor('invoice', id); }
+function openQuotationEditor(id) { return openDocEditor('quote', id); }
+
+function addDaysISO(iso, n) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-').map(Number);
+  const dt = new Date(y, m - 1, d + n);
+  return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+}
+
+function applyDocModeUI() {
+  const q = docMode === 'quote';
+  document.getElementById('ieDetailsTitle').textContent = q ? 'Quotation Details' : 'Invoice Details';
+  document.getElementById('ieNumLabel').textContent = q ? 'Quotation Number & Revision' : 'Invoice Number & Revision';
+  document.getElementById('invSavedNo').placeholder = q ? 'e.g. BNB-QT1026001' : 'e.g. BNB-INV1026001';
+  document.getElementById('ieDiscTitle').textContent = q ? 'Quotation-level discount' : 'Invoice-level discount';
+  document.getElementById('ieBackLink').textContent = q ? '← Back to Quotations' : '← Back to Invoices';
+  document.getElementById('ieQuoteFields').style.display = q ? '' : 'none';
+  document.getElementById('ieDepositSection').style.display = q ? '' : 'none';
+  document.getElementById('ieConvertBtn').style.display = q ? '' : 'none';
+}
+
+function ieGoBack() { switchTab(docMode === 'quote' ? 'quotations' : 'invoices'); }
+
+function ieOnDateChange() {
+  if (docMode === 'quote' && qtValidAuto) document.getElementById('qtValidUntil').value = addDaysISO(document.getElementById('invDate').value, 14);
+  renderInvoicePreview();
+}
+function ieOnValidManual() { qtValidAuto = false; renderInvoicePreview(); }
+function ieDocChanged() {
+  document.getElementById('invGrandTotal').textContent = money(calcGrandTotal());
+  renderInvoicePreview();
+}
+
+function calcDeposit(total) {
+  const type = document.getElementById('qtDepType')?.value || 'pct';
+  const v = parseFloat(document.getElementById('qtDepValue')?.value) || 0;
+  let amt = type === 'pct' ? total * v / 100 : v;
+  amt = Math.min(Math.max(amt, 0), Math.max(total, 0));
+  return Math.round(amt * 100) / 100;
+}
+function depositLabel() {
+  const type = document.getElementById('qtDepType')?.value || 'pct';
+  const v = parseFloat(document.getElementById('qtDepValue')?.value) || 0;
+  return type === 'pct' && v ? 'Deposit required (' + v + '%)' : 'Deposit required';
+}
+function updateDepositReadout() {
+  const el = document.getElementById('qtDepReadout');
+  if (!el) return;
+  const total = calcGrandTotal();
+  const dep = calcDeposit(total);
+  el.textContent = dep > 0 ? 'Deposit to pay: ' + money(dep) + '  ·  Balance on completion: ' + money(total - dep) : 'No deposit required';
+}
+
+function ieLinkCustomerUI(cust, bikeId) {
+  if (!cust) return;
+  document.getElementById('invLinkedCustomerId').value = cust.id;
+  const badge = document.getElementById('ieCustLinkedBadge');
+  badge.style.display = 'block';
+  badge.textContent = '✓ Linked to ' + customerCode(cust);
+  const bikes = BIKES.filter(b => b.customer_id === cust.id);
+  if (bikes.length) {
+    document.getElementById('ieBikeLinkField').style.display = 'block';
+    document.getElementById('invLinkedBikeSelect').innerHTML = '<option value="">— No specific bike —</option>' +
+      bikes.map(b => `<option value="${b.id}" ${b.id === bikeId ? 'selected' : ''}>${escapeHtml([b.brand, b.model].filter(Boolean).join(' ') || 'Unnamed bike')} — ${bikeCode(b)}</option>`).join('');
+    document.getElementById('invLinkedBikeId').value = bikes.some(b => b.id === bikeId) ? bikeId : '';
+  }
+}
+
+function ieShowQuoteBadge(text) {
+  const el = document.getElementById('ieInvQuoteBadge');
+  if (docMode === 'invoice' && text) { el.style.display = 'block'; el.textContent = '✓ Created from quotation ' + text; }
+  else el.style.display = 'none';
+}
+
+async function openDocEditor(mode, docId, prefill) {
+  docMode = mode;
+  const isQ = mode === 'quote';
+  const setV = (id, v) => { document.getElementById(id).value = v; };
+  const today = new Date().toISOString().slice(0, 10);
+  ['invId', 'invSavedNo', 'invRevSuffix', 'invCustomerName', 'invAddr1', 'invAddr2', 'invPostal', 'invRemarks',
+   'invDiscLabel', 'invDiscPct', 'invQuotationId', 'invQuoteRef', 'qtDepValue'].forEach(id => setV(id, ''));
+  setV('invDate', today);
+  setV('qtStatus', 'draft');
+  setV('qtDepType', 'pct');
+  qtValidAuto = true;
+  setV('qtValidUntil', addDaysISO(today, 14));
   ieClearCustomerLink();
   currentInvoiceItems = [blankInvoiceItem()];
-  document.getElementById('invEditorTitle').textContent = 'New Invoice';
+  applyDocModeUI();
+  ieShowQuoteBadge('');
+  document.getElementById('invEditorTitle').textContent = isQ ? 'New Quotation' : 'New Invoice';
   document.getElementById('invEditorSub').textContent = 'Not yet saved';
-  if (invoiceId) {
-    const { data: inv, error } = await sb.from('invoices').select('*').eq('id', invoiceId).single();
-    if (!error && inv) {
-      document.getElementById('invId').value = inv.id;
-      document.getElementById('invSavedNo').value = inv.saved_invoice_no || inv.invoice_no || '';
-      document.getElementById('invRevSuffix').value = inv.rev_suffix || '';
-      document.getElementById('invCustomerName').value = inv.customer_name || '';
-      document.getElementById('invDate').value = inv.invoice_date || '';
-      document.getElementById('invAddr1').value = inv.address_line1 || '';
-      document.getElementById('invAddr2').value = inv.address_line2 || '';
-      document.getElementById('invPostal').value = inv.postal_code || '';
-      document.getElementById('invRemarks').value = inv.remarks || '';
-      const invDisc = (inv.invoice_discounts || [])[0];
-      if (invDisc) { document.getElementById('invDiscLabel').value = invDisc.label || ''; document.getElementById('invDiscPct').value = invDisc.value || ''; }
-      document.getElementById('invEditorTitle').textContent = inv.full_invoice_no || inv.invoice_no;
-      document.getElementById('invEditorSub').textContent = 'Editing saved invoice';
-      const matchedCust = CUSTOMERS.find(x => x.name === inv.customer_name);
-      if (matchedCust) {
-        document.getElementById('invLinkedCustomerId').value = matchedCust.id;
-        const badge = document.getElementById('ieCustLinkedBadge');
-        badge.style.display = 'block';
-        badge.textContent = '✓ Linked to ' + customerCode(matchedCust);
-        const bikes = BIKES.filter(b => b.customer_id === matchedCust.id);
-        if (bikes.length) {
-          const bikeField = document.getElementById('ieBikeLinkField');
-          const sel = document.getElementById('invLinkedBikeSelect');
-          bikeField.style.display = 'block';
-          sel.innerHTML = '<option value="">— No specific bike —</option>' +
-            bikes.map(b => `<option value="${b.id}">${escapeHtml([b.brand,b.model].filter(Boolean).join(' ')||'Unnamed bike')} — ${bikeCode(b)}</option>`).join('');
-        }
-      }
 
-      const { data: items } = await sb.from('invoice_items').select('*').eq('invoice_id', invoiceId).order('sort_order');
-      currentInvoiceItems = (items || []).map(it => ({
-        id: invoiceItemSeq++, desc: it.description, qty: it.qty, price: it.unit_price,
-        subs: it.subs || [], discounts: it.discounts || [], variant_id: it.variant_id || ''
-      }));
+  const mapItems = rows => (rows || []).map(it => ({
+    id: invoiceItemSeq++, desc: it.description, qty: isQ || prefill ? (it.quantity ?? it.qty) : it.qty, price: it.unit_price,
+    subs: it.subs || [], discounts: it.discounts || [], variant_id: it.variant_id || ''
+  }));
+
+  if (docId) {
+    const { data: r, error } = await sb.from(isQ ? 'quotations' : 'invoices').select('*').eq('id', docId).single();
+    if (!error && r) {
+      const baseNo = isQ ? (r.saved_quotation_no || r.quotation_no) : (r.saved_invoice_no || r.invoice_no);
+      const fullNo = isQ ? (r.full_quotation_no || r.quotation_no) : (r.full_invoice_no || r.invoice_no);
+      setV('invId', r.id);
+      setV('invSavedNo', baseNo || '');
+      setV('invRevSuffix', r.rev_suffix || '');
+      setV('invCustomerName', r.customer_name || '');
+      setV('invDate', (isQ ? r.quotation_date : r.invoice_date) || '');
+      setV('invAddr1', r.address_line1 || '');
+      setV('invAddr2', r.address_line2 || '');
+      setV('invPostal', r.postal_code || '');
+      setV('invRemarks', r.remarks || '');
+      const disc = ((isQ ? r.quotation_discounts : r.invoice_discounts) || [])[0];
+      if (disc) { setV('invDiscLabel', disc.label || ''); setV('invDiscPct', disc.value || ''); }
+      document.getElementById('invEditorTitle').textContent = fullNo;
+      document.getElementById('invEditorSub').textContent = isQ ? 'Editing saved quotation' : 'Editing saved invoice';
+      if (isQ) {
+        qtValidAuto = false;
+        setV('qtValidUntil', r.valid_until || '');
+        setV('qtStatus', r.status || 'draft');
+        setV('qtDepType', r.deposit_type || 'pct');
+        setV('qtDepValue', r.deposit_value || '');
+      } else if (r.quotation_id) {
+        const qq = QUOTATIONS.find(x => x.id === r.quotation_id);
+        setV('invQuotationId', r.quotation_id);
+        setV('invQuoteRef', qq ? (qq.full_quotation_no || qq.quotation_no) : '');
+        ieShowQuoteBadge(qq ? (qq.full_quotation_no || qq.quotation_no) : '');
+      }
+      const matchedCust = (isQ && r.customer_id ? CUSTOMERS.find(x => x.id === r.customer_id) : null) || CUSTOMERS.find(x => x.name === r.customer_name);
+      ieLinkCustomerUI(matchedCust, isQ ? r.bike_id : null);
+      const { data: items } = await sb.from(isQ ? 'quotation_items' : 'invoice_items').select('*').eq(isQ ? 'quotation_id' : 'invoice_id', docId).order(isQ ? 'position' : 'sort_order');
+      currentInvoiceItems = mapItems(items);
       if (!currentInvoiceItems.length) currentInvoiceItems = [blankInvoiceItem()];
     }
+  } else if (prefill && prefill.quote) {
+    // New invoice created from a quotation: copy customer, items, discount and remarks across.
+    const q = prefill.quote;
+    setV('invCustomerName', q.customer_name || '');
+    setV('invAddr1', q.address_line1 || '');
+    setV('invAddr2', q.address_line2 || '');
+    setV('invPostal', q.postal_code || '');
+    setV('invRemarks', q.remarks || '');
+    const disc = (q.quotation_discounts || [])[0];
+    if (disc) { setV('invDiscLabel', disc.label || ''); setV('invDiscPct', disc.value || ''); }
+    setV('invQuotationId', q.id);
+    setV('invQuoteRef', q.full_quotation_no || q.quotation_no || '');
+    ieShowQuoteBadge(q.full_quotation_no || q.quotation_no || '');
+    const matchedCust = (q.customer_id ? CUSTOMERS.find(x => x.id === q.customer_id) : null) || CUSTOMERS.find(x => x.name === q.customer_name);
+    ieLinkCustomerUI(matchedCust, q.bike_id);
+    currentInvoiceItems = mapItems(prefill.items);
+    if (!currentInvoiceItems.length) currentInvoiceItems = [blankInvoiceItem()];
+    document.getElementById('invEditorSub').textContent = 'From quotation ' + (q.full_quotation_no || q.quotation_no || '') + ' — not yet saved';
+    setV('invSavedNo', await nextInvoiceNumber());
   } else {
-    // New invoice — pre-fill the number so it's visible/editable immediately, matching
-    // the old Hub's behaviour. User can still overwrite it manually before saving.
-    document.getElementById('invSavedNo').value = await nextInvoiceNumber();
+    // New document — pre-fill the number so it's visible/editable immediately.
+    setV('invSavedNo', isQ ? await nextQuotationNumber() : await nextInvoiceNumber());
   }
   renderInvoiceItems();
   switchTab('invoice-editor');
   setTimeout(renderInvoicePreview, 0);
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('topbarTitle').textContent = 'Invoice Editor';
+  document.getElementById('topbarTitle').textContent = isQ ? 'Quotation Editor' : 'Invoice Editor';
 }
 
 function ieOnCustomerNameInput() {
@@ -3189,7 +3317,7 @@ function renderInvoiceItems() {
   const el = document.getElementById('invItemsList');
   el.innerHTML = currentInvoiceItems.map((item, idx) => {
     const linkedVariant = item.variant_id ? VARIANTS.find(v => v.id === item.variant_id) : null;
-    const stockWarn = linkedVariant && item.qty > linkedVariant.qty ? `Only ${linkedVariant.qty} in stock — saving will take stock negative` : '';
+    const stockWarn = linkedVariant && docMode === 'invoice' && item.qty > linkedVariant.qty ? `Only ${linkedVariant.qty} in stock — saving will take stock negative` : '';
     const subHTML = item.subs.map((s,si) => `
       <div class="ie-sub-row">
         <input type="text" placeholder="Sub-note" value="${escapeHtml(s.text)}" oninput="updateSub(${idx},${si},this.value)" style="flex:1;background:var(--bg);border:1px dashed var(--border2);border-radius:6px;color:var(--text);padding:6px 9px;font-size:12px;font-family:inherit">
@@ -3287,7 +3415,7 @@ function removeDisc(idx,di) { currentInvoiceItems[idx].discounts.splice(di,1); r
 document.addEventListener('input', e => { if (e.target.id === 'invDiscPct' || e.target.id === 'invDiscLabel') { document.getElementById('invGrandTotal').textContent = money(calcGrandTotal()); renderInvoicePreview(); } });
 
 // ── LIVE A4 PREVIEW (paginated, real logo/QR) ──
-const IE_PAGE_H = 1122, IE_FOOTER_H = 110, IE_BODY_PAD = 84;
+const IE_PAGE_H = 1122, IE_FOOTER_H = 44, IE_BODY_PAD = 84;
 // ── HIDE/SHOW EDITOR ──
 let ieEditorVisible = true;
 function toggleSidebar() {
@@ -3317,6 +3445,7 @@ function ieScaleInvoice() {
 window.addEventListener('resize', () => { if (document.getElementById('tab-invoice-editor')?.classList.contains('active')) ieScaleInvoice(); });
 
 function buildInvoicePages() {
+  const isQ = docMode === 'quote';
   const invNum = document.getElementById('invSavedNo').value || 'DRAFT';
   const revSuffix = document.getElementById('invRevSuffix').value || '';
   const fullInvNo = invNum + revSuffix;
@@ -3334,50 +3463,101 @@ function buildInvoicePages() {
   const discPct = parseFloat(document.getElementById('invDiscPct').value) || 0;
   const discLabel = document.getElementById('invDiscLabel').value.trim();
 
-  return buildInvoicePagesFromData({ fullInvNo, date, name, addrLines, remarks, items, discPct, discLabel });
+  const data = { docType: docMode, fullInvNo, date, name, addrLines, remarks, items, discPct, discLabel };
+  if (isQ) {
+    const vu = document.getElementById('qtValidUntil').value;
+    data.validUntil = vu ? formatDate(vu) : '';
+    data.deposit = { amount: calcDeposit(calcGrandTotal()), label: depositLabel() };
+  } else {
+    data.quoteRef = document.getElementById('invQuoteRef').value || '';
+  }
+  return buildInvoicePagesFromData(data);
 }
 
-// Data-driven core: takes a plain data object (not the DOM) so it can be reused
-// both by the Invoice Editor (buildInvoicePages, above) and by quickPrintInvoice,
-// which loads an invoice straight from the database instead of the editor form.
+// Turn a saved invoice row (+ its items) into the data object the page builder wants.
+function invoiceDataFromRecord(inv, items) {
+  const invDisc = (inv.invoice_discounts || [])[0];
+  const addrLines = [];
+  if (inv.address_line1) addrLines.push(inv.address_line1);
+  if (inv.address_line2) addrLines.push(inv.address_line2);
+  addrLines.push('Singapore' + (inv.postal_code ? ' ' + inv.postal_code : ''));
+  const q = inv.quotation_id ? QUOTATIONS.find(x => x.id === inv.quotation_id) : null;
+  return {
+    docType: 'invoice',
+    fullInvNo: inv.full_invoice_no || inv.invoice_no,
+    date: formatDate(inv.invoice_date) || '—',
+    name: inv.customer_name || 'Customer Name',
+    addrLines,
+    remarks: inv.remarks,
+    items: (items || []).map(it => ({ desc: it.description, qty: it.qty, price: it.unit_price, subs: it.subs || [], discounts: it.discounts || [] })),
+    discPct: invDisc ? invDisc.value : 0,
+    discLabel: invDisc ? invDisc.label : '',
+    quoteRef: q ? (q.full_quotation_no || q.quotation_no) : ''
+  };
+}
+
+// Data-driven core: takes a plain data object (not the DOM) so it can be reused by the editor,
+// quick print from the lists, and the combined Invoice + Service Report PDF.
 function buildInvoicePagesFromData(data) {
   const { fullInvNo, date, name, addrLines, remarks, items, discPct, discLabel } = data;
+  const isQ = data.docType === 'quote';
+  const docTitle = isQ ? 'QUOTATION' : 'INVOICE';
+  const docWord = isQ ? 'Quotation' : 'Invoice';
 
   const rows = []; let sn = 1;
   items.forEach((it, idx) => {
     const isLastItem = idx === items.length - 1;
     rows.push({ type: 'item', sn: sn++, it, isLastItem });
-    (it.subs||[]).forEach((s, si) => rows.push({ type: 'sub', s, si, it, isLastItem }));
-    (it.discounts||[]).forEach((d, di) => rows.push({ type: 'disc', d, di, it, isLastItem, isLastDisc: di === it.discounts.length-1 }));
+    (it.subs || []).forEach((s, si) => rows.push({ type: 'sub', s, si, it, isLastItem }));
+    (it.discounts || []).forEach((d, di) => rows.push({ type: 'disc', d, di, it, isLastItem, isLastDisc: di === it.discounts.length - 1 }));
   });
 
-  const subtotal = items.reduce((s,it) => s + calcItemTotal(it), 0);
+  const subtotal = items.reduce((s, it) => s + calcItemTotal(it), 0);
   const invDiscAmt = discPct ? subtotal * discPct / 100 : 0;
   const grand = Math.max(0, subtotal - invDiscAmt);
+  const deposit = isQ && data.deposit && data.deposit.amount > 0 ? data.deposit : null;
+
   const totalsHTML = `<div class="inv-totals"><div class="inv-totals-inner">
     ${discPct ? `<div class="tot-row"><span>Subtotal</span><span>${money(subtotal)}</span></div>
-    <div class="tot-row disc"><span>${escapeHtml(discLabel)||'Discount'} (${discPct}%)</span><span>- ${money(invDiscAmt)}</span></div>` : ''}
+    <div class="tot-row disc"><span>${escapeHtml(discLabel) || 'Discount'} (${discPct}%)</span><span>- ${money(invDiscAmt)}</span></div>` : ''}
     <div class="tot-grand"><span class="tot-grand-lbl">Total:</span><span class="tot-grand-val">${money(grand)}</span></div>
+    ${deposit ? `<div class="tot-row dep"><span>${escapeHtml(deposit.label)}</span><span>${money(deposit.amount)}</span></div>
+    <div class="tot-row bal"><span>Balance on completion</span><span>${money(Math.max(0, grand - deposit.amount))}</span></div>` : ''}
   </div></div>`;
+
+  const payHTML = `<div class="dq-pay">
+    <div class="dq-lbl">Payment Instructions</div>
+    <div class="dq-pay-sub" style="margin-top:0">PayNow</div>
+    <div class="dq-pay-row">UEN: <b>53521776E</b> (or scan the QR code)</div>
+    <div class="dq-pay-sub">Bank Transfer</div>
+    <div class="dq-pay-row">Bank: <b>DBS Bank</b></div>
+    <div class="dq-pay-row">Account name: <b>BIKE&amp;BUTTER</b></div>
+    <div class="dq-pay-row">Account number: <b>0721509563</b></div>
+    <div class="dq-note">Please include your ${docWord} Number in the payment remarks.</div>
+    ${isQ && data.validUntil ? `<div class="dq-valid">This quotation is valid until <b>${escapeHtml(data.validUntil)}</b>.</div>` : ''}
+    ${deposit ? `<div class="dq-valid">A deposit of <b>${money(deposit.amount)}</b> is required to confirm this job.</div>` : ''}
+  </div>`;
+  const bottomHTML = `<div class="dq-bottom">${payHTML}<div class="dq-right">${totalsHTML}
+    <div class="dq-qr"><img src="${BNB_QR_DATA_URI}" alt="PayNow QR"><div>Scan to pay via PayNow</div></div></div></div>`;
   const remarksHTML = remarks ? `<div class="inv-remarks"><div class="inv-remarks-lbl">Remarks:</div><div class="inv-remarks-text">${escapeHtml(remarks)}</div></div>` : '';
 
   function rowHTML(r) {
     if (r.type === 'item') {
-      const sep = r.isLastItem && !(r.it.subs||[]).length && !(r.it.discounts||[]).length;
-      return `<tr${sep?' style="border-bottom:1.5px solid #ccc"':''}><td class="td-sn">${r.sn}</td>
-        <td class="td-desc">${escapeHtml(r.it.desc)||'<em style="color:#bbb">—</em>'}</td>
+      const sep = r.isLastItem && !(r.it.subs || []).length && !(r.it.discounts || []).length;
+      return `<tr${sep ? ' style="border-bottom:1.5px solid #ccc"' : ''}><td class="td-sn">${r.sn}</td>
+        <td class="td-desc">${escapeHtml(r.it.desc) || '<em style="color:#bbb">—</em>'}</td>
         <td class="td-qty">${r.it.qty}</td>
         <td class="td-price">${money(r.it.price)}</td>
-        <td class="td-total">${money((r.it.qty||0)*(r.it.price||0))}</td></tr>`;
+        <td class="td-total">${money((r.it.qty || 0) * (r.it.price || 0))}</td></tr>`;
     }
     if (r.type === 'sub') {
-      return `<tr><td></td><td class="td-sub td-desc">${escapeHtml(r.s.text)||'—'}</td><td></td><td></td><td></td></tr>`;
+      return `<tr><td></td><td class="td-sub td-desc">${escapeHtml(r.s.text) || '—'}</td><td></td><td></td><td></td></tr>`;
     }
     if (r.type === 'disc') {
-      const base = (r.it.qty||0)*(r.it.price||0);
-      const amt = r.d.type==='pct' ? base*(Number(r.d.value)||0)/100 : Number(r.d.value)||0;
-      const suffix = r.d.type==='pct' ? ` (${r.d.value}%)` : '';
-      return `<tr><td>-</td><td class="td-disc-label td-desc">${escapeHtml(r.d.label)||'Discount'}${suffix}</td><td class="td-qty">1</td>
+      const base = (r.it.qty || 0) * (r.it.price || 0);
+      const amt = r.d.type === 'pct' ? base * (Number(r.d.value) || 0) / 100 : Number(r.d.value) || 0;
+      const suffix = r.d.type === 'pct' ? ` (${r.d.value}%)` : '';
+      return `<tr><td>-</td><td class="td-disc-label td-desc">${escapeHtml(r.d.label) || 'Discount'}${suffix}</td><td class="td-qty">1</td>
         <td class="td-disc-val td-price">(${money(amt)})</td><td class="td-disc-val td-total">(${money(amt)})</td></tr>`;
     }
     return '';
@@ -3387,19 +3567,22 @@ function buildInvoicePagesFromData(data) {
   }
   function pageHeaderHTML(isFirst) {
     if (isFirst) {
-      return `<div class="inv-header"><img class="inv-logo" src="${BNB_LOGO_DATA_URI}" alt="Bike&amp;Butter">
-        <div class="inv-company"><div class="inv-company-name">Bike&amp;Butter</div><div class="inv-company-uen">UEN: 53521776E</div></div></div>
-      <div class="inv-title">INVOICE</div>
-      <div class="inv-meta"><div><div class="inv-billto-name">${escapeHtml(name)}</div><div class="inv-billto-addr">${addrLines.map(l=>`<div>${escapeHtml(l)}</div>`).join('')}</div></div>
-        <div class="inv-meta-right"><p>Invoice No.: <span>${escapeHtml(fullInvNo)}</span></p><p>Date: <span>${date}</span></p></div></div>`;
+      const refRows = `<div class="k">${isQ ? 'Quote No.' : 'Invoice No.'}</div><div class="v">${escapeHtml(fullInvNo)}</div>
+        <div class="k">Date</div><div class="v">${date}</div>
+        ${isQ && data.validUntil ? `<div class="k">Valid Until</div><div class="v">${escapeHtml(data.validUntil)}</div>` : ''}
+        ${!isQ && data.quoteRef ? `<div class="k">Quote Ref.</div><div class="v">${escapeHtml(data.quoteRef)}</div>` : ''}`;
+      return `<div class="dq-header"><div class="dq-brand"><img class="dq-logo" src="${BNB_LOGO_DATA_URI}" alt="Bike&amp;Butter">
+          <div><div class="dq-co">Bike&amp;Butter</div><div class="dq-co-d">UEN 53521776E<br>491 Jurong West Avenue 1, Singapore 640491<br>WhatsApp +65 8722 2610</div></div></div>
+        <div class="dq-title">${docTitle}<span></span></div></div>
+      <div class="dq-meta"><div><div class="dq-lbl">${isQ ? 'Quote To' : 'Bill To'}</div><div class="dq-name">${escapeHtml(name)}</div>
+        <div class="dq-addr">${addrLines.map(l => `<div>${escapeHtml(l)}</div>`).join('')}</div></div>
+        <div class="dq-ref">${refRows}</div></div>`;
     }
-    return `<div class="inv-cont-header"><div class="inv-cont-title">Invoice (continued)</div>
+    return `<div class="inv-cont-header"><div class="inv-cont-title">${docWord} (continued) — ${escapeHtml(fullInvNo)}</div>
       <div class="inv-company" style="padding-top:0"><div class="inv-company-name">Bike&amp;Butter</div><div class="inv-company-uen">UEN: 53521776E</div></div></div>`;
   }
-  function footerHTML() {
-    return `<div class="inv-footer"><div><div class="line">Payment can be made via PayNow by scanning the QR code or using UEN <strong>53521776E</strong>.</div>
-      <div class="line">Please remember to include your <strong>Invoice Number</strong> in the remarks when making payment.</div></div>
-      <img class="inv-footer-qr" src="${BNB_QR_DATA_URI}" alt="PayNow QR"></div>`;
+  function footerHTML(n, total) {
+    return `<div class="dq-footer"><span>Bike&amp;Butter — UEN 53521776E</span><span class="pg">PAGE ${n} OF ${total}</span></div>`;
   }
 
   // Measure real row/section heights at true 794px width to paginate accurately
@@ -3412,10 +3595,11 @@ function buildInvoicePagesFromData(data) {
   measureDiv.innerHTML = `<div style="padding:16px 44px 0">${pageHeaderHTML(false)}${tableHead()}</tbody></table></div>`;
   const hdrContH = measureDiv.firstChild.getBoundingClientRect().height;
   const rowHeights = rows.map(r => {
-    measureDiv.innerHTML = `<table class="inv-table" style="width:794px"><tbody>${rowHTML(r)}</tbody></table>`;
-    return Math.max(measureDiv.querySelector('tr').getBoundingClientRect().height, 20);
+    // Include the real <thead> so the column widths (and therefore text wrapping) match the printed page
+    measureDiv.innerHTML = `<div style="width:706px">${tableHead()}${rowHTML(r)}</tbody></table></div>`;
+    return Math.max(measureDiv.querySelector('tbody tr').getBoundingClientRect().height, 20);
   });
-  measureDiv.innerHTML = `<div style="padding:0 44px">${totalsHTML}</div>`;
+  measureDiv.innerHTML = `<div style="padding:0 44px">${bottomHTML}</div>`;
   const totalsBlockH = measureDiv.firstChild.getBoundingClientRect().height + 16;
   let remarksBlockH = 0;
   if (remarks) {
@@ -3425,13 +3609,13 @@ function buildInvoicePagesFromData(data) {
   document.body.removeChild(measureDiv);
 
   const AVAIL = IE_PAGE_H - IE_FOOTER_H - IE_BODY_PAD;
-  const pages = []; let isFirst = true; let pageRowList = []; let usedH = hdr1H;
+  const bodies = []; let isFirst = true; let pageRowList = []; let usedH = hdr1H;
   function buildAndPush(rowList, isFinal) {
     let body = pageHeaderHTML(isFirst) + tableHead();
     rowList.forEach(r => body += rowHTML(r));
     body += '</tbody></table>';
-    if (isFinal) body += totalsHTML + remarksHTML;
-    pages.push(`<div class="inv-page"><div class="inv-body">${body}</div>${footerHTML()}</div>`);
+    if (isFinal) body += bottomHTML + remarksHTML;
+    bodies.push(body);
     isFirst = false;
   }
   for (let i = 0; i < rows.length; i++) {
@@ -3447,12 +3631,13 @@ function buildInvoicePagesFromData(data) {
     buildAndPush(pageRowList, false); pageRowList = [];
   }
   buildAndPush(pageRowList, true);
-  return pages;
+  return bodies.map((body, i) => `<div class="inv-page"><div class="inv-body">${body}</div>${footerHTML(i + 1, bodies.length)}</div>`);
 }
 
 function renderInvoicePreview() {
   const doc = document.getElementById('invoiceDoc');
   if (!doc) return;
+  if (typeof updateDepositReadout === 'function') updateDepositReadout();
   doc.innerHTML = buildInvoicePages().join('');
   ieScaleInvoice();
 }
@@ -3467,7 +3652,7 @@ async function nextInvoiceNumber() {
   const now = new Date();
   const mm = String(now.getMonth()+1).padStart(2,'0');
   const yy = String(now.getFullYear()).slice(-2);
-  const prefix = 'INVBB' + mm + yy;
+  const prefix = 'BNB-INV' + mm + yy;
   const { data } = await sb.from('invoices').select('invoice_no').ilike('invoice_no', prefix + '%').order('invoice_no', { ascending: false }).limit(1);
   let seq = 1;
   if (data && data.length) {
@@ -3511,6 +3696,7 @@ async function saveInvoice() {
     invoice_discounts: invoiceDiscounts,
     subtotal: grandTotal, tax: 0, total: grandTotal,
     status: 'sent',
+    quotation_id: document.getElementById('invQuotationId').value || null,
   };
 
   let invoiceId = id;
@@ -3578,6 +3764,11 @@ async function saveInvoice() {
   document.getElementById('invRevSuffix').value = revSuffix || '';
   document.getElementById('invEditorTitle').textContent = fullInvoiceNo;
   document.getElementById('invEditorSub').textContent = revSuffix ? 'Revision ' + revSuffix.replace('-','') : 'Saved';
+  const linkedQuoteId = document.getElementById('invQuotationId').value;
+  if (linkedQuoteId) {
+    await sb.from('quotations').update({ invoice_id: invoiceId, status: 'accepted', updated_at: new Date().toISOString() }).eq('id', linkedQuoteId);
+    await loadQuotations();
+  }
   await loadProducts();
   await loadInvoices();
   alert('Invoice ' + fullInvoiceNo + ' saved' + (linkedItems.length ? ', stock updated for ' + linkedItems.length + ' item(s).' : '.'));
@@ -3636,6 +3827,212 @@ async function printInvoice() {
   } finally {
     document.body.removeChild(container);
     if (btn) { btn.disabled = false; btn.innerHTML = prevBtnText; }
+  }
+}
+
+/* ============ QUOTATIONS ============ */
+let QUOTATIONS = [];
+
+async function loadQuotations() {
+  const { data, error } = await sb.from('quotations').select('*').order('quotation_date', { ascending: false }).order('created_at', { ascending: false });
+  QUOTATIONS = error ? [] : (data || []);
+  renderQuotations();
+}
+
+function renderQuotations() {
+  const tbody = document.getElementById('quoteRows');
+  if (!tbody) return;
+  const q = (document.getElementById('quoteSearch')?.value || '').trim().toLowerCase();
+  const list = q ? QUOTATIONS.filter(x =>
+    (x.full_quotation_no || x.quotation_no || '').toLowerCase().includes(q) ||
+    (x.customer_name || '').toLowerCase().includes(q)
+  ) : QUOTATIONS;
+  if (!list.length) { tbody.innerHTML = `<tr><td colspan="9" class="cell-muted">${q ? 'No quotations match “' + escapeHtml(q) + '”' : 'No quotations yet'}</td></tr>`; return; }
+  const today = new Date().toISOString().slice(0, 10);
+  const statuses = ['draft', 'sent', 'accepted', 'declined'];
+  tbody.innerHTML = list.map(x => {
+    const expired = x.valid_until && x.valid_until < today && (x.status === 'draft' || x.status === 'sent');
+    const inv = x.invoice_id ? INVOICES.find(i => i.id === x.invoice_id) : null;
+    return `<tr>
+      <td class="cell-strong clickable" onclick="openQuotationEditor('${x.id}')">${escapeHtml(x.full_quotation_no || x.quotation_no)}</td>
+      <td>${escapeHtml(x.customer_name || '—')}</td>
+      <td class="cell-muted">${formatDate(x.quotation_date)}</td>
+      <td class="cell-muted">${x.valid_until ? formatDate(x.valid_until) : '—'}${expired ? '<span class="qt-expired">EXPIRED</span>' : ''}</td>
+      <td class="cell-strong">${money(x.total)}</td>
+      <td class="cell-muted">${Number(x.deposit_amount) > 0 ? money(x.deposit_amount) : '—'}</td>
+      <td><select class="qt-status" onchange="setQuoteStatus('${x.id}', this.value)">${statuses.map(st => `<option value="${st}" ${x.status === st ? 'selected' : ''}>${st.charAt(0).toUpperCase() + st.slice(1)}</option>`).join('')}</select></td>
+      <td>${inv ? `<span class="clickable" style="text-decoration:underline" onclick="openInvoiceEditor('${inv.id}')">${escapeHtml(inv.full_invoice_no || inv.invoice_no)}</span>` : '—'}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-ghost btn-sm" onclick="convertQuoteToInvoice('${x.id}')" title="Create invoice from this quotation">→ Invoice</button>
+        <button class="btn btn-ghost btn-sm" onclick="quickPrintQuotation('${x.id}', this)" title="Print / PDF">PDF</button>
+        <button class="btn btn-ghost btn-sm" onclick="deleteQuotation('${x.id}')">${ICON_TRASH}</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function setQuoteStatus(id, status) {
+  const { error } = await sb.from('quotations').update({ status, updated_at: new Date().toISOString() }).eq('id', id);
+  if (error) { alert('Could not update status: ' + error.message); }
+  await loadQuotations();
+}
+
+async function nextQuotationNumber() {
+  const now = new Date();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const yy = String(now.getFullYear()).slice(-2);
+  const prefix = 'BNB-QT' + mm + yy;
+  const { data } = await sb.from('quotations').select('quotation_no').ilike('quotation_no', prefix + '%').order('quotation_no', { ascending: false }).limit(1);
+  let seq = 1;
+  if (data && data.length) {
+    const last = data[0].quotation_no.replace(prefix, '');
+    seq = (parseInt(last, 10) || 0) + 1;
+  }
+  return prefix + String(seq).padStart(3, '0');
+}
+
+function saveDoc() { return docMode === 'quote' ? saveQuotation() : saveInvoice(); }
+
+async function saveQuotation() {
+  const id = document.getElementById('invId').value;
+  const customerName = document.getElementById('invCustomerName').value.trim();
+  if (!customerName) { alert('Customer name is required.'); return; }
+  const total = calcGrandTotal();
+  const validItems = currentInvoiceItems.filter(it => it.desc.trim());
+  const subtotal = validItems.reduce((s, it) => s + calcItemTotal(it), 0);
+  const discLabel = document.getElementById('invDiscLabel').value.trim();
+  const discPct = parseFloat(document.getElementById('invDiscPct').value) || 0;
+  const discounts = discLabel && discPct ? [{ label: discLabel, type: 'pct', value: discPct }] : [];
+  const depType = document.getElementById('qtDepType').value || 'pct';
+  const depValue = parseFloat(document.getElementById('qtDepValue').value) || 0;
+  const depAmount = calcDeposit(total);
+
+  let qNo = document.getElementById('invSavedNo').value;
+  let revSuffix = document.getElementById('invRevSuffix').value;
+  if (!qNo) qNo = await nextQuotationNumber();
+  else if (id) revSuffix = nextRevSuffix(revSuffix); // re-saving creates a revision (-01, -02, ...), same as invoices
+  const fullNo = qNo + (revSuffix || '');
+
+  const payload = {
+    quotation_no: qNo,
+    saved_quotation_no: qNo,
+    rev_suffix: revSuffix || null,
+    is_revision: !!revSuffix,
+    full_quotation_no: fullNo,
+    customer_name: customerName,
+    customer_id: document.getElementById('invLinkedCustomerId').value || null,
+    bike_id: document.getElementById('invLinkedBikeId').value || null,
+    quotation_date: document.getElementById('invDate').value || new Date().toISOString().slice(0, 10),
+    valid_until: document.getElementById('qtValidUntil').value || null,
+    address_line1: document.getElementById('invAddr1').value.trim() || null,
+    address_line2: document.getElementById('invAddr2').value.trim() || null,
+    postal_code: document.getElementById('invPostal').value.trim() || null,
+    remarks: document.getElementById('invRemarks').value.trim() || null,
+    quotation_discounts: discounts,
+    subtotal, total,
+    deposit_type: depType, deposit_value: depValue, deposit_amount: depAmount,
+    status: document.getElementById('qtStatus').value || 'draft',
+    updated_at: new Date().toISOString(),
+  };
+
+  let quoteId = id;
+  if (id) {
+    const { error } = await sb.from('quotations').update(payload).eq('id', id);
+    if (error) { alert('Save failed: ' + error.message); return; }
+    await sb.from('quotation_items').delete().eq('quotation_id', id);
+  } else {
+    const { data, error } = await sb.from('quotations').insert(payload).select('id').single();
+    if (error) { alert('Save failed: ' + error.message); return; }
+    quoteId = data.id;
+  }
+  const itemRows = validItems.map((it, i) => ({
+    quotation_id: quoteId, position: i, description: it.desc, quantity: it.qty, unit_price: it.price, discount: 0,
+    line_total: calcItemTotal(it),
+    subs: it.subs.filter(s => s.text.trim()), discounts: it.discounts.filter(d => d.label.trim()),
+    variant_id: it.variant_id || null
+  }));
+  if (itemRows.length) {
+    const { error: itemErr } = await sb.from('quotation_items').insert(itemRows);
+    if (itemErr) { alert('Items save failed: ' + itemErr.message); return; }
+  }
+  document.getElementById('invId').value = quoteId;
+  document.getElementById('invSavedNo').value = qNo;
+  document.getElementById('invRevSuffix').value = revSuffix || '';
+  document.getElementById('invEditorTitle').textContent = fullNo;
+  document.getElementById('invEditorSub').textContent = revSuffix ? 'Revision ' + revSuffix.replace('-', '') : 'Saved';
+  await loadQuotations();
+  alert('Quotation ' + fullNo + ' saved. (Quotes do not change stock or accounting.)');
+}
+
+async function deleteQuotation(id) {
+  if (!confirm('Delete this quotation? Cannot be undone. Any invoice already created from it is kept.')) return;
+  await sb.from('invoices').update({ quotation_id: null }).eq('quotation_id', id);
+  await sb.from('service_records').update({ quotation_id: null }).eq('quotation_id', id);
+  const { error } = await sb.from('quotations').delete().eq('id', id);
+  if (error) { alert('Delete failed: ' + error.message); return; }
+  await loadQuotations();
+  await loadInvoices();
+}
+
+async function convertQuoteToInvoice(id) {
+  let q = QUOTATIONS.find(x => x.id === id);
+  if (!q) { const { data } = await sb.from('quotations').select('*').eq('id', id).single(); q = data; }
+  if (!q) { alert('Could not load quotation.'); return; }
+  const existing = q.invoice_id ? INVOICES.find(i => i.id === q.invoice_id) : null;
+  if (existing && confirm('This quotation was already converted to invoice ' + (existing.full_invoice_no || existing.invoice_no) + '.\n\nOK = open that invoice\nCancel = create another invoice from this quotation')) {
+    return openInvoiceEditor(existing.id);
+  }
+  const { data: items } = await sb.from('quotation_items').select('*').eq('quotation_id', id).order('position');
+  await openDocEditor('invoice', null, { quote: q, items: items || [] });
+}
+
+async function ieConvertCurrentQuote() {
+  const id = document.getElementById('invId').value;
+  if (!id) { alert('Save the quotation first, then convert it to an invoice.'); return; }
+  await convertQuoteToInvoice(id);
+}
+
+async function quickPrintQuotation(id, btnEl) {
+  const btn = btnEl || null;
+  const prevBtnHtml = btn ? btn.innerHTML : null;
+  if (btn) { btn.disabled = true; btn.innerHTML = '⏳'; }
+  let container = null;
+  try {
+    const { data: q, error } = await sb.from('quotations').select('*').eq('id', id).single();
+    if (error || !q) { alert('Could not load quotation.'); return; }
+    const { data: items } = await sb.from('quotation_items').select('*').eq('quotation_id', id).order('position');
+    const disc = (q.quotation_discounts || [])[0];
+    const addrLines = [];
+    if (q.address_line1) addrLines.push(q.address_line1);
+    if (q.address_line2) addrLines.push(q.address_line2);
+    addrLines.push('Singapore' + (q.postal_code ? ' ' + q.postal_code : ''));
+    const data = {
+      docType: 'quote',
+      fullInvNo: q.full_quotation_no || q.quotation_no,
+      date: formatDate(q.quotation_date) || '—',
+      validUntil: q.valid_until ? formatDate(q.valid_until) : '',
+      name: q.customer_name || 'Customer Name',
+      addrLines,
+      remarks: q.remarks,
+      items: (items || []).map(it => ({ desc: it.description, qty: it.quantity, price: it.unit_price, subs: it.subs || [], discounts: it.discounts || [] })),
+      discPct: disc ? disc.value : 0,
+      discLabel: disc ? disc.label : '',
+      deposit: {
+        amount: Number(q.deposit_amount) || 0,
+        label: q.deposit_type === 'pct' && Number(q.deposit_value) ? 'Deposit required (' + q.deposit_value + '%)' : 'Deposit required'
+      }
+    };
+    container = makeOffscreenContainer();
+    container.innerHTML = buildInvoicePagesFromData(data).join('');
+    await new Promise(r => setTimeout(r, 50));
+    const pageEls = Array.from(container.querySelectorAll('.inv-page'));
+    await downloadPdfFromPages(pageEls, data.fullInvNo + ' - ' + (q.customer_name || 'Customer').trim() + '.pdf');
+  } catch (e) {
+    console.error(e);
+    alert('PDF generation failed: ' + e.message);
+  } finally {
+    if (container) document.body.removeChild(container);
+    if (btn) { btn.disabled = false; btn.innerHTML = prevBtnHtml; }
   }
 }
 
