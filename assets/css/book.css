@@ -79,3 +79,8 @@
 .bk .error-box.show { display: block; }
 .bk .hint { font-size: 12px; color: var(--text3); margin-top: 10px; }
 .bk a { text-decoration: underline; }
+
+/* confirmation step: centre the tick and text */
+.confirm-box{text-align:center;padding:48px 24px}
+.confirm-icon{display:flex;justify-content:center;align-items:center;margin:0 auto 20px;width:100%}
+.confirm-icon svg{display:block}
