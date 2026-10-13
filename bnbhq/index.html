@@ -301,7 +301,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
 .inv-table th{ }
 .dq-body{padding:48px 56px 40px}
 .dq-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid #1a1a1a}
-.dq-logo{height:54px;width:auto;object-fit:contain;flex-shrink:0}
+.dq-logo{height:92px;width:auto;object-fit:contain;flex-shrink:0}
 .dq-co{font-size:16px;font-weight:800;color:#1a1a1a;margin-bottom:6px;letter-spacing:-.3px}
 .dq-co-d{font-size:10.5px;color:#666;line-height:1.7}
 .dq-title{text-align:right;margin-bottom:20px}
@@ -697,7 +697,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div class="ie-preview-pane" id="svcPreviewPane">
             <div class="ie-preview-topbar">
               <div class="ie-preview-label">Live Preview</div>
-              <button class="ie-toggle-btn" onclick="document.getElementById('svcEditorPane').classList.toggle('hidden')">Hide Editor</button>
+              <button class="ie-toggle-btn" id="svcToggleBtn" onclick="svcToggleEditor()">Hide Editor</button>
             </div>
             <div class="ie-scaler">
               <div class="ie-scaler-inner" id="svcScaler">
@@ -1734,14 +1734,27 @@ function renderServicePreview() {
   doc.innerHTML = buildServiceReportPage(draft, b, c);
   svcScaleReport();
 }
-function svcScaleReport() {
-  const scaler = document.getElementById('svcScaler');
-  const pane = document.getElementById('svcPreviewPane');
-  if (!scaler || !pane) return;
-  const scale = Math.min(1, (pane.clientWidth - 36) / 794);
-  scaler.style.transform = 'scale(' + scale + ')';
-  scaler.style.marginBottom = (-(1122 * (1 - scale))) + 'px';
+function svcToggleEditor() {
+  const pane = document.getElementById('svcEditorPane');
+  const hidden = pane.classList.toggle('hidden');
+  document.getElementById('svcToggleBtn').textContent = hidden ? 'Show Editor' : 'Hide Editor';
+  // Re-scale once the editor's width transition (.22s) has finished so the preview fills the freed space
+  setTimeout(svcScaleReport, 240);
 }
+// Fit an A4 preview (794px wide) to its pane. With the editor shown it never goes above 100%;
+// with the editor hidden it zooms in (up to 175%) to use the freed-up width.
+function fitA4Preview(scalerId, paneId, editorId) {
+  const scaler = document.getElementById(scalerId);
+  const pane = document.getElementById(paneId);
+  if (!scaler || !pane) return;
+  const ed = document.getElementById(editorId);
+  const hidden = !!(ed && ed.classList.contains('hidden'));
+  const fit = (pane.clientWidth - 36) / 794;
+  const scale = Math.min(hidden ? 1.75 : 1, fit);
+  scaler.style.transform = 'scale(' + scale + ')';
+  scaler.style.marginBottom = (scaler.offsetHeight * (scale - 1)) + 'px'; // works for multi-page previews too
+}
+function svcScaleReport() { fitA4Preview('svcScaler', 'svcPreviewPane', 'svcEditorPane'); }
 window.addEventListener('resize', () => { if (document.getElementById('tab-service-editor')?.classList.contains('active')) svcScaleReport(); });
 async function svcPrintFromEditor() {
   await saveService();
@@ -3444,7 +3457,7 @@ function toggleSidebar() {
   sb.classList.toggle('collapsed');
   // Re-scale the invoice preview (if open) once the sidebar's width transition finishes,
   // so the live preview grows to use the newly freed space instead of staying small.
-  setTimeout(() => { if (typeof ieScaleInvoice === 'function') ieScaleInvoice(); }, 200);
+  setTimeout(() => { if (typeof ieScaleInvoice === 'function') ieScaleInvoice(); if (typeof svcScaleReport === 'function') svcScaleReport(); }, 200);
 }
 function ieToggleEditor() {
   ieEditorVisible = !ieEditorVisible;
@@ -3455,14 +3468,7 @@ function ieToggleEditor() {
   setTimeout(ieScaleInvoice, 240);
 }
 
-function ieScaleInvoice() {
-  const scaler = document.getElementById('ieScaler');
-  const pane = document.getElementById('iePreviewPane');
-  if (!scaler || !pane) return;
-  const scale = Math.min(1, (pane.clientWidth - 36) / 794);
-  scaler.style.transform = 'scale(' + scale + ')';
-  scaler.style.marginBottom = (-(1122 * (1 - scale))) + 'px';
-}
+function ieScaleInvoice() { fitA4Preview('ieScaler', 'iePreviewPane', 'ieEditorPane'); }
 window.addEventListener('resize', () => { if (document.getElementById('tab-invoice-editor')?.classList.contains('active')) ieScaleInvoice(); });
 
 function buildInvoicePages() {
