@@ -24,7 +24,9 @@
   function vprice(p, v) { return p.variants && p.variants.prices && p.variants.prices[v] != null ? p.variants.prices[v] : p.price; }
   function priceLabel(p) { return p.price == null ? "Enquire" : money(p.price); }
   function enquireUrl(p, variant) {
-    return WA + encodeURIComponent("Hi Bike & Butter, I'd like to enquire about the " + p.name + (variant ? " (" + variant + ")" : "") + ".");
+    var topic = p.brand === "8LIEN" ? "8LIEN" : p.brand === "RSTRI" ? "RSTRI" : p.brand === "EVR" ? "EVR" : "Parts";
+    var prod = p.name + (variant ? " (" + variant + ")" : "");
+    return "/contact/?type=" + encodeURIComponent(topic) + "&product=" + encodeURIComponent(prod);
   }
 
   /* ---------- cart ---------- */
@@ -210,7 +212,7 @@
       '<div class="pinfo"><div class="pinfo-in"><p class="label label-muted">' + esc(p.category) + '</p>' +
       '<div class="prow"><h1 class="pname">' + esc(p.name) + '</h1><p class="pprice" data-pprice>' + (p.price != null ? money(vprice(p, variant)) + (p.unit ? '<small> / ' + esc(p.unit) + '</small>' : "") : "Enquire") + '</p></div>' +
       '<p class="psum">' + esc(p.summary) + '</p>' + variants +
-      (p.purchasable ? '<button type="button" class="btn btn-dark btn-wide" data-add>Add to bag <span data-add-price>' + money(p.price) + '</span></button>' : '<a class="btn btn-dark btn-wide" data-enquire href="' + enquireUrl(p) + '" target="_blank" rel="noopener">Enquire on WhatsApp</a>') +
+      (p.purchasable ? '<button type="button" class="btn btn-dark btn-wide" data-add>Add to bag <span data-add-price>' + money(p.price) + '</span></button>' : '<a class="btn btn-dark btn-wide" data-enquire href="' + enquireUrl(p) + '">Enquire about this</a>') +
       '<div class="pbox"><p class="label"><span class="live"></span>' + (p.brand === "RSTRI" ? "Made to order after your enquiry. Free delivery over S$" + DATA.shipping.freeOver : p.brand === "8LIEN" ? "Official Singapore distributor. Free delivery over S$" + DATA.shipping.freeOver : "Message us to confirm availability. Free delivery over S$" + DATA.shipping.freeOver) + ' <button type="button" class="ul" data-open="pay">Read more</button></p>' +
       '<p class="label">Test rides and fitting at our Jurong West workshop <a class="ul" href="/#visit">Read more</a></p></div>' +
       (p.benefits.length ? '<h2 class="label label-muted lbl">Benefits</h2><ul class="bullets">' + p.benefits.map(function (b) { return "<li>" + esc(b) + "</li>"; }).join("") + '</ul>' : "") +
@@ -223,7 +225,7 @@
     document.body.appendChild(mini);
     var btn = $("[data-add]") || $("[data-enquire]");
     if (btn && "IntersectionObserver" in window) new IntersectionObserver(function (en) { mini.hidden = en[0].isIntersecting || en[0].boundingClientRect.top > 0; }).observe(btn);
-    function doAdd() { if (p.purchasable) { add(p, variant, 1); openCart(); } else window.open(enquireUrl(p, variant), "_blank", "noopener"); }
+    function doAdd() { if (p.purchasable) { add(p, variant, 1); openCart(); } else location.href = enquireUrl(p, variant); }
     $(".mb-add", mini).addEventListener("click", doAdd);
     var addBtn = $("[data-add]"); if (addBtn) addBtn.addEventListener("click", doAdd);
     $$("input[name=variant]", root).forEach(function (r) { r.addEventListener("change", function () { variant = r.value; var pp = $("[data-pprice]"); if (pp && p.price != null) pp.firstChild.textContent = money(vprice(p, variant)); var ap = $("[data-add-price]"); if (ap) ap.textContent = money(vprice(p, variant)); var en = $("[data-enquire]"); if (en) en.href = enquireUrl(p, variant); }); });

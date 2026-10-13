@@ -95,7 +95,7 @@
       "<h1>" + esc(p.title) + '</h1><div class="prow"><span data-price></span></div>' +
       '<div><p class="label">Colour: <span data-cname></span></p><div class="evr-cols" data-cols></div></div>' +
       (p.sizes.length ? '<div><p class="label">Size</p><div class="evr-sizes" data-sizes></div></div>' : "") +
-      '<a class="btn btn-dark" data-wa target="_blank" rel="noopener">Enquire on WhatsApp</a>' +
+      '<a class="btn btn-dark" data-wa>Enquire about this</a>' +
       '<p class="evr-note">Enquire with your preferred colour and size and we will confirm availability and pricing. Unsure of your size? Send us your height and weight and we will recommend a fit.</p>' +
       (chart ? '<details class="evr-acc"><summary class="label">Size guide</summary><div>' + chart + "</div></details>" : "") +
       '<details class="evr-acc"><summary class="label">Delivery &amp; payment</summary><p class="evr-note" style="padding-bottom:16px">Orders are placed with our supplier only after full payment has been received via PayNow. Once your order has been placed, we will advise you of the estimated delivery date. Delivery is available across Singapore. Please note that all items are made to order and are not available for immediate collection.</p></details>' +
@@ -106,7 +106,7 @@
       $("[data-price]", D).textContent = money(pr);
       $("[data-cname]", D).textContent = v.colour;
       var msg = "Hi Bike & Butter, I'd like to enquire about EVR " + p.title + ", colour " + v.colour + (st.s ? ", size " + st.s : "") + ", " + money(pr) + ". ";
-      $("[data-wa]", D).href = "https://wa.me/" + WA + "?text=" + encodeURIComponent(msg);
+      $("[data-wa]", D).href = "/contact/?type=EVR&product=" + encodeURIComponent("EVR " + p.title + ", " + v.colour + (st.s ? ", size " + st.s : "") + ", " + money(pr)) + (st.s ? "&size=" + encodeURIComponent(st.s) : "");
       D.querySelectorAll("[data-ci]").forEach(function (b) { b.classList.toggle("on", b.dataset.ci === v.colour); });
       D.querySelectorAll("[data-si]").forEach(function (b) { b.classList.toggle("on", b.dataset.si === st.s); });
     }

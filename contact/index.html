@@ -90,23 +90,31 @@
     </section>
     <section class="cform" aria-label="Send a message">
       <form id="contact-form" novalidate>
+        <p class="label label-muted" style="margin-bottom:12px">What are you reaching out for? *</p>
         <div class="topics" role="group" aria-label="What is this about?">
           <button type="button" class="topic is-on" data-type="General Enquiry">General</button>
+          <button type="button" class="topic" data-type="8LIEN">8LIEN wheels</button>
+          <button type="button" class="topic" data-type="RSTRI">RSTRI</button>
+          <button type="button" class="topic" data-type="EVR">EVR</button>
+          <button type="button" class="topic" data-type="Parts">Parts</button>
           <button type="button" class="topic" data-type="Custom Build">Custom build</button>
-          <button type="button" class="topic" data-type="Wheels &amp; Parts">Wheels &amp; parts</button>
           <button type="button" class="topic" data-type="Servicing &amp; Repairs">Servicing</button>
         </div>
-        <div class="field"><label class="label label-muted" for="f-name">Full name</label><input id="f-name" name="name" autocomplete="name"></div>
-        <div class="field"><label class="label label-muted" for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
-        <div class="field"><label class="label label-muted" for="f-phone">Phone (optional)</label><input id="f-phone" name="phone" type="tel" autocomplete="tel"></div>
-        <div class="field"><label class="label label-muted" for="f-msg">Message</label><textarea id="f-msg" name="message" placeholder="Tell us what you're looking for…"></textarea></div>
+        <div class="field"><label class="label label-muted" for="f-name">Full name *</label><input id="f-name" name="name" autocomplete="name" required></div>
+        <div class="field"><label class="label label-muted" for="f-phone">Mobile number (WhatsApp) *</label><input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. 9123 4567" required></div>
+        <div class="field"><label class="label label-muted" for="f-product">Product / item (optional)</label><input id="f-product" name="product" placeholder="e.g. 8LIEN 50mm wheelset, RSTRI adapter, EVR jersey"></div>
+        <div class="field"><label class="label label-muted" for="f-bike">Your bike / frame (optional)</label><input id="f-bike" name="bike" placeholder="e.g. Canyon Speedmax CF SLX"></div>
+        <div class="field"><label class="label label-muted" for="f-size">Size (optional)</label><input id="f-size" name="size" placeholder="e.g. M, 54cm"></div>
+        <div class="field"><label class="label label-muted" for="f-email">Email (optional)</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
+        <div class="field"><label class="label label-muted" for="f-msg">Message (optional)</label><textarea id="f-msg" name="message" placeholder="Tell us what you're looking for…"></textarea></div>
         <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <button class="btn btn-light" id="f-submit" type="submit" style="width:100%;padding:20px">Send message</button>
+        <button class="btn btn-light" id="f-submit" type="submit" style="width:100%;padding:20px">Send enquiry</button>
         <p class="ferr" id="f-err" role="alert"></p>
       </form>
       <div class="csuccess" id="f-ok" hidden>
-        <p class="label">Message sent</p>
-        <p class="clead">Thanks, we've got it. We'll reply within 24 hours on working days. For anything urgent, WhatsApp us on +65 8722 2610.</p>
+        <p class="label">Enquiry received</p>
+        <p class="clead">Thanks, we've got it. We'll check stock and pricing and reply on WhatsApp, usually within 24 hours on working days. Want to speed things up? Message us now with your details already filled in.</p>
+        <a class="btn btn-light" id="f-wa" href="https://wa.me/6587222610" target="_blank" rel="noopener">Continue on WhatsApp</a>
         <a class="btn btn-line" href="/">Back to home</a>
       </div>
     </section>
