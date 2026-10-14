@@ -20,6 +20,7 @@
   <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/site.css">
   <link rel="stylesheet" href="/assets/css/store.css">
+  <style>.enq-about{display:grid;gap:4px;margin:0 0 22px;padding:14px 16px;border:1px solid var(--line);border-radius:3px}.enq-about[hidden]{display:none}.enq-about strong{font-weight:400;font-size:15px}.enq-more{margin:0 0 22px;border-top:1px solid var(--line);padding-top:14px}.enq-more summary{cursor:pointer;padding:6px 0 16px}.enq-more[open] summary{padding-bottom:18px}</style>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -83,6 +84,7 @@
       <dl class="cdl">
         <div><dt class="label">WhatsApp</dt><dd><a href="https://wa.me/6587222610?text=Hi%20Bike%20%26%20Butter%2C%20I%27d%20like%20to%20ask%20about%20" target="_blank" rel="noopener">+65 8722 2610</a></dd></div>
         <div><dt class="label">Workshop</dt><dd>491 Jurong West Avenue 1<br>Singapore 640491</dd></div>
+        <div><dt class="label">Business</dt><dd>Bike&amp;Butter · UEN 53521776E</dd></div>
         <div><dt class="label">Hours</dt><dd>Monday to Friday, 9am to 6pm</dd></div>
         <div><dt class="label">Instagram</dt><dd><a href="https://www.instagram.com/bikeandbutter/" target="_blank" rel="noopener">@bikeandbutter</a></dd></div>
       </dl>
@@ -90,23 +92,17 @@
     </section>
     <section class="cform" aria-label="Send a message">
       <form id="contact-form" novalidate>
-        <p class="label label-muted" style="margin-bottom:12px">What are you reaching out for? *</p>
-        <div class="topics" role="group" aria-label="What is this about?">
-          <button type="button" class="topic is-on" data-type="General Enquiry">General</button>
-          <button type="button" class="topic" data-type="8LIEN">8LIEN wheels</button>
-          <button type="button" class="topic" data-type="RSTRI">RSTRI</button>
-          <button type="button" class="topic" data-type="EVR">EVR</button>
-          <button type="button" class="topic" data-type="Parts">Parts</button>
-          <button type="button" class="topic" data-type="Custom Build">Custom build</button>
-          <button type="button" class="topic" data-type="Servicing &amp; Repairs">Servicing</button>
-        </div>
-        <div class="field"><label class="label label-muted" for="f-name">Full name *</label><input id="f-name" name="name" autocomplete="name" required></div>
-        <div class="field"><label class="label label-muted" for="f-phone">Mobile number (WhatsApp) *</label><input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. 9123 4567" required></div>
-        <div class="field"><label class="label label-muted" for="f-product">Product / item (optional)</label><input id="f-product" name="product" placeholder="e.g. 8LIEN 50mm wheelset, RSTRI adapter, EVR jersey"></div>
-        <div class="field"><label class="label label-muted" for="f-bike">Your bike / frame (optional)</label><input id="f-bike" name="bike" placeholder="e.g. Canyon Speedmax CF SLX"></div>
-        <div class="field"><label class="label label-muted" for="f-size">Size (optional)</label><input id="f-size" name="size" placeholder="e.g. M, 54cm"></div>
-        <div class="field"><label class="label label-muted" for="f-email">Email (optional)</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
-        <div class="field"><label class="label label-muted" for="f-msg">Message (optional)</label><textarea id="f-msg" name="message" placeholder="Tell us what you're looking for…"></textarea></div>
+        <p class="enq-about" id="f-about" hidden><span class="label label-muted">Enquiring about</span><strong id="f-about-txt"></strong></p>
+        <div class="field"><label class="label label-muted" for="f-name">Your name *</label><input id="f-name" name="name" autocomplete="name" required></div>
+        <div class="field"><label class="label label-muted" for="f-phone">Mobile number (we reply on WhatsApp) *</label><input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. 9123 4567" required></div>
+        <div class="field"><label class="label label-muted" for="f-msg">How can we help? *</label><textarea id="f-msg" name="message" placeholder="e.g. Where are you located? Is the 50mm wheelset in stock? Can you service my road bike?"></textarea></div>
+        <details class="enq-more" id="f-more">
+          <summary class="label">Add more details (optional)</summary>
+          <div class="field" id="f-product-wrap"><label class="label label-muted" for="f-product">Product / item</label><input id="f-product" name="product" placeholder="e.g. 8LIEN 50mm wheelset"></div>
+          <div class="field"><label class="label label-muted" for="f-bike">Your bike / frame</label><input id="f-bike" name="bike" placeholder="e.g. Canyon Speedmax CF SLX"></div>
+          <div class="field"><label class="label label-muted" for="f-size">Size</label><input id="f-size" name="size" placeholder="e.g. M, 54cm"></div>
+          <div class="field"><label class="label label-muted" for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
+        </details>
         <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
         <button class="btn btn-light" id="f-submit" type="submit" style="width:100%;padding:20px">Send enquiry</button>
         <p class="ferr" id="f-err" role="alert"></p>

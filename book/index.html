@@ -76,17 +76,13 @@
 
   <!-- STEP 0: new vs existing -->
   <div class="step active" id="step-start">
-    <div class="choice-grid">
-      <div class="choice-btn" onclick="goToStep('lookup')">
-        <div class="choice-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-        <div class="choice-title">Existing Customer</div>
-        <div class="choice-sub">I've booked with you before</div>
+    <div class="card">
+      <div class="field">
+        <label for="startPhone">Your mobile number *</label>
+        <input type="tel" id="startPhone" inputmode="tel" autocomplete="tel" placeholder="9123 4567" onkeydown="if(event.key==='Enter')startWithPhone()">
       </div>
-      <div class="choice-btn" onclick="goToStep('register')">
-        <div class="choice-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg></div>
-        <div class="choice-title">New Customer</div>
-        <div class="choice-sub">First time here</div>
-      </div>
+      <button class="btn btn-primary" id="startBtn" onclick="startWithPhone()">Continue</button>
+      <div class="hint">We use your number to find your bikes and service history, and to WhatsApp you when your booking is confirmed. Booked before? We'll recognise you automatically.</div>
     </div>
   </div>
 
@@ -119,6 +115,7 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
         Add a new bike
       </div>
+      <div class="add-new-row" onclick="skipBike()" style="margin-top:6px;">Continue without choosing a bike</div>
     </div>
     <button class="btn btn-secondary" onclick="goToStep('lookup')">← Back</button>
   </div>
@@ -147,12 +144,12 @@
   <div class="step" id="step-register">
     <div class="card">
       <div class="field">
-        <label>Full name</label>
+        <label>Full name *</label>
         <input type="text" id="regName" placeholder="Jane Tan">
       </div>
       <div class="field-row">
         <div class="field">
-          <label>Phone (WhatsApp)</label>
+          <label>Mobile (WhatsApp) *</label>
           <input type="tel" id="regPhone" placeholder="9123 4567">
         </div>
         <div class="field">
@@ -193,7 +190,7 @@
   <div class="step" id="step-details">
     <div class="card">
       <div class="field">
-        <label>Anything we should know? (optional)</label>
+        <label id="custNotesLabel">Anything we should know? (optional)</label>
         <textarea id="custNotes" placeholder="e.g. clicking noise from rear wheel"></textarea>
       </div>
       <div class="field">
@@ -352,11 +349,32 @@ function goBack() {
 }
 
 // ================= LOOKUP FLOW =================
+function phoneKey(p) { return String(p || '').replace(/[^0-9]/g, '').slice(-8); }
+function phoneStore(p) { const d = String(p || '').replace(/[^0-9]/g, ''); return (d.length === 10 && d.indexOf('65') === 0) ? d.slice(2) : d; }
+
+// Single entry point: mobile number first (required). Known number -> bikes; unknown -> short registration.
+async function startWithPhone() {
+  clearError();
+  const raw = document.getElementById('startPhone').value.trim();
+  const key = phoneKey(raw);
+  if (key.length < 8) { showError('Please enter your mobile number (8 digits) so we can reach you on WhatsApp.'); return; }
+  const btn = document.getElementById('startBtn'); btn.disabled = true; btn.textContent = 'Checking…';
+  try {
+    const { data, error } = await sb.from('public_customer_lookup').select('*').ilike('phone', `%${key}%`);
+    if (error) { showError('Something went wrong. Please try again.'); return; }
+    if (data && data.length === 1) { await selectCustomer(data[0]); return; }
+    if (data && data.length > 1) { renderCustomerMatches(data); goToStep('pick-customer'); return; }
+    document.getElementById('regPhone').value = raw;
+    goToStep('register');
+    setTimeout(() => document.getElementById('regName').focus(), 50);
+  } finally { btn.disabled = false; btn.textContent = 'Continue'; }
+}
+
 async function doLookup() {
   clearError();
   const phoneRaw = document.getElementById('lookupPhone').value.trim();
   if (!phoneRaw) { showError('Please enter your phone number.'); return; }
-  const phone = normalizePhone(phoneRaw);
+  const phone = phoneKey(phoneRaw);
 
   const { data, error } = await sb
     .from('public_customer_lookup')
@@ -544,10 +562,11 @@ async function submitNewCustomer() {
   const email = document.getElementById('regEmail').value.trim();
   const address = document.getElementById('regAddress').value.trim();
 
-  if (!name || !phone) { showError('Please enter your name and phone number.'); return; }
+  if (!name) { showError('Please enter your name.'); return; }
+  if (phoneKey(phone).length < 8) { showError('Please enter a valid mobile number so we can reach you on WhatsApp.'); return; }
 
   const { data: custData, error: custErr } = await sb.from('customers').insert({
-    name, phone, email: email || null, address: address || null
+    name, phone: phoneStore(phone), email: email || null, address: address || null
   }).select().single();
 
   if (custErr) { showError('Could not save your details: ' + custErr.message); return; }
@@ -571,6 +590,8 @@ async function submitNewCustomer() {
 }
 
 // ================= SERVICES =================
+function skipBike() { currentBike = null; goToStep('service'); loadServices(); }
+
 async function bookServiceForBike() {
   goToStep('service');
   document.getElementById('serviceList').innerHTML = `<div class="no-history">Loading services…</div>`;
@@ -725,6 +746,9 @@ function selectSlot(startIso, endIso, chipEl) {
   document.getElementById('sumSlot').textContent = selectedSlot.start.toLocaleString('en-SG', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
   document.getElementById('sumBike').textContent = currentBike ? `${currentBike.brand || ''} ${currentBike.model || ''}`.trim() || '—' : '—';
 
+  const isBuild = /build|upgrade/i.test(selectedService.name);
+  document.getElementById('custNotesLabel').textContent = isBuild ? 'Tell us about your project *' : 'Anything we should know? (optional)';
+  document.getElementById('custNotes').placeholder = isBuild ? 'e.g. frame you have or plan to buy, parts you want, budget, what you want to upgrade' : 'e.g. clicking noise from rear wheel';
   goToStep('details');
 }
 
@@ -755,6 +779,7 @@ async function submitBooking() {
   if (!currentCustomer) { showError('Something went wrong — please start again from the top.'); return; }
 
   const notes = document.getElementById('custNotes').value.trim();
+  if (/build|upgrade/i.test(selectedService.name) && notes.length < 10) { showError('Please tell us a little about your build or upgrade so we can prepare for the consultation.'); return; }
   const btn = document.getElementById('submitBtn');
   btn.disabled = true; btn.textContent = 'Submitting…';
 

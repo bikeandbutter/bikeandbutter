@@ -5,16 +5,15 @@
   var form = document.getElementById("contact-form"); if (!form) return;
   var qs = new URLSearchParams(location.search);
   var type = "General Enquiry";
-  var topics = Array.prototype.slice.call(document.querySelectorAll(".topic"));
-  function setType(t) {
-    var legacy = { "Wheels & Parts": "8LIEN" };
-    t = legacy[t] || t;
-    if (!topics.some(function (b) { return b.dataset.type === t; })) return;
-    type = t; topics.forEach(function (b) { b.classList.toggle("is-on", b.dataset.type === t); });
-  }
-  if (qs.get("type")) setType(qs.get("type"));
+  var legacy = { "Wheels & Parts": "8LIEN" }, known = ["General Enquiry", "8LIEN", "RSTRI", "EVR", "Parts", "Custom Build", "Servicing & Repairs"];
+  var qt = qs.get("type"); qt = legacy[qt] || qt; if (known.indexOf(qt) > -1) type = qt;
   ["product", "bike", "size"].forEach(function (k) { if (qs.get(k)) form.elements[k].value = qs.get(k).slice(0, 200); });
-  topics.forEach(function (b) { b.addEventListener("click", function () { setType(b.dataset.type); }); });
+  var pre = form.elements.product.value;
+  if (pre || type !== "General Enquiry") {
+    document.getElementById("f-about").hidden = false;
+    document.getElementById("f-about-txt").textContent = (pre ? pre : type) + (pre && type !== "General Enquiry" ? " · " + type : "");
+    if (form.elements.bike.value || form.elements.size.value) document.getElementById("f-more").open = true;
+  }
   function cut(v, n) { v = (v || "").trim(); return v ? v.slice(0, n) : null; }
   form.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -24,6 +23,7 @@
     var digits = phone.replace(/\D/g, "");
     if (name.length < 2) { err.className = "ferr show"; err.textContent = "Please enter your name."; return; }
     if (digits.length < 8) { err.className = "ferr show"; err.textContent = "Please enter a mobile number we can WhatsApp (at least 8 digits)."; return; }
+    if (!f.product.value.trim() && f.message.value.trim().length < 3) { err.className = "ferr show"; err.textContent = "Please tell us how we can help (a short message is fine)."; return; }
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.className = "ferr show"; err.textContent = "That email doesn't look right. You can also leave it blank."; return; }
     err.className = "ferr"; err.textContent = ""; btn.disabled = true; btn.textContent = "Sending…";
     var row = { name: name.slice(0, 120), mobile: phone.slice(0, 30), topic: type, product: cut(f.product.value, 300), bike: cut(f.bike.value, 200),
