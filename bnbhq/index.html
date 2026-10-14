@@ -792,6 +792,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
                   <div class="ie-field"><label>Valid until</label><input type="date" id="qtValidUntil" oninput="ieOnValidManual()"></div>
                   <div class="ie-field"><label>Status</label><select id="qtStatus"><option value="draft">Draft</option><option value="sent">Sent</option><option value="accepted">Accepted</option><option value="declined">Declined</option></select></div>
                 </div>
+                <div class="ie-field"><label>Card payment link (optional, e.g. HitPay)</label><input type="url" id="qtPayLink" placeholder="https://hit-pay.com/..." oninput="renderInvoicePreview()"></div>
               </div>
               <input type="hidden" id="qtEnquiryId"><input type="hidden" id="invQuotationId"><input type="hidden" id="invQuoteRef">
               <div id="ieInvQuoteBadge" style="display:none;margin-top:6px;font-size:11px;color:#4ade80"></div>
@@ -847,6 +848,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
 
             <div class="ie-btn-row">
               <button class="ie-save-btn" id="ieConvertBtn" style="display:none" onclick="ieConvertCurrentQuote()">→ Invoice</button>
+              <button class="ie-save-btn" id="ieDriveBtn" onclick="saveInvoicePdfToDrive(this)" title="Save this invoice's PDF to Google Drive">Save to Drive</button>
               <button class="ie-save-btn" onclick="saveDoc()">Save</button>
               <button class="ie-print-btn" onclick="printInvoice()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Save &amp; Print PDF</button>
             </div>
@@ -3176,6 +3178,7 @@ function applyDocModeUI() {
   document.getElementById('ieQuoteFields').style.display = q ? '' : 'none';
   document.getElementById('ieDepositSection').style.display = q ? '' : 'none';
   document.getElementById('ieConvertBtn').style.display = q ? '' : 'none';
+  document.getElementById('ieDriveBtn').style.display = q ? 'none' : '';
 }
 
 function ieGoBack() { switchTab(docMode === 'quote' ? 'quotations' : 'invoices'); }
@@ -3237,7 +3240,7 @@ async function openDocEditor(mode, docId, prefill) {
   const setV = (id, v) => { document.getElementById(id).value = v; };
   const today = new Date().toISOString().slice(0, 10);
   ['invId', 'invSavedNo', 'invRevSuffix', 'invCustomerName', 'invAddr1', 'invAddr2', 'invPostal', 'invRemarks',
-   'invDiscLabel', 'invDiscPct', 'invQuotationId', 'invQuoteRef', 'qtDepValue', 'qtEnquiryId'].forEach(id => setV(id, ''));
+   'invDiscLabel', 'invDiscPct', 'invQuotationId', 'invQuoteRef', 'qtDepValue', 'qtEnquiryId', 'qtPayLink'].forEach(id => setV(id, ''));
   setV('invDate', today);
   setV('qtStatus', 'draft');
   setV('qtDepType', 'pct');
@@ -3279,6 +3282,7 @@ async function openDocEditor(mode, docId, prefill) {
         setV('qtStatus', r.status || 'draft');
         setV('qtDepType', r.deposit_type || 'pct');
         setV('qtDepValue', r.deposit_value || '');
+        setV('qtPayLink', r.payment_link || ''); window.__qtHasPayLink = 'payment_link' in r;
       } else if (r.quotation_id) {
         const qq = QUOTATIONS.find(x => x.id === r.quotation_id);
         setV('invQuotationId', r.quotation_id);
@@ -3543,6 +3547,7 @@ function buildInvoicePages() {
 
   const data = { docType: docMode, fullInvNo, date, name, addrLines, remarks, items, discPct, discLabel };
   if (isQ) {
+    data.payLink = (document.getElementById('qtPayLink').value || '').trim();
     const vu = document.getElementById('qtValidUntil').value;
     data.validUntil = vu ? formatDate(vu) : '';
     data.deposit = { amount: calcDeposit(calcGrandTotal()), label: depositLabel() };
@@ -3614,6 +3619,7 @@ function buildInvoicePagesFromData(data) {
     <div class="dq-pay-row">Bank name: <b>DBS Bank</b></div>
     <div class="dq-pay-sub">Terms</div>
     <div class="dq-pay-row">Please include your <b>${docTitle} Number</b> in the payment remarks.</div>
+    ${isQ && data.payLink ? `<div class="dq-pay-sub">Pay by card (Visa / Mastercard)</div><div class="dq-pay-row" style="word-break:break-all"><b>${escapeHtml(data.payLink)}</b></div>` : ''}
     ${isQ && data.validUntil ? `<div class="dq-valid">This quotation is valid until <b>${escapeHtml(data.validUntil)}</b>.</div>` : ''}
     ${deposit ? `<div class="dq-valid">A deposit of <b>${dm(deposit.amount)}</b> is required to confirm this job.</div>` : ''}
   </div>`;
@@ -3853,7 +3859,9 @@ async function saveInvoice() {
   }
   await loadProducts();
   await loadInvoices();
-  alert('Invoice ' + fullInvoiceNo + ' saved' + (linkedItems.length ? ', stock updated for ' + linkedItems.length + ' item(s).' : '.'));
+  const drive = await saveInvoicePdfToDrive(null);
+  alert('Invoice ' + fullInvoiceNo + ' saved' + (linkedItems.length ? ', stock updated for ' + linkedItems.length + ' item(s).' : '.') +
+    (drive.ok ? '\nPDF saved to Google Drive: ' + drive.filename : '\nWARNING: the PDF was NOT saved to Google Drive (' + drive.error + '). Use the "Save to Drive" button to retry.'));
 }
 
 // ---- Shared PDF engine (html2canvas + jsPDF), used by printInvoice, quickPrintInvoice,
@@ -3880,6 +3888,51 @@ async function downloadPdfFromPages(pageEls, filename) {
     pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfW, pdfH);
   }
   pdf.save(filename);
+}
+
+/* ---- Save invoice PDFs to Google Drive (same Apps Script web app the old Invoice page used) ---- */
+const DRIVE_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyNMIV4GVtQh6QzXwELSxiCizyA2ZqvpBjlKV8i9UVd41ts2l9qlDW0hqhINrnxRF6Z/exec';
+
+async function pdfBase64FromPages(pageEls) {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const pdfW = pdf.internal.pageSize.getWidth();
+  const pdfH = pdf.internal.pageSize.getHeight();
+  for (let i = 0; i < pageEls.length; i++) {
+    const canvas = await html2canvas(pageEls[i], { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' });
+    if (i > 0) pdf.addPage();
+    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfW, pdfH);
+  }
+  return pdf.output('datauristring').split(',')[1];
+}
+
+// Returns { ok, filename?, error? }. Never throws.
+async function uploadPdfToDrive(pageEls, fullNo, custName) {
+  try {
+    const filename = fullNo + ' - ' + (custName || 'Customer').trim() + '.pdf';
+    const baseInvNo = fullNo.replace(/-\d+$/, '');
+    const pdfBase64 = await pdfBase64FromPages(pageEls);
+    const r = await fetch(DRIVE_WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'savePdf', pdfBase64, filename, baseInvNo }) });
+    const j = await r.json();
+    return j && j.ok ? { ok: true, filename: j.filename || filename } : { ok: false, error: (j && j.error) || 'Unknown error from Google' };
+  } catch (e) { console.error(e); return { ok: false, error: e.message }; }
+}
+
+// Renders the invoice currently open in the editor off-screen and uploads it. Used after Save and by the "Save to Drive" button.
+async function saveInvoicePdfToDrive(btn) {
+  if (docMode !== 'invoice') return { ok: false, error: 'Only invoices are saved to Drive.' };
+  const fullNo = (document.getElementById('invSavedNo').value || '') + (document.getElementById('invRevSuffix').value || '');
+  if (!document.getElementById('invSavedNo').value) { alert('Save the invoice first.'); return { ok: false, error: 'not saved' }; }
+  const prev = btn ? btn.innerHTML : null;
+  if (btn) { btn.disabled = true; btn.innerHTML = 'Saving to Drive…'; }
+  const container = makeOffscreenContainer();
+  try {
+    container.innerHTML = buildInvoicePages().join('');
+    await new Promise(r => setTimeout(r, 50));
+    const res = await uploadPdfToDrive(Array.from(container.querySelectorAll('.inv-page')), fullNo, document.getElementById('invCustomerName').value);
+    if (btn) alert(res.ok ? 'PDF saved to Google Drive: ' + res.filename : 'Drive upload failed: ' + res.error);
+    return res;
+  } finally { document.body.removeChild(container); if (btn) { btn.disabled = false; btn.innerHTML = prev; } }
 }
 
 async function printInvoice() {
@@ -4016,6 +4069,8 @@ async function saveQuotation() {
     status: document.getElementById('qtStatus').value || 'draft',
     updated_at: new Date().toISOString(),
   };
+  const payLink = (document.getElementById('qtPayLink').value || '').trim();
+  if (payLink || window.__qtHasPayLink) payload.payment_link = payLink || null; // needs supabase/quotation-payment-link.sql
 
   let quoteId = id;
   if (id) {
@@ -4096,6 +4151,7 @@ async function quickPrintQuotation(id, btnEl) {
     addrLines.push('Singapore' + (q.postal_code ? ' ' + q.postal_code : ''));
     const data = {
       docType: 'quote',
+      payLink: q.payment_link || '',
       fullInvNo: q.full_quotation_no || q.quotation_no,
       date: formatDate(q.quotation_date) || '—',
       validUntil: q.valid_until ? formatDate(q.valid_until) : '',
