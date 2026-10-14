@@ -13,7 +13,7 @@
    "price": 2099,
    "unit": "set",
    "badge": "",
-   "purchasable": true,
+   "purchasable": false,
    "summary": "Sub-1kg climbing wheelset. The lightest build in the AETHER range.",
    "benefits": [
     "30/35 front/rear depth, 980g per set",
@@ -110,7 +110,7 @@
    "price": 2099,
    "unit": "set",
    "badge": "",
-   "purchasable": true,
+   "purchasable": false,
    "summary": "The versatile middle ground: aero enough for fast flats, light enough for the climbs.",
    "benefits": [
     "40/45 front/rear depth, 1,020g per set",
@@ -207,7 +207,7 @@
    "price": 2099,
    "unit": "set",
    "badge": "Most popular",
-   "purchasable": true,
+   "purchasable": false,
    "summary": "The sweet spot, and our best-selling AETHER build. Fast on the flat, confident on climbs.",
    "benefits": [
     "45/50 front/rear depth, 1,040g per set",
@@ -304,7 +304,7 @@
    "price": 2099,
    "unit": "set",
    "badge": "",
-   "purchasable": true,
+   "purchasable": false,
    "summary": "Maximum aero advantage for flat roads, crits and any effort where depth is everything.",
    "benefits": [
     "50/60 front/rear depth, 1,110g per set",
@@ -401,7 +401,7 @@
    "price": 1550,
    "unit": "set",
    "badge": "",
-   "purchasable": true,
+   "purchasable": false,
    "summary": "The lightest L-series build. Shallow depth for pure climbing.",
    "benefits": [
     "30/35mm front/rear depth",
@@ -489,7 +489,7 @@
    "price": 1550,
    "unit": "set",
    "badge": "Most popular",
-   "purchasable": true,
+   "purchasable": false,
    "summary": "The all-round sweet spot: aero on the flat, capable on the climbs.",
    "benefits": [
     "45/50mm front/rear depth",
@@ -577,7 +577,7 @@
    "price": 1550,
    "unit": "set",
    "badge": "",
-   "purchasable": true,
+   "purchasable": false,
    "summary": "Maximum aero depth in the L-series, for flat roads and crits.",
    "benefits": [
     "50/60mm front/rear depth",
@@ -665,7 +665,7 @@
    "price": 1700,
    "unit": "wheel",
    "badge": "",
-   "purchasable": true,
+   "purchasable": false,
    "summary": "950g full-carbon disc rear wheel for the bike leg.",
    "benefits": [
     "950g full disc rear wheel, sold as a single wheel",
