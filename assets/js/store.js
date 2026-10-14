@@ -200,7 +200,7 @@
     var p = find(id);
     if (!p) { root.innerHTML = '<div class="notfound"><p class="label">Product not found</p><a class="btn btn-light" href="/shop/">Back to shop</a></div>'; return; }
     document.title = p.name + " — Bike & Butter";
-    var meta = $('meta[name="description"]'); if (meta) meta.content = p.summary + " Official Singapore distributor, Bike & Butter.";
+    var meta = $('meta[name="description"]'); if (meta) meta.content = p.summary + " Available in Singapore from Bike & Butter.";
     var canon = $('link[rel="canonical"]'); if (canon) canon.href = "https://bikeandbutter.com/shop/product/?id=" + p.id;
     var variant = p.variants ? p.variants.options[0] : "";
     var imgs = p.images.slice();
@@ -213,7 +213,7 @@
       '<div class="prow"><h1 class="pname">' + esc(p.name) + '</h1><p class="pprice" data-pprice>' + (p.price != null ? money(vprice(p, variant)) + (p.unit ? '<small> / ' + esc(p.unit) + '</small>' : "") : "Enquire") + '</p></div>' +
       '<p class="psum">' + esc(p.summary) + '</p>' + variants +
       (p.purchasable ? '<button type="button" class="btn btn-dark btn-wide" data-add>Add to bag <span data-add-price>' + money(p.price) + '</span></button>' : '<a class="btn btn-dark btn-wide" data-enquire href="' + enquireUrl(p) + '">Enquire about this</a>') +
-      '<div class="pbox"><p class="label"><span class="live"></span>' + (p.brand === "RSTRI" ? "Made to order after your enquiry. Free delivery over S$" + DATA.shipping.freeOver : p.brand === "8LIEN" ? "Official Singapore distributor. Free delivery over S$" + DATA.shipping.freeOver : "Message us to confirm availability. Free delivery over S$" + DATA.shipping.freeOver) + ' <button type="button" class="ul" data-open="pay">Read more</button></p>' +
+      '<div class="pbox"><p class="label"><span class="live"></span>' + (p.brand === "RSTRI" ? "Made to order after your enquiry. Free delivery over S$" + DATA.shipping.freeOver : p.brand === "8LIEN" ? "Available through Bike & Butter. Free delivery over S$" + DATA.shipping.freeOver : "Message us to confirm availability. Free delivery over S$" + DATA.shipping.freeOver) + ' <button type="button" class="ul" data-open="pay">Read more</button></p>' +
       '<p class="label">Test rides and fitting at our Jurong West workshop <a class="ul" href="/#visit">Read more</a></p></div>' +
       (p.benefits.length ? '<h2 class="label label-muted lbl">Benefits</h2><ul class="bullets">' + p.benefits.map(function (b) { return "<li>" + esc(b) + "</li>"; }).join("") + '</ul>' : "") +
       (p.included.length ? '<h2 class="label label-muted lbl">What\'s included</h2><ul class="bullets">' + p.included.map(function (b) { return "<li>" + esc(b) + "</li>"; }).join("") + '</ul>' : "") +
