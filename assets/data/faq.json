@@ -1,185 +1,213 @@
 {
- "topics": [
-  {
-   "id": "shipping",
-   "title": "Shipping and delivery",
-   "img": "/assets/img/home/g4.webp",
-   "qa": [
-    [
-     "How much does delivery cost?",
-     "Delivery within Singapore is free on orders of S$150 or more. Orders under S$150 pay a flat S$15, shown in your bag before you check out."
-    ],
-    [
-     "Can I collect my order from the workshop instead?",
-     "Yes. Collection from our workshop at 491 Jurong West Avenue 1 is free of charge, Monday to Friday, 9am to 6pm. We'll let you know when your order is ready."
-    ],
-    [
-     "How long will my order take?",
-     "Items we order in for you, such as RSTRI parts and EVR apparel, typically take around 2 to 4 weeks. We'll confirm the estimated delivery date once your order has been placed with our supplier."
-    ],
-    [
-     "Do you deliver outside Singapore?",
-     "Not at the moment. We currently deliver within Singapore only, but we are working on overseas shipping. WhatsApp us if you are overseas and we'll let you know where we are."
-    ]
-   ]
-  },
-  {
-   "id": "orders",
-   "title": "Order and payment",
-   "img": "/assets/img/home/g8.webp",
-   "qa": [
-    [
-     "How do I pay?",
-     "We accept PayNow and bank transfer. Once your order or quote is confirmed, we'll send you the payment details. Where online checkout is available, you'll be sent to a secure HitPay page instead."
-    ],
-    [
-     "When do I pay?",
-     "For products, payment is made when your order is confirmed. Items we order in from our suppliers are placed only after payment has been received. For workshop jobs, simple jobs are paid on completion, and larger jobs such as full builds usually need a deposit first. Your mechanic will confirm this in your quote."
-    ],
-    [
-     "Can I change or cancel my order?",
-     "Once an order is confirmed and paid, we generally cannot cancel it, as we place it with our suppliers straight away. If you need a change, message us on WhatsApp as soon as possible and we'll see what we can do."
-    ],
-    [
-     "My payment didn't go through.",
-     "Your order is not confirmed until payment is received. You can try again, or WhatsApp us and we'll help you finish it."
-    ]
-   ]
-  },
-  {
-   "id": "products",
-   "title": "Product information",
-   "img": "/assets/img/home/g1.webp",
-   "qa": [
-    [
-     "Which 8LIEN wheelset is right for me?",
-     "For climbing, look at the AETHER 3 or L3W (30/35mm). For all-round riding, the AETHER 4 or 5 and the L5W (40 to 50mm). For flat roads and crits, the AETHER 6 or L6W (50/60mm). For the triathlon bike leg, the Aero X8 disc rear wheel. Not sure? Tell us how you ride and we'll recommend one."
-    ],
-    [
-     "Which freehubs are available?",
-     "Shimano 10/11/12-speed, SRAM XDR and Campagnolo N3W. You choose when you order."
-    ],
-    [
-     "Are the wheels UCI certified and tubeless ready?",
-     "The AETHER wheels are UCI certified and tubeless ready. The L-series and Aero X8 are tubeless compatible. See each product's technical info for details."
-    ],
-    [
-     "Will an RSTRI part fit my bike?",
-     "RSTRI parts are machined for specific frames. Use the bike finder on the RSTRI page to see what is available for your bike. All RSTRI parts are made to order: enquire with your bike model, our mechanic recommends the best set-up, and we order the parts in for you."
-    ]
-   ]
-  },
-  {
-   "id": "service",
-   "title": "Servicing and bookings",
-   "img": "/assets/img/home/g7.webp",
-   "qa": [
-    [
-     "What do you work on?",
-     "Our focus is road and triathlon bikes: servicing, repairs, upgrades and full builds."
-    ],
-    [
-     "How much does a service cost?",
-     "We don't have fixed packages. Every job is quoted after you enquire and our mechanic has looked at the bike's condition and the work and parts involved."
-    ],
-    [
-     "How long will my bike take?",
-     "Usually one to two weeks, depending on the work. Bigger jobs, such as full builds, can take longer. Your mechanic will give you an estimate with your quote."
-    ],
-    [
-     "Do I pay a deposit?",
-     "For larger jobs like full builds we usually take a deposit. For simple upgrades we usually don't. Otherwise payment is due when the job is complete. The quote will state which applies to you."
-    ],
-    [
-     "Can I bring my own parts?",
-     "Yes. You can bring your own parts, or we can order them in for you."
-    ],
-    [
-     "Can you collect or deliver my bike?",
-     "Our workshop works on a drop-off basis. If you can't make it, we can arrange a Lalamove pickup and return. The cost, and the risk during transit, is borne by the bike owner."
-    ],
-    [
-     "Is the work guaranteed?",
-     "Yes. We give a 1-year warranty on our workmanship. It doesn't cover crash damage, or work done by anyone other than us."
-    ],
-    [
-     "How do I book a service?",
-     "Use the Book a service page to pick a slot, or WhatsApp us. We'll confirm the booking with you."
-    ],
-    [
-     "Can I test ride wheels before buying?",
-     "Ask us when you message and we'll see what is available. Test rides are by appointment."
-    ],
-    [
-     "Where are you and when are you open?",
-     "491 Jurong West Avenue 1, Singapore 640491. Monday to Friday, 9am to 6pm."
-    ]
-   ]
-  },
-  {
-   "id": "returns",
-   "title": "Returns and warranty",
-   "img": "/assets/img/home/g12.webp",
-   "qa": [
-    [
-     "What is your returns policy?",
-     "We don't offer returns as standard, as many of our items are ordered in specially for you. If something isn't right, WhatsApp us and we'll work out the best solution together. Made-to-order items (RSTRI and EVR) and parts that have already been fitted can't be returned. For other items in new, unused condition we'll consider a return, with any collection or delivery cost (for example by Lalamove) covered by the customer."
-    ],
-    [
-     "Something is wrong with my order.",
-     "Tell us as soon as possible on WhatsApp with your order number and a photo. We'll diagnose the issue and find a solution case by case."
-    ],
-    [
-     "Is there a warranty?",
-     "Yes. Products carry the manufacturer's warranty where one applies, and we handle claims with the manufacturer on your behalf. Our workshop work carries a 1-year workmanship warranty."
-    ],
-    [
-     "What does the warranty not cover?",
-     "Crash damage, and parts or work fitted by someone other than us."
-    ]
-   ]
-  },
-  {
-   "id": "bikes",
-   "title": "Buying and selling bikes",
-   "img": "/assets/img/home/g3.webp",
-   "qa": [
-    [
-     "Are your bikes sold as-is?",
-     "Yes, bikes are sold as-is. You are welcome to view and test ride a bike before you decide."
-    ],
-    [
-     "Can I reserve a bike with a deposit?",
-     "We don't take deposits at the moment. Payment in full is collected once the deal is agreed."
-    ],
-    [
-     "Can I sell or trade in my bike?",
-     "We review bikes case by case. Our mechanic looks at your bike in person first. If it suits us, we agree a price with you, suggest a selling price, and list it on our website and Carousell. A small fee applies when it sells. Message us on WhatsApp to start."
-    ]
-   ]
-  },
-  {
-   "id": "common",
-   "title": "Common questions",
-   "img": "/assets/img/home/g9.webp",
-   "qa": [
-    [
-     "Where do 8LIEN, RSTRI and EVR come from?",
-     "Bike & Butter brings 8LIEN, RSTRI and EVR to Singapore. We check availability and pricing with you first, order once you have paid, and look after delivery and support."
-    ],
-    [
-     "How quickly do you reply?",
-     "We aim to reply within 24 hours on working days, usually much faster on WhatsApp."
-    ],
-    [
-     "Where else can I buy?",
-     "Parts, apparel and nutrition are also on our Shopee, Lazada and Carousell stores."
-    ],
-    [
-     "How do I order EVR apparel?",
-     "Browse the EVR range, then WhatsApp us your size. Each item is ordered in for you after payment is received, and we'll advise the estimated delivery date once it's placed."
-    ]
-   ]
-  }
- ]
+  "topics": [
+    {
+      "id": "shipping",
+      "title": "Shipping and delivery",
+      "img": "/assets/img/home/g4.webp",
+      "qa": [
+        [
+          "How much does delivery cost?",
+          "Delivery within Singapore is free on orders of S$150 or more. Below S$150 there is a flat S$15 fee. We confirm the delivery cost in your quotation."
+        ],
+        [
+          "Can I collect my order from the workshop instead?",
+          "Yes. Collection from our workshop at 491 Jurong West Avenue 1 is free. It is by appointment, Monday to Friday, 9am to 6pm, so please message us first. We'll let you know when your order is ready."
+        ],
+        [
+          "How long will my order take?",
+          "Most items we order in take around 2 to 4 weeks from the day we receive your payment. We'll keep you updated on WhatsApp if our suppliers or shipping companies tell us about any change."
+        ],
+        [
+          "Do you deliver outside Singapore?",
+          "No. We deliver within Singapore only."
+        ]
+      ]
+    },
+    {
+      "id": "orders",
+      "title": "Order and payment",
+      "img": "/assets/img/home/g8.webp",
+      "qa": [
+        [
+          "How does an enquiry work?",
+          "Message us on WhatsApp or use the enquiry form with what you are looking for and, if it matters, your bike. We check availability, price and lead time and reply with a quotation. Nothing is charged until you accept the quotation and pay."
+        ],
+        [
+          "Why are some prices shown as Enquire?",
+          "Many of our products are quoted individually after we check availability and what you need. Tap Enquire and we'll reply with a price."
+        ],
+        [
+          "How do I pay?",
+          "We accept PayNow and bank transfer. The payment details are on your quotation or invoice."
+        ],
+        [
+          "When do I pay?",
+          "For products, you pay in full after you accept our quotation, and we place your order once payment is received. For workshop jobs above S$500 we usually ask for a 30% deposit before we start, with the balance on completion. Simpler jobs are paid on completion. Your quotation states which applies."
+        ],
+        [
+          "How long is a quotation valid?",
+          "14 days. After that, please ask us to confirm that the price and availability are still the same."
+        ],
+        [
+          "I've paid. What happens next?",
+          "Send us a screenshot of your payment on WhatsApp. We'll confirm we've received it, place your order, and keep you updated on timing."
+        ],
+        [
+          "Can I change or cancel my order?",
+          "Before we place your order with our supplier, you can cancel for a full refund. After that, we refund up to 50% of what you paid, because we can't recover the rest from our supplier. Message us on WhatsApp as soon as possible."
+        ]
+      ]
+    },
+    {
+      "id": "products",
+      "title": "Product information",
+      "img": "/assets/img/home/g1.webp",
+      "qa": [
+        [
+          "Which 8LIEN wheelset is right for me?",
+          "For climbing, look at the AETHER 3 or L3W (30/35mm). For all-round riding, the AETHER 4 or 5 and the L5W (40 to 50mm). For flat roads and crits, the AETHER 6 or L6W (50/60mm). For the triathlon bike leg, the Aero X8 disc rear wheel. Not sure? Tell us how you ride and we'll recommend one."
+        ],
+        [
+          "Which freehubs are available?",
+          "Shimano 10/11/12-speed, SRAM XDR and Campagnolo N3W. You choose when you enquire."
+        ],
+        [
+          "Are the wheels UCI certified and tubeless ready?",
+          "The AETHER wheels are UCI certified and tubeless ready. The L-series and Aero X8 are tubeless compatible. See each product's technical info for details."
+        ],
+        [
+          "Will an RSTRI part fit my bike?",
+          "RSTRI parts are machined for specific frames. Use the bike finder on the RSTRI page to see what is available for your bike. All RSTRI parts are made to order: enquire with your bike model, our mechanic recommends the best set-up, and we order the parts in for you."
+        ]
+      ]
+    },
+    {
+      "id": "service",
+      "title": "Servicing and bookings",
+      "img": "/assets/img/home/g7.webp",
+      "qa": [
+        [
+          "What do you work on?",
+          "Our focus is road and triathlon bikes: servicing, repairs, upgrades and full builds."
+        ],
+        [
+          "How much does a service cost?",
+          "We don't have fixed packages. Every job is quoted after you enquire and our mechanic has looked at the bike's condition and the work and parts involved."
+        ],
+        [
+          "How long will my bike take?",
+          "Usually one to two weeks, depending on the work. Bigger jobs, such as full builds, can take longer. Your mechanic will give you an estimate with your quote."
+        ],
+        [
+          "Do I pay a deposit?",
+          "For jobs above S$500 we usually ask for a 30% deposit before we start. For smaller jobs, payment is due when the job is complete. Your quotation states what applies. A deposit is refunded in full if you cancel before we've ordered parts for your job, and is not refundable after that."
+        ],
+        [
+          "Can I bring my own parts?",
+          "Yes. You can bring your own parts, or we can order them in for you."
+        ],
+        [
+          "Can you collect or deliver my bike?",
+          "Our workshop works on a drop-off basis. If you can't make it, we can arrange a Lalamove pickup and return. The cost, and the risk during transit, is borne by the bike owner."
+        ],
+        [
+          "Will you do extra work without asking me?",
+          "No. We inspect your bike before starting and tell you about any existing damage we find. We won't carry out work beyond your quotation without your approval."
+        ],
+        [
+          "What if I don't collect my bike?",
+          "We'll tell you on WhatsApp or email when your bike is ready. If we haven't heard from you for a month after that, a storage fee applies, and after three months we may treat the bike as abandoned. Please see our Terms & Conditions for the details."
+        ],
+        [
+          "Is the work guaranteed?",
+          "Yes. We give a 1-year warranty on our workmanship. It doesn't cover crash damage, or work done by anyone other than us."
+        ],
+        [
+          "How do I book a service?",
+          "Use the Book a service page to pick a slot, or WhatsApp us. We'll confirm the booking with you. Please give us at least 24 hours' notice if you need to cancel or reschedule."
+        ],
+        [
+          "Can I book a build or upgrade consultation?",
+          "Yes. Choose Bike Build / Upgrade Consultation on the Book a service page. It's a free 30-minute slot to talk through your project, and we ask you to tell us a little about it when you book."
+        ],
+        [
+          "Can I test ride wheels before buying?",
+          "Ask us when you message and we'll see what is available. Test rides are by appointment."
+        ],
+        [
+          "Where are you and when are you open?",
+          "491 Jurong West Avenue 1, Singapore 640491. Monday to Friday, 9am to 6pm."
+        ]
+      ]
+    },
+    {
+      "id": "returns",
+      "title": "Returns and warranty",
+      "img": "/assets/img/home/g12.webp",
+      "qa": [
+        [
+          "What is your returns policy?",
+          "We don't accept returns for change of mind, because most of our items are ordered in specially for you. This includes made-to-order items (RSTRI and EVR) and parts that have already been fitted. If something is wrong, message us on WhatsApp and we'll work out the best solution together."
+        ],
+        [
+          "Something is wrong with my order.",
+          "Please tell us within 7 days of delivery or collection, with your order number and photos, on WhatsApp. We'll look into it and find a solution case by case."
+        ],
+        [
+          "How do refunds work?",
+          "Where we agree to a refund, we pay it by bank transfer within 5 working days. Just tell us which account to use."
+        ],
+        [
+          "Is there a warranty?",
+          "Yes. Products carry the manufacturer's warranty where one applies, and we handle claims with the manufacturer on your behalf. Warranty terms differ by brand and product, so ask us before you buy. Our workshop work carries a 1-year workmanship warranty."
+        ],
+        [
+          "What does the warranty not cover?",
+          "Crash damage, and parts or work fitted by someone other than us."
+        ]
+      ]
+    },
+    {
+      "id": "bikes",
+      "title": "Buying and selling bikes",
+      "img": "/assets/img/home/g3.webp",
+      "qa": [
+        [
+          "Are your bikes sold as-is?",
+          "Yes, bikes are sold as-is. You are welcome to view and test ride a bike before you decide."
+        ],
+        [
+          "Can I reserve a bike with a deposit?",
+          "We don't take deposits at the moment. Payment in full is collected once the deal is agreed."
+        ],
+        [
+          "Can I sell or trade in my bike?",
+          "We review bikes case by case. Our mechanic looks at your bike in person first. If it suits us, we agree a price with you, suggest a selling price, and list it on our website and Carousell. A small fee applies when it sells. Message us on WhatsApp to start."
+        ]
+      ]
+    },
+    {
+      "id": "common",
+      "title": "Common questions",
+      "img": "/assets/img/home/g9.webp",
+      "qa": [
+        [
+          "Where do 8LIEN, RSTRI and EVR come from?",
+          "Bike & Butter brings 8LIEN, RSTRI and EVR to Singapore. We check availability and pricing with you first, order once you have paid, and look after delivery and support."
+        ],
+        [
+          "How quickly do you reply?",
+          "We aim to reply within 24 hours on working days, usually much faster on WhatsApp."
+        ],
+        [
+          "Where else can I buy?",
+          "Parts, apparel and nutrition are also on our Shopee, Lazada and Carousell stores."
+        ],
+        [
+          "How do I order EVR apparel?",
+          "Browse the EVR range and tap Enquire, or WhatsApp us your size. We'll reply with a quotation. Once you've paid, we order it in for you, and we'll keep you updated on timing. Most items take around 2 to 4 weeks from payment."
+        ]
+      ]
+    }
+  ]
 }

@@ -98,9 +98,9 @@
   }
   function policyHtml() {
     var s = DATA.shipping;
-    return '<p><strong class="label">Payment</strong><br>Pay by card or PayNow through HitPay at checkout. For enquiry items we accept PayNow and bank transfer once your order is confirmed.</p>' +
-      '<p><strong class="label">Delivery</strong><br>Orders of ' + money(s.freeOver) + ' or more ship free. Orders under ' + money(s.freeOver) + ' pay a flat ' + money(s.flat) + '. Questions? WhatsApp +65 8722 2610, Mon–Fri 9am–6pm.</p>' +
-      '<p><strong class="label">Returns</strong><br>We don&rsquo;t offer returns as standard, so message us on WhatsApp if anything is wrong and we&rsquo;ll find a solution. Manufacturer warranty applies where available. See our <a href="/terms/">terms</a>.</p>';
+    return '<p><strong class="label">Payment</strong><br>We accept PayNow and bank transfer. Payment details are on your quotation once your order is confirmed.</p>' +
+      '<p><strong class="label">Delivery</strong><br>Singapore only. Orders of ' + money(s.freeOver) + ' or more ship free, and orders under ' + money(s.freeOver) + ' pay a flat ' + money(s.flat) + '. Collection from our workshop is free, by appointment. Items we order in typically take 2 to 4 weeks from payment. Questions? WhatsApp +65 8722 2610, Mon&ndash;Fri 9am&ndash;6pm.</p>' +
+      '<p><strong class="label">Returns</strong><br>We don&rsquo;t accept returns for change of mind. If anything is wrong, tell us on WhatsApp within 7 days of delivery and we&rsquo;ll find a solution. Manufacturer warranty applies where available. See our <a href="/terms/">terms</a>.</p>';
   }
   function openCart() {
     buildCartDrawer(); closeSide(); renderCart();
