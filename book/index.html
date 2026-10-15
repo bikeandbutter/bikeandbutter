@@ -15,6 +15,14 @@
 <title>Book a Service — Bike & Butter</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQJRHN886Z"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ZQJRHN886Z');
+</script>
 </head>
 <body class="page-shell">
 
@@ -815,6 +823,7 @@ async function submitBooking() {
     return;
   }
 
+  if (window.gtag) gtag('event', 'generate_lead', { method: 'booking_form', service: selectedService.name });
   goToStep('done');
 }
 </script>
