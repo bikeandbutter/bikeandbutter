@@ -208,6 +208,10 @@
       <div class="summary-row"><span>Date & time</span><span id="sumSlot"></span></div>
       <div class="summary-row"><span>Bike</span><span id="sumBike"></span></div>
     </div>
+    <label style="display:flex;gap:10px;align-items:flex-start;margin:0 0 14px;font-size:14px;line-height:1.4;cursor:pointer">
+      <input type="checkbox" id="agreeTerms" style="margin-top:3px;width:18px;height:18px;flex:none">
+      <span>I agree to the <a href="/terms/" target="_blank" rel="noopener" style="text-decoration:underline">Terms</a> and have read the <a href="/privacy/" target="_blank" rel="noopener" style="text-decoration:underline">Privacy Policy</a>. *</span>
+    </label>
     <button class="btn btn-primary" id="submitBtn" onclick="submitBooking()">Request This Slot</button>
     <button class="btn btn-secondary" onclick="goToStep('slot')">← Back</button>
   </div>
@@ -778,6 +782,7 @@ async function submitBooking() {
   if (!selectedService || !selectedSlot) { showError('Please select a service and time slot.'); return; }
   if (!currentCustomer) { showError('Something went wrong — please start again from the top.'); return; }
 
+  if (!document.getElementById('agreeTerms').checked) { showError('Please tick the box to agree to the Terms before requesting a slot.'); return; }
   const notes = document.getElementById('custNotes').value.trim();
   if (/build|upgrade/i.test(selectedService.name) && notes.length < 10) { showError('Please tell us a little about your build or upgrade so we can prepare for the consultation.'); return; }
   const btn = document.getElementById('submitBtn');
@@ -793,7 +798,8 @@ async function submitBooking() {
     photo_urls: uploadedPhotoUrls.length ? uploadedPhotoUrls : null,
     start_time: selectedSlot.start.toISOString(),
     end_time: selectedSlot.end.toISOString(),
-    status: 'pending'
+    status: 'pending',
+    agreed_terms_at: new Date().toISOString()
   });
 
   if (error) {

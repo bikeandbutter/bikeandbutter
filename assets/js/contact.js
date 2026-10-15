@@ -25,9 +25,10 @@
     if (digits.length < 8) { err.className = "ferr show"; err.textContent = "Please enter a mobile number we can WhatsApp (at least 8 digits)."; return; }
     if (!f.product.value.trim() && f.message.value.trim().length < 3) { err.className = "ferr show"; err.textContent = "Please tell us how we can help (a short message is fine)."; return; }
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.className = "ferr show"; err.textContent = "That email doesn't look right. You can also leave it blank."; return; }
+    if (!f.agree.checked) { err.className = "ferr show"; err.textContent = "Please tick the box to agree to the Terms."; return; }
     err.className = "ferr"; err.textContent = ""; btn.disabled = true; btn.textContent = "Sending…";
     var row = { name: name.slice(0, 120), mobile: phone.slice(0, 30), topic: type, product: cut(f.product.value, 300), bike: cut(f.bike.value, 200),
-      size: cut(f.size.value, 80), email: cut(email, 200), message: cut(f.message.value, 3000), source_page: (document.referrer ? new URL(document.referrer, location.href).pathname : location.pathname).slice(0, 300) };
+      size: cut(f.size.value, 80), email: cut(email, 200), message: cut(f.message.value, 3000), agreed_terms_at: new Date().toISOString(), source_page: (document.referrer ? new URL(document.referrer, location.href).pathname : location.pathname).slice(0, 300) };
     fetch(SB + "/rest/v1/enquiries", { method: "POST", headers: { apikey: KEY, Authorization: "Bearer " + KEY, "Content-Type": "application/json", Prefer: "return=minimal" }, body: JSON.stringify(row) })
       .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); })
       .then(function () {
