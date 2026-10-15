@@ -256,6 +256,14 @@
     </div>
   </section>
 
+  <!-- GOOGLE REVIEWS (live; stays hidden if reviews can't load) -->
+  <section class="reviews" id="reviews" data-reviews hidden aria-labelledby="rv-h">
+    <div class="sec-head"><h2 id="rv-h" class="label">What riders say</h2><a class="label more" data-rv-all href="https://search.google.com/local/reviews?placeid=ChIJcxNdS8MP2jERAyGg9ZKffaQ" target="_blank" rel="noopener">Read on Google</a></div>
+    <div class="rv-summary"><span class="rv-score" data-rv-score></span><span class="rv-stars" data-rv-stars aria-hidden="true"></span><span class="label rv-count" data-rv-count></span></div>
+    <div class="rv-grid" data-rv-grid></div>
+    <p class="rv-foot"><span class="label label-muted">Reviews from Google</span><a class="btn btn-line" href="https://search.google.com/local/writereview?placeid=ChIJcxNdS8MP2jERAyGg9ZKffaQ" target="_blank" rel="noopener">Leave a review</a></p>
+  </section>
+
   <!-- VISIT -->
   <section class="visit" id="visit">
     <div class="visit-info reveal">
@@ -342,5 +350,6 @@
 <script src="/assets/js/site.js" defer></script>
 <script src="/assets/js/store.js" defer></script>
 <script src="/assets/js/market.js?v=1" defer></script>
+<script src="/assets/js/reviews.js" defer></script>
 </body>
 </html>
