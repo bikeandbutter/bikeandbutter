@@ -3,14 +3,22 @@
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
   var money = function (n) { return n ? "S$" + Number(n).toLocaleString("en-SG") : "Enquire"; };
-  var img = function (f) { return f ? "/assets/img/bikes/" + encodeURI(f) : ""; };
+  var img = function (f) { return !f ? "" : (/^(https?:)?\/\//.test(f) || f.charAt(0) === "/") ? f : "/assets/img/bikes/" + encodeURI(f); };
+  var SB = "https://aneuljjitpxjvsfucwkq.supabase.co", KEY = "sb_publishable_3HBGJIBmOxzpks_WV2YH9Q_ogbuU9UP";
   var B = [], state = { t: "", sort: "" };
   var rank = { available: 0, reserved: 1, sold: 2 };
 
+  // Bikes are managed in bnbhq > Bikes for Sale. Only rows marked "On website" are readable here.
+  function fromRow(r) {
+    return { id: r.slug, name: r.name, brand: r.brand, type: r.type, year: r.year, size: r.size, condition: r.condition, price: r.price, status: r.status,
+      summary: r.summary, description: String(r.description || "").split(/\n\s*\n/).map(function (p) { return p.trim(); }).filter(Boolean),
+      specs: Array.isArray(r.specs) ? r.specs : [], images: r.images || [] };
+  }
   function load() {
-    return fetch("/assets/data/bikes.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (d) {
-      B = (d.bikes || []).filter(function (b) { return b && b.id && b.name; }); return B;
-    }).catch(function () { B = []; return B; });
+    return fetch(SB + "/rest/v1/bike_listings?select=*&visible=eq.true&order=created_at.desc", { headers: { apikey: KEY, Authorization: "Bearer " + KEY } })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (d) { B = (d || []).map(fromRow).filter(function (b) { return b.id && b.name; }); return B; })
+      .catch(function (e) { console.warn("bikes unavailable", e); B = []; return B; });
   }
   function tag(b) { return b.status === "sold" ? '<span class="mk-tag">Sold</span>' : b.status === "reserved" ? '<span class="mk-tag y">Reserved</span>' : ""; }
   function card(b) {

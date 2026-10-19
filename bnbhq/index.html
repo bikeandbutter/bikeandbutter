@@ -459,6 +459,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
         <div class="nav-group-label">Inventory</div>
         <button class="nav-item" data-tab="products" onclick="switchTab('products')"><span class="nav-icon">PRD</span> Products &amp; Stock</button>
         <button class="nav-item" data-tab="purchases" onclick="switchTab('purchases')"><span class="nav-icon">PUR</span> Purchases</button>
+        <button class="nav-item" data-tab="listings" onclick="switchTab('listings')"><span class="nav-icon">BFS</span> Bikes for Sale</button>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Finance</div>
@@ -736,6 +737,19 @@ tbody tr.clickable:hover { background: var(--bg3); }
           <div class="tbl-wrap"><table>
             <thead><tr><th>Received</th><th>Customer</th><th>Topic</th><th>Details</th><th>Message</th><th>Status</th><th></th></tr></thead>
             <tbody id="enquiryRows"><tr><td colspan="7" class="cell-muted">Loading…</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-listings">
+        <div class="page-header">
+          <div><div class="page-title">Bikes for Sale</div><div class="page-subtitle">Shown on bikeandbutter.com/marketplace. Changes go live straight away. Sold bikes stay on the page, greyed out with a Sold tag; use "On website" to hide one.</div></div>
+          <button class="btn btn-primary" onclick="openListingModal()">+ Add bike</button>
+        </div>
+        <div class="card">
+          <div class="tbl-wrap"><table>
+            <thead><tr><th style="width:70px"></th><th>Bike</th><th>Price</th><th>Status</th><th>On website</th><th></th></tr></thead>
+            <tbody id="listingRows"><tr><td colspan="6" class="cell-muted">Loading…</td></tr></tbody>
           </table></div>
         </div>
       </div>
@@ -1166,6 +1180,55 @@ tbody tr.clickable:hover { background: var(--bg3); }
   </div>
 </div>
 
+<style>
+.lst-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;margin-top:8px}
+.lst-ph{position:relative;border:1px solid var(--border2);border-radius:6px;overflow:hidden;background:var(--bg3)}
+.lst-ph img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
+.lst-ph .lst-cover{position:absolute;left:6px;top:6px;background:#F8CC0A;color:#111;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px}
+.lst-ph .lst-ctl{display:flex;justify-content:space-between;border-top:1px solid var(--border2);background:var(--bg2)}
+.lst-ph .lst-ctl button{flex:1;background:none;border:0;padding:6px 0;cursor:pointer;font-size:13px;color:var(--text2)}
+.lst-ph .lst-ctl button:hover{background:var(--bg3);color:var(--text)}
+.lst-thumb{width:56px;height:56px;object-fit:cover;border-radius:6px;display:block;background:var(--bg3)}
+.lst-hint{font-size:11.5px;color:var(--text3);margin-top:4px}
+</style>
+<div class="modal-backdrop" id="listingModalBackdrop">
+  <div class="modal" style="width:760px">
+    <div class="modal-header"><div class="modal-title" id="listingModalTitle">Add bike</div><button class="modal-close" onclick="closeListingModal(true)">&times;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="lstId">
+      <div class="field"><label>Name *</label><input type="text" id="lstName" placeholder="e.g. Colnago C64 Frameset"></div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Brand</label><input type="text" id="lstBrand" placeholder="e.g. Colnago"></div>
+        <div class="field"><label>Type</label><input type="text" id="lstType" list="lstTypes" placeholder="Road, Triathlon, Frameset…"><datalist id="lstTypes"><option value="Road"><option value="Triathlon"><option value="Gravel"><option value="Mountain"><option value="Frameset"><option value="Other"></datalist></div>
+      </div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Size</label><input type="text" id="lstSize" placeholder="e.g. 54cm or 50S"></div>
+        <div class="field"><label>Year</label><input type="number" id="lstYear" placeholder="e.g. 2022" min="1980" max="2100"></div>
+      </div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Condition</label><input type="text" id="lstCondition" placeholder="e.g. Almost like new"></div>
+        <div class="field"><label>Price (S$)</label><input type="number" id="lstPrice" placeholder="Leave blank to show “Enquire”" min="0" step="1"></div>
+      </div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Status</label><select id="lstStatus"><option value="available">Available</option><option value="reserved">Reserved</option><option value="sold">Sold</option></select></div>
+        <div class="field"><label>On website</label><select id="lstVisible"><option value="1">Shown</option><option value="0">Hidden</option></select></div>
+      </div>
+      <div class="field"><label>Short summary</label><input type="text" id="lstSummary" placeholder="One line that shows under the title"></div>
+      <div class="field"><label>Description</label><textarea id="lstDescription" rows="5" placeholder="Leave a blank line between paragraphs."></textarea></div>
+      <div class="field"><label>Specifications</label><textarea id="lstSpecs" rows="6" placeholder="Groupset: Shimano Ultegra Di2&#10;Wheelset: 8LIEN AETHER 4&#10;Weight: 7.9kg"></textarea><div class="lst-hint">One per line, written as “Label: value”. Size, year and condition are added automatically.</div></div>
+      <div class="field"><label>Photos</label>
+        <input type="file" id="lstFiles" accept="image/*" multiple onchange="lstAddPhotos(this.files); this.value=''">
+        <div class="lst-hint" id="lstPhotoMsg">The first photo is the cover. Use ◀ ▶ to reorder. Photos are resized automatically.</div>
+        <div class="lst-photos" id="lstPhotoGrid"></div>
+      </div>
+    </div>
+    <div class="modal-footer" style="justify-content:space-between">
+      <button class="btn btn-secondary" id="lstDeleteBtn" onclick="deleteListing()" style="display:none">Delete…</button>
+      <div style="display:flex;gap:8px"><button class="btn btn-secondary" onclick="closeListingModal(true)">Cancel</button><button class="btn btn-primary" id="lstSaveBtn" onclick="saveListing()">Save</button></div>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL = 'https://aneuljjitpxjvsfucwkq.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_3HBGJIBmOxzpks_WV2YH9Q_ogbuU9UP';
@@ -1258,9 +1321,10 @@ function switchTab(tab) {
   if (panel) panel.classList.add('active');
   const navBtn = document.querySelector('.nav-item[data-tab="' + tab + '"]');
   if (navBtn) navBtn.classList.add('active');
-  const titles = { dashboard: 'Dashboard', crm: 'Customers & Bikes', servicing: 'Servicing', invoices: 'Invoices', quotations: 'Quotations', bookings: 'Bookings', enquiries: 'Enquiries', sales: 'Sales', products: 'Products & Stock', accounting: 'Accounting', settings: 'Settings' };
+  const titles = { dashboard: 'Dashboard', crm: 'Customers & Bikes', servicing: 'Servicing', invoices: 'Invoices', quotations: 'Quotations', bookings: 'Bookings', enquiries: 'Enquiries', listings: 'Bikes for Sale', sales: 'Sales', products: 'Products & Stock', accounting: 'Accounting', settings: 'Settings' };
   document.getElementById('topbarTitle').textContent = titles[tab] || tab;
   if (tab === 'servicing') loadServicingList();
+  if (tab === 'listings') loadListings();
 }
 
 async function loadAll() {
@@ -4292,6 +4356,148 @@ async function convertEnquiryToQuote(id) {
     return openQuotationEditor(x.quotation_id);
   }
   await openDocEditor('quote', null, { enquiry: x });
+}
+
+
+/* ===== Bikes for sale (shown on /marketplace/) ===== */
+const LST_BUCKET = 'bike-photos';
+let LISTINGS = [], lstImgs = [], lstRemoved = [], lstAdded = [], lstBusy = false;
+
+function lstImgUrl(f) { return /^(https?:)?\/\//.test(f) || String(f).charAt(0) === '/' ? f : '/assets/img/bikes/' + f; }
+function lstPath(url) { const m = String(url).match(/\/object\/public\/bike-photos\/(.+)$/); return m ? decodeURIComponent(m[1]) : null; }
+function lstPrice(p) { return p == null || p === '' ? 'Enquire' : 'S$' + Number(p).toLocaleString('en-SG'); }
+
+async function loadListings() {
+  const { data, error } = await sb.from('bike_listings').select('*').order('created_at', { ascending: false });
+  if (error) { document.getElementById('listingRows').innerHTML = '<tr><td colspan="6" class="cell-muted">Could not load: ' + escapeHtml(error.message) + '</td></tr>'; return; }
+  LISTINGS = data || [];
+  renderListings();
+}
+function renderListings() {
+  const tbody = document.getElementById('listingRows');
+  if (!LISTINGS.length) { tbody.innerHTML = '<tr><td colspan="6" class="cell-muted">No bikes yet. Press “+ Add bike”.</td></tr>'; return; }
+  tbody.innerHTML = LISTINGS.map(x => `<tr${x.status === 'sold' ? ' style="opacity:.7"' : ''}>
+    <td>${x.images && x.images[0] ? `<img class="lst-thumb" src="${escapeHtml(lstImgUrl(x.images[0]))}" alt="">` : '<div class="lst-thumb"></div>'}</td>
+    <td class="cell-strong">${escapeHtml(x.name)}<br><span class="cell-muted" style="font-weight:400">${escapeHtml([x.brand, x.type, x.size].filter(Boolean).join(' · '))}</span></td>
+    <td>${lstPrice(x.price)}</td>
+    <td><select class="qt-status" onchange="lstSetStatus('${x.id}', this.value)">${[['available', 'Available'], ['reserved', 'Reserved'], ['sold', 'Sold']].map(([v, l]) => `<option value="${v}" ${x.status === v ? 'selected' : ''}>${l}</option>`).join('')}</select></td>
+    <td><label style="display:inline-flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" ${x.visible ? 'checked' : ''} onchange="lstSetVisible('${x.id}', this.checked)"> <span class="cell-muted">${x.visible ? 'Shown' : 'Hidden'}</span></label></td>
+    <td style="white-space:nowrap">${x.visible ? `<a class="btn btn-ghost btn-sm" href="/marketplace/?b=${encodeURIComponent(x.slug)}" target="_blank" rel="noopener">View</a> ` : ''}<button class="btn btn-ghost btn-sm" onclick="openListingModal('${x.id}')">Edit</button></td></tr>`).join('');
+}
+async function lstSetStatus(id, status) {
+  const { error } = await sb.from('bike_listings').update({ status, sold_at: status === 'sold' ? new Date().toISOString() : null }).eq('id', id);
+  if (error) alert('Could not update: ' + error.message);
+  await loadListings();
+}
+async function lstSetVisible(id, on) {
+  const { error } = await sb.from('bike_listings').update({ visible: !!on }).eq('id', id);
+  if (error) alert('Could not update: ' + error.message);
+  await loadListings();
+}
+
+function openListingModal(id) {
+  const x = id ? LISTINGS.find(l => l.id === id) : null;
+  const set = (k, v) => { document.getElementById('lst' + k).value = v == null ? '' : v; };
+  set('Id', x ? x.id : ''); set('Name', x?.name); set('Brand', x?.brand); set('Type', x ? x.type : 'Road'); set('Size', x?.size); set('Year', x?.year);
+  set('Condition', x?.condition); set('Price', x?.price); set('Status', x ? x.status : 'available'); set('Visible', x ? (x.visible ? '1' : '0') : '1');
+  set('Summary', x?.summary); set('Description', x?.description);
+  set('Specs', ((x && x.specs) || []).map(s => (s[0] ? s[0] + ': ' : '') + (s[1] || '')).join('\n'));
+  lstImgs = x ? (x.images || []).slice() : []; lstRemoved = []; lstAdded = []; lstBusy = false;
+  document.getElementById('listingModalTitle').textContent = x ? 'Edit bike' : 'Add bike';
+  document.getElementById('lstDeleteBtn').style.display = x ? '' : 'none';
+  document.getElementById('lstSaveBtn').disabled = false;
+  document.getElementById('lstPhotoMsg').textContent = 'The first photo is the cover. Use ◀ ▶ to reorder. Photos are resized automatically.';
+  renderListingPhotos();
+  document.getElementById('listingModalBackdrop').classList.add('open');
+}
+async function closeListingModal(cancelled) {
+  document.getElementById('listingModalBackdrop').classList.remove('open');
+  if (cancelled && lstAdded.length) { const paths = lstAdded.map(lstPath).filter(Boolean); if (paths.length) await sb.storage.from(LST_BUCKET).remove(paths); }
+  lstAdded = []; lstRemoved = [];
+}
+function renderListingPhotos() {
+  document.getElementById('lstPhotoGrid').innerHTML = lstImgs.map((u, i) => `<div class="lst-ph"><img src="${escapeHtml(lstImgUrl(u))}" alt="">${i === 0 ? '<span class="lst-cover">Cover</span>' : ''}
+    <div class="lst-ctl"><button type="button" title="Move earlier" onclick="lstMovePhoto(${i},-1)" ${i === 0 ? 'disabled' : ''}>◀</button><button type="button" title="Remove" onclick="lstRemovePhoto(${i})">✕</button><button type="button" title="Move later" onclick="lstMovePhoto(${i},1)" ${i === lstImgs.length - 1 ? 'disabled' : ''}>▶</button></div></div>`).join('');
+}
+function lstMovePhoto(i, d) { const j = i + d; if (j < 0 || j >= lstImgs.length) return; [lstImgs[i], lstImgs[j]] = [lstImgs[j], lstImgs[i]]; renderListingPhotos(); }
+function lstRemovePhoto(i) {
+  const [u] = lstImgs.splice(i, 1);
+  if (lstAdded.includes(u)) { lstAdded = lstAdded.filter(a => a !== u); const p = lstPath(u); if (p) sb.storage.from(LST_BUCKET).remove([p]); }
+  else lstRemoved.push(u);
+  renderListingPhotos();
+}
+function lstResize(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const s = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      c.toBlob(b1 => {
+        if (b1 && b1.type === 'image/webp') return resolve(b1);
+        c.toBlob(b2 => b2 ? resolve(b2) : reject(new Error('Could not process this image')), 'image/jpeg', 0.85);
+      }, 'image/webp', 0.82);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not read this image')); };
+    img.src = url;
+  });
+}
+async function lstAddPhotos(files) {
+  const list = Array.from(files || []); if (!list.length) return;
+  const msg = document.getElementById('lstPhotoMsg'), save = document.getElementById('lstSaveBtn');
+  lstBusy = true; save.disabled = true;
+  let done = 0, failed = 0;
+  for (const f of list) {
+    msg.textContent = 'Uploading photo ' + (done + failed + 1) + ' of ' + list.length + '…';
+    try {
+      const blob = await lstResize(f);
+      const path = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8) + (blob.type === 'image/webp' ? '.webp' : '.jpg');
+      const { error } = await sb.storage.from(LST_BUCKET).upload(path, blob, { contentType: blob.type, cacheControl: '31536000', upsert: false });
+      if (error) throw error;
+      const url = sb.storage.from(LST_BUCKET).getPublicUrl(path).data.publicUrl;
+      lstImgs.push(url); lstAdded.push(url); done++; renderListingPhotos();
+    } catch (e) { console.error(e); failed++; }
+  }
+  lstBusy = false; save.disabled = false;
+  msg.textContent = failed ? done + ' uploaded, ' + failed + ' could not be added (try a JPG or PNG).' : done + ' photo' + (done === 1 ? '' : 's') + ' added. The first photo is the cover.';
+}
+function lstSlug(name, selfId) {
+  let base = String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'bike', s = base, n = 2;
+  while (LISTINGS.some(l => l.slug === s && l.id !== selfId)) s = base + '-' + n++;
+  return s;
+}
+async function saveListing() {
+  if (lstBusy) return;
+  const v = k => document.getElementById('lst' + k).value.trim();
+  const id = v('Id'), name = v('Name');
+  if (name.length < 2) { alert('Please enter the bike name.'); return; }
+  const visible = v('Visible') === '1';
+  if (visible && !lstImgs.length && !confirm('This bike has no photos yet. Show it on the website anyway?')) return;
+  const specs = v('Specs').split('\n').map(l => l.trim()).filter(Boolean).map(l => { const i = l.indexOf(':'); return i > 0 ? [l.slice(0, i).trim(), l.slice(i + 1).trim()] : ['Details', l]; });
+  const status = v('Status'), prev = id ? LISTINGS.find(l => l.id === id) : null;
+  const row = { name, brand: v('Brand') || null, type: v('Type') || null, size: v('Size') || null, year: v('Year') ? parseInt(v('Year'), 10) : null,
+    condition: v('Condition') || null, price: v('Price') === '' ? null : Number(v('Price')), status, visible, summary: v('Summary') || null,
+    description: v('Description') || null, specs, images: lstImgs.slice() };
+  if (row.price != null && (isNaN(row.price) || row.price < 0)) { alert('Please enter a valid price, or leave it blank.'); return; }
+  if (!prev || prev.status !== status) row.sold_at = status === 'sold' ? new Date().toISOString() : null;
+  const btn = document.getElementById('lstSaveBtn'); btn.disabled = true; btn.textContent = 'Saving…';
+  let error;
+  if (id) ({ error } = await sb.from('bike_listings').update(row).eq('id', id));
+  else ({ error } = await sb.from('bike_listings').insert({ ...row, slug: lstSlug(name, null) }));
+  btn.textContent = 'Save'; btn.disabled = false;
+  if (error) { alert('Could not save: ' + error.message); return; }
+  const gone = lstRemoved.map(lstPath).filter(Boolean); if (gone.length) await sb.storage.from(LST_BUCKET).remove(gone);
+  lstAdded = []; lstRemoved = [];
+  await closeListingModal(false); await loadListings();
+}
+async function deleteListing() {
+  const id = document.getElementById('lstId').value; const x = LISTINGS.find(l => l.id === id); if (!x) return;
+  if (!confirm('Delete “' + x.name + '” permanently?\n\nTo keep it on the website as a greyed-out Sold bike, cancel and change its Status to Sold instead.')) return;
+  const { error } = await sb.from('bike_listings').delete().eq('id', id);
+  if (error) { alert('Could not delete: ' + error.message); return; }
+  const paths = (x.images || []).map(lstPath).filter(Boolean); if (paths.length) await sb.storage.from(LST_BUCKET).remove(paths);
+  await closeListingModal(false); await loadListings();
 }
 
 
