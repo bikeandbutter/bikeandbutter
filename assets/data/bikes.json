@@ -1,3 +1,59 @@
 {
-  "bikes": []
+  "bikes": [
+    {
+      "id": "colnago-c64-frameset-50s",
+      "name": "Colnago C64 Frameset",
+      "brand": "Colnago",
+      "type": "Frameset",
+      "year": null,
+      "size": "50S",
+      "condition": "Almost like new",
+      "price": null,
+      "status": "available",
+      "summary": "Limited-edition Colnago frameset in black with yellow trims and accents, size 50S. Very well kept and ready to build up.",
+      "description": [
+        "Limited-edition Colnago frameset with yellow trims and accents. Almost like new, very well kept with minimal signs of use, and ready to build up with no replacements needed.",
+        "The frame was previously built with a Shimano Di2 12-speed groupset. The groupset is not included, but we have brand new groupsets available if you would like us to build it up for you."
+      ],
+      "specs": [
+        [
+          "Frame",
+          "Limited edition, yellow trims and accents"
+        ],
+        [
+          "Groupset",
+          "Not included"
+        ],
+        [
+          "Wheelset",
+          "Not included"
+        ],
+        [
+          "Seatpost",
+          "Original Colnago"
+        ],
+        [
+          "Stem",
+          "90mm, integrated"
+        ],
+        [
+          "Handlebar",
+          "420mm Colnago carbon"
+        ],
+        [
+          "Bottom bracket",
+          "HSCER, compatible with Shimano 24mm cranksets"
+        ]
+      ],
+      "images": [
+        "colnago-c64-frameset-1.webp",
+        "colnago-c64-frameset-2.webp",
+        "colnago-c64-frameset-3.webp",
+        "colnago-c64-frameset-4.webp",
+        "colnago-c64-frameset-5.webp",
+        "colnago-c64-frameset-6.webp",
+        "colnago-c64-frameset-7.webp"
+      ]
+    }
+  ]
 }
