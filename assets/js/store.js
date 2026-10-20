@@ -202,6 +202,21 @@
     document.title = p.name + " — Bike & Butter";
     var meta = $('meta[name="description"]'); if (meta) meta.content = p.summary + " Available in Singapore from Bike & Butter.";
     var canon = $('link[rel="canonical"]'); if (canon) canon.href = "https://bikeandbutter.com/shop/product/?id=" + p.id;
+    (function seo() {
+      var url = "https://bikeandbutter.com/shop/product/?id=" + encodeURIComponent(p.id);
+      var desc = p.summary + " Available in Singapore from Bike & Butter.";
+      var im = p.images && p.images[0] ? (/^https?:/.test(p.images[0]) ? p.images[0] : "https://bikeandbutter.com" + p.images[0]) : "";
+      [['meta[property="og:title"]', document.title], ['meta[property="og:description"]', desc], ['meta[property="og:url"]', url], ['meta[property="og:image"]', im]].forEach(function (m) {
+        var el = $(m[0]); if (el && m[1]) el.setAttribute("content", m[1]);
+      });
+      var prices = p.variants && p.variants.prices ? Object.keys(p.variants.prices).map(function (k) { return p.variants.prices[k]; }) : [];
+      if (p.price != null) prices.push(p.price);
+      var ld = { "@context": "https://schema.org", "@type": "Product", name: p.name, description: p.summary, url: url, category: p.category };
+      if (p.brand) ld.brand = { "@type": "Brand", name: p.brand };
+      if (p.images && p.images.length) ld.image = p.images.map(function (s) { return /^https?:/.test(s) ? s : "https://bikeandbutter.com" + s; });
+      if (prices.length) ld.offers = { "@type": "Offer", url: url, priceCurrency: "SGD", price: String(Math.min.apply(null, prices)), seller: { "@type": "Organization", name: "Bike & Butter" } };
+      var tag = document.createElement("script"); tag.type = "application/ld+json"; tag.textContent = JSON.stringify(ld); document.head.appendChild(tag);
+    })();
     var variant = p.variants ? p.variants.options[0] : "";
     var imgs = p.images.slice();
     var thumbs = imgs.map(function (s, i) { return '<button type="button" class="pthumb' + (i === 0 ? " is-on" : "") + '" data-thumb="' + i + '" aria-label="Image ' + (i + 1) + '">' + imgTag(s, "", "", 'width="40" height="50"') + '</button>'; }).join("");

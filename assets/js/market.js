@@ -41,6 +41,41 @@
     $("[data-nomatch]").hidden = !(B.length && !list.length);
   }
   function wa(b) { return WA + encodeURIComponent("Hi Bike & Butter, I'm interested in the " + b.name + (b.size ? " (" + b.size + ")" : "") + " listed on your website."); }
+  var SITE = "https://bikeandbutter.com";
+  var LIST_DESC = "Road, triathlon and frameset bikes for sale from the Bike & Butter workshop in Singapore. Viewings and test rides by appointment.";
+  function setMeta(sel, attr, val) { var el = $(sel); if (el) el.setAttribute(attr, val); }
+  function abs(u) { return !u ? "" : /^https?:/.test(u) ? u : SITE + u; }
+  function seoBike(b) {
+    var url = SITE + "/marketplace/?b=" + encodeURIComponent(b.id);
+    var desc = (b.summary || (b.name + " for sale at Bike & Butter, Singapore.")) + (b.status === "sold" ? "" : " Viewings by appointment at our Jurong West workshop.");
+    var ttl = b.name + " — Bike & Butter";
+    var im = (b.images || []).filter(Boolean)[0];
+    setMeta('link[rel="canonical"]', "href", url);
+    setMeta('meta[name="description"]', "content", desc);
+    setMeta('meta[property="og:title"]', "content", ttl);
+    setMeta('meta[property="og:description"]', "content", desc);
+    if (im) setMeta('meta[property="og:image"]', "content", abs(img(im)));
+    setMeta('meta[property="og:url"]', "content", url);
+    var ld = { "@context": "https://schema.org", "@type": "Product", name: b.name, description: desc, url: url,
+      image: (b.images || []).filter(Boolean).map(function (f) { return abs(img(f)); }),
+      itemCondition: /new/i.test(b.condition || "") && !/like|almost/i.test(b.condition || "") ? "https://schema.org/NewCondition" : "https://schema.org/UsedCondition" };
+    if (b.brand) ld.brand = { "@type": "Brand", name: b.brand };
+    if (b.price) ld.offers = { "@type": "Offer", url: url, priceCurrency: "SGD", price: String(b.price),
+      availability: b.status === "sold" ? "https://schema.org/SoldOut" : b.status === "reserved" ? "https://schema.org/LimitedAvailability" : "https://schema.org/InStock",
+      seller: { "@type": "Organization", name: "Bike & Butter" } };
+    var tag = $("#bnb-ld-bike");
+    if (!tag) { tag = document.createElement("script"); tag.type = "application/ld+json"; tag.id = "bnb-ld-bike"; document.head.appendChild(tag); }
+    tag.textContent = JSON.stringify(ld);
+  }
+  function seoList() {
+    setMeta('link[rel="canonical"]', "href", SITE + "/marketplace/");
+    setMeta('meta[name="description"]', "content", LIST_DESC);
+    setMeta('meta[property="og:title"]', "content", "Bikes for sale — Bike & Butter");
+    setMeta('meta[property="og:description"]', "content", LIST_DESC);
+    setMeta('meta[property="og:image"]', "content", SITE + "/og-image.png");
+    var u = $('meta[property="og:url"]'); if (u) u.setAttribute("content", SITE + "/marketplace/");
+    var tag = $("#bnb-ld-bike"); if (tag) tag.remove();
+  }
   function show(id, push) {
     var b = B.filter(function (x) { return x.id === id; })[0];
     if (!b) return list(true);
@@ -61,12 +96,14 @@
     if (ims.length) pick(0);
     D.onclick = function (e) { var t = e.target.closest("[data-i]"); if (t) pick(+t.dataset.i); if (e.target.closest("[data-back]")) list(true); };
     document.title = b.name + " — Bike & Butter";
+    seoBike(b);
     if (push) history.pushState({ b: id }, "", "/marketplace/?b=" + encodeURIComponent(id));
     window.scrollTo(0, 0);
   }
   function list(push) {
     $("#mk-list").hidden = false; $("[data-hero]").hidden = false; $("#mk-detail").hidden = true;
     document.title = "Bikes for sale — Bike & Butter";
+    seoList();
     if (push) history.pushState({}, "", "/marketplace/");
     window.scrollTo(0, 0);
   }

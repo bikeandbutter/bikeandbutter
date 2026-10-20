@@ -2,54 +2,378 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://bikeandbutter.com/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-20</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/shop/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-20</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/8lien/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-20</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/rstri/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-20</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/evr/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-14</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/parts/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-20</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/marketplace/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-20</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/workshop/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-14</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/book/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-20</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/contact/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-15</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/help/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-15</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/terms/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-15</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/privacy/</loc>
-    <lastmod>2026-10-09</lastmod>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=aether-3</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=aether-4</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=aether-5</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=aether-6</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=l3w</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=l5w</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=l6w</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=aero-x8</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-aerocoach-angle</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-vision-angle</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-vision-base</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-resin-disc-brake-pad-lo5a-rf-with-fin</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=vittoria-corsa-pro-speed-tlr-tyre</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=continental-grand-prix-gp5000-clincher-tyre</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=seer-eva-silicone-bar-tape</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-ultegra-chain-cn-m8100</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-dura-ace-chain-cn-m9100</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=continental-grand-prix-gp5000-as-tr-tubeless-tyre</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=michelin-power-cup-tyre-clincher</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=michelin-power-cup-tlr-tyre-tubeless</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=elilee-x310-carbon-crankset</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=panasonic-3v-lithium-coin-battery-cr1632-cr2032</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=wolf-s-disc-brake-rotor-cleaner</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=ridenow-ultralight-tpu-inner-tube-24g</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=ridenow-ultralight-tpu-inner-tube-36g</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=schwalbe-clik-valve-quick-release-nozzle-conversion-kit</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-ultegra-rt-cl800-disc-brake-rotor-center-lock</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-dura-ace-rt-cl900-disc-brake-rotor-center-lock</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=continental-grand-prix-gp5000-s-tr-tubeless-tyre</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=winsports-energy-gel-45g</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-pro-sport-control-team-bar-tape-prta0057</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-pro-classic-comfort-bar-tape-prta0048</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-pro-sport-control-bar-tape-prta0001</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=winsports-carbohydrate-gummies-42-5g</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=winsports-protein-energy-oat-bar-22g</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-ultegra-cassette-cs-r8101</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-dura-ace-cassette-cs-r9200</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=winow-aero-bar-angle-adapter-10-15-20-25</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=winow-aero-carbon-handlebar-arb02</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=chaoyang-arisun-storm-r1-clincher-tyre</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=mixed-full-carbon-fiber-saddle-packlight-5d</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=mixed-full-carbon-fiber-saddle-packlight-6d</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=mixed-full-carbon-fiber-saddle-packlight-7d</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-105-di2-r7170-groupset</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-ultegra-di2-r8170-groupset</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-dura-ace-di2-r9270-groupset</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=shimano-105-mechanical-r7120-groupset</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=ridenow-ultralight-tpu-inner-tube-36g-black</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=ridenow-ultralight-tpu-inner-tube-24g-black</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=evr-ultra-lightweight-carbon-fibre-bottle-cage</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=vittoria-corsa-pro-tubeless-tlr-tyre</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-baseplate-giant-trinity-stock</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-baseplate-lowering-kit-giant-trinity-stock</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-angle-spacer-giant-trinity-stock</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-bta-giant-trinity</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-baseplate-specialized-shiv-tri-universal</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-baseplate-adaptor-narrow-specialized-shiv-tt-universal</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-angle-spacer-specialized-shiv-tt-universal</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-baseplate-canyon-speedmax-stock</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-computer-mount-canyon-speedmax-stock</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-shifter-holder-canyon-speedmax-stock</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-angle-spacer-canyon-speedmax-stock</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-baseplate-cervelo-p5-p5x-p3x-px-universal</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-baseplate-cadex-stock</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-bts-ism-ps1-0-15</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-angle-spacer-pinarello-bollide-aerocoach</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-baseplate-pinarello-bollide-vision-winow</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-baseplate-factor-hanzo-stock</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-baseplate-quickpro-tt-one-stock</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-angle-spacer-quintanaroo-stock</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-bts-selle-italia-watt</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-angle-spacer-trek-speed-concept-universal</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-baseplate-trek-speed-concept-universal</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-bts-sitero</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-bts-trek-bontrager-hilo-comp</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-computer-mount-universal-vision-tfe</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/shop/product/?id=rstri-bta-all-in-one</loc>
+    <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/marketplace/?b=giant-trinity-rim-brake-tt</loc>
+    <lastmod>2026-10-20</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/marketplace/?b=giant-tcr-advanced-pro-0-10th-gen</loc>
+    <lastmod>2026-10-19</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/marketplace/?b=cannondale-caad10</loc>
+    <lastmod>2026-10-19</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/marketplace/?b=colnago-c64-frameset-50s</loc>
+    <lastmod>2026-10-19</lastmod>
   </url>
 </urlset>
