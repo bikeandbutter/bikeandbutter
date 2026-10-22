@@ -1458,7 +1458,8 @@ async function saveCustomer() {
   if (!name) { alert('Name is required.'); return; }
   const payload = {
     name,
-    phone: document.getElementById('custPhone').value.trim() || null,
+    // Store phones as plain digits (no spaces, no +65) so the public booking portal can always find the customer.
+    phone: (function () { let d = document.getElementById('custPhone').value.replace(/\D/g, ''); if (d.length === 10 && d.indexOf('65') === 0) d = d.slice(2); return d || null; })(),
     email: document.getElementById('custEmail').value.trim() || null,
     address_line1: document.getElementById('custAddr1').value.trim() || null,
     address_line2: document.getElementById('custAddr2').value.trim() || null,
