@@ -616,6 +616,9 @@ async function submitNewCustomer() {
 // ================= SERVICES =================
 function skipBike() { currentBike = null; goToStep('service'); loadServices(); }
 
+// Every appointment is a flat 1-hour block; the mechanic arranges the real timing with the customer.
+const SLOT_MINUTES = 60;
+
 async function bookServiceForBike() {
   goToStep('service');
   document.getElementById('serviceList').innerHTML = `<div class="no-history">Loading services…</div>`;
@@ -636,7 +639,6 @@ function renderServices() {
     <div class="service-option" data-id="${s.id}" onclick="selectService('${s.id}')">
       <div>
         <div class="service-name">${s.name}</div>
-        <div class="service-meta">${s.duration_minutes} min</div>
       </div>
       <div class="service-price">${s.price ? '$' + Number(s.price).toFixed(0) : ''}</div>
     </div>
@@ -709,7 +711,7 @@ function renderTimeline() {
   const [closeH, closeM] = hours.close_time.split(':').map(Number);
   const dayStart = new Date(selectedDate); dayStart.setHours(openH, openM, 0, 0);
   const dayEnd = new Date(selectedDate); dayEnd.setHours(closeH, closeM, 0, 0);
-  const durationMs = selectedService.duration_minutes * 60000;
+  const durationMs = SLOT_MINUTES * 60000;
   const stepMs = 15 * 60000;
   const now = new Date();
 
@@ -748,7 +750,7 @@ function renderTimeline() {
         Available — book ${slotStart.toLocaleTimeString('en-SG',{hour:'numeric',minute:'2-digit'})}
       </div>`;
     } else if (busyInHour.length === 0) {
-      bodyHtml += `<div class="hint" style="padding:4px 2px;">No ${selectedService.duration_minutes}-min slot fits here</div>`;
+      bodyHtml += `<div class="hint" style="padding:4px 2px;">No full-hour slot fits here</div>`;
     }
 
     rows += `<div class="timeline-hour">
@@ -758,7 +760,7 @@ function renderTimeline() {
   }
 
   wrap.innerHTML = `<div class="timeline">${rows}</div>
-    <div class="hint" style="margin-top:8px;">Want a different start time within the hour? Message us on WhatsApp after requesting and we'll adjust.</div>`;
+    <div class="hint" style="margin-top:8px;">Every slot is a 1-hour block. After you request, our mechanic will contact you to confirm the exact timing.</div>`;
 }
 
 function selectSlot(startIso, endIso, chipEl) {
@@ -766,7 +768,7 @@ function selectSlot(startIso, endIso, chipEl) {
   document.querySelectorAll('.slot-chip').forEach(c => c.classList.remove('selected'));
   chipEl.classList.add('selected');
 
-  document.getElementById('sumService').textContent = `${selectedService.name} (${selectedService.duration_minutes} min)`;
+  document.getElementById('sumService').textContent = `${selectedService.name}`;
   document.getElementById('sumSlot').textContent = selectedSlot.start.toLocaleString('en-SG', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
   document.getElementById('sumBike').textContent = currentBike ? `${currentBike.brand || ''} ${currentBike.model || ''}`.trim() || '—' : '—';
 
