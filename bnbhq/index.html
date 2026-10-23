@@ -371,6 +371,25 @@ tbody tr.clickable:hover { background: var(--bg3); }
 .svc-pill.ok { background: #e6f4ea; color: #2e7d32; }
 .svc-pill.attention { background: #fef3e0; color: #b5720a; }
 .svc-pill.replaced { background: #e8effa; color: #1a56b0; }
+.svc-pill.now { background: #fde8e8; color: #b42318; }
+.svc-pill.soon { background: #fef3e0; color: #b5720a; }
+.svc-pill.monitor { background: #eef0f3; color: #475467; }
+.svc-request { background: #fafafa; border-left: 3px solid #f6ca14; padding: 9px 12px; margin: 0 0 18px; font-size: 12.5px; line-height: 1.6; color: #222; white-space: pre-wrap; }
+.svc-reco { list-style: none; margin: 0; padding: 0; font-size: 12.5px; line-height: 1.5; color: #222; }
+.svc-reco li { padding: 6px 0; border-bottom: 1px solid #eee; display: flex; gap: 8px; align-items: flex-start; }
+.svc-reco li:last-child { border-bottom: none; }
+.svc-reco-ok { font-size: 12.5px; color: #2e7d32; font-weight: 700; }
+.svc-photo-group { margin-bottom: 16px; }
+.svc-photos-grid .svc-fig { width: 166px; margin: 0; }
+.svc-photos-grid .svc-fig img { width: 166px; height: 166px; }
+.svc-fig figcaption { font-size: 10.5px; color: #555; margin-top: 4px; line-height: 1.35; }
+.svc-tick.active-na { background: #f2f4f7; border-color: #667085; color: #667085; }
+.svc-tick.active-now { background: #fde8e8; border-color: #b42318; color: #b42318; }
+.svc-tick.active-soon { background: #fef3e0; border-color: #b5720a; color: #b5720a; }
+.svc-tick.active-monitor { background: #eef0f3; border-color: #475467; color: #475467; }
+.svc-tick.svc-urg { padding: 8px 6px; font-size: 11.5px; }
+.svc-confirm { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 10px 12px; border: 1.5px dashed var(--border2); border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.svc-confirm input { width: 18px; height: 18px; }
 .svc-parts-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .svc-parts-table td { padding: 5px 8px; border-bottom: 1px solid #eee; }
 .svc-photos-grid { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -656,7 +675,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
               <div class="ie-section-title">Report Details</div>
               <div class="ie-row-2">
                 <div class="ie-field"><label>Date</label><input type="date" id="svcDate" oninput="renderServicePreview()"></div>
-                <div class="ie-field"><label>Mechanic</label><input type="text" id="svcMechanic" placeholder="e.g. Jon" oninput="renderServicePreview()"></div>
+                <div class="ie-field"><label>Mechanic</label><input type="text" id="svcMechanic" list="svcMechanicList" placeholder="e.g. Jon" oninput="renderServicePreview()"><datalist id="svcMechanicList"></datalist></div>
               </div>
               <div class="ie-field"><label>Link to invoice (optional — enables combined print &amp; stock deduction for parts used)</label>
                 <select id="svcInvoiceId" onchange="svcOnInvoiceChange()">
@@ -669,9 +688,16 @@ tbody tr.clickable:hover { background: var(--bg3); }
               </div>
             </div>
 
+            <div class="ie-section" id="svcRequestWrap">
+              <div class="ie-section-title">Customer's request</div>
+              <div class="ie-field"><label>What the customer asked for or reported (shown on the report)</label>
+                <textarea id="svcRequest" rows="3" placeholder="e.g. Booked: Basic service. Rear brake squeals." oninput="renderServicePreview()"></textarea></div>
+            </div>
+
             <div class="ie-section">
               <div class="ie-section-title">Checklist</div>
               <div id="svcChecklist"></div>
+              <label class="svc-confirm"><input type="checkbox" id="svcAllChecked"> I've checked every item above (tap N/A for anything not applicable)</label>
             </div>
 
             <div class="ie-section">
@@ -1685,21 +1711,45 @@ let svcOrigReportNo = null;
 let currentServiceChecklist = [];
 let currentServiceParts = [];
 let currentServicePhotos = [];
+let svcBookingId = null;
+// customer_request + booking_id need supabase/service-report-extras.sql. Until that is run the editor hides the
+// request box and leaves those fields out of the save, so nothing breaks.
+let svcExtrasChecked = false, svcHasExtras = false;
+async function svcDetectExtras() {
+  if (!svcExtrasChecked) {
+    const { error } = await sb.from('service_records').select('customer_request,booking_id').limit(1);
+    svcHasExtras = !error; svcExtrasChecked = true;
+  }
+  const w = document.getElementById('svcRequestWrap'); if (w) w.style.display = svcHasExtras ? '' : 'none';
+}
+function svcMechanicNames() {
+  const names = new Set((ALL_SERVICE_RECORDS || []).map(r => (r.mechanic || '').trim()).filter(Boolean));
+  try { const m = localStorage.getItem('bnb_last_mechanic'); if (m) names.add(m); } catch (e) {}
+  return Array.from(names);
+}
 
 function renderSvcChecklist() {
   const el = document.getElementById('svcChecklist');
-  const opts = [['ok','OK'],['attention','Needs Attention'],['replaced','Replaced']];
+  const opts = [['ok','OK'],['attention','Needs Attention'],['replaced','Replaced'],['na','N/A']];
+  const urg = [['now','Before riding'],['soon','Soon'],['monitor','Monitor']];
   el.innerHTML = currentServiceChecklist.map((row, i) => `
     <div style="padding:12px 12px;border-bottom:1px solid #2a2a2a">
       <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:#eee">${escapeHtml(row.item)}</div>
       <div class="svc-tick-row">
         ${opts.map(([val,label]) => `<button type="button" class="svc-tick ${row.status===val ? 'active-'+val : ''}" onclick="svcSetChecklistStatus(${i}, '${val}')">${label}</button>`).join('')}
       </div>
-      <input type="text" value="${escapeHtml(row.note||'')}" placeholder="Note (optional)" oninput="svcSetChecklistNote(${i}, this.value)" style="width:100%;box-sizing:border-box;background:#111;border:1px solid #2e2e2e;color:#eee;border-radius:6px;padding:9px 10px;font-size:12.5px;font-family:inherit">
+      ${row.status === 'attention' ? `<div class="svc-tick-row">${urg.map(([val,label]) => `<button type="button" class="svc-tick svc-urg ${(row.urgency || 'soon') === val ? 'active-'+val : ''}" onclick="svcSetUrgency(${i}, '${val}')">${label}</button>`).join('')}</div>` : ''}
+      <input type="text" value="${escapeHtml(row.note||'')}" placeholder="${row.status === 'attention' ? 'What should the customer do? (shown under Recommended Next)' : 'Note (optional)'}" oninput="svcSetChecklistNote(${i}, this.value)" style="width:100%;box-sizing:border-box;background:#111;border:1px solid #2e2e2e;color:#eee;border-radius:6px;padding:9px 10px;font-size:12.5px;font-family:inherit">
     </div>`).join('');
   renderServicePreview();
 }
-function svcSetChecklistStatus(i, val) { currentServiceChecklist[i].status = val; renderSvcChecklist(); }
+function svcSetChecklistStatus(i, val) {
+  const row = currentServiceChecklist[i];
+  row.status = val;
+  if (val === 'attention') { if (!row.urgency) row.urgency = 'soon'; } else { delete row.urgency; }
+  renderSvcChecklist();
+}
+function svcSetUrgency(i, val) { currentServiceChecklist[i].urgency = val; renderSvcChecklist(); }
 function svcSetChecklistNote(i, val) { currentServiceChecklist[i].note = val; }
 
 function renderSvcParts() {
@@ -1745,6 +1795,7 @@ function renderSvcPhotos() {
   el.innerHTML = currentServicePhotos.map((p, i) => `
     <div style="width:100px">
       <img src="${p.url}" style="width:100px;height:100px;object-fit:cover;border-radius:6px;border:1px solid #2e2e2e">
+      <input type="text" value="${escapeHtml(p.caption||'')}" placeholder="Caption" oninput="svcSetPhotoCaption(${i}, this.value)" style="width:100%;box-sizing:border-box;font-size:11px;margin-top:4px;background:#111;border:1px solid #2e2e2e;color:#eee;border-radius:4px;padding:4px 6px;font-family:inherit">
       <select onchange="svcSetPhotoStage(${i}, this.value)" style="width:100%;font-size:11px;margin-top:4px;background:#111;border:1px solid #2e2e2e;color:#eee;border-radius:4px;font-family:inherit">
         <option value="before" ${p.stage==='before'?'selected':''}>Before</option>
         <option value="after" ${p.stage==='after'?'selected':''}>After</option>
@@ -1753,7 +1804,8 @@ function renderSvcPhotos() {
     </div>`).join('');
   renderServicePreview();
 }
-function svcSetPhotoStage(i, val) { currentServicePhotos[i].stage = val; }
+function svcSetPhotoStage(i, val) { currentServicePhotos[i].stage = val; renderServicePreview(); }
+function svcSetPhotoCaption(i, val) { currentServicePhotos[i].caption = val; renderServicePreview(); }
 async function svcRemovePhoto(i) {
   const p = currentServicePhotos[i];
   if (p.path) await sb.storage.from('service-photos').remove([p.path]);
@@ -1832,6 +1884,8 @@ function renderServicePreview() {
     next_service_due: document.getElementById('svcNextDue')?.value || '',
     checklist: currentServiceChecklist,
     photos: currentServicePhotos,
+    parts_used: currentServiceParts.filter(p => p.variant_id),
+    customer_request: svcHasExtras ? (document.getElementById('svcRequest')?.value || '') : '',
   };
   doc.innerHTML = buildServiceReportPage(draft, b, c);
   svcScaleReport();
@@ -1871,6 +1925,8 @@ async function openServiceModal(bikeId, recordId) {
   currentServiceChecklist = svcChecklistDefault();
   currentServiceParts = [];
   currentServicePhotos = [];
+  svcBookingId = null;
+  await svcDetectExtras();
 
   let record = null;
   if (recordId) {
@@ -1891,7 +1947,12 @@ async function openServiceModal(bikeId, recordId) {
   svcPopulateQuotationSelect(custId, record ? record.quotation_id : '');
 
   document.getElementById('svcDate').value = record ? record.service_date : new Date().toISOString().slice(0,10);
-  document.getElementById('svcMechanic').value = record ? (record.mechanic || '') : '';
+  let lastMech = ''; try { lastMech = localStorage.getItem('bnb_last_mechanic') || ''; } catch (e) {}
+  document.getElementById('svcMechanic').value = record ? (record.mechanic || '') : lastMech;
+  document.getElementById('svcMechanicList').innerHTML = svcMechanicNames().map(n => `<option value="${escapeHtml(n)}">`).join('');
+  document.getElementById('svcRequest').value = record ? (record.customer_request || '') : '';
+  document.getElementById('svcAllChecked').checked = !!record;   // existing reports were already confirmed when first saved
+  if (record) svcBookingId = record.booking_id || null;
   document.getElementById('svcWorkDone').value = record ? (record.work_done || '') : '';
   document.getElementById('svcWatchItems').value = record ? (record.watch_items || '') : '';
   document.getElementById('svcNextDue').value = record ? (record.next_service_due || '') : '';
@@ -1944,6 +2005,7 @@ async function saveService() {
   const bikeId = document.getElementById('svcBikeSelect').value;
   const customerId = document.getElementById('svcCustomerSelect').value || null;
   if (!bikeId) { alert('Please select a bike.'); return; }
+  if (!document.getElementById('svcAllChecked').checked) { alert("Please tick \"I've checked every item above\" before saving. Use N/A for anything that doesn't apply."); return; }
   const invoiceId = document.getElementById('svcInvoiceId').value || null;
   const validParts = currentServiceParts.filter(p => p.variant_id);
 
@@ -1961,6 +2023,8 @@ async function saveService() {
     parts_used: validParts,
     photos: currentServicePhotos,
   };
+  if (svcHasExtras) { payload.customer_request = document.getElementById('svcRequest').value.trim() || null; payload.booking_id = svcBookingId || null; }
+  try { if (payload.mechanic) localStorage.setItem('bnb_last_mechanic', payload.mechanic); } catch (e) {}
   if (!svcEditingId) payload.report_no = await nextServiceReportNumber();
   else payload.report_no = nextReportRevision(svcOrigReportNo);
 
@@ -2076,13 +2140,25 @@ function svcToggleRow(rowId) {
 // classes so both documents read as the same paperwork family, then uses a more structured,
 // at-a-glance layout below: an info-bar grid, a full color-coded checklist table, and
 // two-column done/watch lists — rather than a flat stack of bullet sections.
+function svcPartLabel(variantId) {
+  const v = VARIANTS.find(x => x.id === variantId);
+  if (!v) return '';
+  const p = PRODUCTS.find(x => x.id === v.product_id);
+  return (p ? p.name + ' — ' : '') + v.name;
+}
+
 function buildServiceReportPage(s, b, c) {
   const bikeName = b ? ([b.brand, b.model].filter(Boolean).join(' ') || 'Unnamed bike') : 'Bike';
   const work = (s.work_done || '').split('\n').filter(Boolean);
   const watch = (s.watch_items || '').split('\n').filter(Boolean);
-  const checklist = s.checklist || [];
+  const checklist = (s.checklist || []).filter(r => r.status !== 'na');   // N/A rows are not printed
   const photos = s.photos || [];
+  const parts = (s.parts_used || []).map(p => ({ label: svcPartLabel(p.variant_id), qty: p.qty })).filter(p => p.label);
   const pillLabel = { ok: 'OK', attention: 'Needs Attention', replaced: 'Replaced' };
+  const urgLabel = { now: 'Before riding', soon: 'Soon', monitor: 'Monitor' };
+  const urgRank = { now: 0, soon: 1, monitor: 2 };
+  const attention = checklist.filter(r => r.status === 'attention')
+    .sort((x, y) => urgRank[x.urgency || 'soon'] - urgRank[y.urgency || 'soon']);
 
   const infobar = `<div class="svc-infobar">
     <div><div class="svc-infobar-lbl">Bike</div><div class="svc-infobar-val">${escapeHtml(bikeName)}</div></div>
@@ -2095,30 +2171,51 @@ function buildServiceReportPage(s, b, c) {
     <div><div class="svc-infobar-lbl">Next Service Due</div><div class="svc-infobar-val">${s.next_service_due ? formatDate(s.next_service_due) : '—'}</div></div>
   </div>`;
 
+  const requestHTML = s.customer_request ? `<div class="svc-section-lbl">Your Request</div><div class="svc-request">${escapeHtml(s.customer_request)}</div>` : '';
+
+  const recoItems = attention.map(r => `<li><span class="svc-pill ${r.urgency || 'soon'}" style="flex-shrink:0">${urgLabel[r.urgency || 'soon']}</span><span><strong>${escapeHtml(r.item)}</strong>${r.note ? ' — ' + escapeHtml(r.note) : ''}</span></li>`)
+    .concat(watch.map(w => `<li><span class="svc-pill monitor" style="flex-shrink:0">Monitor</span><span>${escapeHtml(w)}</span></li>`));
+  const recoBody = recoItems.length ? `<ul class="svc-reco">${recoItems.join('')}</ul>`
+    : (checklist.length ? '<div class="svc-reco-ok">No issues found at this service.</div>' : '');
+
+  const midHTML = (work.length || recoBody) ? `<div class="svc-two-col">
+      <div>${work.length ? `<div class="svc-section-lbl">Service Completed</div><ul class="svc-list done">${work.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}</div>
+      <div>${recoBody ? `<div class="svc-section-lbl">Recommended Next</div>${recoBody}` : ''}</div>
+    </div>` : '';
+
+  const partsHTML = parts.length ? `<div style="margin-bottom:18px"><div class="svc-section-lbl">Parts Used</div>
+    <table class="svc-parts-table"><tbody>${parts.map(p => `<tr><td>${escapeHtml(p.label)}</td><td style="width:60px;text-align:right;color:#555">× ${escapeHtml(p.qty)}</td></tr>`).join('')}</tbody></table></div>` : '';
+
   const checklistHTML = checklist.length ? `
     <div class="svc-section-lbl">Checklist</div>
     <table class="svc-check-table"><thead><tr><th style="width:34%">Item</th><th style="width:22%">Status</th><th>Note</th></tr></thead><tbody>
       ${checklist.map(row => `<tr><td>${escapeHtml(row.item)}</td><td><span class="svc-pill ${row.status}">${pillLabel[row.status] || 'OK'}</span></td><td style="color:#555">${row.note ? escapeHtml(row.note) : '—'}</td></tr>`).join('')}
     </tbody></table>` : '';
 
-  const doneWatchHTML = (work.length || watch.length) ? `<div class="svc-two-col">
-      ${work.length ? `<div><div class="svc-section-lbl">Service Completed</div><ul class="svc-list done">${work.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul></div>` : '<div></div>'}
-      ${watch.length ? `<div><div class="svc-section-lbl">Items to Note</div><ul class="svc-list watch">${watch.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul></div>` : '<div></div>'}
-    </div>` : '';
+  const photoGroup = (label, list) => list.length ? `<div class="svc-photo-group"><div class="svc-section-lbl">${label}</div><div class="svc-photos-grid">${list.map(p => `<figure class="svc-fig"><img src="${p.url}" alt="${escapeHtml(p.caption || label)}">${p.caption ? `<figcaption>${escapeHtml(p.caption)}</figcaption>` : ''}</figure>`).join('')}</div></div>` : '';
+  const photosHTML = photos.length ? photoGroup('Before', photos.filter(p => p.stage === 'before')) + photoGroup('After', photos.filter(p => p.stage !== 'before')) : '';
 
-  const photosHTML = photos.length ? `<div style="margin-bottom:18px"><div class="svc-section-lbl">Photos</div><div class="svc-photos-grid">${photos.map(p=>`<img src="${p.url}" alt="${p.stage||''}">`).join('')}</div></div>` : '';
+  const header = `<div class="inv-header"><img class="svc-logo" src="${BNB_LOGO_DATA_URI}" alt="Bike&amp;Butter">
+      <div class="inv-company"><div class="inv-company-name">Bike&amp;Butter</div><div class="inv-company-uen">UEN: 53521776E</div></div></div>`;
+  const footer = `<div class="svc-footer">Bike&amp;Butter — UEN 53521776E — Ride buttery smooth. 🧈🚲</div>`;
 
-  return `<div class="inv-page"><div class="inv-body" style="padding:36px 44px 0">
-    <div class="inv-header"><img class="svc-logo" src="${BNB_LOGO_DATA_URI}" alt="Bike&amp;Butter">
-      <div class="inv-company"><div class="inv-company-name">Bike&amp;Butter</div><div class="inv-company-uen">UEN: 53521776E</div></div></div>
+  const page1 = `<div class="inv-page"><div class="inv-body" style="padding:36px 44px 0">
+    ${header}
     <div class="inv-title">SERVICING REPORT</div>
     ${infobar}
+    ${requestHTML}
+    ${midHTML}
+    ${partsHTML}
     ${checklistHTML}
-    ${doneWatchHTML}
+  </div>${footer}</div>`;
+
+  const page2 = photosHTML ? `<div class="inv-page"><div class="inv-body" style="padding:36px 44px 0">
+    ${header}
+    <div class="inv-title">SERVICING REPORT — PHOTOS <span style="font-size:13px;font-weight:600;color:#777">${escapeHtml(s.report_no || '')}</span></div>
     ${photosHTML}
-  </div>
-  <div class="svc-footer">Bike&amp;Butter — UEN 53521776E — Ride buttery smooth. 🧈🚲</div>
-  </div>`;
+  </div>${footer}</div>` : '';
+
+  return page1 + page2;
 }
 
 async function printServicingReport() {
@@ -3942,6 +4039,13 @@ function makeOffscreenContainer() {
   return el;
 }
 
+// Fills the A4 page exactly. If a page grew taller than A4 it is scaled down to fit (not stretched out of shape).
+function svcAddPageImage(pdf, canvas, pdfW, pdfH) {
+  const ratio = canvas.height / canvas.width;
+  let w = pdfW, x = 0;
+  if (ratio > (pdfH / pdfW) * 1.01) { w = pdfH / ratio; x = (pdfW - w) / 2; }
+  pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', x, 0, w, pdfH);
+}
 async function downloadPdfFromPages(pageEls, filename) {
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -3950,7 +4054,7 @@ async function downloadPdfFromPages(pageEls, filename) {
   for (let i = 0; i < pageEls.length; i++) {
     const canvas = await html2canvas(pageEls[i], { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' });
     if (i > 0) pdf.addPage();
-    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfW, pdfH);
+    svcAddPageImage(pdf, canvas, pdfW, pdfH);
   }
   pdf.save(filename);
 }
@@ -3966,7 +4070,7 @@ async function pdfBase64FromPages(pageEls) {
   for (let i = 0; i < pageEls.length; i++) {
     const canvas = await html2canvas(pageEls[i], { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' });
     if (i > 0) pdf.addPage();
-    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfW, pdfH);
+    svcAddPageImage(pdf, canvas, pdfW, pdfH);
   }
   return pdf.output('datauristring').split(',')[1];
 }
@@ -4300,9 +4404,21 @@ function renderBookings() {
       <td style="white-space:nowrap">
         ${b.status === 'pending' ? `<button class="btn btn-primary btn-sm" onclick="setBookingStatus('${b.id}','confirmed')">Confirm</button>` : ''}
         <a class="btn btn-ghost btn-sm" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
-        ${b.bike_id ? `<button class="btn btn-ghost btn-sm" onclick="openServiceModal('${b.bike_id}')">Log service</button>` : ''}
+        ${b.bike_id ? `<button class="btn btn-ghost btn-sm" onclick="openServiceFromBooking('${b.id}')">Create report</button>` : ''}
       </td></tr>`;
   }).join('');
+}
+async function openServiceFromBooking(bookingId) {
+  const bk = BOOKINGS.find(x => x.id === bookingId);
+  if (!bk || !bk.bike_id) return;
+  await openServiceModal(bk.bike_id);          // picks the customer and bike
+  svcBookingId = bk.id;
+  document.getElementById('svcDate').value = new Date(bk.start_time).toLocaleDateString('en-CA', { timeZone: 'Asia/Singapore' });
+  if (svcHasExtras) {
+    const svcName = (bk.services && bk.services.name) || '';
+    document.getElementById('svcRequest').value = [svcName ? 'Booked: ' + svcName : '', (bk.notes || '').trim()].filter(Boolean).join('\n');
+  }
+  renderServicePreview();
 }
 async function setBookingStatus(id, status) {
   const { error } = await sb.from('bookings').update({ status }).eq('id', id);
