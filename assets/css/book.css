@@ -84,3 +84,26 @@
 .confirm-box{text-align:center;padding:48px 24px}
 .confirm-icon{display:flex;justify-content:center;align-items:center;margin:0 auto 20px;width:100%}
 .confirm-icon svg{display:block}
+
+/* Service history cards */
+.bk .bike-badge.soon { background: rgba(248,204,10,.14); color: #F8CC0A; }
+.bk .bike-badge.overdue { background: var(--red-bg); color: var(--red); }
+.bk .due-ok { color: var(--green); } .bk .due-soon { color: #F8CC0A; } .bk .due-overdue { color: var(--red); } .bk .due-past { color: var(--text3); }
+.bk .hist-card { background: var(--b-bg3); border: 1px solid var(--border); border-left: 3px solid #F8CC0A; border-radius: var(--radius); padding: 0; margin-bottom: 10px; overflow: hidden; }
+.bk .hist-card:last-child { border-bottom: 1px solid var(--border); }
+.bk .hist-details > summary { list-style: none; cursor: pointer; }
+.bk .hist-details > summary::-webkit-details-marker { display: none; }
+.bk .hist-row { display: flex; justify-content: space-between; align-items: stretch; gap: 14px; padding: 14px 16px; }
+.bk .hist-left { min-width: 0; }
+.bk .hist-no { color: #F8CC0A; font-weight: 600; font-size: 17px; letter-spacing: .02em; }
+.bk .hist-card .history-date { margin-top: 3px; }
+.bk .hist-more { margin-top: 8px; font-size: 12px; color: var(--text2); }
+.bk .hist-more::after { content: ' \203A'; color: #F8CC0A; }
+.bk .hist-details[open] .hist-more::after { content: ' \2039'; }
+.bk .hist-next { text-align: right; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; padding-left: 14px; border-left: 1px solid var(--border); min-width: 112px; }
+.bk .hist-next span { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--text3); margin-bottom: 4px; }
+.bk .hist-next b { font-size: 16px; font-weight: 600; }
+.bk .hist-body { padding: 4px 16px 16px; border-top: 1px solid var(--border); }
+.bk .hist-sec { font-size: 13px; color: var(--text2); line-height: 1.6; margin-top: 12px; }
+.bk .hist-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--text3); margin-bottom: 3px; }
+.bk .hist-lbl.watch { color: #F8CC0A; }

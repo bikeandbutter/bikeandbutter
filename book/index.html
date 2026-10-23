@@ -464,18 +464,28 @@ function renderBikeList(bikes) {
   }
   window._bikeCache = bikes;
   el.innerHTML = bikes.map(b => {
-    const due = isServiceDue(b);
+    const st = dueStatus(b.next_service_due);
     return `
     <div class="bike-option" onclick='openBikeDetail("${b.id}")'>
       <div>
         <div class="bike-name">${b.brand || ''} ${b.model || ''}${b.serial_no ? `<span class="bike-serial">#${b.serial_no}</span>` : ''}</div>
         <div class="bike-meta">${b.colour ? b.colour + ' · ' : ''}${b.last_service_date ? 'Last service ' + fmtDate(b.last_service_date) : 'No service history yet'}</div>
+        ${b.next_service_due ? `<div class="bike-meta" style="margin-top:2px">Next service due <strong class="due-${st.cls}">${fmtDate(b.next_service_due)}</strong></div>` : ''}
       </div>
-      <div class="bike-badge ${due ? 'due' : 'ok'}">${due ? 'Service due' : 'Up to date'}</div>
+      ${st.label ? `<div class="bike-badge ${st.cls}">${st.label}</div>` : ''}
     </div>`;
   }).join('');
 }
 
+// Based on the next-service date the mechanic sets on the latest report.
+function dueStatus(dateStr) {
+  if (!dateStr) return { cls: '', label: '' };
+  const due = new Date(dateStr + 'T00:00:00'), today = new Date(); today.setHours(0,0,0,0);
+  const days = Math.round((due - today) / 86400000);
+  if (days < 0) return { cls: 'overdue', label: 'Overdue' };
+  if (days <= 30) return { cls: 'soon', label: 'Due soon' };
+  return { cls: 'ok', label: 'Up to date' };
+}
 function isServiceDue(b) {
   if (!b.service_interval_km || !b.latest_mileage_km) return false;
   // Simple heuristic placeholder — refine once mileage_logs is wired into this view further.
@@ -496,6 +506,7 @@ async function openBikeDetail(bikeId) {
     <div class="bike-name" style="font-size:18px;margin-bottom:4px;">${bike.brand || ''} ${bike.model || ''}${bike.serial_no ? `<span class="bike-serial">#${bike.serial_no}</span>` : ''}</div>
     <div class="bike-meta">${[bike.colour, bike.size ? 'Size ' + bike.size : null].filter(Boolean).join(' · ')}</div>
     <div class="bike-meta" style="margin-top:6px;">${bike.last_service_date ? 'Last serviced ' + fmtDate(bike.last_service_date) : 'No service history yet'}</div>
+    ${bike.next_service_due ? `<div class="bike-meta" style="margin-top:2px">Next service due <strong class="due-${dueStatus(bike.next_service_due).cls}">${fmtDate(bike.next_service_due)}</strong></div>` : ''}
   `;
 
   const { data, error } = await sb
@@ -508,19 +519,22 @@ async function openBikeDetail(bikeId) {
   if (error || !data || data.length === 0) {
     histEl.innerHTML = `<div class="no-history">No past services recorded yet.</div>`;
   } else {
-    histEl.innerHTML = data.map(h => {
+    histEl.innerHTML = data.map((h, i) => {
       const hasMore = h.report_notes || h.watch_items;
-      const head = `<div class="hist-row"><div><div class="history-date">${fmtDate(h.start_time)}</div>
-          <div class="history-service">${h.report_no ? 'Report ' + esc(h.report_no) : esc(h.service_name)}</div></div>
-          <div class="hist-next">${h.next_service_due ? 'Next service<br><strong>' + fmtDate(h.next_service_due) + '</strong>' : ''}</div></div>`;
-      if (!hasMore) return `<div class="history-item">${head}</div>`;
-      return `<details class="history-item hist-details"><summary>${head}<span class="hist-more">View details</span></summary>
-        ${h.report_notes ? `<div class="history-notes"><strong>Service completed</strong><br>${esc(h.report_notes).replace(/\n/g,'<br>')}</div>` : ''}
-        ${h.watch_items ? `<div class="history-notes" style="margin-top:8px"><strong>Watch next time</strong><br>${esc(h.watch_items).replace(/\n/g,'<br>')}</div>` : ''}
-      </details>`;
+      const title = h.report_no ? esc(h.report_no) : esc(h.service_name);
+      // Only the newest report's due date is "live"; older ones are history.
+      const st = (i === 0 && h.next_service_due) ? dueStatus(h.next_service_due).cls : 'past';
+      const next = h.next_service_due ? `<div class="hist-next due-${st}"><span>Next service</span><b>${fmtDate(h.next_service_due)}</b></div>` : '';
+      const head = `<div class="hist-row"><div class="hist-left"><div class="hist-no">${title}</div>
+          <div class="history-date">${fmtDate(h.start_time)}</div>
+          ${hasMore ? '<div class="hist-more">View details</div>' : ''}</div>${next}</div>`;
+      if (!hasMore) return `<div class="history-item hist-card">${head}</div>`;
+      return `<details class="history-item hist-card hist-details"><summary>${head}</summary>
+        <div class="hist-body">
+        ${h.report_notes ? `<div class="hist-sec"><div class="hist-lbl">Service completed</div>${esc(h.report_notes).replace(/\n/g,'<br>')}</div>` : ''}
+        ${h.watch_items ? `<div class="hist-sec"><div class="hist-lbl watch">Watch next time</div>${esc(h.watch_items).replace(/\n/g,'<br>')}</div>` : ''}
+        </div></details>`;
     }).join('');
-    const last = data.map(h => h.start_time).sort().pop();
-    if (last) { const m = document.querySelector('#bikeDetailCard .bike-meta:last-child'); if (m) m.textContent = 'Last serviced ' + fmtDate(last); }
   }
 
   goToStep('bike-detail');
