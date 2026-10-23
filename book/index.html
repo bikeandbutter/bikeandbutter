@@ -526,8 +526,7 @@ async function openBikeDetail(bikeId) {
       const st = (i === 0 && h.next_service_due) ? dueStatus(h.next_service_due).cls : 'past';
       const next = h.next_service_due ? `<div class="hist-next due-${st}"><span>Next service</span><b>${fmtDate(h.next_service_due)}</b></div>` : '';
       const head = `<div class="hist-row"><div class="hist-left"><div class="hist-no">${title}</div>
-          <div class="history-date">${fmtDate(h.start_time)}</div>
-          ${hasMore ? '<div class="hist-more">View details</div>' : ''}</div>${next}</div>`;
+          <div class="hist-sub"><span class="history-date">${fmtDate(h.start_time)}</span>${hasMore ? '<span class="hist-more">View details</span>' : ''}</div></div>${next}</div>`;
       if (!hasMore) return `<div class="history-item hist-card">${head}</div>`;
       return `<details class="history-item hist-card hist-details"><summary>${head}</summary>
         <div class="hist-body">
