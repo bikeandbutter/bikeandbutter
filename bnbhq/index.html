@@ -213,7 +213,13 @@ tbody tr.clickable:hover { background: var(--bg3); }
 }
 .ie-field input:focus, .ie-field textarea:focus, .ie-field select:focus { border-color: #f6ca14; }
 .ie-field textarea { resize: vertical; min-height: 90px; }
-.ie-field input::placeholder, .ie-field textarea::placeholder { color: #3a3a3a; }
+.ie-field input::placeholder, .ie-field textarea::placeholder { color: #777; }
+.ie-field label { color: #999; }
+.ie-field input[type=date] { -webkit-appearance: auto; appearance: auto; color-scheme: dark; min-height: 36px; }
+.svc-confirm { color: #eee; background: #111; border-color: #666; }
+.ie-del-btn { background: transparent; border: 1px solid #b0392c; color: #ff8a7a; border-radius: 6px; padding: 9px 14px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.svc-due-quick { display: flex; gap: 6px; margin-top: 6px; }
+.svc-due-quick button { background: #111; border: 1px solid #2e2e2e; color: #ddd; border-radius: 6px; padding: 5px 9px; font-size: 11.5px; cursor: pointer; font-family: inherit; }
 .ie-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
 .ie-invnum-wrap { display: flex; gap: 6px; }
 .ie-invnum-wrap > .ie-field { flex: 1; margin-bottom: 0; }
@@ -703,7 +709,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
             <div class="ie-section">
               <div class="ie-field"><label>Service completed (one item per line)</label><textarea id="svcWorkDone" placeholder="Replaced front and rear brake pads&#10;Adjusted front derailleur" oninput="renderServicePreview()"></textarea></div>
               <div class="ie-field"><label>Items to note / watch next time (one item per line)</label><textarea id="svcWatchItems" placeholder="Seatpost seized in frame, recommend servicing after race&#10;Headset bearings smooth, service at next major" oninput="renderServicePreview()"></textarea></div>
-              <div class="ie-field"><label>Next service due (optional)</label><input type="date" id="svcNextDue" oninput="renderServicePreview()"></div>
+              <div class="ie-field"><label>Next service due (optional)</label><input type="date" id="svcNextDue" oninput="renderServicePreview()"><div class="svc-due-quick"><button type="button" onclick="svcQuickDue(3)">+3 months</button><button type="button" onclick="svcQuickDue(6)">+6 months</button><button type="button" onclick="svcQuickDue(12)">+12 months</button><button type="button" onclick="document.getElementById('svcNextDue').value='';renderServicePreview()">Clear</button></div></div>
             </div>
 
             <div class="ie-section">
@@ -722,6 +728,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
 
             <div class="ie-btn-row">
               <button class="ie-save-btn" onclick="saveService()">Save</button>
+              <button class="ie-del-btn" id="svcDeleteBtn" style="display:none" onclick="svcDeleteReport()">Delete</button>
               <button class="ie-print-btn" onclick="svcPrintFromEditor()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Save &amp; Print PDF</button>
             </div>
           </div>
@@ -1644,7 +1651,7 @@ function renderServiceHistory() {
     el.innerHTML = '<div class="empty-state"><div class="empty-state-title">No service records yet</div><div class="empty-state-sub">Log the first service for this bike above.</div></div>';
     return;
   }
-  el.innerHTML = SERVICE_RECORDS.map(s => {
+  el.innerHTML = SERVICE_RECORDS.map((s, si) => {
     const work = (s.work_done || '').split('\n').filter(Boolean);
     const watch = (s.watch_items || '').split('\n').filter(Boolean);
     const attentionCount = (s.checklist || []).filter(c => c.status === 'attention').length;
@@ -1657,13 +1664,14 @@ function renderServiceHistory() {
         <div style="display:flex;align-items:center;gap:8px">
           <div class="cell-muted" style="font-size:12px">${escapeHtml(s.mechanic || '')}</div>
           <button class="btn btn-ghost btn-sm" onclick="openServiceModal(null,'${s.id}')">Edit</button>
+          <button class="btn btn-ghost btn-sm" style="color:#b0392c" onclick="svcDeleteReport('${s.id}')">Delete</button>
           ${s.invoice_id ? `<button class="btn btn-ghost btn-sm" onclick="printCombined('${s.id}')">Print Invoice + Report</button>` : ''}
         </div>
       </div>
       ${work.length ? `<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:3px">Service completed</div><ul style="margin:0 0 10px 18px;font-size:13px;color:var(--text)">${work.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
       ${watch.length ? `<div style="font-size:12px;font-weight:600;color:var(--yellow);margin-bottom:3px">Watch next time</div><ul style="margin:0 0 4px 18px;font-size:13px;color:var(--text)">${watch.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul>` : ''}
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
-        ${svcDuePill(s.next_service_due)}
+        ${svcDuePill(s.next_service_due, si > 0)}
         ${attentionCount ? `<div class="badge badge-yellow">${attentionCount} item${attentionCount>1?'s':''} need attention</div>` : ''}
         ${partsCount ? `<div class="badge">${partsCount} part${partsCount>1?'s':''} used</div>` : ''}
         ${photosCount ? `<div class="badge">${photosCount} photo${photosCount>1?'s':''}</div>` : ''}
@@ -1951,7 +1959,8 @@ async function openServiceModal(bikeId, recordId) {
   document.getElementById('svcMechanic').value = record ? (record.mechanic || '') : lastMech;
   document.getElementById('svcMechanicList').innerHTML = svcMechanicNames().map(n => `<option value="${escapeHtml(n)}">`).join('');
   document.getElementById('svcRequest').value = record ? (record.customer_request || '') : '';
-  document.getElementById('svcAllChecked').checked = !!record;   // existing reports were already confirmed when first saved
+  document.getElementById('svcAllChecked').checked = !!record;
+  document.getElementById('svcDeleteBtn').style.display = record ? '' : 'none';   // existing reports were already confirmed when first saved
   if (record) svcBookingId = record.booking_id || null;
   document.getElementById('svcWorkDone').value = record ? (record.work_done || '') : '';
   document.getElementById('svcWatchItems').value = record ? (record.watch_items || '') : '';
@@ -1974,6 +1983,25 @@ async function openServiceModal(bikeId, recordId) {
   renderServicePreview();
 }
 
+function svcQuickDue(months) {
+  const base = new Date((document.getElementById('svcDate').value || new Date().toISOString().slice(0,10)) + 'T00:00:00');
+  base.setMonth(base.getMonth() + months);
+  document.getElementById('svcNextDue').value = base.toLocaleDateString('en-CA');
+  renderServicePreview();
+}
+async function svcDeleteReport(id) {
+  const fromEditor = !(typeof id === 'string' && id);
+  id = fromEditor ? svcEditingId : id;
+  if (!id) return;
+  if (!confirm('Delete this servicing report permanently? This cannot be undone.')) return;
+  const { error } = await sb.from('service_records').delete().eq('id', id);
+  if (error) { alert('Could not delete: ' + error.message); return; }
+  ALL_SERVICE_RECORDS = ALL_SERVICE_RECORDS.filter(r => r.id !== id);
+  SERVICE_RECORDS = SERVICE_RECORDS.filter(r => r.id !== id);
+  if (typeof renderServiceHistory === 'function' && document.getElementById('serviceHistoryList')) renderServiceHistory();
+  renderServicingList();
+  if (fromEditor) closeServiceModal();
+}
 function closeServiceModal() {
   switchTab('servicing');
 }
@@ -2074,7 +2102,8 @@ async function loadServicingList() {
 // "clear visual indicator" idea from themechanic.bike, but driven by the shop's own
 // recorded due date rather than odometer/Strava data we don't have.
 const DUE_SOON_DAYS = 14;
-function svcDuePill(dateStr) {
+function svcDuePill(dateStr, superseded) {
+  if (superseded) return `<span class="due-pill none">Next due ${dateStr ? formatDate(dateStr) : '—'} · newer report exists</span>`;
   if (!dateStr) return `<span class="due-pill none">No date set</span>`;
   const due = new Date(dateStr + 'T00:00:00');
   const today = new Date(); today.setHours(0,0,0,0);
@@ -2111,9 +2140,10 @@ function renderServicingList() {
       <td>${b ? `<span style="text-decoration:underline" onclick="event.stopPropagation();openBikeDetail('${b.id}')">${escapeHtml([b.brand,b.model].filter(Boolean).join(' ')||'Unnamed bike')}</span>` : '—'}</td>
       <td>${escapeHtml(s.mechanic || '—')}</td>
       <td>${invNo ? escapeHtml(invNo) : '<span class="cell-muted">—</span>'}</td>
-      <td>${svcDuePill(s.next_service_due)}</td>
+      <td>${svcDuePill(s.next_service_due, ALL_SERVICE_RECORDS.some(o => o.bike_id === s.bike_id && o.id !== s.id && (o.service_date > s.service_date || (o.service_date === s.service_date && (o.created_at || '') > (s.created_at || '')))))}</td>
       <td style="text-align:right;white-space:nowrap" onclick="event.stopPropagation()">
         <button class="btn btn-ghost btn-sm" onclick="openServiceModal(null,'${s.id}')">Edit</button>
+        <button class="btn btn-ghost btn-sm" style="color:#b0392c" onclick="svcDeleteReport('${s.id}')">Delete</button>
         ${s.invoice_id ? `<button class="btn btn-ghost btn-sm" onclick="printCombined('${s.id}')">Print w/ Invoice</button>` : `<button class="btn btn-ghost btn-sm" onclick="printSingleServiceReport('${s.id}')">Print</button>`}
       </td>
     </tr>
