@@ -508,15 +508,19 @@ async function openBikeDetail(bikeId) {
   if (error || !data || data.length === 0) {
     histEl.innerHTML = `<div class="no-history">No past services recorded yet.</div>`;
   } else {
-    histEl.innerHTML = data.map(h => `
-      <div class="history-item">
-        <div class="history-date">${fmtDate(h.start_time)}</div>
-        <div class="history-service">${esc(h.service_name)}</div>
-        ${h.report_notes ? `<div class="history-notes">${esc(h.report_notes).replace(/\n/g,'<br>')}</div>` : ''}
-        ${h.watch_items ? `<div class="history-notes"><strong>Watch next time:</strong><br>${esc(h.watch_items).replace(/\n/g,'<br>')}</div>` : ''}
-        ${h.next_service_due ? `<div class="history-notes">Next service due: ${fmtDate(h.next_service_due)}</div>` : ''}
-      </div>
-    `).join('');
+    histEl.innerHTML = data.map(h => {
+      const hasMore = h.report_notes || h.watch_items;
+      const head = `<div class="hist-row"><div><div class="history-date">${fmtDate(h.start_time)}</div>
+          <div class="history-service">${h.report_no ? 'Report ' + esc(h.report_no) : esc(h.service_name)}</div></div>
+          <div class="hist-next">${h.next_service_due ? 'Next service<br><strong>' + fmtDate(h.next_service_due) + '</strong>' : ''}</div></div>`;
+      if (!hasMore) return `<div class="history-item">${head}</div>`;
+      return `<details class="history-item hist-details"><summary>${head}<span class="hist-more">View details</span></summary>
+        ${h.report_notes ? `<div class="history-notes"><strong>Service completed</strong><br>${esc(h.report_notes).replace(/\n/g,'<br>')}</div>` : ''}
+        ${h.watch_items ? `<div class="history-notes" style="margin-top:8px"><strong>Watch next time</strong><br>${esc(h.watch_items).replace(/\n/g,'<br>')}</div>` : ''}
+      </details>`;
+    }).join('');
+    const last = data.map(h => h.start_time).sort().pop();
+    if (last) { const m = document.querySelector('#bikeDetailCard .bike-meta:last-child'); if (m) m.textContent = 'Last serviced ' + fmtDate(last); }
   }
 
   goToStep('bike-detail');
