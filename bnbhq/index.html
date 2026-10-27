@@ -895,7 +895,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
 
             <div class="ie-btn-row">
               <button class="ie-save-btn" id="ieConvertBtn" style="display:none" onclick="ieConvertCurrentQuote()">→ Invoice</button>
-              <button class="ie-save-btn" id="ieDriveBtn" onclick="saveInvoicePdfToDrive(this)" title="Save this invoice's PDF to Google Drive">Save to Drive</button>
+              <button class="ie-save-btn" id="ieDriveBtn" onclick="saveInvoicePdfToDrive(this)" title="Save this document's PDF to Google Drive">Save to Drive</button>
               <button class="ie-save-btn" onclick="saveDoc()">Save</button>
               <button class="ie-print-btn" onclick="printInvoice()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Save &amp; Print PDF</button>
             </div>
@@ -3370,7 +3370,7 @@ function applyDocModeUI() {
   document.getElementById('ieQuoteFields').style.display = q ? '' : 'none';
   document.getElementById('ieDepositSection').style.display = q ? '' : 'none';
   document.getElementById('ieConvertBtn').style.display = q ? '' : 'none';
-  document.getElementById('ieDriveBtn').style.display = q ? 'none' : '';
+  document.getElementById('ieDriveBtn').style.display = '';
 }
 
 function ieGoBack() { switchTab(docMode === 'quote' ? 'quotations' : 'invoices'); }
@@ -4106,12 +4106,12 @@ async function pdfBase64FromPages(pageEls) {
 }
 
 // Returns { ok, filename?, error? }. Never throws.
-async function uploadPdfToDrive(pageEls, fullNo, custName) {
+async function uploadPdfToDrive(pageEls, fullNo, custName, kind) {
   try {
     const filename = fullNo + ' - ' + (custName || 'Customer').trim() + '.pdf';
     const baseInvNo = fullNo.replace(/-\d+$/, '');
     const pdfBase64 = await pdfBase64FromPages(pageEls);
-    const r = await fetch(DRIVE_WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'savePdf', pdfBase64, filename, baseInvNo }) });
+    const r = await fetch(DRIVE_WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: 'savePdf', kind: kind || 'invoice', pdfBase64, filename, baseInvNo }) });
     const j = await r.json();
     return j && j.ok ? { ok: true, filename: j.filename || filename } : { ok: false, error: (j && j.error) || 'Unknown error from Google' };
   } catch (e) { console.error(e); return { ok: false, error: e.message }; }
@@ -4119,16 +4119,16 @@ async function uploadPdfToDrive(pageEls, fullNo, custName) {
 
 // Renders the invoice currently open in the editor off-screen and uploads it. Used after Save and by the "Save to Drive" button.
 async function saveInvoicePdfToDrive(btn) {
-  if (docMode !== 'invoice') return { ok: false, error: 'Only invoices are saved to Drive.' };
+  const kind = docMode === 'quote' ? 'quotation' : 'invoice';
   const fullNo = (document.getElementById('invSavedNo').value || '') + (document.getElementById('invRevSuffix').value || '');
-  if (!document.getElementById('invSavedNo').value) { alert('Save the invoice first.'); return { ok: false, error: 'not saved' }; }
+  if (!document.getElementById('invSavedNo').value) { alert('Save the ' + kind + ' first.'); return { ok: false, error: 'not saved' }; }
   const prev = btn ? btn.innerHTML : null;
   if (btn) { btn.disabled = true; btn.innerHTML = 'Saving to Drive…'; }
   const container = makeOffscreenContainer();
   try {
     container.innerHTML = buildInvoicePages().join('');
     await new Promise(r => setTimeout(r, 50));
-    const res = await uploadPdfToDrive(Array.from(container.querySelectorAll('.inv-page')), fullNo, document.getElementById('invCustomerName').value);
+    const res = await uploadPdfToDrive(Array.from(container.querySelectorAll('.inv-page')), fullNo, document.getElementById('invCustomerName').value, kind);
     if (btn) alert(res.ok ? 'PDF saved to Google Drive: ' + res.filename : 'Drive upload failed: ' + res.error);
     return res;
   } finally { document.body.removeChild(container); if (btn) { btn.disabled = false; btn.innerHTML = prev; } }
@@ -4303,7 +4303,9 @@ async function saveQuotation() {
     await loadEnquiries();
   }
   await loadQuotations();
-  alert('Quotation ' + fullNo + ' saved. (Quotes do not change stock or accounting.)');
+  const drive = await saveInvoicePdfToDrive(null);
+  alert('Quotation ' + fullNo + ' saved. (Quotes do not change stock or accounting.)' +
+    (drive.ok ? '\nPDF saved to Google Drive: ' + drive.filename : '\nWARNING: the PDF was NOT saved to Google Drive (' + drive.error + '). Use the "Save to Drive" button to retry.'));
 }
 
 async function deleteQuotation(id) {
