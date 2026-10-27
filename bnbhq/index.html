@@ -727,9 +727,9 @@ tbody tr.clickable:hover { background: var(--bg3); }
             </div>
 
             <div class="ie-btn-row">
-              <button class="ie-save-btn" onclick="saveService()">Save</button>
+              <button class="ie-print-btn" id="svcSaveAllBtn" onclick="saveAllService(this)" title="Saves to the database, saves the PDF to Google Drive, and downloads the PDF to this computer">Save</button>
               <button class="ie-del-btn" id="svcDeleteBtn" style="display:none" onclick="svcDeleteReport()">Delete</button>
-              <button class="ie-print-btn" onclick="svcPrintFromEditor()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Save &amp; Print PDF</button>
+              
             </div>
           </div>
 
@@ -895,9 +895,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
 
             <div class="ie-btn-row">
               <button class="ie-save-btn" id="ieConvertBtn" style="display:none" onclick="ieConvertCurrentQuote()">→ Invoice</button>
-              <button class="ie-save-btn" id="ieDriveBtn" onclick="saveInvoicePdfToDrive(this)" title="Save this document's PDF to Google Drive">Save to Drive</button>
-              <button class="ie-save-btn" onclick="saveDoc()">Save</button>
-              <button class="ie-print-btn" onclick="printInvoice()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Save &amp; Print PDF</button>
+              <button class="ie-print-btn" id="ieSaveAllBtn" onclick="saveAllDoc(this)" title="Saves to the database, saves the PDF to Google Drive, and downloads the PDF to this computer">Save</button>
             </div>
           </div>
 
@@ -1709,7 +1707,7 @@ async function printCombined(serviceRecordId) {
   }
 }
 
-const SVC_CHECKLIST_DEFAULT = ['Brakes','Gears / Drivetrain','Tires / Wheels','Headset','Bottom Bracket','Cables / Housing','Chain','Suspension','Frame / Alignment'];
+const SVC_CHECKLIST_DEFAULT = ['Brakes','Gears / Drivetrain','Tires / Wheels','Headset','Handlebar','Bottom Bracket','Cables / Housing','Chain','Suspension','Frame Condition'];
 function svcChecklistDefault() { return SVC_CHECKLIST_DEFAULT.map(item => ({ item, status: 'ok', note: '' })); }
 
 let svcEditingId = null;
@@ -2029,7 +2027,8 @@ function nextReportRevision(current) {
   return base + '-' + String(n).padStart(2, '0');
 }
 
-async function saveService() {
+async function saveService(opts) {
+  opts = opts || {};
   const bikeId = document.getElementById('svcBikeSelect').value;
   const customerId = document.getElementById('svcCustomerSelect').value || null;
   if (!bikeId) { alert('Please select a bike.'); return; }
@@ -2086,10 +2085,35 @@ async function saveService() {
     await loadProducts();
   }
 
+  if (opts.keepOpen) return recordId;
   closeServiceModal();
   if (currentBikeId) await openBikeDetail(currentBikeId);
   const svcTab = document.getElementById('tab-servicing');
   if (svcTab && svcTab.classList.contains('active')) await loadServicingList();
+  return recordId;
+}
+
+// ONE save button: (a) database, (b) PDF to Google Drive, (c) PDF download to this computer.
+async function saveAllService(btn) {
+  const prev = btn ? btn.innerHTML : null;
+  if (btn) { btn.disabled = true; btn.innerHTML = 'Saving…'; }
+  try {
+    const rid = await saveService({ keepOpen: true });
+    if (!rid) return;
+    const { data: s } = await sb.from('service_records').select('*').eq('id', rid).single();
+    const b = BIKES.find(x => x.id === s.bike_id);
+    const c = CUSTOMERS.find(x => x.id === (s.customer_id || (b ? b.customer_id : null)));
+    if (btn) btn.innerHTML = 'Saving PDF to Drive…';
+    const drive = await saveServiceReportPdfToDrive(s, b, c);
+    ALL_SERVICE_RECORDS = [s, ...ALL_SERVICE_RECORDS.filter(x => x.id !== rid)];
+    SERVICE_RECORDS = [s, ...SERVICE_RECORDS.filter(x => x.id !== rid)];
+    await printSingleServiceReport(rid);
+    alert('Servicing report ' + (s.report_no || '') + ' saved.' + (drive.ok ? '\nPDF saved to Google Drive: ' + drive.filename : '\nWARNING: the PDF was NOT saved to Google Drive (' + drive.error + '). Press Save again to retry.'));
+    closeServiceModal();
+    if (currentBikeId) await openBikeDetail(currentBikeId);
+    const svcTab = document.getElementById('tab-servicing');
+    if (svcTab && svcTab.classList.contains('active')) await loadServicingList();
+  } finally { if (btn) { btn.disabled = false; btn.innerHTML = prev; } }
 }
 
 let ALL_SERVICE_RECORDS = [];
@@ -3370,7 +3394,6 @@ function applyDocModeUI() {
   document.getElementById('ieQuoteFields').style.display = q ? '' : 'none';
   document.getElementById('ieDepositSection').style.display = q ? '' : 'none';
   document.getElementById('ieConvertBtn').style.display = q ? '' : 'none';
-  document.getElementById('ieDriveBtn').style.display = '';
 }
 
 function ieGoBack() { switchTab(docMode === 'quote' ? 'quotations' : 'invoices'); }
@@ -4053,7 +4076,8 @@ async function saveInvoice() {
   await loadInvoices();
   const drive = await saveInvoicePdfToDrive(null);
   alert('Invoice ' + fullInvoiceNo + ' saved' + (linkedItems.length ? ', stock updated for ' + linkedItems.length + ' item(s).' : '.') +
-    (drive.ok ? '\nPDF saved to Google Drive: ' + drive.filename : '\nWARNING: the PDF was NOT saved to Google Drive (' + drive.error + '). Use the "Save to Drive" button to retry.'));
+    (drive.ok ? '\nPDF saved to Google Drive: ' + drive.filename : '\nWARNING: the PDF was NOT saved to Google Drive (' + drive.error + '). Press Save again to retry.'));
+  return true;
 }
 
 // ---- Shared PDF engine (html2canvas + jsPDF), used by printInvoice, quickPrintInvoice,
@@ -4090,7 +4114,7 @@ async function downloadPdfFromPages(pageEls, filename) {
 }
 
 /* ---- Save invoice PDFs to Google Drive (same Apps Script web app the old Invoice page used) ---- */
-const DRIVE_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyNMIV4GVtQh6QzXwELSxiCizyA2ZqvpBjlKV8i9UVd41ts2l9qlDW0hqhINrnxRF6Z/exec';
+const DRIVE_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby3I5TZqTIUduyiGBake_ux0oo46LGeRou45mBQfvn-CW3eUZg1T9qla_kqMijw19QV/exec';
 
 async function pdfBase64FromPages(pageEls) {
   const { jsPDF } = window.jspdf;
@@ -4115,6 +4139,15 @@ async function uploadPdfToDrive(pageEls, fullNo, custName, kind) {
     const j = await r.json();
     return j && j.ok ? { ok: true, filename: j.filename || filename } : { ok: false, error: (j && j.error) || 'Unknown error from Google' };
   } catch (e) { console.error(e); return { ok: false, error: e.message }; }
+}
+
+async function saveServiceReportPdfToDrive(s, b, c) {
+  const container = makeOffscreenContainer();
+  try {
+    container.innerHTML = buildServiceReportPage(s, b, c);
+    await new Promise(r => setTimeout(r, 50));
+    return await uploadPdfToDrive(Array.from(container.querySelectorAll('.inv-page')), s.report_no || 'Servicing Report', c ? c.name : 'Customer', 'service_report');
+  } finally { document.body.removeChild(container); }
 }
 
 // Renders the invoice currently open in the editor off-screen and uploads it. Used after Save and by the "Save to Drive" button.
@@ -4227,6 +4260,16 @@ async function nextQuotationNumber() {
 
 function saveDoc() { return docMode === 'quote' ? saveQuotation() : saveInvoice(); }
 
+// ONE save button: (a) database, (b) PDF to Google Drive (done inside saveInvoice/saveQuotation), (c) PDF download.
+async function saveAllDoc(btn) {
+  const prev = btn ? btn.innerHTML : null;
+  if (btn) { btn.disabled = true; btn.innerHTML = 'Saving…'; }
+  try {
+    const ok = await saveDoc();
+    if (ok) await printInvoice();
+  } finally { if (btn) { btn.disabled = false; btn.innerHTML = prev; } }
+}
+
 async function saveQuotation() {
   const id = document.getElementById('invId').value;
   const customerName = document.getElementById('invCustomerName').value.trim();
@@ -4305,7 +4348,8 @@ async function saveQuotation() {
   await loadQuotations();
   const drive = await saveInvoicePdfToDrive(null);
   alert('Quotation ' + fullNo + ' saved. (Quotes do not change stock or accounting.)' +
-    (drive.ok ? '\nPDF saved to Google Drive: ' + drive.filename : '\nWARNING: the PDF was NOT saved to Google Drive (' + drive.error + '). Use the "Save to Drive" button to retry.'));
+    (drive.ok ? '\nPDF saved to Google Drive: ' + drive.filename : '\nWARNING: the PDF was NOT saved to Google Drive (' + drive.error + '). Press Save again to retry.'));
+  return true;
 }
 
 async function deleteQuotation(id) {
