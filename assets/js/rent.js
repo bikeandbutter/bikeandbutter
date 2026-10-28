@@ -179,7 +179,7 @@
     if (f.name.length < 2) return showErr("Please enter your name.");
     var digits = f.phone.replace(/\D/g, "");
     if (digits.length < 8) return showErr("Please enter a WhatsApp number we can reach you on.");
-    if (f.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) return showErr("That email address does not look right.");
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) return showErr("Please enter a valid email address. We send your confirmation and a reminder there.");
     if (f.hp) return;
     var btn = $("[data-submit]"); btn.disabled = true; btn.textContent = "Sending…";
     var payload = { action: "book", start: st.start, end: st.end, boxes: st.boxes, packs: st.packs, rotors: f.rotors, name: f.name, phone: f.phone, email: f.email, bike: f.bike, notes: f.notes, total: p.total };
@@ -201,12 +201,14 @@
     var done = $("[data-done]");
     $("[data-done-h]").textContent = sent ? "Thanks, we have your request." : "One last step: send it on WhatsApp.";
     $("[data-done-p]").textContent = sent
-      ? "We will message you on WhatsApp to confirm availability, then send the PayNow details. Your dates are only locked in once we confirm. Tap below if you would like to message us now."
+      ? "We will message you on WhatsApp to confirm availability and send the PayNow details. Your dates are only locked in once we confirm and payment is received. A confirmation and a reminder before your rental will be emailed to " + f.email + "."
       : "We could not send your request automatically. Tap the button below to send it to us on WhatsApp and we will confirm your dates and send the PayNow details.";
     var dl = [["Dates", nice(st.start) + " to " + nice(st.end) + " (" + p.days + (p.days === 1 ? " day)" : " days)")], ["Boxes", String(st.boxes)], ["Packing", st.packs ? st.packs + (st.packs === 1 ? " bike" : " bikes") : "None"], ["Total", money(p.total)]];
     if (ref) dl.unshift(["Reference", ref]);
     $("[data-done-dl]").innerHTML = dl.map(function (r) { return "<dt>" + r[0] + "</dt><dd>" + r[1].replace(/[&<>]/g, "") + "</dd>"; }).join("");
-    $("[data-wa]").href = "https://wa.me/" + WA + "?text=" + encodeURIComponent(waMsg(ref, f, p));
+    var wa = $("[data-wa]");
+    wa.href = "https://wa.me/" + WA + "?text=" + encodeURIComponent(waMsg(ref, f, p));
+    wa.hidden = !!sent; // only needed when the request could not be sent automatically
     form.closest(".rt-grid").hidden = true; done.hidden = false; done.focus(); done.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   $("[data-again]").addEventListener("click", function () {

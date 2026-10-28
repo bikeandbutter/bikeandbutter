@@ -100,3 +100,5 @@
 .rt-photos figure{margin:0;aspect-ratio:3/4;overflow:hidden;background:#111}
 .rt-photos img{width:100%;height:100%;object-fit:cover;display:block}
 @media(max-width:620px){.rt-photos{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:72%;overflow-x:auto;scroll-snap-type:x mandatory}.rt-photos figure{scroll-snap-align:start}}
+
+[hidden]{display:none!important}

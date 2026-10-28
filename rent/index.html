@@ -21,7 +21,7 @@
   <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/site.css">
   <link rel="stylesheet" href="/assets/css/store.css">
-  <link rel="stylesheet" href="/assets/css/rent.css?v=2">
+  <link rel="stylesheet" href="/assets/css/rent.css?v=3">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[
     {"@type":"Service","@id":"https://bikeandbutter.com/rent/#service","name":"Bike box rental","serviceType":"Bicycle travel box rental","description":"Tri-specific bike box rental for triathlons, Ironman races and cycling holidays. Fits road bikes. Optional bike packing service.","areaServed":{"@type":"Country","name":"Singapore"},"provider":{"@type":"LocalBusiness","name":"Bike & Butter","url":"https://bikeandbutter.com/","telephone":"+65 8722 2610","address":{"@type":"PostalAddress","streetAddress":"491 Jurong West Avenue 1","postalCode":"640491","addressCountry":"SG"}},"offers":[{"@type":"Offer","name":"Bike box rental","priceCurrency":"SGD","priceSpecification":{"@type":"UnitPriceSpecification","price":"10","priceCurrency":"SGD","unitText":"DAY","minPrice":"50"},"url":"https://bikeandbutter.com/rent/"},{"@type":"Offer","name":"Bike packing service","priceCurrency":"SGD","price":"50"}]},
@@ -151,7 +151,7 @@
           <p class="label">Your details</p>
           <label class="rt-f"><span>Name</span><input name="name" autocomplete="name" required maxlength="80"></label>
           <label class="rt-f"><span>WhatsApp number</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="8123 4567" required maxlength="20"></label>
-          <label class="rt-f"><span>Email <em>optional</em></span><input name="email" type="email" autocomplete="email" maxlength="120"></label>
+          <label class="rt-f"><span>Email <em>for your confirmation and reminder</em></span><input name="email" type="email" autocomplete="email" required maxlength="120"></label>
           <label class="rt-f"><span>Bike type</span>
             <select name="bike"><option>Triathlon / TT bike</option><option>Road bike</option><option>Other</option></select></label>
           <label class="rt-f"><span>Anything we should know? <em>optional</em></span><textarea name="notes" rows="3" maxlength="400" placeholder="Bike size, race or flight date, questions"></textarea></label>
@@ -169,7 +169,7 @@
       <h2 data-done-h>Thanks, we have your request.</h2>
       <p data-done-p></p>
       <dl class="rt-ref" data-done-dl></dl>
-      <div class="rt-actions"><a class="btn btn-dark" data-wa target="_blank" rel="noopener">Confirm on WhatsApp</a><button type="button" class="btn btn-line-dark" data-again>Make another request</button></div>
+      <div class="rt-actions"><a class="btn btn-dark" data-wa target="_blank" rel="noopener" hidden>Send request on WhatsApp</a><button type="button" class="btn btn-line-dark" data-again>Make another request</button></div>
     </div>
   </section>
 
@@ -195,7 +195,7 @@
     <div class="rt-info-head"><span class="label">Questions</span><h2 id="rt-faq-h">Good to know.</h2></div>
     <div class="rt-acc">
       <details><summary>How is the price worked out?</summary><p>$10 per day per box, counting the day you collect it through to the day you return it. There is a minimum charge of $50 per box, so rentals of up to 5 days cost $50. The calendar above calculates it for you.</p></details>
-      <details><summary>Do I pay when I book?</summary><p>No. You send a request, we confirm availability with you on WhatsApp, then we send the PayNow details. Your dates are only locked in once confirmed.</p></details>
+      <details><summary>Do I pay when I book?</summary><p>No. You send a request, we confirm availability with you on WhatsApp and send the PayNow details. Your dates are locked in once we confirm and receive payment.</p></details>
       <details><summary>Can I extend my rental?</summary><p>Usually, yes. Message us as early as you can and we will check whether the box is free for the extra days.</p></details>
       <details><summary>What if my bike is damaged in transit?</summary><p>Please make a claim with the airline for any damage to your bike or the box. If the box is broken, we help you with the claim. There is no deposit and cosmetic scratches are acceptable.</p></details>
       <details><summary>Can I rent more than one box?</summary><p>Yes. We have several boxes. The calendar shows how many are free on each day, and you can choose the number of boxes after picking your dates.</p></details>
@@ -273,6 +273,6 @@
 
 <script src="/assets/js/site.js" defer></script>
 <script src="/assets/js/store.js" defer></script>
-<script src="/assets/js/rent.js?v=2" defer></script>
+<script src="/assets/js/rent.js?v=3" defer></script>
 </body>
 </html>
