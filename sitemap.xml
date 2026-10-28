@@ -2,55 +2,59 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://bikeandbutter.com/</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/shop/</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/8lien/</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/rstri/</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/evr/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/parts/</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/marketplace/</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/workshop/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/book/</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-10-28</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/rent/</loc>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/contact/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/help/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/terms/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/privacy/</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/shop/product/?id=aether-3</loc>
@@ -359,6 +363,10 @@
   <url>
     <loc>https://bikeandbutter.com/shop/product/?id=rstri-bta-all-in-one</loc>
     <lastmod>2026-10-14</lastmod>
+  </url>
+  <url>
+    <loc>https://bikeandbutter.com/marketplace/?b=cervelo-p5-deep-dalia-48</loc>
+    <lastmod>2026-10-23</lastmod>
   </url>
   <url>
     <loc>https://bikeandbutter.com/marketplace/?b=giant-trinity-rim-brake-tt</loc>

@@ -72,3 +72,9 @@
 .evr-ranges{align-items:stretch}.evr-range{height:100%}
 .evr-ranges{border-bottom:1px solid var(--line);align-items:start}
 .evr-range{border-bottom:0;height:auto}
+
+.evr-thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.evr-th{width:58px;padding:0;border:1px solid var(--line-dark);background:#f1f1ef;border-radius:4px;overflow:hidden;cursor:pointer;opacity:.8}
+.evr-th img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.evr-th.on{border-color:#111;opacity:1;outline:1px solid #111}
+.evr-list{margin:0;padding:0 0 16px 18px;font-size:14px;line-height:1.6}

@@ -20,6 +20,7 @@ const PAGES = [
   ["/marketplace/", ["marketplace/index.html"]],
   ["/workshop/", ["workshop/index.html"]],
   ["/book/", ["book/index.html"]],
+  ["/rent/", ["rent/index.html", "assets/js/rent.js"]],
   ["/contact/", ["contact/index.html"]],
   ["/help/", ["help/index.html", "assets/data/faq.json"]],
   ["/terms/", ["terms/index.html"]],

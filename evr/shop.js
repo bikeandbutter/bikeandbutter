@@ -15,6 +15,13 @@
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
   var money = function (n) { return "S$" + Number(n).toFixed(0); };
   var img = function (p) { return p ? "/evr/" + encodeURI(p) : "/assets/img/products/placeholder.webp"; };
+  var DETAILS = {
+    BB001: [
+      ["Specifications", ["Material: water-resistant", "Dimensions: 118 × 25 × 90 cm", "Weight: approx. 9.4 kg including accessories", "Full bicycle enclosure with wheels", "Horizontal insertion locking mechanism, TSA-approved lock"]],
+      ["What's included", ["Thru-axle conversion adapters × 4", "Front and rear wheel removal axles", "Horizontal insertion locking mechanism", "TSA-approved lock", "Thru-axle conversion end caps × 2"]],
+      ["Please note", ["Check your bicycle's dimensions and compatibility before purchase.", "Some bicycles may need partial disassembly before packing.", "Use protective padding around the frame and components.", "Water-resistant is not fully waterproof. Avoid prolonged heavy rain or submersion.", "Airline acceptance, baggage dimensions and weight limits vary. Please confirm with your airline before travelling."]]
+    ]
+  };
   var P = [], bySku = {}, charts = {}, state = { g: "", cat: "", range: "", sort: "" };
 
   function get(path) {
@@ -33,7 +40,8 @@
       a[2].forEach(function (c) { charts[c.sku] = c.tables; });
       P = a[0].map(function (p) {
         var seen = {}, cols = [];
-        (vm[p.id] || []).forEach(function (v) { if (!seen[v.colour]) { seen[v.colour] = 1; cols.push(v); } });
+        (vm[p.id] || []).forEach(function (v) { if (!seen[v.colour]) { seen[v.colour] = v; v.imgs = []; cols.push(v); } seen[v.colour].imgs.push(v.image_path); });
+        cols.forEach(function (v) { v.imgs.sort(function (a, b) { return String(a).localeCompare(String(b), undefined, { numeric: true }); }); v.image_path = v.imgs[0]; });
         var prices = cols.map(function (c) { return Number(c.price_sgd || p.price_sgd); }).concat([Number(p.price_sgd)]).filter(Boolean);
         p.cols = cols; p.title = title(p.name);
         p.min = Math.min.apply(null, prices); p.max = Math.max.apply(null, prices);
@@ -84,7 +92,7 @@
     if (!p) { L.hidden = false; D.hidden = true; document.title = "EVR Cycling Apparel — Bike & Butter"; return; }
     if (push) history.pushState({ sku: sku }, "", "/evr/?p=" + sku);
     document.title = p.title + " — EVR — Bike & Butter";
-    var st = { c: p.cols[0], s: "" };
+    var st = { c: p.cols[0], s: "", i: 0 };
     L.hidden = true; $(".evr-hero").hidden = true; D.hidden = false; window.scrollTo(0, 0);
     var ct = charts[p.sku], chart = "";
     if (ct && ct.length) chart = ct.map(function (t) { return '<p class="label">' + esc(t.title || "Size guide") + '</p><table class="evr-tbl"><tr><th></th>' + t.headers.map(function (h) { return "<th>" + esc(h) + "</th>"; }).join("") + "</tr>" + t.rows.map(function (r) { return "<tr><th>" + esc(r.label) + "</th>" + r.values.map(function (v) { return "<td>" + esc(v) + "</td>"; }).join("") + "</tr>"; }).join("") + "</table>"; }).join("");
@@ -93,16 +101,21 @@
       '<button class="evr-back label" type="button" data-back>← All EVR</button>' +
       '<span class="label label-muted">' + esc((RLABEL[p.range] || p.range) + " · " + p.category + " · " + (GLABEL[p.gender] || p.gender)) + "</span>" +
       "<h1>" + esc(p.title) + '</h1><div class="prow"><span data-price></span></div>' +
-      '<div><p class="label">Colour: <span data-cname></span></p><div class="evr-cols" data-cols></div></div>' +
+      '<div data-thumbwrap hidden><div class="evr-thumbs" data-thumbs></div></div>' +
+      (p.cols.length > 1 ? '<div><p class="label">Colour: <span data-cname></span></p><div class="evr-cols" data-cols></div></div>' : '<span data-cname hidden></span>') +
       (p.sizes.length ? '<div><p class="label">Size</p><div class="evr-sizes" data-sizes></div></div>' : "") +
       '<a class="btn btn-dark" data-wa>Enquire about this</a>' +
       '<p class="evr-note">Enquire with your preferred colour and size and we will confirm availability and pricing. Unsure of your size? Send us your height and weight and we will recommend a fit.</p>' +
+      (DETAILS[p.sku] ? DETAILS[p.sku].map(function (d, i) { return '<details class="evr-acc"' + (i === 0 ? " open" : "") + '><summary class="label">' + esc(d[0]) + '</summary><ul class="evr-list">' + d[1].map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></details>"; }).join("") : "") +
       (chart ? '<details class="evr-acc"><summary class="label">Size guide</summary><div>' + chart + "</div></details>" : "") +
       '<details class="evr-acc"><summary class="label">Delivery &amp; payment</summary><p class="evr-note" style="padding-bottom:16px">Orders are placed with our supplier only after full payment has been received via PayNow. Once your order has been placed, we will advise you of the estimated delivery date. Delivery is available across Singapore. Please note that all items are made to order and are not available for immediate collection.</p></details>' +
       "</div></div>";
     function draw() {
       var v = st.c, pr = Number(v.price_sgd || p.price_sgd);
-      $("[data-main]", D).src = img(v.image_path);
+      var im = v.imgs && v.imgs[st.i] ? v.imgs[st.i] : v.image_path;
+      $("[data-main]", D).src = img(im);
+      var tw = $("[data-thumbwrap]", D);
+      if (v.imgs && v.imgs.length > 1) { tw.hidden = false; $("[data-thumbs]", D).innerHTML = v.imgs.map(function (x, k) { return '<button type="button" class="evr-th' + (k === st.i ? " on" : "") + '" data-ti="' + k + '" aria-label="Photo ' + (k + 1) + '"><img src="' + img(x) + '" alt=""></button>'; }).join(""); } else tw.hidden = true;
       $("[data-price]", D).textContent = money(pr);
       $("[data-cname]", D).textContent = v.colour;
       var msg = "Hi Bike & Butter, I'd like to enquire about EVR " + p.title + ", colour " + v.colour + (st.s ? ", size " + st.s : "") + ", " + money(pr) + ". ";
@@ -110,11 +123,13 @@
       D.querySelectorAll("[data-ci]").forEach(function (b) { b.classList.toggle("on", b.dataset.ci === v.colour); });
       D.querySelectorAll("[data-si]").forEach(function (b) { b.classList.toggle("on", b.dataset.si === st.s); });
     }
-    $("[data-cols]", D).innerHTML = p.cols.map(function (v) { return '<button type="button" class="evr-col" data-ci="' + esc(v.colour) + '" title="' + esc(v.colour) + '"><img src="' + img(v.image_path) + '" alt="' + esc(v.colour) + '"></button>'; }).join("");
+    var colEl = $("[data-cols]", D);
+    if (colEl) colEl.innerHTML = p.cols.map(function (v) { return '<button type="button" class="evr-col" data-ci="' + esc(v.colour) + '" title="' + esc(v.colour) + '"><img src="' + img(v.image_path) + '" alt="' + esc(v.colour) + '"></button>'; }).join("");
     var sz = $("[data-sizes]", D); if (sz) sz.innerHTML = p.sizes.map(function (s) { return '<button type="button" data-si="' + esc(s) + '">' + esc(s) + "</button>"; }).join("");
     D.onclick = function (e) {
-      var c = e.target.closest("[data-ci]"), s = e.target.closest("[data-si]"), b = e.target.closest("[data-back]");
-      if (c) { st.c = p.cols.filter(function (v) { return v.colour === c.dataset.ci; })[0]; draw(); }
+      var c = e.target.closest("[data-ci]"), s = e.target.closest("[data-si]"), b = e.target.closest("[data-back]"), t = e.target.closest("[data-ti]");
+      if (t) { st.i = +t.dataset.ti; draw(); }
+      if (c) { st.i = 0; st.c = p.cols.filter(function (v) { return v.colour === c.dataset.ci; })[0]; draw(); }
       if (s) { st.s = st.s === s.dataset.si ? "" : s.dataset.si; draw(); }
       if (b) { history.pushState({}, "", "/evr/"); route(); }
     };
