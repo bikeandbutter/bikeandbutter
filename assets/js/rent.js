@@ -5,7 +5,7 @@
   var API = "https://script.google.com/macros/s/AKfycbwLRfCkvnc8yGdTzn9zfA8nmNKa4g7MngkB_DOFwVHBMNQm96Sh6kGtgsRxG0eikTxG5Q/exec";
 
   var WA = "6587222610";
-  var RATE = 10, MIN = 50, PACK = 50;
+  var RATE = 10, MIN = 50, PACK = 50, DELIVERY = 30;
   var TOTAL_DEFAULT = 6, HORIZON = 180;
   var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   var MSHORT = MONTHS.map(function (m) { return m.slice(0, 3); });
@@ -129,13 +129,16 @@
     if (pk) { st.packs = Math.min(st.boxes, Math.max(0, st.packs + (+pk.getAttribute("data-pack")))); refresh(); }
   });
 
+  form.addEventListener("change", function (e) { if (e.target.name === "deliver" || e.target.name === "collect") refresh(); });
+
   // ---- pricing ----
   function price() {
     if (!st.start || !st.end) return null;
     var days = diffDays(st.start, st.end) + 1;
     var per = Math.max(MIN, days * RATE);
     var boxesFee = per * st.boxes, packFee = st.packs * PACK;
-    return { days: days, per: per, minApplied: days * RATE < MIN, boxesFee: boxesFee, packFee: packFee, total: boxesFee + packFee };
+    var f = fields(), ways = (f.deliver ? 1 : 0) + (f.collect ? 1 : 0), delFee = ways * DELIVERY;
+    return { days: days, per: per, minApplied: days * RATE < MIN, boxesFee: boxesFee, packFee: packFee, ways: ways, delFee: delFee, deliver: f.deliver, collect: f.collect, total: boxesFee + packFee + delFee };
   }
   function refresh() {
     var p = price();
@@ -149,12 +152,15 @@
     form.querySelector('[data-pack="1"]').disabled = st.packs >= st.boxes;
     form.querySelector('[data-pack="-1"]').disabled = st.packs <= 0;
     $("[data-boxnote]").textContent = st.start && st.end && st.booked ? (mb + (mb === 1 ? " box is" : " boxes are") + " free for all of these dates.") : "";
-    $("[data-rotorwrap]").hidden = st.packs === 0;
+    var fd = fields(), ways = (fd.deliver ? 1 : 0) + (fd.collect ? 1 : 0);
+    $("[data-addrwrap]").hidden = !ways; $("[data-delnote]").hidden = !ways;
     var L = $("[data-lines]");
     if (!p) { L.innerHTML = '<p class="rt-small">Select your dates to see the price.</p>'; $("[data-total]").textContent = "$0"; return; }
     var h = '<p class="rt-line"><span>' + st.boxes + (st.boxes === 1 ? " box" : " boxes") + " × " + p.days + (p.days === 1 ? " day" : " days") + " × $" + RATE + '</span><span>' + money(p.days * RATE * st.boxes) + "</span></p>";
     if (p.minApplied) h += '<p class="rt-line note">Minimum charge of $' + MIN + ' per box applies.</p><p class="rt-line"><span>Rental (' + st.boxes + " × $" + MIN + ")</span><span>" + money(p.boxesFee) + "</span></p>";
     if (st.packs) h += '<p class="rt-line"><span>Packing × ' + st.packs + "</span><span>" + money(p.packFee) + "</span></p>";
+    if (p.deliver) h += '<p class="rt-line"><span>Delivery to you</span><span>' + money(DELIVERY) + "</span></p>";
+    if (p.collect) h += '<p class="rt-line"><span>Collection from you</span><span>' + money(DELIVERY) + "</span></p>";
     L.innerHTML = h;
     $("[data-total]").textContent = money(p.total);
   }
@@ -164,12 +170,13 @@
   function showErr(m) { err.textContent = m; err.hidden = !m; if (m) err.scrollIntoView({ block: "center", behavior: "smooth" }); }
   function waMsg(ref, f, p) {
     return "Hi Bike & Butter, I'd like to rent " + st.boxes + (st.boxes === 1 ? " bike box" : " bike boxes") + " from " + nice(st.start) + " to " + nice(st.end) + " (" + p.days + (p.days === 1 ? " day" : " days") + "). " +
-      (st.packs ? "Packing for " + st.packs + (st.packs === 1 ? " bike" : " bikes") + (f.rotors ? ", rotors removed" : "") + ". " : "No packing. ") +
+      (st.packs ? "Packing for " + st.packs + (st.packs === 1 ? " bike" : " bikes") + ". " : "No packing. ") +
+      (f.deliver || f.collect ? (f.deliver && f.collect ? "Delivery and collection" : f.deliver ? "Delivery" : "Collection") + " at " + f.address + ". " : "Self-collection. ") +
       "Total " + money(p.total) + ". Bike: " + f.bike + ". Name: " + f.name + (ref ? ". Ref: " + ref : "") + ".";
   }
   function fields() {
     var fd = new FormData(form);
-    return { name: String(fd.get("name") || "").trim(), phone: String(fd.get("phone") || "").replace(/[^\d+]/g, ""), email: String(fd.get("email") || "").trim(), bike: String(fd.get("bike") || ""), notes: String(fd.get("notes") || "").trim(), rotors: !!fd.get("rotors") && st.packs > 0, hp: String(fd.get("website") || "") };
+    return { name: String(fd.get("name") || "").trim(), phone: String(fd.get("phone") || "").replace(/[^\d+]/g, ""), email: String(fd.get("email") || "").trim(), bike: String(fd.get("bike") || ""), notes: String(fd.get("notes") || "").trim(), deliver: !!fd.get("deliver"), collect: !!fd.get("collect"), address: String(fd.get("address") || "").trim(), hp: String(fd.get("website") || "") };
   }
   form.addEventListener("submit", function (e) {
     e.preventDefault(); showErr("");
@@ -180,9 +187,10 @@
     var digits = f.phone.replace(/\D/g, "");
     if (digits.length < 8) return showErr("Please enter a WhatsApp number we can reach you on.");
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) return showErr("Please enter a valid email address. We send your confirmation and a reminder there.");
+    if ((f.deliver || f.collect) && f.address.length < 6) return showErr("Please enter the address for delivery / collection.");
     if (f.hp) return;
     var btn = $("[data-submit]"); btn.disabled = true; btn.textContent = "Sending…";
-    var payload = { action: "book", start: st.start, end: st.end, boxes: st.boxes, packs: st.packs, rotors: f.rotors, name: f.name, phone: f.phone, email: f.email, bike: f.bike, notes: f.notes, total: p.total };
+    var payload = { action: "book", start: st.start, end: st.end, boxes: st.boxes, packs: st.packs, deliver: f.deliver, collect: f.collect, address: f.address, name: f.name, phone: f.phone, email: f.email, bike: f.bike, notes: f.notes, total: p.total };
     function finish(ref, sent) {
       btn.disabled = false; btn.textContent = "Request this booking";
       if (window.gtag) gtag("event", "generate_lead", { method: "bike_box_rental", value: p.total, currency: "SGD" });
@@ -203,7 +211,7 @@
     $("[data-done-p]").textContent = sent
       ? "We will message you on WhatsApp to confirm availability and send the PayNow details. Your dates are only locked in once we confirm and payment is received. A confirmation and a reminder before your rental will be emailed to " + f.email + "."
       : "We could not send your request automatically. Tap the button below to send it to us on WhatsApp and we will confirm your dates and send the PayNow details.";
-    var dl = [["Dates", nice(st.start) + " to " + nice(st.end) + " (" + p.days + (p.days === 1 ? " day)" : " days)")], ["Boxes", String(st.boxes)], ["Packing", st.packs ? st.packs + (st.packs === 1 ? " bike" : " bikes") : "None"], ["Total", money(p.total)]];
+    var dl = [["Dates", nice(st.start) + " to " + nice(st.end) + " (" + p.days + (p.days === 1 ? " day)" : " days)")], ["Boxes", String(st.boxes)], ["Packing", st.packs ? st.packs + (st.packs === 1 ? " bike" : " bikes") : "None"], ["Collection", p.ways ? (p.deliver && p.collect ? "Delivery and collection" : p.deliver ? "Delivery to you" : "Collection from you") : "Self-collection at the workshop"], ["Total", money(p.total)]];
     if (ref) dl.unshift(["Reference", ref]);
     $("[data-done-dl]").innerHTML = dl.map(function (r) { return "<dt>" + r[0] + "</dt><dd>" + r[1].replace(/[&<>]/g, "") + "</dd>"; }).join("");
     var wa = $("[data-wa]");

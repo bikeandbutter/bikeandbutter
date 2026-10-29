@@ -21,7 +21,7 @@
   <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/site.css">
   <link rel="stylesheet" href="/assets/css/store.css">
-  <link rel="stylesheet" href="/assets/css/rent.css?v=3">
+  <link rel="stylesheet" href="/assets/css/rent.css?v=4">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[
     {"@type":"Service","@id":"https://bikeandbutter.com/rent/#service","name":"Bike box rental","serviceType":"Bicycle travel box rental","description":"Tri-specific bike box rental for triathlons, Ironman races and cycling holidays. Fits road bikes. Optional bike packing service.","areaServed":{"@type":"Country","name":"Singapore"},"provider":{"@type":"LocalBusiness","name":"Bike & Butter","url":"https://bikeandbutter.com/","telephone":"+65 8722 2610","address":{"@type":"PostalAddress","streetAddress":"491 Jurong West Avenue 1","postalCode":"640491","addressCountry":"SG"}},"offers":[{"@type":"Offer","name":"Bike box rental","priceCurrency":"SGD","priceSpecification":{"@type":"UnitPriceSpecification","price":"10","priceCurrency":"SGD","unitText":"DAY","minPrice":"50"},"url":"https://bikeandbutter.com/rent/"},{"@type":"Offer","name":"Bike packing service","priceCurrency":"SGD","price":"50"}]},
@@ -138,7 +138,15 @@
             <div class="rt-step"><button type="button" data-pack="-1" aria-label="Fewer bikes packed">−</button><output data-packs>0</output><button type="button" data-pack="1" aria-label="More bikes packed">+</button></div>
           </div>
           <p class="rt-small">Bring your bike to the workshop and we pack it for you. Brake blocks inserted, extra foam or bubble wrap added if needed.</p>
-          <label class="rt-check" data-rotorwrap hidden><input type="checkbox" name="rotors"> <span>Remove the rotors as well (optional)</span></label>
+        </div>
+
+        <div class="rt-block">
+          <p class="label">Collection and return</p>
+          <p class="rt-small" style="margin-top:-4px">Self-collection and return at our workshop (491 Jurong West Avenue 1) is free. Or let us bring it to you.</p>
+          <label class="rt-check"><input type="checkbox" name="deliver"> <span>Deliver the box to me <em>+$30</em></span></label>
+          <label class="rt-check"><input type="checkbox" name="collect"> <span>Collect the box from me at the end <em>+$30</em></span></label>
+          <label class="rt-f" data-addrwrap hidden><span>Delivery / collection address</span><textarea name="address" rows="2" maxlength="200" placeholder="Block, street, unit number, postal code"></textarea></label>
+          <p class="rt-small" data-delnote hidden>$30 per way, flat rate within Singapore, for up to 2 boxes. If your address is unusually far, or you need 3 or more boxes delivered, we will let you know before confirming.</p>
         </div>
 
         <div class="rt-block rt-total" aria-live="polite">
@@ -159,7 +167,7 @@
         </div>
 
         <button class="btn btn-dark rt-submit" type="submit" data-submit>Request this booking</button>
-        <p class="rt-small">Sending a request does not hold the boxes. We confirm availability with you on WhatsApp first, then send PayNow details. Collect and return at our workshop.</p>
+        <p class="rt-small">Sending a request does not hold the boxes. We confirm availability with you on WhatsApp first, then send PayNow details. Collection is at our workshop unless you choose delivery.</p>
         <p class="rt-error" data-error role="alert" hidden></p>
       </form>
     </div>
@@ -199,6 +207,7 @@
       <details><summary>Can I extend my rental?</summary><p>Usually, yes. Message us as early as you can and we will check whether the box is free for the extra days.</p></details>
       <details><summary>What if my bike is damaged in transit?</summary><p>Please make a claim with the airline for any damage to your bike or the box. If the box is broken, we help you with the claim. There is no deposit and cosmetic scratches are acceptable.</p></details>
       <details><summary>Can I rent more than one box?</summary><p>Yes. We have several boxes. The calendar shows how many are free on each day, and you can choose the number of boxes after picking your dates.</p></details>
+      <details><summary>Can you deliver the box to me?</summary><p>Yes. Choose delivery and/or collection when you book, for $30 per way (flat rate within Singapore, up to 2 boxes). Otherwise self-collect and return at our workshop for free.</p></details>
       <details><summary>Can I buy a box instead?</summary><p>Boxes are for sale too. <a href="/contact/">Contact us</a> for the current price.</p></details>
     </div>
   </section>
@@ -273,6 +282,6 @@
 
 <script src="/assets/js/site.js" defer></script>
 <script src="/assets/js/store.js" defer></script>
-<script src="/assets/js/rent.js?v=3" defer></script>
+<script src="/assets/js/rent.js?v=4" defer></script>
 </body>
 </html>

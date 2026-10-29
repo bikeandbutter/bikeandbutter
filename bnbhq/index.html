@@ -416,6 +416,19 @@ tbody tr.clickable:hover { background: var(--bg3); }
   #printRoot .inv-page:last-child { page-break-after: avoid !important; break-after: avoid !important; }
   @page { size: A4; margin: 0; }
 }
+
+.rent-strip { display: grid; grid-template-columns: repeat(14, 1fr); gap: 4px; padding: 14px 20px 18px; }
+.rent-day { text-align: center; border-radius: 6px; padding: 8px 2px; background: #e6f4ea; color: #2e7d32; font-size: 11px; line-height: 1.3; }
+.rent-day b { display: block; font-size: 16px; }
+.rent-day.low { background: #fef3e0; color: #b5720a; }
+.rent-day.none { background: #fce8e6; color: #b0392c; }
+.rent-pill { display: inline-flex; font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: .3px; white-space: nowrap; }
+.rent-pill.pending { background: #fef3e0; color: #b5720a; }
+.rent-pill.out { background: #e6f4ea; color: #2e7d32; }
+.rent-pill.booked { background: #e8f0fe; color: #1a56c4; }
+.rent-pill.done { background: var(--bg3); color: var(--text3); }
+tr.rent-pending td { background: #fffbf0; }
+@media (max-width: 900px) { .rent-strip { grid-template-columns: repeat(7, 1fr); } }
 </style>
 </head>
 <body>
@@ -468,6 +481,7 @@ tbody tr.clickable:hover { background: var(--bg3); }
         <div class="nav-group-label">Inbox</div>
         <button class="nav-item" data-tab="bookings" onclick="switchTab('bookings')"><span class="nav-icon">BKG</span> Bookings <span class="nav-badge" id="bkPendingBadge" style="display:none"></span></button>
         <button class="nav-item" data-tab="enquiries" onclick="switchTab('enquiries')"><span class="nav-icon">ENQ</span> Enquiries <span class="nav-badge" id="enqNewBadge" style="display:none"></span></button>
+        <button class="nav-item" data-tab="rentals" onclick="switchTab('rentals')"><span class="nav-icon">BOX</span> Bike Box Rentals <span class="nav-badge" id="rentPendingBadge" style="display:none"></span></button>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Customers</div>
@@ -771,6 +785,38 @@ tbody tr.clickable:hover { background: var(--bg3); }
             <thead><tr><th>Received</th><th>Customer</th><th>Topic</th><th>Details</th><th>Message</th><th>Status</th><th></th></tr></thead>
             <tbody id="enquiryRows"><tr><td colspan="7" class="cell-muted">Loading…</td></tr></tbody>
           </table></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-rentals">
+        <div class="page-header">
+          <div><div class="page-title">Bike Box Rentals</div><div class="page-subtitle">Confirm, edit, extend or remove rentals here. It controls the <b>Bike Box Rentals</b> Google Calendar, and the website availability updates within a minute. Older bookings from your other calendars show with an Import button.</div></div>
+          <div class="page-actions">
+            <button class="btn btn-primary" onclick="rentOpenEditor(null)">+ New rental</button>
+            <button class="btn" onclick="loadRentals()">Refresh</button>
+            <button class="btn btn-ghost" onclick="rentSetKey(true)">Admin key</button>
+          </div>
+        </div>
+        <div class="card" id="rentKeyCard" style="display:none;margin-bottom:16px"><div style="padding:16px 20px">
+          <div class="cell-strong" style="margin-bottom:6px">Connect to the rental calendar</div>
+          <div class="cell-muted" style="margin-bottom:10px">In Google Apps Script, run <b>showAdminKey</b>, open <b>Execution log</b>, copy the key after "ADMIN KEY:" and paste it here. You only do this once: it is saved for every device that logs into bnbhq.</div>
+          <div style="display:flex;gap:8px;max-width:520px"><input type="text" id="rentKeyInput" placeholder="Paste admin key" style="flex:1"><button class="btn btn-primary" onclick="rentSetKey(false)">Save key</button></div>
+          <div id="rentKeyMsg" class="cell-muted" style="margin-top:8px"></div>
+        </div></div>
+        <div id="rentBody">
+          <div class="tiles" style="grid-template-columns:repeat(4,1fr)" id="rentTiles"></div>
+          <div class="card" style="margin-bottom:16px"><div class="card-header"><div class="cell-strong">Next 14 days: boxes free</div><div class="cell-muted" id="rentStripNote"></div></div><div id="rentStrip" class="rent-strip"></div></div>
+          <div class="card">
+            <div class="card-header"><div>
+              <button class="btn btn-primary btn-sm" data-rentfilter="active" onclick="setRentFilter('active')">Active</button>
+              <button class="btn btn-sm" data-rentfilter="pending" onclick="setRentFilter('pending')">Pending</button>
+              <button class="btn btn-sm" data-rentfilter="past" onclick="setRentFilter('past')">Past</button>
+            </div><div class="cell-muted" id="rentMsg"></div></div>
+            <div class="tbl-wrap"><table>
+              <thead><tr><th>Dates</th><th>Customer</th><th>Details</th><th>Total</th><th>Status</th><th></th></tr></thead>
+              <tbody id="rentRows"><tr><td colspan="6" class="cell-muted">Loading…</td></tr></tbody>
+            </table></div>
+          </div>
         </div>
       </div>
 
@@ -1100,6 +1146,46 @@ tbody tr.clickable:hover { background: var(--bg3); }
   </div>
 </div>
 
+<div class="modal-backdrop" id="rentModalBackdrop">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="rentModalTitle">New rental</div><button class="modal-close" onclick="rentCloseEditor()">&times;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="rtId">
+      <div class="field-row fr-2">
+        <div class="field"><label>Collection date *</label><input type="date" id="rtStart" onchange="rentAuto()"></div>
+        <div class="field"><label>Return date * <span class="cell-muted">(last day it is out)</span></label><input type="date" id="rtEnd" onchange="rentAuto()"></div>
+      </div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Boxes</label><select id="rtBoxes" onchange="rentAuto()"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+        <div class="field"><label>Bikes to pack ($50 each)</label><input type="number" id="rtPacks" min="0" max="6" value="0" onchange="rentAuto()"></div>
+      </div>
+      <div class="field"><label>Collection and return</label>
+        <label style="display:block;font-weight:400"><input type="checkbox" id="rtDeliver" onchange="rentAuto()"> Deliver to customer (+$30)</label>
+        <label style="display:block;font-weight:400"><input type="checkbox" id="rtCollect" onchange="rentAuto()"> Collect from customer (+$30)</label>
+      </div>
+      <div class="field"><label>Delivery / collection address</label><input type="text" id="rtAddress" placeholder="Only if delivering or collecting"></div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Customer name *</label><input type="text" id="rtName"></div>
+        <div class="field"><label>WhatsApp number</label><input type="text" id="rtPhone" placeholder="8123 4567"></div>
+      </div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Email <span class="cell-muted">(for confirmation and reminder)</span></label><input type="text" id="rtEmail"></div>
+        <div class="field"><label>Bike</label><input type="text" id="rtBike" placeholder="e.g. Tri bike"></div>
+      </div>
+      <div class="field"><label>Notes</label><textarea id="rtNotes"></textarea></div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Total ($) <span class="cell-muted" id="rtAutoNote"></span></label><input type="number" id="rtTotal" min="0" placeholder="Leave blank for automatic price"></div>
+        <div class="field" id="rtStatusWrap"><label>Status</label><select id="rtStatus"><option value="confirmed">Confirmed (blocks the website)</option><option value="pending">Pending (does not block)</option></select></div>
+      </div>
+      <div id="rtErr" style="color:#b0392c;font-size:13px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="rentCloseEditor()">Cancel</button>
+      <button class="btn btn-primary" id="rtSaveBtn" onclick="rentSave()">Save</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-backdrop" id="customerModalBackdrop">
   <div class="modal">
     <div class="modal-header"><div class="modal-title" id="customerModalTitle">New Customer</div><button class="modal-close" onclick="closeCustomerModal()">&times;</button></div>
@@ -1352,10 +1438,11 @@ function switchTab(tab) {
   if (panel) panel.classList.add('active');
   const navBtn = document.querySelector('.nav-item[data-tab="' + tab + '"]');
   if (navBtn) navBtn.classList.add('active');
-  const titles = { dashboard: 'Dashboard', crm: 'Customers & Bikes', servicing: 'Servicing', invoices: 'Invoices', quotations: 'Quotations', bookings: 'Bookings', enquiries: 'Enquiries', listings: 'Bikes for Sale', sales: 'Sales', products: 'Products & Stock', accounting: 'Accounting', settings: 'Settings' };
+  const titles = { dashboard: 'Dashboard', crm: 'Customers & Bikes', servicing: 'Servicing', invoices: 'Invoices', quotations: 'Quotations', bookings: 'Bookings', enquiries: 'Enquiries', rentals: 'Bike Box Rentals', listings: 'Bikes for Sale', sales: 'Sales', products: 'Products & Stock', accounting: 'Accounting', settings: 'Settings' };
   document.getElementById('topbarTitle').textContent = titles[tab] || tab;
   if (tab === 'servicing') loadServicingList();
   if (tab === 'listings') loadListings();
+  if (tab === 'rentals') loadRentals();
 }
 
 async function loadAll() {
@@ -1384,6 +1471,7 @@ async function loadAll() {
     setThisMonth();
     await loadLedger();
     setSyncStatus('synced');
+    loadRentals(true);
   } catch (e) {
     console.error(e);
     setSyncStatus('error', e.message);
@@ -4551,6 +4639,180 @@ async function convertEnquiryToQuote(id) {
   await openDocEditor('quote', null, { enquiry: x });
 }
 
+
+/* ===== Bike box rentals (reads/writes the "Bike Box Rentals" Google Calendar through the Apps Script web app) ===== */
+const RENTAL_API = 'https://script.google.com/macros/s/AKfycbwLRfCkvnc8yGdTzn9zfA8nmNKa4g7MngkB_DOFwVHBMNQm96Sh6kGtgsRxG0eikTxG5Q/exec';
+let RENTALS = [], RENT_TOTAL = 6, RENT_RATES = { rate: 10, min: 50, pack: 50, delivery: 30 }, RENT_TODAY = '', rentFilter = 'active', rentBusy = false;
+
+function rentKey() { try { return localStorage.getItem('bnb_rental_key') || ''; } catch (e) { return ''; } }
+// The admin key is also stored in app_settings ('rental_key') so every logged-in device gets it automatically.
+async function rentEnsureKey() {
+  if (rentKey()) return rentKey();
+  try {
+    const { data } = await sb.from('app_settings').select('value').eq('key', 'rental_key').maybeSingle();
+    if (data && data.value) { try { localStorage.setItem('bnb_rental_key', data.value); } catch (e) {} return data.value; }
+  } catch (e) {}
+  return '';
+}
+async function rentSetKey(show) {
+  const card = document.getElementById('rentKeyCard'), inp = document.getElementById('rentKeyInput');
+  if (show) { card.style.display = ''; inp.value = rentKey(); inp.focus(); return; }
+  const v = inp.value.trim(); if (!v) return;
+  try { localStorage.setItem('bnb_rental_key', v); } catch (e) {}
+  const { error } = await sb.from('app_settings').upsert({ key: 'rental_key', value: v });
+  document.getElementById('rentKeyMsg').textContent = error ? 'Saved on this device only (could not share it: ' + error.message + ')' : '';
+  card.style.display = 'none'; loadRentals();
+}
+async function rentCall(action, data) {
+  const r = await fetch(RENTAL_API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action, key: rentKey() }, data || {})) });
+  return r.json();
+}
+const rentD = d => new Date(d + 'T00:00:00Z');
+const rentFmt = d => rentD(d).toLocaleDateString('en-SG', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+const rentDiff = (a, b) => Math.round((rentD(b) - rentD(a)) / 864e5);
+const rentAdd = (d, n) => new Date(rentD(d).getTime() + n * 864e5).toISOString().slice(0, 10);
+
+async function loadRentals(silent) {
+  const msg = document.getElementById('rentMsg');
+  if (!(await rentEnsureKey())) { if (!silent) document.getElementById('rentKeyCard').style.display = ''; return; }
+  if (rentBusy) return; rentBusy = true;
+  if (msg && !silent) msg.textContent = 'Loading from Google Calendar…';
+  try {
+    const j = await rentCall('adminList');
+    if (!j.ok) {
+      if (/key/i.test(j.error || '')) { try { localStorage.removeItem('bnb_rental_key'); } catch (e) {} document.getElementById('rentKeyCard').style.display = ''; document.getElementById('rentKeyMsg').textContent = 'That key was not accepted. Paste the latest one.'; }
+      throw new Error(j.error || 'failed');
+    }
+    RENTALS = j.rentals || []; RENT_TOTAL = j.total || 6; RENT_RATES = j.rates || RENT_RATES; RENT_TODAY = j.today;
+    if (msg) msg.textContent = '';
+    renderRentals();
+  } catch (e) {
+    if (msg) msg.textContent = 'Could not load: ' + (e.message || e);
+  } finally { rentBusy = false; }
+}
+function rentStatus(r) {
+  if (r.pending) return ['pending', 'Pending'];
+  if (r.legacy) return ['booked', 'Old calendar'];
+  if (r.end < RENT_TODAY) return ['done', 'Returned'];
+  if (r.start <= RENT_TODAY) return ['out', 'Out now'];
+  return ['booked', 'Confirmed'];
+}
+function setRentFilter(f) {
+  rentFilter = f;
+  document.querySelectorAll('[data-rentfilter]').forEach(b => b.classList.toggle('btn-primary', b.dataset.rentfilter === f));
+  renderRentals();
+}
+function renderRentals() {
+  const t = RENT_TODAY, live = RENTALS.filter(r => !r.pending);
+  const usedOn = d => live.filter(r => r.start <= d && r.end >= d).reduce((a, r) => a + r.boxes, 0);
+  const pend = RENTALS.filter(r => r.pending && r.end >= t);
+  const out = usedOn(t), soon = live.filter(r => r.start > t && r.start <= rentAdd(t, 7)).length;
+  const badge = document.getElementById('rentPendingBadge'); if (badge) { badge.textContent = pend.length; badge.style.display = pend.length ? '' : 'none'; }
+  document.getElementById('rentTiles').innerHTML =
+    `<div class="tile"><div class="tile-label">Boxes out today</div><div class="tile-val">${out}</div><div class="tile-sub">of ${RENT_TOTAL}</div></div>` +
+    `<div class="tile"><div class="tile-label">Free today</div><div class="tile-val">${Math.max(0, RENT_TOTAL - out)}</div><div class="tile-sub">available to book</div></div>` +
+    `<div class="tile"><div class="tile-label">Pending requests</div><div class="tile-val">${pend.length}</div><div class="tile-sub">waiting for payment / confirmation</div></div>` +
+    `<div class="tile"><div class="tile-label">Collections, next 7 days</div><div class="tile-val">${soon}</div><div class="tile-sub">confirmed rentals starting</div></div>`;
+  let strip = '';
+  for (let i = 0; i < 14; i++) {
+    const d = rentAdd(t, i), free = Math.max(0, RENT_TOTAL - usedOn(d));
+    const dt = rentD(d), cls = free === 0 ? 'none' : (free <= 2 ? 'low' : '');
+    strip += `<div class="rent-day ${cls}">${dt.toLocaleDateString('en-SG', { weekday: 'short', timeZone: 'UTC' })}<b>${free}</b>${dt.toLocaleDateString('en-SG', { day: 'numeric', month: 'short', timeZone: 'UTC' })}</div>`;
+  }
+  document.getElementById('rentStrip').innerHTML = strip;
+  document.getElementById('rentStripNote').textContent = 'free boxes each day (pending requests not counted)';
+
+  let list = RENTALS.slice();
+  if (rentFilter === 'active') list = list.filter(r => r.end >= t);
+  else if (rentFilter === 'pending') list = list.filter(r => r.pending);
+  else list = list.filter(r => r.end < t && !r.pending).reverse();
+  if (rentFilter !== 'past') list.sort((a, b) => (b.pending - a.pending) || a.start.localeCompare(b.start));
+  const tbody = document.getElementById('rentRows');
+  if (!list.length) { tbody.innerHTML = '<tr><td colspan="6" class="cell-muted">Nothing here</td></tr>'; return; }
+  tbody.innerHTML = list.map(r => {
+    const days = rentDiff(r.start, r.end) + 1, [k, label] = rentStatus(r);
+    const when = r.start === r.end ? rentFmt(r.start) : rentFmt(r.start) + ' – ' + rentFmt(r.end);
+    const rel = r.pending ? '' : (r.end < t ? '' : r.start > t ? 'starts in ' + rentDiff(t, r.start) + ' day' + (rentDiff(t, r.start) === 1 ? '' : 's') : (r.end === t ? 'return today' : 'returns in ' + rentDiff(t, r.end) + ' day' + (rentDiff(t, r.end) === 1 ? '' : 's')));
+    const details = [r.boxes + ' box' + (r.boxes > 1 ? 'es' : ''), r.packs ? 'Packing ×' + r.packs : '', r.deliver && r.collect ? 'Delivery + collection' : r.deliver ? 'Delivery' : r.collect ? 'Collection' : '', (r.deliver || r.collect) && r.address ? escapeHtml(r.address) : '', r.bike ? 'Bike: ' + escapeHtml(r.bike) : '', r.notes ? escapeHtml(r.notes) : ''].filter(Boolean).join('<br>');
+    const full = r.pending && r.free != null && r.free < r.boxes ? `<br><span style="color:#b0392c;font-weight:700;font-size:11px">Only ${r.free} free for these dates</span>` : '';
+    const wa = r.phone ? waUrl(r.phone, r.pending && r.msg ? r.msg : 'Hi ' + r.name.split(' ')[0] + ', this is Bike & Butter about your bike box rental (' + when + ').') : '';
+    let actions;
+    if (r.legacy) actions = `<button class="btn btn-primary btn-sm" onclick="rentImport('${escapeHtml(r.id)}')">Import</button> <span class="cell-muted" title="Imported bookings move into the Bike Box Rentals calendar so you can edit them here">from another calendar</span>`;
+    else actions = (r.pending ? `<button class="btn btn-primary btn-sm" onclick="rentConfirm('${escapeHtml(r.id)}')">Confirm</button> ` : '') +
+      (wa ? `<a class="btn btn-ghost btn-sm" href="${wa}" target="_blank" rel="noopener">WhatsApp</a> ` : '') +
+      `<button class="btn btn-ghost btn-sm" onclick="rentOpenEditor('${escapeHtml(r.id)}')">Edit</button> ` +
+      `<button class="btn btn-ghost btn-sm" onclick="rentRemove('${escapeHtml(r.id)}', ${r.pending})">${r.pending ? 'Decline' : ICON_TRASH}</button>`;
+    return `<tr class="${r.pending ? 'rent-pending' : ''}">
+      <td class="cell-strong">${when}<br><span class="cell-muted">${days} day${days > 1 ? 's' : ''}${rel ? ' · ' + rel : ''}</span></td>
+      <td class="cell-strong">${escapeHtml(r.name)}${r.phone ? `<br><a class="cell-muted" href="${wa}" target="_blank" rel="noopener">${escapeHtml(r.phone)}</a>` : ''}${r.email ? `<br><span class="cell-muted">${escapeHtml(r.email)}</span>` : ''}</td>
+      <td style="max-width:260px">${details}</td>
+      <td>${r.total != null ? '$' + r.total : '<span class="cell-muted">—</span>'}</td>
+      <td><span class="rent-pill ${k}">${label}</span>${full}${r.ref ? `<br><span class="cell-muted" style="font-size:11px">${escapeHtml(r.ref)}</span>` : ''}</td>
+      <td style="white-space:nowrap">${actions}</td></tr>`;
+  }).join('');
+}
+async function rentConfirm(id) {
+  const r = RENTALS.find(x => x.id === id); if (!r) return;
+  if (!confirm('Confirm ' + r.name + '’s rental?\n\nOnly confirm after payment is received. This blocks ' + r.boxes + ' box(es) on the website' + (r.email ? ' and emails the customer a confirmation.' : '.'))) return;
+  let j = await rentCall('adminConfirm', { id });
+  if (!j.ok && j.code === 'full' && confirm(j.error + '\n\nConfirm anyway?')) j = await rentCall('adminConfirm', { id, force: true });
+  if (!j.ok) return alert('Could not confirm: ' + (j.error || 'unknown error'));
+  await loadRentals();
+}
+async function rentImport(id) {
+  const r = RENTALS.find(x => x.id === id); if (!r) return;
+  if (!confirm('Import ' + r.name + '’s booking (' + r.boxes + ' box' + (r.boxes > 1 ? 'es' : '') + ', ' + rentFmt(r.start) + ' – ' + rentFmt(r.end) + ') into Bike Box Rentals?\n\nIt moves out of the old calendar so you can edit it here. The boxes stay blocked on the website. You can then add the phone number, email and amount with Edit.')) return;
+  const j = await rentCall('adminAdopt', { id, calId: r.calId });
+  if (!j.ok) return alert('Could not import: ' + (j.error || 'unknown error'));
+  await loadRentals();
+}
+async function rentRemove(id, pending) {
+  const r = RENTALS.find(x => x.id === id); if (!r) return;
+  if (!confirm((pending ? 'Decline and remove ' : 'Remove ') + r.name + '’s rental from the calendar?' + (pending ? '\n\nRemember to let the customer know on WhatsApp.' : '\n\nThe boxes become available on the website again.'))) return;
+  const j = await rentCall('adminRemove', { id });
+  if (!j.ok) return alert('Could not remove: ' + (j.error || 'unknown error'));
+  await loadRentals();
+}
+function rentOpenEditor(id) {
+  const r = id ? RENTALS.find(x => x.id === id) : null;
+  document.getElementById('rentModalTitle').textContent = r ? 'Edit rental' : 'New rental';
+  const v = (k, val) => { document.getElementById(k).value = val == null ? '' : val; };
+  v('rtId', r ? r.id : ''); v('rtStart', r ? r.start : RENT_TODAY); v('rtEnd', r ? r.end : RENT_TODAY);
+  v('rtBoxes', r ? r.boxes : 1); v('rtPacks', r ? r.packs : 0);
+  document.getElementById('rtDeliver').checked = !!(r && r.deliver); document.getElementById('rtCollect').checked = !!(r && r.collect);
+  v('rtAddress', r ? r.address : ''); v('rtName', r ? r.name : ''); v('rtPhone', r ? r.phone : ''); v('rtEmail', r ? r.email : '');
+  v('rtBike', r ? r.bike : ''); v('rtNotes', r ? r.notes : ''); v('rtTotal', r && r.total != null ? r.total : '');
+  document.getElementById('rtStatusWrap').style.display = r ? 'none' : '';
+  document.getElementById('rtStatus').value = 'confirmed';
+  document.getElementById('rtErr').textContent = '';
+  rentAuto(); document.getElementById('rentModalBackdrop').classList.add('open');
+}
+function rentCloseEditor() { document.getElementById('rentModalBackdrop').classList.remove('open'); }
+function rentAutoPrice() {
+  const g = k => document.getElementById(k), s = g('rtStart').value, e = g('rtEnd').value;
+  if (!s || !e || e < s) return null;
+  const days = rentDiff(s, e) + 1, boxes = +g('rtBoxes').value || 1, packs = Math.max(0, +g('rtPacks').value || 0);
+  const ways = (g('rtDeliver').checked ? 1 : 0) + (g('rtCollect').checked ? 1 : 0);
+  return Math.max(RENT_RATES.min, days * RENT_RATES.rate) * boxes + packs * RENT_RATES.pack + ways * RENT_RATES.delivery;
+}
+function rentAuto() { const p = rentAutoPrice(); document.getElementById('rtAutoNote').textContent = p == null ? '' : '(automatic: $' + p + ')'; }
+async function rentSave() {
+  const g = k => document.getElementById(k), err = g('rtErr'); err.textContent = '';
+  const data = { id: g('rtId').value || undefined, start: g('rtStart').value, end: g('rtEnd').value, boxes: +g('rtBoxes').value, packs: +g('rtPacks').value || 0,
+    deliver: g('rtDeliver').checked, collect: g('rtCollect').checked, address: g('rtAddress').value.trim(), name: g('rtName').value.trim(), phone: g('rtPhone').value.trim(),
+    email: g('rtEmail').value.trim(), bike: g('rtBike').value.trim(), notes: g('rtNotes').value.trim(), total: g('rtTotal').value, pending: g('rtStatus').value === 'pending' };
+  if (!data.start || !data.end) return err.textContent = 'Please choose both dates.';
+  if (data.end < data.start) return err.textContent = 'The return date is before the collection date.';
+  if (data.name.length < 2) return err.textContent = 'Please enter the customer name.';
+  const btn = g('rtSaveBtn'); btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    let j = await rentCall('adminSave', data);
+    if (!j.ok && j.code === 'full' && confirm(j.error + '\n\nSave anyway (double-booking)?')) j = await rentCall('adminSave', Object.assign({ force: true }, data));
+    if (!j.ok) { err.textContent = j.error || 'Could not save.'; return; }
+    rentCloseEditor(); await loadRentals();
+  } catch (e) { err.textContent = 'Could not reach Google: ' + (e.message || e); }
+  finally { btn.disabled = false; btn.textContent = 'Save'; }
+}
 
 /* ===== Bikes for sale (shown on /marketplace/) ===== */
 const LST_BUCKET = 'bike-photos';
