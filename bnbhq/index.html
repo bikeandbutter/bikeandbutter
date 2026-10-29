@@ -921,7 +921,8 @@ tr.rent-pending td { background: #fffbf0; }
               <div class="ie-section-title" id="ieDiscTitle">Invoice-level discount</div>
               <div class="ie-row-2">
                 <div class="ie-field"><label>Label</label><input type="text" id="invDiscLabel" placeholder="e.g. Loyalty Discount" oninput="renderInvoicePreview()"></div>
-                <div class="ie-field"><label>Percent</label><input type="number" id="invDiscPct" placeholder="%" oninput="renderInvoicePreview()"></div>
+                <div class="ie-field"><label>Type</label><select id="invDiscType" onchange="invDiscTypeChanged()"><option value="pct">Percent (%)</option><option value="abs">Fixed amount ($)</option></select></div>
+                <div class="ie-field"><label id="invDiscValLabel">Percent</label><input type="number" id="invDiscPct" placeholder="%" step="any" oninput="renderInvoicePreview()"></div>
               </div>
             </div>
 
@@ -3454,8 +3455,21 @@ function calcItemTotal(item) {
 function calcGrandTotal() {
   let subtotal = currentInvoiceItems.reduce((s, it) => s + calcItemTotal(it), 0);
   const pct = parseFloat(document.getElementById('invDiscPct')?.value) || 0;
-  if (pct) subtotal -= subtotal * pct / 100;
-  return subtotal;
+  const type = document.getElementById('invDiscType')?.value || 'pct';
+  return Math.max(0, subtotal - invDiscAmount(subtotal, pct, type));
+}
+function invDiscAmount(subtotal, value, type) {
+  value = Number(value) || 0;
+  if (!value) return 0;
+  return type === 'abs' ? Math.min(Math.max(0, subtotal), value) : subtotal * Math.min(100, value) / 100;
+}
+function invDiscTypeChanged(quiet) {
+  const abs = document.getElementById('invDiscType').value === 'abs';
+  document.getElementById('invDiscValLabel').textContent = abs ? 'Amount ($)' : 'Percent';
+  document.getElementById('invDiscPct').placeholder = abs ? '$' : '%';
+  if (quiet) return;
+  document.getElementById('invGrandTotal').textContent = money(calcGrandTotal());
+  renderInvoicePreview();
 }
 
 /* ---- Shared Invoice / Quotation editor. docMode decides which table, labels and extra fields are used. ---- */
@@ -3544,6 +3558,7 @@ async function openDocEditor(mode, docId, prefill) {
   const today = new Date().toISOString().slice(0, 10);
   ['invId', 'invSavedNo', 'invRevSuffix', 'invCustomerName', 'invAddr1', 'invAddr2', 'invPostal', 'invRemarks',
    'invDiscLabel', 'invDiscPct', 'invQuotationId', 'invQuoteRef', 'qtDepValue', 'qtEnquiryId', 'qtPayLink'].forEach(id => setV(id, ''));
+  setV('invDiscType', 'pct'); invDiscTypeChanged(true);
   setV('invDate', today);
   setV('qtStatus', 'draft');
   setV('qtDepType', 'pct');
@@ -3576,7 +3591,7 @@ async function openDocEditor(mode, docId, prefill) {
       setV('invPostal', r.postal_code || '');
       setV('invRemarks', r.remarks || '');
       const disc = ((isQ ? r.quotation_discounts : r.invoice_discounts) || [])[0];
-      if (disc) { setV('invDiscLabel', disc.label || ''); setV('invDiscPct', disc.value || ''); }
+      if (disc) { setV('invDiscLabel', disc.label || ''); setV('invDiscPct', disc.value || ''); setV('invDiscType', disc.type === 'abs' ? 'abs' : 'pct'); invDiscTypeChanged(); }
       document.getElementById('invEditorTitle').textContent = fullNo;
       document.getElementById('invEditorSub').textContent = isQ ? 'Editing saved quotation' : 'Editing saved invoice';
       if (isQ) {
@@ -3607,7 +3622,7 @@ async function openDocEditor(mode, docId, prefill) {
     setV('invPostal', q.postal_code || '');
     setV('invRemarks', q.remarks || '');
     const disc = (q.quotation_discounts || [])[0];
-    if (disc) { setV('invDiscLabel', disc.label || ''); setV('invDiscPct', disc.value || ''); }
+    if (disc) { setV('invDiscLabel', disc.label || ''); setV('invDiscPct', disc.value || ''); setV('invDiscType', disc.type === 'abs' ? 'abs' : 'pct'); invDiscTypeChanged(); }
     setV('invQuotationId', q.id);
     setV('invQuoteRef', q.full_quotation_no || q.quotation_no || '');
     ieShowQuoteBadge(q.full_quotation_no || q.quotation_no || '');
@@ -3718,7 +3733,8 @@ function renderInvoiceItems() {
     const discHTML = item.discounts.map((d,di) => `
       <div class="ie-disc-row">
         <input type="text" placeholder="Discount label" value="${escapeHtml(d.label)}" oninput="updateDisc(${idx},${di},'label',this.value)" style="flex:2;background:var(--yellow-bg);border:1px solid var(--yellow-bg);border-radius:6px;color:var(--yellow);padding:6px 9px;font-size:12px;font-family:inherit">
-        <input type="number" placeholder="%" value="${d.value}" oninput="updateDisc(${idx},${di},'value',this.value)" style="width:60px;background:var(--yellow-bg);border:1px solid var(--yellow-bg);border-radius:6px;color:var(--yellow);padding:6px 9px;font-size:12px;font-family:inherit">
+        <select onchange="updateDisc(${idx},${di},'type',this.value)" style="background:var(--yellow-bg);border:1px solid var(--yellow-bg);border-radius:6px;color:var(--yellow);padding:6px 4px;font-size:12px;font-family:inherit"><option value="pct"${d.type==='pct'?' selected':''}>%</option><option value="abs"${d.type==='abs'?' selected':''}>$</option></select>
+        <input type="number" step="any" placeholder="${d.type==='pct'?'%':'$'}" value="${d.value}" oninput="updateDisc(${idx},${di},'value',this.value)" style="width:60px;background:var(--yellow-bg);border:1px solid var(--yellow-bg);border-radius:6px;color:var(--yellow);padding:6px 9px;font-size:12px;font-family:inherit">
         <button class="ie-btn-icon" onclick="removeDisc(${idx},${di})">${ICON_TRASH}</button>
       </div>`).join('');
     return `
@@ -3798,13 +3814,14 @@ function removeSub(idx,si) { currentInvoiceItems[idx].subs.splice(si,1); renderI
 function addDisc(idx) { currentInvoiceItems[idx].discounts.push({label:'',type:'pct',value:0}); renderInvoiceItems(); renderInvoicePreview(); }
 function updateDisc(idx,di,field,val) {
   currentInvoiceItems[idx].discounts[di][field] = field==='value' ? parseFloat(val)||0 : val;
+  if (field === 'type') { renderInvoiceItems(); }
   const totalEl = document.getElementById('ie-li-total-'+idx);
   if (totalEl) totalEl.textContent = money(calcItemTotal(currentInvoiceItems[idx]));
   document.getElementById('invGrandTotal').textContent = money(calcGrandTotal());
   renderInvoicePreview();
 }
 function removeDisc(idx,di) { currentInvoiceItems[idx].discounts.splice(di,1); renderInvoiceItems(); renderInvoicePreview(); }
-document.addEventListener('input', e => { if (e.target.id === 'invDiscPct' || e.target.id === 'invDiscLabel') { document.getElementById('invGrandTotal').textContent = money(calcGrandTotal()); renderInvoicePreview(); } });
+document.addEventListener('input', e => { if (e.target.id === 'invDiscPct' || e.target.id === 'invDiscLabel' || e.target.id === 'invDiscType') { document.getElementById('invGrandTotal').textContent = money(calcGrandTotal()); renderInvoicePreview(); } });
 
 // ── LIVE A4 PREVIEW (paginated, real logo/QR) ──
 const IE_PAGE_H = 1122, IE_FOOTER_H = 72, IE_BODY_PAD = 40;
@@ -3847,8 +3864,9 @@ function buildInvoicePages() {
   const items = currentInvoiceItems.filter(it => it.desc.trim() || it.qty || it.price);
   const discPct = parseFloat(document.getElementById('invDiscPct').value) || 0;
   const discLabel = document.getElementById('invDiscLabel').value.trim();
+  const discType = document.getElementById('invDiscType').value === 'abs' ? 'abs' : 'pct';
 
-  const data = { docType: docMode, fullInvNo, date, name, addrLines, remarks, items, discPct, discLabel };
+  const data = { docType: docMode, fullInvNo, date, name, addrLines, remarks, items, discPct, discLabel, discType };
   if (isQ) {
     data.payLink = (document.getElementById('qtPayLink').value || '').trim();
     const vu = document.getElementById('qtValidUntil').value;
@@ -3878,6 +3896,7 @@ function invoiceDataFromRecord(inv, items) {
     items: (items || []).map(it => ({ desc: it.description, qty: it.qty, price: it.unit_price, subs: it.subs || [], discounts: it.discounts || [] })),
     discPct: invDisc ? invDisc.value : 0,
     discLabel: invDisc ? invDisc.label : '',
+    discType: invDisc && invDisc.type === 'abs' ? 'abs' : 'pct',
     quoteRef: q ? (q.full_quotation_no || q.quotation_no) : ''
   };
 }
@@ -3900,13 +3919,13 @@ function buildInvoicePagesFromData(data) {
   });
 
   const subtotal = items.reduce((s, it) => s + calcItemTotal(it), 0);
-  const invDiscAmt = discPct ? subtotal * discPct / 100 : 0;
+  const invDiscAmt = invDiscAmount(subtotal, discPct, data.discType);
   const grand = Math.max(0, subtotal - invDiscAmt);
   const deposit = isQ && data.deposit && data.deposit.amount > 0 ? data.deposit : null;
 
   const totalsHTML = `<div class="dq-totals">
     <div class="dq-tot-row"><span>Subtotal</span><span>${dm(subtotal)}</span></div>
-    ${discPct ? `<div class="dq-tot-row disc"><span>${escapeHtml(discLabel) || 'Discount'} (${discPct}%)</span><span>- ${dm(invDiscAmt)}</span></div>` : ''}
+    ${discPct ? `<div class="dq-tot-row disc"><span>${escapeHtml(discLabel) || 'Discount'} ${data.discType === 'abs' ? '' : ' (' + discPct + '%)'}</span><span>- ${dm(invDiscAmt)}</span></div>` : ''}
     <div class="dq-tot-row grand"><span>Total</span><span>${dm(grand)}</span></div>
     ${deposit ? `<div class="dq-tot-row dep"><span>${escapeHtml(deposit.label)}</span><span>${dm(deposit.amount)}</span></div>
     <div class="dq-tot-row bal"><span>Balance on completion</span><span>${dm(Math.max(0, grand - deposit.amount))}</span></div>` : ''}
@@ -4060,7 +4079,8 @@ async function saveInvoice() {
   const grandTotal = calcGrandTotal();
   const discLabel = document.getElementById('invDiscLabel').value.trim();
   const discPct = parseFloat(document.getElementById('invDiscPct').value) || 0;
-  const invoiceDiscounts = discLabel && discPct ? [{ label: discLabel, type: 'pct', value: discPct }] : [];
+  const discType = document.getElementById('invDiscType').value === 'abs' ? 'abs' : 'pct';
+  const invoiceDiscounts = discLabel && discPct ? [{ label: discLabel, type: discType, value: discPct }] : [];
 
   let invoiceNo = document.getElementById('invSavedNo').value;
   let revSuffix = document.getElementById('invRevSuffix').value;
@@ -4367,7 +4387,8 @@ async function saveQuotation() {
   const subtotal = validItems.reduce((s, it) => s + calcItemTotal(it), 0);
   const discLabel = document.getElementById('invDiscLabel').value.trim();
   const discPct = parseFloat(document.getElementById('invDiscPct').value) || 0;
-  const discounts = discLabel && discPct ? [{ label: discLabel, type: 'pct', value: discPct }] : [];
+  const discType = document.getElementById('invDiscType').value === 'abs' ? 'abs' : 'pct';
+  const discounts = discLabel && discPct ? [{ label: discLabel, type: discType, value: discPct }] : [];
   const depType = document.getElementById('qtDepType').value || 'pct';
   const depValue = parseFloat(document.getElementById('qtDepValue').value) || 0;
   const depAmount = calcDeposit(total);
@@ -4494,6 +4515,7 @@ async function quickPrintQuotation(id, btnEl) {
       items: (items || []).map(it => ({ desc: it.description, qty: it.quantity, price: it.unit_price, subs: it.subs || [], discounts: it.discounts || [] })),
       discPct: disc ? disc.value : 0,
       discLabel: disc ? disc.label : '',
+      discType: disc && disc.type === 'abs' ? 'abs' : 'pct',
       deposit: {
         amount: Number(q.deposit_amount) || 0,
         label: q.deposit_type === 'pct' && Number(q.deposit_value) ? 'Deposit required (' + q.deposit_value + '%)' : 'Deposit required'
