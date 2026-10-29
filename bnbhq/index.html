@@ -4823,7 +4823,7 @@ function rentCell(k, r, ctx) {
     case 'bike': return rentPerBox(r, l => l.bike ? e(l.bike) : rentDash);
     case 'notes': return r.notes ? e(r.notes) : rentDash;
     case 'total': return r.total != null ? '$' + r.total : rentDash;
-    case 'status': return `<span class="rent-pill ${ctx.k}">${ctx.label}</span>${r.status === 'paid' && r.paidAt ? `<span class="rent-sub">${e(r.paidAt)}</span>` : ''}${ctx.full}`;
+    case 'status': return `<span class="rent-pill ${ctx.k}">${ctx.label}</span>${ctx.stage ? ` <span class="rent-pill ${ctx.stage[0]}">${ctx.stage[1]}</span>` : ''}${r.status === 'paid' && r.paidAt ? `<span class="rent-sub">${e(r.paidAt)}</span>` : ''}${ctx.full}`;
     case 'ref': return r.ref ? `<span class="cell-muted" style="font-size:11px">${e(r.ref)}</span>` : rentDash;
   }
   return '';
@@ -4863,7 +4863,8 @@ function renderRentals() {
     const days = rentDiff(r.start, r.end) + 1, [k, label] = rentStatus(r);
     const when = r.start === r.end ? rentFmt(r.start) : rentFmt(r.start) + ' – ' + rentFmt(r.end);
     const full = r.pending && r.free != null && r.free < r.boxes ? `<br><span style="color:#b0392c;font-weight:700;font-size:11px">Only ${r.free} free for these dates</span>` : '';
-    const ctx = { when, days, k, label, full, timing: rentTiming(r) };
+    const stage = r.pending ? null : (r.end < t ? ['done', 'Returned'] : (r.start <= t ? ['out', 'Out now'] : null));
+    const ctx = { when, days, k, label, full, stage, timing: rentTiming(r) };
     const wa = rentWaFor(r), idq = escapeHtml(r.id);
     let actions;
     if (r.legacy) actions = `<button class="btn btn-primary btn-sm" onclick="rentImport('${idq}')">Import</button> <span class="cell-muted" title="Imported bookings move into the Bike Box Rentals calendar (as paid) so you can edit them here">from another calendar</span>`;
