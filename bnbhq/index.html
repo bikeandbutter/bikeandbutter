@@ -448,6 +448,28 @@ tbody tr.clickable:hover { background: var(--bg3); }
 .rent-colpanel.open { display: block; }
 .rent-colrow { display: inline-flex; align-items: center; gap: 4px; margin: 0 8px 6px 0; padding: 3px 4px 3px 8px; border: 1px solid var(--border2); border-radius: 6px; background: var(--bg2); font-size: 12px; }
 .rent-colrow button { border: 0; background: transparent; cursor: pointer; padding: 2px 4px; color: var(--text2); font-size: 12px; }
+.rent-pill.overdue { background: #fce8e6; color: #b0392c; }
+.rent-pill.blocked { background: #e0f4f7; color: #00697a; }
+tr.rent-late td { background: #fff5f4; }
+#rentRows td.rc-actions { white-space: normal; min-width: 340px; }
+#rentRows td.rc-actions .btn { margin: 0 4px 4px 0; }
+.rent-board { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; padding: 14px 20px 18px; }
+.rent-box { border-radius: 8px; padding: 10px 11px; font-size: 12px; line-height: 1.35; border: 1px solid transparent; min-height: 70px; }
+.rent-box b { display: block; font-size: 13px; margin-bottom: 2px; }
+.rent-box span { display: block; }
+.rent-box.free { background: #e6f4ea; color: #2e7d32; }
+.rent-box.out { background: #e8f0fe; color: #1a56c4; }
+.rent-box.late { background: #fce8e6; color: #b0392c; border-color: #e6b8b2; }
+.rent-box.blocked { background: #e0f4f7; color: #00697a; }
+@media (max-width: 900px) { .rent-board { grid-template-columns: repeat(3, 1fr); } }
+.rent-pick { display: inline-flex; align-items: center; gap: 6px; margin: 0 8px 8px 0; padding: 6px 10px; border: 1px solid var(--border2); border-radius: 6px; font-size: 13px; font-weight: 400; cursor: pointer; background: var(--bg2); }
+.rent-pick input { width: auto; margin: 0; -webkit-appearance: checkbox; appearance: auto; }
+.rent-pick small { color: #b0392c; font-size: 11px; }
+.rent-pick.busy { background: #fff5f4; }
+.rent-phs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.rent-ph { position: relative; width: 74px; height: 74px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border2); }
+.rent-ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.rent-ph button { position: absolute; top: 2px; right: 2px; border: 0; background: rgba(0,0,0,.6); color: #fff; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 11px; line-height: 20px; padding: 0; }
 .rent-notice { display: none; margin-bottom: 16px; padding: 12px 16px; border-radius: var(--radius); background: #e6f4ea; color: #1e5e2c; font-size: 13px; align-items: center; gap: 12px; flex-wrap: wrap; }
 .rent-notice.open { display: flex; }
 tr.rent-pending td { background: #fffbf0; }
@@ -813,9 +835,10 @@ tr.rent-pending td { background: #fffbf0; }
 
       <div class="tab-panel" id="tab-rentals">
         <div class="page-header">
-          <div><div class="page-title">Bike Box Rentals</div><div class="page-subtitle">Send payment details, mark rentals paid, edit, extend or remove them here. It controls the <b>Bike Box Rentals</b> Google Calendar, and the website availability updates within a minute. Older bookings from your other calendars show with an Import button.</div></div>
+          <div><div class="page-title">Bike Box Rentals</div><div class="page-subtitle">Send payment details, mark rentals paid, check boxes out and in, block dates, edit or remove rentals here. It controls the <b>Bike Box Rentals</b> Google Calendar, and the website availability updates within a minute. Older bookings from your other calendars show with an Import button.</div></div>
           <div class="page-actions">
             <button class="btn btn-primary" onclick="rentOpenEditor(null)">+ New rental</button>
+            <button class="btn" onclick="rentBlockOpen(null)" title="Take boxes out of the website availability for repairs or your own use">Block dates</button>
             <button class="btn" onclick="loadRentals()">Refresh</button>
             <button class="btn btn-ghost" onclick="rentSetKey(true)">Admin key</button>
           </div>
@@ -828,7 +851,8 @@ tr.rent-pending td { background: #fffbf0; }
         </div></div>
         <div id="rentBody">
           <div class="rent-notice" id="rentNotice"></div>
-          <div class="tiles" style="grid-template-columns:repeat(4,1fr)" id="rentTiles"></div>
+          <div class="tiles" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))" id="rentTiles"></div>
+          <div class="card" style="margin-bottom:16px"><div class="card-header"><div class="cell-strong">Where the boxes are</div><div class="cell-muted" id="rentBoardNote"></div></div><div id="rentBoard" class="rent-board"></div></div>
           <div class="card" style="margin-bottom:16px"><div class="card-header"><div class="cell-strong">Next 14 days: boxes free</div><div class="cell-muted" id="rentStripNote"></div></div><div id="rentStrip" class="rent-strip"></div></div>
           <div class="card">
             <div class="card-header"><div>
@@ -1200,6 +1224,7 @@ tr.rent-pending td { background: #fffbf0; }
       </div>
       <div id="rtLegs"></div>
       <div class="field"><label>Notes</label><textarea id="rtNotes"></textarea></div>
+      <div class="field"><label class="chk"><input type="checkbox" id="rtTerms"> Customer has agreed to the rental terms <span class="cell-muted" id="rtTermsNote"></span></label></div>
       <div class="field-row fr-2">
         <div class="field"><label>Total ($) <span class="cell-muted" id="rtAutoNote"></span></label><input type="number" id="rtTotal" min="0" placeholder="Leave blank for automatic price"></div>
         <div class="field" id="rtStatusWrap"><label>Status</label><select id="rtStatus"><option value="confirmed">Confirmed, awaiting payment (blocks the website)</option><option value="paid">Paid (blocks, no message is sent)</option><option value="pending">Pending (does not block)</option></select></div>
@@ -1209,6 +1234,87 @@ tr.rent-pending td { background: #fffbf0; }
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="rentCloseEditor()">Cancel</button>
       <button class="btn btn-primary" id="rtSaveBtn" onclick="rentSave()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="rentPayBackdrop">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="rpTitle">Mark paid</div><button class="modal-close" onclick="rentPayClose()">&times;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="rpId">
+      <p class="cell-muted" id="rpSummary" style="margin:0 0 12px"></p>
+      <div class="field-row fr-2">
+        <div class="field"><label>Amount received ($) *</label><input type="number" id="rpAmount" min="0" step="any"></div>
+        <div class="field"><label>Date received</label><input type="date" id="rpDate"></div>
+      </div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Method</label><select id="rpMethod"><option>PayNow</option><option>Bank transfer</option><option>Cash</option><option>Other</option></select></div>
+        <div class="field"><label>Reference <span class="cell-muted">(optional)</span></label><input type="text" id="rpRef" placeholder="PayNow ref or note"></div>
+      </div>
+      <div class="field"><label class="chk"><input type="checkbox" id="rpEmail" checked> <span id="rpEmailLbl"></span></label></div>
+      <p class="cell-muted" style="margin:0">Marking paid blocks the boxes on the website, turns the calendar event tomato, and gives you a WhatsApp confirmation to send.</p>
+      <div id="rpErr" style="color:#b0392c;font-size:13px;margin-top:8px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="rentPayClose()">Cancel</button>
+      <button class="btn btn-primary" id="rpSave" onclick="rentPaid()">Mark as paid</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="rentHoBackdrop">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="rhTitle">Check out</div><button class="modal-close" onclick="rentHoClose(true)">&times;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="rhId">
+      <p class="cell-muted" id="rhSummary" style="margin:0 0 6px"></p>
+      <p id="rhWarn" style="color:#b0392c;font-size:13px;margin:0 0 8px"></p>
+      <div class="cell-muted" id="rhRecord" style="margin-bottom:10px"></div>
+      <div class="field" id="rhBoxesWrap"><label>Which boxes are going out? <span class="cell-muted" id="rhBoxesNote"></span></label><div id="rhBoxes"></div></div>
+      <div class="field" id="rhTermsWrap"><label class="chk"><input type="checkbox" id="rhTerms"> Customer has agreed to the rental terms (late return, damage) <span class="cell-muted" id="rhTermsNote"></span></label></div>
+      <div id="rhInWrap">
+        <div class="cell-muted" id="rhLate" style="color:#b0392c;margin-bottom:8px"></div>
+        <div class="field"><label class="chk"><input type="checkbox" id="rhDamage"> Damage or missing items (locks, keys, straps)</label></div>
+        <div class="field-row fr-2">
+          <div class="field"><label>Extra charge ($) <span class="cell-muted">late fee or damage</span></label><input type="number" id="rhFee" min="0" step="any"></div>
+          <div class="field"><label>Reason</label><input type="text" id="rhFeeNote" placeholder="e.g. Late return, 2 days"></div>
+        </div>
+      </div>
+      <div class="field"><label>Condition notes</label><textarea id="rhNote" placeholder="e.g. Scratch on the lid. 2 locks and keys handed over."></textarea></div>
+      <div class="field"><label>Photos <span class="cell-muted">(optional, of the box only, no IDs)</span></label>
+        <input type="file" id="rhFile" accept="image/*" multiple onchange="rhAddPhotos(this.files)">
+        <div class="rent-phs" id="rhPhotos"></div><div class="cell-muted" id="rhMsg" style="margin-top:4px"></div></div>
+      <div id="rhErr" style="color:#b0392c;font-size:13px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="rhUndo" style="margin-right:auto;display:none" onclick="rentHoUndo()">Undo</button>
+      <button class="btn btn-secondary" onclick="rentHoClose(true)">Cancel</button>
+      <button class="btn btn-primary" id="rhSave" onclick="rentHoSave()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="rentBlockBackdrop">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="rbTitle">Block dates</div><button class="modal-close" onclick="rentBlockClose()">&times;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="rbId">
+      <p class="cell-muted" style="margin:0 0 12px">Blocked boxes cannot be booked on the website. Use it for a box in repair, or boxes you keep for yourself.</p>
+      <div class="field-row fr-2">
+        <div class="field"><label>First day *</label><input type="date" id="rbStart"></div>
+        <div class="field"><label>Last day *</label><input type="date" id="rbEnd"></div>
+      </div>
+      <div class="field"><label>Which boxes? <span class="cell-muted">(optional, so the board shows them as blocked)</span></label><div id="rbPick"></div></div>
+      <div class="field-row fr-2">
+        <div class="field"><label>How many boxes</label><select id="rbBoxes"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+        <div class="field"><label>Reason *</label><input type="text" id="rbReason" placeholder="e.g. Box 3 in repair" maxlength="80"></div>
+      </div>
+      <div id="rbErr" style="color:#b0392c;font-size:13px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="rentBlockClose()">Cancel</button>
+      <button class="btn btn-primary" id="rbSave" onclick="rentBlockSave()">Save</button>
     </div>
   </div>
 </div>
@@ -3658,6 +3764,25 @@ async function openDocEditor(mode, docId, prefill) {
     if (!currentInvoiceItems.length) currentInvoiceItems = [blankInvoiceItem()];
     document.getElementById('invEditorSub').textContent = 'From quotation ' + (q.full_quotation_no || q.quotation_no || '') + ' — not yet saved';
     setV('invSavedNo', await nextInvoiceNumber());
+  } else if (prefill && prefill.rental) {
+    // New invoice from a bike box rental: customer, rental lines, packing, delivery and any extra charges
+    const rr = prefill.rental, days = rentDiff(rr.start, rr.end) + 1, per = Math.max(RENT_RATES.min, days * RENT_RATES.rate);
+    setV('invCustomerName', rr.name || '');
+    const last8 = String(rr.phone || '').replace(/\D/g, '').slice(-8);
+    const mc = CUSTOMERS.find(c => last8 && String(c.phone || '').replace(/\D/g, '').slice(-8) === last8) || CUSTOMERS.find(c => c.name === rr.name);
+    if (mc) { setV('invCustomerName', mc.name); setV('invAddr1', mc.address_line1 || ''); setV('invAddr2', mc.address_line2 || ''); setV('invPostal', mc.postal_code || ''); ieLinkCustomerUI(mc, null); }
+    setV('invRemarks', 'Bike box rental ' + (rr.ref || '') + (rr.payment ? '. Paid ' + rr.payment.date + ' by ' + rr.payment.method + (rr.payment.ref ? ' (' + rr.payment.ref + ')' : '') + '.' : ''));
+    const items = [{ id: invoiceItemSeq++, desc: 'Bike box rental', qty: rr.boxes, price: per, subs: [{ text: rentFmt(rr.start) + (rr.start === rr.end ? '' : ' to ' + rentFmt(rr.end)) + ', ' + days + ' day' + (days === 1 ? '' : 's') }], discounts: [], variant_id: '' }];
+    if (rr.packs) items.push({ id: invoiceItemSeq++, desc: 'Bike packing service', qty: rr.packs, price: RENT_RATES.pack, subs: [], discounts: [], variant_id: '' });
+    const trips = rentLegs(rr).reduce((a, l) => { const k = String(l.address || '').toLowerCase().replace(/\s+/g, ' ').trim() || '?'; if (l.deliver) a.d[k] = 1; if (l.collect) a.c[k] = 1; return a; }, { d: {}, c: {} }), ways = Object.keys(trips.d).length + Object.keys(trips.c).length;
+    if (ways) items.push({ id: invoiceItemSeq++, desc: 'Delivery / collection', qty: ways, price: RENT_RATES.delivery, subs: rr.address ? [{ text: rr.address }] : [], discounts: [], variant_id: '' });
+    const extra = rr.handover && rr.handover.in && Number(rr.handover.in.fee) > 0 ? Number(rr.handover.in.fee) : 0;
+    if (extra) items.push({ id: invoiceItemSeq++, desc: 'Extra charge', qty: 1, price: extra, subs: rr.handover.in.feeNote ? [{ text: rr.handover.in.feeNote }] : [], discounts: [], variant_id: '' });
+    const sum = items.reduce((a, it) => a + it.qty * it.price, 0), agreed = (rr.total != null ? Number(rr.total) : sum) + extra;
+    if (Math.abs(agreed - sum) > 0.005) items.push({ id: invoiceItemSeq++, desc: 'Adjustment to agreed price', qty: 1, price: Math.round((agreed - sum) * 100) / 100, subs: [], discounts: [], variant_id: '' });
+    currentInvoiceItems = items;
+    document.getElementById('invEditorSub').textContent = 'From bike box rental ' + (rr.ref || rr.name) + ' — not yet saved';
+    setV('invSavedNo', await nextInvoiceNumber());
   } else if (prefill && prefill.enquiry) {
     // New quotation started from a website enquiry
     const x = prefill.enquiry;
@@ -4739,14 +4864,30 @@ async function loadRentals(silent) {
   } finally { rentBusy = false; }
 }
 function rentStatus(r) {
+  if (r.block) return ['blocked', 'Blocked'];
   if (r.pending) return ['pending', 'Pending'];
   if (r.legacy) return ['booked', 'Old calendar'];
   if (r.status === 'paid') return ['paid', 'Paid'];
   return ['unpaid', 'Awaiting payment'];
 }
+// days past the return date while the boxes are checked out and not back
+function rentOverdue(r) { const h = r.handover; return h && h.out && !h.in && r.end < RENT_TODAY ? rentDiff(r.end, RENT_TODAY) : 0; }
+// the green / grey / red pill that sits beside Paid
+function rentStage(r) {
+  if (r.pending || r.block) return null;
+  const h = r.handover, t = RENT_TODAY;
+  if (h && h.in) return ['done', 'Returned'];
+  if (h && h.out) { const o = rentOverdue(r); return o ? ['overdue', 'Overdue ' + o + 'd'] : ['out', 'Out now']; }
+  if (r.end < t) return ['done', 'Returned'];
+  if (r.start <= t) return ['out', 'Out now'];
+  return null;
+}
 function rentTiming(r) {
   const t = RENT_TODAY, n = rentDiff(t, r.start);
   if (r.pending) return '';
+  const h = r.handover;
+  if (h && h.in) return 'Returned';
+  const o = rentOverdue(r); if (o) return 'Overdue ' + o + ' day' + (o === 1 ? '' : 's');
   if (r.end < t) return 'Returned';
   if (r.start > t) return 'Starts in ' + n + ' day' + (n === 1 ? '' : 's');
   return r.end === t ? 'Out now · return today' : 'Out now · returns in ' + rentDiff(t, r.end) + ' day' + (rentDiff(t, r.end) === 1 ? '' : 's');
@@ -4760,19 +4901,24 @@ function setRentFilter(f) {
 /* --- table columns: reorderable and hideable, remembered on this device --- */
 const RENT_COLS = [
   { k: 'dates', l: 'Dates', cls: 'rc-nowrap' }, { k: 'days', l: 'Days', cls: 'rc-nowrap' }, { k: 'timing', l: 'Timing', cls: 'rc-nowrap' },
-  { k: 'customer', l: 'Customer', cls: 'rc-name' }, { k: 'contact', l: 'Contact', cls: 'rc-name' }, { k: 'boxes', l: 'Boxes', cls: 'rc-nowrap' }, { k: 'packing', l: 'Packing', cls: 'rc-nowrap' },
-  { k: 'delivery', l: 'Delivery / collection' }, { k: 'address', l: 'Address', cls: 'rc-wide' }, { k: 'bike', l: 'Bike' }, { k: 'notes', l: 'Notes', cls: 'rc-wide' },
-  { k: 'total', l: 'Total', cls: 'rc-nowrap' }, { k: 'status', l: 'Status', cls: 'rc-nowrap' }, { k: 'ref', l: 'Ref', cls: 'rc-nowrap' }
+  { k: 'customer', l: 'Customer', cls: 'rc-name' }, { k: 'contact', l: 'Contact', cls: 'rc-name' }, { k: 'boxes', l: 'Boxes', cls: 'rc-nowrap' }, { k: 'boxnos', l: 'Box no.', cls: 'rc-nowrap' },
+  { k: 'packing', l: 'Packing', cls: 'rc-nowrap' }, { k: 'delivery', l: 'Delivery / collection' }, { k: 'address', l: 'Address', cls: 'rc-wide' }, { k: 'bike', l: 'Bike' }, { k: 'notes', l: 'Notes', cls: 'rc-wide' },
+  { k: 'total', l: 'Total', cls: 'rc-nowrap' }, { k: 'payment', l: 'Payment', cls: 'rc-nowrap' }, { k: 'status', l: 'Status', cls: 'rc-nowrap' },
+  { k: 'handover', l: 'Handover', cls: 'rc-wide', off: true }, { k: 'terms', l: 'Terms', cls: 'rc-nowrap', off: true }, { k: 'ref', l: 'Ref', cls: 'rc-nowrap' }
 ];
 function rentColState() {
   let st = null;
   try { st = JSON.parse(localStorage.getItem('bnb_rent_cols') || 'null'); } catch (e) {}
-  const keys = RENT_COLS.map(c => c.k);
+  const keys = RENT_COLS.map(c => c.k), seen = (st && st.seen) || [];
   const order = ((st && st.order) || []).filter(k => keys.includes(k));
-  keys.forEach(k => { if (!order.includes(k)) order.push(k); });
-  return { order, hidden: (st && st.hidden) || [] };
+  keys.forEach(k => { if (!order.includes(k)) { // a new column: put it next to the one before it in the default order
+    const prev = keys[keys.indexOf(k) - 1], pi = order.indexOf(prev); if (pi >= 0) order.splice(pi + 1, 0, k); else order.push(k); } });
+  const hidden = ((st && st.hidden) || []).slice();
+  keys.forEach(k => { if (!seen.includes(k) && RENT_COLS.find(c => c.k === k).off && !hidden.includes(k) && st) hidden.push(k); });
+  if (!st) RENT_COLS.forEach(c => { if (c.off) hidden.push(c.k); });
+  return { order, hidden };
 }
-function rentColSave(st) { try { localStorage.setItem('bnb_rent_cols', JSON.stringify(st)); } catch (e) {} }
+function rentColSave(st) { try { localStorage.setItem('bnb_rent_cols', JSON.stringify({ order: st.order, hidden: st.hidden, seen: RENT_COLS.map(c => c.k) })); } catch (e) {} }
 function rentToggleCols() { document.getElementById('rentColPanel').classList.toggle('open'); renderRentColPanel(); }
 function renderRentColPanel() {
   const st = rentColState(), by = k => RENT_COLS.find(c => c.k === k);
@@ -4804,12 +4950,28 @@ function rentPerBox(r, fn) {
 }
 const rentDash = '<span class="cell-muted">—</span>';
 function rentWaFor(r) {
-  if (!r.phone || r.legacy) return '';
+  if (!r.phone || r.legacy || r.block) return '';
   const msg = r.status === 'paid' ? r.cmsg : r.msg;
   return waUrl(r.phone, msg || 'Hi ' + r.name.split(' ')[0] + ', this is Bike & Butter about your bike box rental (' + rentFmt(r.start) + (r.start === r.end ? '' : ' – ' + rentFmt(r.end)) + ').');
 }
+function rentChaseUrl(r) {
+  const o = rentOverdue(r);
+  return r.phone && o ? waUrl(r.phone, 'Hi ' + r.name.split(' ')[0] + ', this is Bike & Butter. Your bike box was due back on ' + rentFmt(r.end) + '. Could you let us know when we can collect it, or when you can return it? Each extra day is charged at $' + RENT_RATES.rate + ' per box.') : '';
+}
 function rentCell(k, r, ctx) {
   const e = escapeHtml;
+  if (r.block) {
+    switch (k) {
+      case 'dates': return `<span class="cell-strong">${ctx.when}</span>`;
+      case 'days': return ctx.days;
+      case 'timing': return ctx.timing || rentDash;
+      case 'customer': return `<span class="cell-strong">${e(r.name)}</span><span class="rent-sub">Blocked, not for rent</span>`;
+      case 'boxes': return r.boxes;
+      case 'boxnos': return r.boxnos && r.boxnos.length ? r.boxnos.join(', ') : rentDash;
+      case 'status': return `<span class="rent-pill blocked">Blocked</span>`;
+      default: return rentDash;
+    }
+  }
   switch (k) {
     case 'dates': return `<span class="cell-strong">${ctx.when}</span>`;
     case 'days': return ctx.days;
@@ -4817,79 +4979,269 @@ function rentCell(k, r, ctx) {
     case 'customer': return `<span class="cell-strong">${rentPerBox(r, l => e(l.name))}</span>`;
     case 'contact': return rentPerBox(r, l => (l.phone ? `<a class="cell-muted" href="${waUrl(l.phone, 'Hi ' + e(l.name.split(' ')[0]) + ', this is Bike & Butter about your bike box rental.')}" target="_blank" rel="noopener">${e(l.phone)}</a>` : '') + (l.email ? `<br><span class="cell-muted">${e(l.email)}</span>` : '')) || rentDash;
     case 'boxes': return r.boxes;
+    case 'boxnos': return r.boxnos && r.boxnos.length ? r.boxnos.join(', ') : rentDash;
     case 'packing': return r.packs ? '×' + r.packs : rentDash;
     case 'delivery': return rentPerBox(r, l => l.deliver && l.collect ? 'Delivery + collection' : l.deliver ? 'Delivery' : l.collect ? 'Collection' : rentDash);
     case 'address': return rentPerBox(r, l => (l.deliver || l.collect) && l.address ? e(l.address) : rentDash);
     case 'bike': return rentPerBox(r, l => l.bike ? e(l.bike) : rentDash);
     case 'notes': return r.notes ? e(r.notes) : rentDash;
     case 'total': return r.total != null ? '$' + r.total : rentDash;
+    case 'payment': {
+      const p = r.payment; if (!p) return r.status === 'paid' ? '<span class="cell-muted">no record</span>' : rentDash;
+      const diff = r.total != null && Number(p.amount) !== Number(r.total) ? `<span class="rent-sub" style="color:#b0392c">total was $${r.total}</span>` : '';
+      return `$${p.amount} · ${e(p.method || '')}<span class="rent-sub">${e(p.date || '')}${p.ref ? ' · ' + e(p.ref) : ''}</span>${diff}`;
+    }
     case 'status': return `<span class="rent-pill ${ctx.k}">${ctx.label}</span>${ctx.stage ? ` <span class="rent-pill ${ctx.stage[0]}">${ctx.stage[1]}</span>` : ''}${r.status === 'paid' && r.paidAt ? `<span class="rent-sub">${e(r.paidAt)}</span>` : ''}${ctx.full}`;
+    case 'handover': {
+      const h = r.handover; if (!h || !h.out) return rentDash;
+      const ph = (h.out.photos || []).length + ((h.in && h.in.photos) || []).length;
+      return `Out ${e(h.out.at)}${h.out.note ? `<span class="rent-sub">${e(h.out.note)}</span>` : ''}${h.in ? `In ${e(h.in.at)}${h.in.note ? `<span class="rent-sub">${e(h.in.note)}</span>` : ''}${h.in.damage ? '<span class="rent-sub" style="color:#b0392c">Damage noted</span>' : ''}${h.in.fee ? `<span class="rent-sub">Extra charge $${h.in.fee}${h.in.feeNote ? ' · ' + e(h.in.feeNote) : ''}</span>` : ''}` : ''}${ph ? `<span class="rent-sub">${ph} photo${ph === 1 ? '' : 's'}</span>` : ''}`;
+    }
+    case 'terms': return r.terms ? `<span title="${e(r.terms)}">✓</span>` : '<span class="cell-muted">not recorded</span>';
     case 'ref': return r.ref ? `<span class="cell-muted" style="font-size:11px">${e(r.ref)}</span>` : rentDash;
   }
   return '';
 }
 function renderRentals() {
-  const t = RENT_TODAY, live = RENTALS.filter(r => !r.pending);
-  const usedOn = d => live.filter(r => r.start <= d && r.end >= d).reduce((a, r) => a + r.boxes, 0);
+  const t = RENT_TODAY, np = RENTALS.filter(r => !r.pending), rents = np.filter(r => !r.block), blocks = np.filter(r => r.block);
+  const heldOn = d => np.filter(r => r.start <= d && r.end >= d).reduce((a, r) => a + r.boxes, 0);      // rented + blocked (what the website uses)
+  const outOn = d => rents.filter(r => r.start <= d && r.end >= d).reduce((a, r) => a + r.boxes, 0);
+  const blockedOn = d => blocks.filter(r => r.start <= d && r.end >= d).reduce((a, r) => a + r.boxes, 0);
   const pend = RENTALS.filter(r => r.pending && r.end >= t);
-  const unpaid = RENTALS.filter(r => !r.legacy && !r.pending && r.status !== 'paid' && r.end >= t);
-  const out = usedOn(t), soon = live.filter(r => r.start > t && r.start <= rentAdd(t, 7)).length;
-  const badge = document.getElementById('rentPendingBadge'); if (badge) { badge.textContent = pend.length + unpaid.length; badge.style.display = pend.length + unpaid.length ? '' : 'none'; }
+  const unpaid = rents.filter(r => !r.legacy && r.status !== 'paid' && r.end >= t);
+  const late = rents.filter(r => rentOverdue(r) > 0);
+  const out = outOn(t), blk = blockedOn(t), soon = rents.filter(r => r.start > t && r.start <= rentAdd(t, 7)).length;
+  const month = t.slice(0, 7), monthPays = rents.filter(r => r.payment && String(r.payment.date || '').slice(0, 7) === month), monthSum = monthPays.reduce((a, r) => a + (Number(r.payment.amount) || 0), 0);
+  const badge = document.getElementById('rentPendingBadge'); const bn = pend.length + unpaid.length + late.length; if (badge) { badge.textContent = bn; badge.style.display = bn ? '' : 'none'; }
   document.getElementById('rentTiles').innerHTML =
-    `<div class="tile"><div class="tile-label">Boxes out today</div><div class="tile-val">${out}</div><div class="tile-sub">of ${RENT_TOTAL}</div></div>` +
-    `<div class="tile"><div class="tile-label">Free today</div><div class="tile-val">${Math.max(0, RENT_TOTAL - out)}</div><div class="tile-sub">available to book</div></div>` +
+    `<div class="tile"><div class="tile-label">Boxes out today</div><div class="tile-val">${out}</div><div class="tile-sub">of ${RENT_TOTAL}${blk ? ' · ' + blk + ' blocked' : ''}</div></div>` +
+    `<div class="tile"><div class="tile-label">Free today</div><div class="tile-val">${Math.max(0, RENT_TOTAL - out - blk)}</div><div class="tile-sub">available to book</div></div>` +
     `<div class="tile"><div class="tile-label">Awaiting payment</div><div class="tile-val">${pend.length + unpaid.length}</div><div class="tile-sub">${pend.length} pending request${pend.length === 1 ? '' : 's'} · ${unpaid.length} reserved</div></div>` +
-    `<div class="tile"><div class="tile-label">Collections, next 7 days</div><div class="tile-val">${soon}</div><div class="tile-sub">confirmed rentals starting</div></div>`;
+    `<div class="tile"><div class="tile-label">Collections, next 7 days</div><div class="tile-val">${soon}</div><div class="tile-sub">confirmed rentals starting</div></div>` +
+    `<div class="tile"${late.length ? ' style="border-color:#e6b8b2"' : ''}><div class="tile-label">Overdue</div><div class="tile-val"${late.length ? ' style="color:#b0392c"' : ''}>${late.length}</div><div class="tile-sub">checked out, past return date</div></div>` +
+    `<div class="tile"><div class="tile-label">Paid this month</div><div class="tile-val">$${monthSum.toLocaleString('en-SG')}</div><div class="tile-sub">${monthPays.length} payment${monthPays.length === 1 ? '' : 's'} recorded</div></div>`;
   let strip = '';
   for (let i = 0; i < 14; i++) {
-    const d = rentAdd(t, i), free = Math.max(0, RENT_TOTAL - usedOn(d));
+    const d = rentAdd(t, i), free = Math.max(0, RENT_TOTAL - heldOn(d));
     const dt = rentD(d), cls = free === 0 ? 'none' : (free <= 2 ? 'low' : '');
     strip += `<div class="rent-day ${cls}">${dt.toLocaleDateString('en-SG', { weekday: 'short', timeZone: 'UTC' })}<b>${free}</b>${dt.toLocaleDateString('en-SG', { day: 'numeric', month: 'short', timeZone: 'UTC' })}</div>`;
   }
   document.getElementById('rentStrip').innerHTML = strip;
-  document.getElementById('rentStripNote').textContent = 'free boxes each day (pending requests not counted)';
+  document.getElementById('rentStripNote').textContent = 'free boxes each day (pending requests not counted, blocked boxes are)';
+  renderRentBoard(rents, blocks);
 
   const st = rentColState(), cols = st.order.filter(k => !st.hidden.includes(k)).map(k => RENT_COLS.find(c => c.k === k));
   document.getElementById('rentHead').innerHTML = cols.map(c => `<th draggable="true" title="Drag to move" ondragstart="rentDragK='${c.k}';event.dataTransfer.effectAllowed='move'" ondragover="event.preventDefault();if(rentDragK!=='${c.k}')this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="rentColDrop(event,'${c.k}')">${c.l}</th>`).join('') + '<th></th>';
 
   let list = RENTALS.slice();
-  if (rentFilter === 'active') list = list.filter(r => r.end >= t);
-  else if (rentFilter === 'pending') list = list.filter(r => r.pending || (!r.legacy && r.status === 'confirmed'));
-  else list = list.filter(r => r.end < t && !r.pending).reverse();
-  if (rentFilter !== 'past') list.sort((a, b) => (b.pending - a.pending) || a.start.localeCompare(b.start));
+  if (rentFilter === 'active') list = list.filter(r => r.end >= t || rentOverdue(r) > 0);
+  else if (rentFilter === 'pending') list = list.filter(r => r.pending || (!r.legacy && !r.block && r.status === 'confirmed'));
+  else list = list.filter(r => r.end < t && !r.pending && !rentOverdue(r)).reverse();
+  if (rentFilter !== 'past') list.sort((a, b) => (b.pending - a.pending) || (rentOverdue(b) > 0) - (rentOverdue(a) > 0) || a.start.localeCompare(b.start));
   const tbody = document.getElementById('rentRows');
   if (!list.length) { tbody.innerHTML = `<tr><td colspan="${cols.length + 1}" class="cell-muted">Nothing here</td></tr>`; return; }
   tbody.innerHTML = list.map(r => {
     const days = rentDiff(r.start, r.end) + 1, [k, label] = rentStatus(r);
     const when = r.start === r.end ? rentFmt(r.start) : rentFmt(r.start) + ' – ' + rentFmt(r.end);
     const full = r.pending && r.free != null && r.free < r.boxes ? `<br><span style="color:#b0392c;font-weight:700;font-size:11px">Only ${r.free} free for these dates</span>` : '';
-    const stage = r.pending ? null : (r.end < t ? ['done', 'Returned'] : (r.start <= t ? ['out', 'Out now'] : null));
-    const ctx = { when, days, k, label, full, stage, timing: rentTiming(r) };
-    const wa = rentWaFor(r), idq = escapeHtml(r.id);
+    const ctx = { when, days, k, label, full, stage: rentStage(r), timing: r.block ? '' : rentTiming(r) };
+    const wa = rentWaFor(r), idq = escapeHtml(r.id), h = r.handover;
     let actions;
-    if (r.legacy) actions = `<button class="btn btn-primary btn-sm" onclick="rentImport('${idq}')">Import</button> <span class="cell-muted" title="Imported bookings move into the Bike Box Rentals calendar (as paid) so you can edit them here">from another calendar</span>`;
+    if (r.block) actions = `<button class="btn btn-ghost btn-sm" onclick="rentBlockOpen('${idq}')">Edit</button> <button class="btn btn-ghost btn-sm" onclick="rentRemove('${idq}', false)">${ICON_TRASH}</button>`;
+    else if (r.legacy) actions = `<button class="btn btn-primary btn-sm" onclick="rentImport('${idq}')">Import</button> <span class="cell-muted" title="Imported bookings move into the Bike Box Rentals calendar (as paid) so you can edit them here">from another calendar</span>`;
     else {
-      const unp = r.status !== 'paid';
-      actions = (unp ? `<button class="btn btn-primary btn-sm" onclick="rentPaid('${idq}')">Mark paid</button> ` : '') +
+      const unp = r.status !== 'paid', chase = rentChaseUrl(r);
+      actions = (unp ? `<button class="btn btn-primary btn-sm" onclick="rentPayOpen('${idq}')">Mark paid</button> ` : '') +
+        (!r.pending && !(h && h.out) ? `<button class="btn ${unp ? 'btn-ghost' : 'btn-primary'} btn-sm" onclick="rentHoOpen('${idq}','out')">Check out</button> ` : '') +
+        (h && h.out && !h.in ? `<button class="btn btn-primary btn-sm" onclick="rentHoOpen('${idq}','in')">Check in</button> ` : '') +
+        (h && h.out ? `<button class="btn btn-ghost btn-sm" onclick="rentHoOpen('${idq}','out')" title="See or undo the check-out record">Out record</button> ` : '') +
+        (h && h.in ? `<button class="btn btn-ghost btn-sm" onclick="rentHoOpen('${idq}','in')" title="See or undo the check-in record">In record</button> ` : '') +
+        (chase ? `<a class="btn btn-ghost btn-sm" style="color:#b0392c" href="${chase}" target="_blank" rel="noopener">Chase</a> ` : '') +
         (wa ? `<a class="btn btn-ghost btn-sm" href="${wa}" target="_blank" rel="noopener" title="${unp ? 'WhatsApp the availability, total and PayNow details' : 'WhatsApp the booking confirmation'}">${unp ? 'Send payment details' : 'Send confirmation'}</a> ` : '') +
+        (!r.pending ? `<button class="btn btn-ghost btn-sm" onclick="rentInvoice('${idq}')" title="Open a new invoice with this rental filled in">Invoice</button> ` : '') +
         `<button class="btn btn-ghost btn-sm" onclick="rentOpenEditor('${idq}')">Edit</button> ` +
         `<button class="btn btn-ghost btn-sm" onclick="rentRemove('${idq}', ${r.pending})">${r.pending ? 'Decline' : ICON_TRASH}</button>`;
     }
-    return `<tr class="${r.pending ? 'rent-pending' : ''}">` + cols.map(c => `<td class="${c.cls || ''}">${rentCell(c.k, r, ctx)}</td>`).join('') + `<td style="white-space:nowrap">${actions}</td></tr>`;
+    return `<tr class="${r.pending ? 'rent-pending' : ''}${rentOverdue(r) ? ' rent-late' : ''}">` + cols.map(c => `<td class="${c.cls || ''}">${rentCell(c.k, r, ctx)}</td>`).join('') + `<td class="rc-actions">${actions}</td></tr>`;
   }).join('');
 }
+// where each of the 6 numbered boxes is right now
+function renderRentBoard(rents, blocks) {
+  const t = RENT_TODAY, cells = [];
+  for (let n = 1; n <= RENT_TOTAL; n++) {
+    const holder = rents.find(r => r.handover && r.handover.out && !r.handover.in && (r.boxnos || []).includes(n));
+    const blk = blocks.find(r => r.start <= t && r.end >= t && (r.boxnos || []).includes(n));
+    if (holder) { const o = rentOverdue(holder); cells.push(`<div class="rent-box ${o ? 'late' : 'out'}"><b>Box ${n}</b><span>${escapeHtml(holder.name)}</span><span>${o ? 'overdue ' + o + 'd' : 'back ' + rentFmt(holder.end)}</span></div>`); }
+    else if (blk) cells.push(`<div class="rent-box blocked"><b>Box ${n}</b><span>${escapeHtml(blk.name)}</span><span>blocked to ${rentFmt(blk.end)}</span></div>`);
+    else cells.push(`<div class="rent-box free"><b>Box ${n}</b><span>In the workshop</span><span>&nbsp;</span></div>`);
+  }
+  document.getElementById('rentBoard').innerHTML = cells.join('');
+  const numbered = new Set(); rents.forEach(r => { if (r.handover && r.handover.out && !r.handover.in) (r.boxnos || []).forEach(n => numbered.add(n)); });
+  blocks.forEach(r => { if (r.start <= t && r.end >= t) (r.boxnos || []).forEach(n => numbered.add(n)); });
+  const outByDate = rents.filter(r => r.start <= t && r.end >= t && !(r.handover && r.handover.in)).reduce((a, r) => a + r.boxes, 0) + blocks.filter(r => r.start <= t && r.end >= t).reduce((a, r) => a + r.boxes, 0);
+  const un = Math.max(0, outByDate - numbered.size);
+  document.getElementById('rentBoardNote').textContent = un ? un + ' box' + (un === 1 ? ' is' : 'es are') + ' out by the calendar without a box number (set it when you check out)' : 'every box accounted for';
+}
 function rentNotice(html) { const n = document.getElementById('rentNotice'); n.innerHTML = html; n.classList.toggle('open', !!html); }
-async function rentPaid(id) {
+
+/* --- Mark paid: records how and how much was paid --- */
+function rentPayOpen(id) {
   const r = RENTALS.find(x => x.id === id); if (!r) return;
   const mails = [...new Set(rentLegs(r).map(l => l.email).filter(Boolean))];
-  if (!confirm('Mark ' + r.name + '’s rental as PAID?\n\nOnly do this after you have checked the payment.\n• ' + r.boxes + ' box(es) become blocked on the website\n• The calendar event turns tomato\n• ' + (mails.length ? 'A confirmation email is sent to ' + mails.join(', ') : 'No email is sent (no email on file)') + '\n• You then tap the WhatsApp confirmation button that appears')) return;
-  let j = await rentCall('adminPaid', { id });
-  if (!j.ok && j.code === 'full' && confirm(j.error + '\n\nMark as paid anyway?')) j = await rentCall('adminPaid', { id, force: true });
-  if (!j.ok) return alert('Could not mark as paid: ' + (j.error || 'unknown error'));
-  const wa = r.phone ? waUrl(r.phone, j.cmsg) : '';
-  rentNotice('<b>' + escapeHtml(r.name) + ' is marked PAID.</b> ' + (j.emailed && j.emailed.length ? 'Confirmation email sent to ' + escapeHtml(j.emailed.join(', ')) + '. ' : 'No email on file. ') +
-    (wa ? `<a class="btn btn-primary btn-sm" href="${wa}" target="_blank" rel="noopener">Send WhatsApp confirmation</a>` : 'No WhatsApp number on file.') + ' <button class="btn btn-ghost btn-sm" onclick="rentNotice(\'\')">Dismiss</button>');
-  await loadRentals();
+  document.getElementById('rpId').value = id;
+  document.getElementById('rpTitle').textContent = 'Mark paid: ' + r.name;
+  document.getElementById('rpSummary').innerHTML = `${rentFmt(r.start)}${r.start === r.end ? '' : ' – ' + rentFmt(r.end)} · ${r.boxes} box${r.boxes === 1 ? '' : 'es'} · total <b>${r.total != null ? '$' + r.total : 'not set'}</b>`;
+  document.getElementById('rpAmount').value = r.total != null ? r.total : '';
+  document.getElementById('rpMethod').value = 'PayNow'; document.getElementById('rpRef').value = ''; document.getElementById('rpDate').value = RENT_TODAY;
+  const em = document.getElementById('rpEmail'); em.checked = mails.length > 0; em.disabled = !mails.length;
+  document.getElementById('rpEmailLbl').textContent = mails.length ? 'Email the confirmation to ' + mails.join(', ') : 'No email on file, so no email can be sent';
+  document.getElementById('rpErr').textContent = '';
+  document.getElementById('rentPayBackdrop').classList.add('open');
+}
+function rentPayClose() { document.getElementById('rentPayBackdrop').classList.remove('open'); }
+async function rentPaid(force) {
+  const g = k => document.getElementById(k), id = g('rpId').value, r = RENTALS.find(x => x.id === id); if (!r) return;
+  const amount = g('rpAmount').value; if (amount === '' || isNaN(+amount) || +amount < 0) return g('rpErr').textContent = 'Please enter the amount you received.';
+  const btn = g('rpSave'); btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const body = { id, payment: { amount: +amount, method: g('rpMethod').value, ref: g('rpRef').value.trim(), date: g('rpDate').value }, sendEmail: g('rpEmail').checked };
+    let j = await rentCall('adminPaid', body);
+    if (!j.ok && j.code === 'full' && confirm(j.error + '\n\nMark as paid anyway?')) j = await rentCall('adminPaid', Object.assign({ force: true }, body));
+    if (!j.ok) { g('rpErr').textContent = 'Could not mark as paid: ' + (j.error || 'unknown error'); return; }
+    rentPayClose();
+    const wa = r.phone ? waUrl(r.phone, j.cmsg) : '';
+    rentNotice('<b>' + escapeHtml(r.name) + ' is marked PAID ($' + (+amount) + ').</b> ' + (j.emailed && j.emailed.length ? 'Confirmation email sent to ' + escapeHtml(j.emailed.join(', ')) + '. ' : 'No email sent. ') +
+      (wa ? `<a class="btn btn-primary btn-sm" href="${wa}" target="_blank" rel="noopener">Send WhatsApp confirmation</a>` : 'No WhatsApp number on file.') + ' <button class="btn btn-ghost btn-sm" onclick="rentNotice(\'\')">Dismiss</button>');
+    await loadRentals();
+  } catch (e) { g('rpErr').textContent = 'Could not reach Google: ' + (e.message || e); }
+  finally { btn.disabled = false; btn.textContent = 'Mark as paid'; }
+}
+
+/* --- Check out / check in --- */
+let rhPhotos = [], rhAdded = [], rhStage = 'out', rhPicked = [], rhBusy = false;
+function rentHoOpen(id, stage) {
+  const r = RENTALS.find(x => x.id === id); if (!r) return;
+  const h = r.handover || {}, rec = h[stage] || null, g = k => document.getElementById(k);
+  rhStage = stage; rhAdded = []; rhBusy = false;
+  g('rhId').value = id;
+  g('rhTitle').textContent = (stage === 'out' ? 'Check out: ' : 'Check in: ') + r.name;
+  g('rhSummary').innerHTML = `${rentFmt(r.start)}${r.start === r.end ? '' : ' – ' + rentFmt(r.end)} · ${r.boxes} box${r.boxes === 1 ? '' : 'es'}${r.packs ? ' · packing ×' + r.packs : ''}${r.deliver || r.collect ? ' · ' + (r.deliver && r.collect ? 'delivery + collection' : r.deliver ? 'delivery' : 'collection') + (r.address ? ' (' + escapeHtml(r.address) + ')' : '') : ''}`;
+  g('rhWarn').textContent = r.status !== 'paid' ? 'Not marked as paid yet.' : '';
+  g('rhNote').value = rec ? rec.note || '' : '';
+  rhPhotos = rec ? (rec.photos || []).slice() : [];
+  g('rhBoxesWrap').style.display = stage === 'out' ? '' : 'none';
+  g('rhTermsWrap').style.display = stage === 'out' ? '' : 'none';
+  g('rhInWrap').style.display = stage === 'in' ? '' : 'none';
+  if (stage === 'out') {
+    rhPicked = (r.boxnos || []).slice();
+    const busy = {}; RENTALS.forEach(o => { if (o.id !== id && !o.block && o.handover && o.handover.out && !o.handover.in) (o.boxnos || []).forEach(n => busy[n] = o.name); });
+    g('rhBoxes').innerHTML = Array.from({ length: RENT_TOTAL }, (_, i) => i + 1).map(n => `<label class="rent-pick${busy[n] ? ' busy' : ''}"><input type="checkbox" value="${n}" ${rhPicked.includes(n) ? 'checked' : ''} onchange="rhPick(this)"> Box ${n}${busy[n] ? `<small>out with ${escapeHtml(busy[n])}</small>` : ''}</label>`).join('');
+    g('rhBoxesNote').textContent = '(pick ' + r.boxes + ')';
+    const hasTerms = !!(r.terms || (h.out && h.out.terms));
+    g('rhTerms').checked = hasTerms; g('rhTermsNote').textContent = r.terms ? '(' + r.terms + ')' : '';
+  } else {
+    const o = rentOverdue(r), suggest = o * RENT_RATES.rate * r.boxes;
+    g('rhDamage').checked = !!(rec && rec.damage); g('rhFee').value = rec && rec.fee ? rec.fee : (suggest || ''); g('rhFeeNote').value = rec ? rec.feeNote || '' : (o ? 'Late return, ' + o + ' day' + (o === 1 ? '' : 's') : '');
+    g('rhLate').textContent = o ? `${o} day${o === 1 ? '' : 's'} late. Late fee at $${RENT_RATES.rate} per box per day would be $${suggest}.` : '';
+  }
+  g('rhRecord').innerHTML = rec ? `Recorded ${escapeHtml(rec.at)}.` : '';
+  g('rhUndo').style.display = rec ? '' : 'none';
+  g('rhUndo').textContent = stage === 'out' ? 'Undo check-out' : 'Undo check-in';
+  g('rhErr').textContent = ''; g('rhMsg').textContent = ''; g('rhSave').textContent = rec ? 'Update' : (stage === 'out' ? 'Check out' : 'Check in');
+  rhRenderPhotos();
+  g('rentHoBackdrop').classList.add('open');
+}
+function rhPick(el) { const n = +el.value; rhPicked = rhPicked.filter(x => x !== n); if (el.checked) rhPicked.push(n); }
+function rentHoClose(cancel) {
+  document.getElementById('rentHoBackdrop').classList.remove('open');
+  if (cancel && rhAdded.length) { const ps = rhAdded.map(lstPath).filter(Boolean); if (ps.length) sb.storage.from(LST_BUCKET).remove(ps); }
+  rhAdded = [];
+}
+function rhRenderPhotos() {
+  document.getElementById('rhPhotos').innerHTML = rhPhotos.map((u, i) => `<div class="rent-ph"><a href="${escapeHtml(u)}" target="_blank" rel="noopener"><img src="${escapeHtml(u)}" alt=""></a><button type="button" title="Remove" onclick="rhRemovePhoto(${i})">✕</button></div>`).join('');
+}
+function rhRemovePhoto(i) { const [u] = rhPhotos.splice(i, 1); if (rhAdded.includes(u)) { rhAdded = rhAdded.filter(a => a !== u); const p = lstPath(u); if (p) sb.storage.from(LST_BUCKET).remove([p]); } rhRenderPhotos(); }
+async function rhAddPhotos(files) {
+  const list = Array.from(files || []); if (!list.length) return;
+  const msg = document.getElementById('rhMsg'), save = document.getElementById('rhSave'); rhBusy = true; save.disabled = true;
+  let done = 0, failed = 0;
+  for (const f of list) {
+    msg.textContent = 'Uploading photo ' + (done + failed + 1) + ' of ' + list.length + '…';
+    try {
+      const blob = await lstResize(f);
+      const path = 'rental-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8) + (blob.type === 'image/webp' ? '.webp' : '.jpg');
+      const { error } = await sb.storage.from(LST_BUCKET).upload(path, blob, { contentType: blob.type, cacheControl: '31536000', upsert: false });
+      if (error) throw error;
+      const url = sb.storage.from(LST_BUCKET).getPublicUrl(path).data.publicUrl;
+      rhPhotos.push(url); rhAdded.push(url); done++; rhRenderPhotos();
+    } catch (e) { console.error(e); failed++; }
+  }
+  rhBusy = false; save.disabled = false;
+  msg.textContent = failed ? done + ' uploaded, ' + failed + ' could not be added (try a JPG or PNG).' : done + ' photo' + (done === 1 ? '' : 's') + ' added.';
+  document.getElementById('rhFile').value = '';
+}
+async function rentHoSave(force) {
+  const g = k => document.getElementById(k), id = g('rhId').value, r = RENTALS.find(x => x.id === id); if (!r || rhBusy) return;
+  const err = g('rhErr'); err.textContent = '';
+  const body = { id, stage: rhStage, note: g('rhNote').value.trim(), photos: rhPhotos };
+  if (rhStage === 'out') {
+    body.boxnos = rhPicked.slice().sort((a, b) => a - b); body.terms = g('rhTerms').checked;
+    if (!body.terms && !confirm('The rental terms are not ticked as agreed. Check out anyway?')) return;
+  } else { body.damage = g('rhDamage').checked; body.fee = +g('rhFee').value || 0; body.feeNote = g('rhFeeNote').value.trim(); }
+  if (force) body.force = true;
+  const btn = g('rhSave'); btn.disabled = true;
+  try {
+    const j = await rentCall('adminHandover', body);
+    if (!j.ok && (j.code === 'count' || j.code === 'busy') && !force) { if (confirm(j.error + '\n\nContinue anyway?')) { btn.disabled = false; return rentHoSave(true); } return; }
+    if (!j.ok) { err.textContent = j.error || 'Could not save.'; return; }
+    rhAdded = []; rentHoClose(false);
+    if (rhStage === 'in') {
+      const late = rentOverdue(r), fee = body.fee;
+      rentNotice('<b>' + escapeHtml(r.name) + ' is checked in.</b> ' + (body.damage ? 'Damage noted. ' : '') + (fee ? 'Extra charge to collect: $' + fee + (body.feeNote ? ' (' + escapeHtml(body.feeNote) + ')' : '') + '. ' : '') + (late && !fee ? 'It was ' + late + ' day(s) late. ' : '') + '<button class="btn btn-ghost btn-sm" onclick="rentNotice(\'\')">Dismiss</button>');
+    }
+    await loadRentals();
+  } catch (e) { err.textContent = 'Could not reach Google: ' + (e.message || e); }
+  finally { btn.disabled = false; }
+}
+async function rentHoUndo() {
+  const g = k => document.getElementById(k), id = g('rhId').value;
+  if (!confirm(rhStage === 'out' ? 'Undo this check-out? Box numbers and notes are removed.' : 'Undo this check-in? The boxes count as out again.')) return;
+  const j = await rentCall('adminHandover', { id, undo: rhStage });
+  if (!j.ok) { g('rhErr').textContent = j.error || 'Could not undo.'; return; }
+  rentHoClose(false); await loadRentals();
+}
+
+/* --- Block dates (box in repair, kept for yourself...) --- */
+let rbPicked = [];
+function rentBlockOpen(id) {
+  const r = id ? RENTALS.find(x => x.id === id) : null, g = k => document.getElementById(k);
+  g('rbId').value = r ? r.id : ''; g('rbTitle').textContent = r ? 'Edit blocked dates' : 'Block dates';
+  g('rbStart').value = r ? r.start : RENT_TODAY; g('rbEnd').value = r ? r.end : RENT_TODAY; g('rbBoxes').value = r ? r.boxes : 1; g('rbReason').value = r ? r.name : '';
+  rbPicked = r ? (r.boxnos || []).slice() : [];
+  g('rbPick').innerHTML = Array.from({ length: RENT_TOTAL }, (_, i) => i + 1).map(n => `<label class="rent-pick"><input type="checkbox" value="${n}" ${rbPicked.includes(n) ? 'checked' : ''} onchange="rbPickChange(this)"> Box ${n}</label>`).join('');
+  g('rbErr').textContent = ''; g('rentBlockBackdrop').classList.add('open');
+}
+function rbPickChange(el) { const n = +el.value; rbPicked = rbPicked.filter(x => x !== n); if (el.checked) rbPicked.push(n); if (rbPicked.length) document.getElementById('rbBoxes').value = rbPicked.length; }
+function rentBlockClose() { document.getElementById('rentBlockBackdrop').classList.remove('open'); }
+async function rentBlockSave() {
+  const g = k => document.getElementById(k), err = g('rbErr'); err.textContent = '';
+  const data = { id: g('rbId').value || undefined, start: g('rbStart').value, end: g('rbEnd').value, boxes: +g('rbBoxes').value || 1, reason: g('rbReason').value.trim(), boxnos: rbPicked.slice().sort((a, b) => a - b) };
+  if (!data.start || !data.end) return err.textContent = 'Please choose both dates.';
+  if (data.end < data.start) return err.textContent = 'The last day is before the first day.';
+  if (!data.reason) return err.textContent = 'Please say why, for example "Box 3 in repair".';
+  const btn = g('rbSave'); btn.disabled = true;
+  try {
+    const j = await rentCall('adminBlockSave', data);
+    if (!j.ok) { err.textContent = j.error || 'Could not save.'; return; }
+    rentBlockClose(); await loadRentals();
+  } catch (e) { err.textContent = 'Could not reach Google: ' + (e.message || e); }
+  finally { btn.disabled = false; }
+}
+
+/* --- open a new invoice with the rental already filled in --- */
+function rentInvoice(id) {
+  const r = RENTALS.find(x => x.id === id); if (!r) return;
+  openDocEditor('invoice', null, { rental: r });
 }
 async function rentImport(id) {
   const r = RENTALS.find(x => x.id === id); if (!r) return;
@@ -4955,6 +5307,7 @@ function rentOpenEditor(id) {
     sameD: !!l.deliver === !!r.deliver && !!l.collect === !!r.collect && (l.address || '') === (r.address || ''), deliver: !!l.deliver, collect: !!l.collect, address: l.address || ''
   })) : [];
   document.getElementById('rtStatus').value = r ? (r.pending ? 'pending' : r.status === 'paid' ? 'paid' : 'confirmed') : 'confirmed';
+  const tt = document.getElementById('rtTerms'); tt.checked = !!(r && r.terms); tt.disabled = !!(r && r.terms); document.getElementById('rtTermsNote').textContent = r && r.terms ? '(' + r.terms + ')' : '';
   document.getElementById('rtErr').textContent = '';
   rentRenderLegs(); document.getElementById('rtPacks').max = rtLegs.length + 1;
   rentAuto(); document.getElementById('rentModalBackdrop').classList.add('open');
@@ -4976,7 +5329,7 @@ async function rentSave() {
   const g = k => document.getElementById(k), err = g('rtErr'); err.textContent = '';
   const data = { id: g('rtId').value || undefined, start: g('rtStart').value, end: g('rtEnd').value, boxes: +g('rtBoxes').value, packs: +g('rtPacks').value || 0,
     deliver: g('rtDeliver').checked, collect: g('rtCollect').checked, address: g('rtAddress').value.trim(), name: g('rtName').value.trim(), phone: g('rtPhone').value.trim(),
-    email: g('rtEmail').value.trim(), bike: g('rtBike').value.trim(), notes: g('rtNotes').value.trim(), total: g('rtTotal').value, status: g('rtStatus').value, legs: rentResolvedLegs() };
+    email: g('rtEmail').value.trim(), bike: g('rtBike').value.trim(), notes: g('rtNotes').value.trim(), total: g('rtTotal').value, status: g('rtStatus').value, legs: rentResolvedLegs(), terms: g('rtTerms').checked };
   if (!data.start || !data.end) return err.textContent = 'Please choose both dates.';
   if (data.end < data.start) return err.textContent = 'The return date is before the collection date.';
   if (data.name.length < 2) return err.textContent = 'Please enter the customer name.';

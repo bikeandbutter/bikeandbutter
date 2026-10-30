@@ -21,7 +21,7 @@
   <link rel="preload" href="/assets/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/site.css">
   <link rel="stylesheet" href="/assets/css/store.css">
-  <link rel="stylesheet" href="/assets/css/rent.css?v=4">
+  <link rel="stylesheet" href="/assets/css/rent.css?v=5">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[
     {"@type":"Service","@id":"https://bikeandbutter.com/rent/#service","name":"Bike box rental","serviceType":"Bicycle travel box rental","description":"Tri-specific bike box rental for triathlons, Ironman races and cycling holidays. Fits road bikes. Optional bike packing service.","areaServed":{"@type":"Country","name":"Singapore"},"provider":{"@type":"LocalBusiness","name":"Bike & Butter","url":"https://bikeandbutter.com/","telephone":"+65 8722 2610","address":{"@type":"PostalAddress","streetAddress":"491 Jurong West Avenue 1","postalCode":"640491","addressCountry":"SG"}},"offers":[{"@type":"Offer","name":"Bike box rental","priceCurrency":"SGD","priceSpecification":{"@type":"UnitPriceSpecification","price":"10","priceCurrency":"SGD","unitText":"DAY","minPrice":"50"},"url":"https://bikeandbutter.com/rent/"},{"@type":"Offer","name":"Bike packing service","priceCurrency":"SGD","price":"50"}]},
@@ -166,6 +166,7 @@
           <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
         </div>
 
+        <label class="rt-check rt-terms"><input type="checkbox" name="terms" required> <span>I have read and agree to the <a href="/terms/#bike-box-rental" target="_blank" rel="noopener">bike box rental terms</a>, including the late return and damage terms.</span></label>
         <button class="btn btn-dark rt-submit" type="submit" data-submit>Request this booking</button>
         <p class="rt-small">Sending a request does not hold the boxes. We confirm availability with you on WhatsApp first, then send PayNow details. Collection is at our workshop unless you choose delivery.</p>
         <p class="rt-error" data-error role="alert" hidden></p>
@@ -282,6 +283,6 @@
 
 <script src="/assets/js/site.js" defer></script>
 <script src="/assets/js/store.js" defer></script>
-<script src="/assets/js/rent.js?v=4" defer></script>
+<script src="/assets/js/rent.js?v=5" defer></script>
 </body>
 </html>

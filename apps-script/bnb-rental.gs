@@ -20,6 +20,8 @@ var RATE = 10, MIN_CHARGE = 50, PACK_FEE = 50, DELIVERY_FEE = 30;   // DELIVERY_
 var UEN = '53521776E';
 var QR_URL = 'https://bikeandbutter.com/assets/img/paynow-qr.png';
 var WORKSHOP = '491 Jurong West Ave 1';
+var TERMS_URL = 'https://bikeandbutter.com/terms/#bike-box-rental';
+var LATE_FEE = RATE;   // late return: per box per extra day (see the rental terms)
 var PENDING_RE = /^\s*PENDING\s*[·\-:]?\s*/i;
 
 // ---------- web app ----------
@@ -58,6 +60,8 @@ function bookFromWebsite_(b) {
   if (r.error) return json_({ ok: false, error: r.error });
   if (!r.email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(r.email)) return json_({ ok: false, error: 'email needed' });
   if ((r.deliver || r.collect) && r.address.length < 6) return json_({ ok: false, error: 'address needed' });
+  if (b.terms !== true) return json_({ ok: false, error: 'terms' });
+  r.terms = 'accepted ' + Utilities.formatDate(new Date(), TZ, 'd MMM yyyy HH:mm') + ' (website)';
 
   var cache = CacheService.getScriptCache(), key = 'rl_' + r.phone.replace(/\D/g, '');
   var n = parseInt(cache.get(key) || '0', 10);
@@ -157,7 +161,11 @@ function descOf_(r, state) {
     'Email: ' + r.email,
     'Bike: ' + r.bike,
     'Notes: ' + r.notes
-  ].concat((r.legs || []).map(function (l, i) { return 'Box' + (i + 2) + ': ' + JSON.stringify(l); })).join('\n') +
+  ].concat((r.legs || []).map(function (l, i) { return 'Box' + (i + 2) + ': ' + JSON.stringify(l); }))
+    .concat(r.terms ? ['Terms: ' + r.terms] : [])
+    .concat(r.boxnos && r.boxnos.length ? ['Boxnos: ' + r.boxnos.join(',')] : [])
+    .concat(r.payment ? ['Payment: ' + JSON.stringify(r.payment)] : [])
+    .concat(r.handover ? ['Handover: ' + JSON.stringify(r.handover)] : []).join('\n') +
     (state === 'pending' ? '\n\nTO CONFIRM: once the customer has paid, mark it PAID in bnbhq (Bike Box Rentals) or use the link in the request email.' : '') +
     (state === 'paid' ? '\n\nPAID ' + Utilities.formatDate(new Date(), TZ, 'd MMM yyyy HH:mm') : '');
 }
@@ -193,7 +201,7 @@ function confirmText_(r) {
   var first = r.name.split(' ')[0], d = daysOf_(r), n = r.boxes;
   return 'Hi ' + first + ', we have received your payment of $' + r.total + ', thank you! Your bike box booking with Bike & Butter is confirmed.\n\n' +
     'Ref: ' + r.ref + '\nDates: ' + labelOf_(r) + ' (' + d + ' day' + (d > 1 ? 's' : '') + ')\nBoxes: ' + n + (r.packs ? '\nPacking: ' + r.packs + ' bike' + (r.packs > 1 ? 's' : '') : '') + '\n\n' +
-    whereText_(r) + '\n\nWe will message you to arrange the exact times. See you soon!';
+    whereText_(r) + '\n\nWe will message you to arrange the exact times. Rental terms: ' + TERMS_URL + '\n\nSee you soon!';
 }
 function whereTextEmail_(r) {
   if (r.deliver && r.collect) return 'Delivery and collection: ' + r.address + '. We will WhatsApp you to arrange the times.';
@@ -216,22 +224,24 @@ function adminPage_(p) {
       '<p><a class="b" href="' + adminUrl_('confirm', ref) + '">Mark as PAID</a> <a class="b o" href="' + adminUrl_('decline', ref) + '">Decline and remove</a></p>');
   }
   if (p.action === 'confirm') {
-    var em = markPaid_(ev).emailed;
+    var em = markPaid_(ev, null, true).emailed;
     return page_('Marked as paid', '<p>Booking <b>' + esc_(ref) + '</b> is marked PAID and the boxes are now blocked on the website.' + (em.length ? ' A confirmation email was sent to ' + esc_(em.join(', ')) + '.' : ' (No customer email on file, so no email was sent.)') + ' Open bnbhq → Bike Box Rentals to send the WhatsApp confirmation.</p>');
   }
   ev.deleteEvent(); CacheService.getScriptCache().remove('avail');
   return page_('Removed', '<p>Booking <b>' + esc_(ref) + '</b> was removed from the calendar. Let the customer know on WhatsApp.</p>');
 }
-/** Marks a booking PAID: tomato colour, boxes blocked, confirmation emailed. Returns {emailed: [addresses], cmsg}. */
-function markPaid_(ev) {
-  var r0 = recOf_(ev, 'rental');
+/** Marks a booking PAID: tomato colour, boxes blocked, payment recorded, confirmation emailed (unless sendEmail is false). Returns {emailed, cmsg}. */
+function markPaid_(ev, payment, sendEmail) {
   ev.setTitle((ev.getTitle() || '').replace(PENDING_RE, ''));
   try { ev.setColor(CalendarApp.EventColor.RED); } catch (x) {}   // RED is "Tomato" in Google Calendar
-  var d = (ev.getDescription() || '').replace(/\n\nTO CONFIRM[\s\S]*$/, '').replace(/\n\n(CONFIRMED|PAID) .*$/m, '');
-  ev.setDescription(d + '\n\nPAID ' + Utilities.formatDate(new Date(), TZ, 'd MMM yyyy HH:mm'));
+  var r0 = recOf_(ev, 'rental');
+  var pay = payment || {};
+  var rec = { amount: isNaN(+pay.amount) || pay.amount === '' || pay.amount == null ? (r0.total || 0) : +pay.amount, method: clean_(pay.method || 'PayNow', 30), ref: clean_(pay.ref, 60), date: /^\d{4}-\d{2}-\d{2}$/.test(String(pay.date || '')) ? pay.date : day_(new Date()) };
+  var d = (ev.getDescription() || '').replace(/\n\nTO CONFIRM[\s\S]*$/, '').replace(/\n\n(CONFIRMED|PAID) .*$/m, '').replace(/\n?^Payment: .*$/m, '');
+  ev.setDescription(d + '\nPayment: ' + JSON.stringify(rec) + '\n\nPAID ' + Utilities.formatDate(new Date(), TZ, 'd MMM yyyy HH:mm'));
   CacheService.getScriptCache().remove('avail');
   var r = recOf_(ev, 'rental');
-  return { emailed: emailConfirmation_(r), cmsg: confirmText_(r) };
+  return { emailed: sendEmail === false ? [] : emailConfirmation_(r), cmsg: confirmText_(r) };
 }
 /** One confirmation email per distinct address (the main customer's also shows the total). */
 function emailConfirmation_(r) {
@@ -248,7 +258,7 @@ function emailConfirmation_(r) {
     MailApp.sendEmail({ to: ls[0].email, replyTo: OWNER_EMAIL, subject: 'Your bike box booking is confirmed (' + r.ref + ')',
       body: 'Hi ' + ls[0].name.split(' ')[0] + ',\n\nWe have received your payment and your bike box booking is confirmed.\n\nRef: ' + r.ref + '\nDates: ' + labelOf_(r) + ' (' + daysOf_(r) + ' day' + (daysOf_(r) > 1 ? 's' : '') + ')\nBoxes: ' + ls.length +
         (main ? '\nPacking: ' + (r.packs ? r.packs + ' bike(s)' : 'None') + '\nTotal paid: $' + r.total : '') + '\n\n' + wheres.join('\n') +
-        '\n\nBoxes are 130 x 49 x 100 cm and weigh 16-17 kg empty, so please make sure your transport can fit one.\n\nIf you need to change your dates, just reply to this email or WhatsApp us on +65 8722 2610.\n\nBike & Butter' });
+        '\n\nBoxes are 130 x 49 x 100 cm and weigh 16-17 kg empty, so please make sure your transport can fit one.\n\nRental terms (late return, damage, cancellations): ' + TERMS_URL + '\n\nIf you need to change your dates, just reply to this email or WhatsApp us on +65 8722 2610.\n\nBike & Butter' });
   });
   return order;
 }
@@ -276,7 +286,7 @@ function adminApi_(b) {
     legacyEvents_(from, to).forEach(function (ev) { list.push(recOf_(ev, 'main')); });
     var booked = bookedMap_();
     list.forEach(function (r) {
-      if (r.legacy) return;
+      if (r.legacy || r.block) return;
       if (r.status === 'pending') { r.free = freeFor_(r.start, r.end, null, booked); r.msg = whatsappText_(r, r.free >= r.boxes); }
       else if (r.status === 'confirmed') r.msg = whatsappText_(r, true);
       else r.cmsg = confirmText_(r);
@@ -290,7 +300,7 @@ function adminApi_(b) {
     var r = recOf_(ev, 'rental');
     var free = freeFor_(r.start, r.end, null);
     if (free < r.boxes && !b.force) return json_({ ok: false, code: 'full', error: 'Only ' + free + ' box(es) are free for these dates.' });
-    var mp = markPaid_(ev);
+    var mp = markPaid_(ev, b.payment, b.sendEmail !== false);
     return json_({ ok: true, emailed: mp.emailed, cmsg: mp.cmsg });
   }
   if (act === 'adminAdopt') {
@@ -321,6 +331,9 @@ function adminApi_(b) {
     }
     s.total = (b.total !== '' && b.total != null && !isNaN(+b.total)) ? Math.max(0, +b.total) : priceOf_(s);
     s.ref = (old && old.ref) || newRef_();
+    s.terms = old ? old.terms : '';
+    if (b.terms === true && !s.terms) s.terms = 'accepted ' + Utilities.formatDate(new Date(), TZ, 'd MMM yyyy HH:mm') + ' (confirmed by us)';
+    s.boxnos = old ? old.boxnos : []; s.payment = old ? old.payment : null; s.handover = old ? old.handover : null;
     var desc = descOf_(s, status);
     if (status === 'paid' && old && old.paidAt) desc = desc.replace(/\n\nPAID .*$/, '\n\nPAID ' + old.paidAt);
     var pending = status === 'pending', color = pending ? CalendarApp.EventColor.YELLOW : status === 'paid' ? CalendarApp.EventColor.RED : CalendarApp.EventColor.GRAY;
@@ -332,6 +345,21 @@ function adminApi_(b) {
     try { ev2.setColor(color); } catch (x) {}
     CacheService.getScriptCache().remove('avail');
     return json_({ ok: true, id: ev2.getId(), total: s.total });
+  }
+  if (act === 'adminHandover') return handover_(b, cal);
+  if (act === 'adminBlockSave') {
+    var bs = { start: String(b.start || ''), end: String(b.end || '') };
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(bs.start) || !/^\d{4}-\d{2}-\d{2}$/.test(bs.end) || bs.end < bs.start) return json_({ ok: false, error: 'Please check the dates.' });
+    bs.boxes = Math.max(1, Math.min(TOTAL_BOXES, parseInt(b.boxes, 10) || 1)); bs.reason = clean_(b.reason, 80) || 'Blocked'; bs.nos = nums_(Array.isArray(b.boxnos) ? b.boxnos.join(',') : b.boxnos);
+    var btitle = 'BLOCK ' + (bs.boxes > 1 ? 'x' + bs.boxes + ' ' : '') + '\u00b7 ' + bs.reason;
+    var bdesc = 'Reason: ' + bs.reason + '\nBoxes: ' + bs.boxes + '\nDates: ' + bs.start + ' to ' + bs.end + (bs.nos.length ? '\nBoxnos: ' + bs.nos.join(',') : '') + '\n\nBLOCKED (not available to rent)';
+    var bev = b.id ? cal.getEventById(String(b.id)) : null;
+    if (b.id && !bev) return json_({ ok: false, error: 'Event not found. Refresh the list.' });
+    if (bev) { bev.setTitle(btitle); bev.setAllDayDates(dateOf_(bs.start), dateOf_(addDays_(bs.end, 1))); bev.setDescription(bdesc); }
+    else bev = cal.createAllDayEvent(btitle, dateOf_(bs.start), dateOf_(addDays_(bs.end, 1)), { description: bdesc });
+    try { bev.setColor(CalendarApp.EventColor.CYAN); } catch (x) {}
+    CacheService.getScriptCache().remove('avail');
+    return json_({ ok: true, id: bev.getId() });
   }
   return json_({ ok: false, error: 'unknown admin action' });
 }
@@ -347,6 +375,8 @@ function recOf_(ev, source) {
   var nm = field_(d, 'Name') || t.replace(PENDING_RE, '').replace(/(?:^|\s)[x×]\s*\d+\b/i, '').replace(/\b\d+\s*(?:bike\s*)?boxes\b/i, '').replace(/bike\s*box(es)?|(^|[^a-z])box(es)?(?![a-z])/ig, ' ').replace(/^[\s·\-:]+|[\s·\-:]+$/g, '').replace(/\s+/g, ' ').trim() || t;
   var total = field_(d, 'Total').replace(/[^\d.]/g, '');
   var pend = PENDING_RE.test(t), paidAt = (d.match(/^PAID (.*)$/m) || [])[1] || '';
+  var block = /^\s*BLOCK\b/i.test(t);
+  if (block) { var bx = parseInt(field_(d, 'Boxes'), 10); if (bx) boxes = Math.max(1, Math.min(TOTAL_BOXES, bx)); nm = field_(d, 'Reason') || t.replace(/^\s*BLOCK\s*(x\d+)?\s*[·\-:]?\s*/i, '').trim() || 'Blocked'; }
   var main = { name: nm, phone: field_(d, 'WhatsApp'), email: field_(d, 'Email'), bike: field_(d, 'Bike'), deliver: /^y/i.test(field_(d, 'Deliver')), collect: /^y/i.test(field_(d, 'Collect')), address: field_(d, 'Address') };
   var legs = [];
   for (var i = 2; i <= boxes; i++) {
@@ -355,7 +385,8 @@ function recOf_(ev, source) {
     legs.push(L ? { name: L.name || nm, phone: L.phone || '', email: L.email || '', bike: L.bike || '', deliver: !!L.deliver, collect: !!L.collect, address: L.address || '' } : JSON.parse(JSON.stringify(main)));
   }
   return {
-    id: ev.getId(), calId: ev.getOriginalCalendarId ? ev.getOriginalCalendarId() : '', source: source, legacy: source !== 'rental', pending: pend, status: pend ? 'pending' : (paidAt ? 'paid' : 'confirmed'), paidAt: paidAt, legs: legs, title: t, desc: d,
+    id: ev.getId(), calId: ev.getOriginalCalendarId ? ev.getOriginalCalendarId() : '', source: source, legacy: source !== 'rental', pending: pend, status: block ? 'blocked' : (pend ? 'pending' : (paidAt ? 'paid' : 'confirmed')), block: block, paidAt: paidAt, legs: legs,
+    terms: field_(d, 'Terms'), boxnos: nums_(field_(d, 'Boxnos')), payment: jsonField_(d, 'Payment'), handover: jsonField_(d, 'Handover'), title: t, desc: d,
     ref: field_(d, 'Ref'), start: first, end: last, boxes: boxes, packs: parseInt(field_(d, 'Packing'), 10) || 0,
     deliver: main.deliver, collect: main.collect, address: main.address,
     name: nm, phone: field_(d, 'WhatsApp'), email: field_(d, 'Email'), bike: field_(d, 'Bike'), notes: field_(d, 'Notes'),
@@ -364,6 +395,8 @@ function recOf_(ev, source) {
 }
 
 /** Run once from the editor. Prints the admin key to paste into bnbhq (Bike Box Rentals tab). */
+function nums_(v) { var out = []; String(v || '').split(/[^\d]+/).forEach(function (x) { var n = parseInt(x, 10); if (n >= 1 && n <= TOTAL_BOXES && out.indexOf(n) < 0) out.push(n); }); return out; }
+function jsonField_(d, key) { var v = field_(d, key); if (!v) return null; try { return JSON.parse(v); } catch (x) { return null; } }
 function showAdminKey() { Logger.log('ADMIN KEY: ' + adminKey_()); }
 function newRef_() { return 'BX' + Utilities.formatDate(new Date(), TZ, 'yyMMdd') + Math.floor(100 + Math.random() * 900); }
 function adminKey_() {
@@ -372,32 +405,127 @@ function adminKey_() {
   return k;
 }
 
-// ---------- reminders (daily trigger) ----------
-/** Run once from the editor to switch on the daily 9am reminders. */
+// ---------- check-out / check-in ----------
+/** Records (or undoes) the handover of the boxes: box numbers, condition notes, photos, extra charges. */
+function handover_(b, cal) {
+  var ev = cal.getEventById(String(b.id || ''));
+  if (!ev) return json_({ ok: false, error: 'Event not found. Refresh the list.' });
+  var r = recOf_(ev, 'rental');
+  if (r.block || r.pending) return json_({ ok: false, error: 'Only confirmed rentals can be handed over.' });
+  var ho = r.handover || {}, now = Utilities.formatDate(new Date(), TZ, 'd MMM yyyy HH:mm'), nos = r.boxnos;
+  if (b.undo === 'out') { delete ho.out; delete ho['in']; nos = []; }
+  else if (b.undo === 'in') delete ho['in'];
+  else if (b.stage === 'out') {
+    nos = nums_(Array.isArray(b.boxnos) ? b.boxnos.join(',') : b.boxnos);
+    if (nos.length && nos.length !== r.boxes && !b.force) return json_({ ok: false, code: 'count', error: 'This rental has ' + r.boxes + ' box(es) but you picked ' + nos.length + ' box number(s).' });
+    var clash = '';
+    cal.getEvents(new Date(Date.now() - 120 * 864e5), dateOf_(addDays_(day_(new Date()), HORIZON_DAYS + 8))).forEach(function (e2) {
+      if (clash || e2.getId() === ev.getId()) return;
+      var o = recOf_(e2, 'rental');
+      if (o.block || o.pending || !o.handover || !o.handover.out || o.handover['in']) return;
+      if (o.boxnos.some(function (n) { return nos.indexOf(n) >= 0; })) clash = o.name;
+    });
+    if (clash && !b.force) return json_({ ok: false, code: 'busy', error: 'One of those boxes is still out with ' + clash + '.' });
+    ho.out = { at: now, note: clean_(b.note, 500), photos: photos_(b.photos), terms: !!b.terms || !!(ho.out && ho.out.terms) };
+    delete ho['in'];
+  } else if (b.stage === 'in') {
+    if (!ho.out) return json_({ ok: false, error: 'Check the boxes out first.' });
+    ho['in'] = { at: now, note: clean_(b.note, 500), photos: photos_(b.photos), damage: !!b.damage, fee: Math.max(0, +b.fee || 0), feeNote: clean_(b.feeNote, 200) };
+  } else return json_({ ok: false, error: 'unknown handover stage' });
+  var d = (ev.getDescription() || '').replace(/\n?^Handover: .*$/m, '').replace(/\n?^Boxnos: .*$/m, '');
+  var add = (nos.length ? '\nBoxnos: ' + nos.join(',') : '') + (ho.out ? '\nHandover: ' + JSON.stringify(ho) : '');
+  var m = d.match(/\n\n(TO CONFIRM|PAID|CONFIRMED) /);
+  d = m ? d.slice(0, m.index) + add + d.slice(m.index) : d + add;
+  ev.setDescription(d);
+  return json_({ ok: true });
+}
+function photos_(a) { return (Array.isArray(a) ? a : []).filter(function (u) { return /^https:\/\//.test(String(u)); }).slice(0, 8).map(function (u) { return String(u).slice(0, 300); }); }
+
+// ---------- reminders and the daily agenda (daily trigger) ----------
+/** Run once from the editor to switch on the daily 9am reminders and agenda. */
 function setupTriggers() {
   ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'sendReminders') ScriptApp.deleteTrigger(t); });
   ScriptApp.newTrigger('sendReminders').timeBased().everyDays(1).atHour(9).inTimezone(TZ).create();
   rentalCal_();
-  Logger.log('Daily reminders switched on (9am Singapore time).');
+  Logger.log('Daily reminders and agenda switched on (9am Singapore time).');
 }
 
+/** Daily 9am: customer reminders (3 days before, and on the return day), then the owner's agenda email. */
 function sendReminders() {
-  var target = addDays_(day_(new Date()), 3), props = PropertiesService.getScriptProperties(), list = [];
-  rentalCal_().getEvents(dateOf_(addDays_(target, -1)), dateOf_(addDays_(target, 3))).forEach(function (ev) {
-    var r = recOf_(ev, 'rental');
-    if (r.pending || r.start !== target) return;
-    list.push('• ' + r.title + (r.phone ? ' (' + r.phone + ')' : '') + (r.status === 'paid' ? '' : ' [NOT PAID YET]') + (r.deliver ? ' [DELIVERY to ' + r.address + ']' : '') + (r.email ? '' : ' [no email, WhatsApp them]'));
-    var flag = 'rem_' + ev.getId();
-    if (r.status === 'paid' && r.email && !props.getProperty(flag)) {
+  var today = day_(new Date()), props = PropertiesService.getScriptProperties(), recs = [];
+  rentalCal_().getEvents(dateOf_(addDays_(today, -90)), dateOf_(addDays_(today, HORIZON_DAYS + 8))).forEach(function (ev) { recs.push(recOf_(ev, 'rental')); });
+  var target = addDays_(today, 3);
+  recs.forEach(function (r) {
+    if (r.block || r.pending || r.status !== 'paid' || !r.email) return;
+    if (r.start === target && !props.getProperty('rem_' + r.id)) {
       MailApp.sendEmail({ to: r.email, replyTo: OWNER_EMAIL, subject: 'Reminder: your bike box rental starts on ' + nice_(r.start),
         body: 'Hi ' + r.name.split(' ')[0] + ',\n\nA quick reminder that your bike box rental starts on ' + nice_(r.start) + '.\n\n' + whereTextEmail_(r) + '\n\n' +
           'The box measures 130 x 49 x 100 cm and weighs 16-17 kg empty (at least 25 kg with a road bike, 30 kg with a tri bike), so please make sure your transport can fit it.\n' +
           'Each box comes with 2 TSA-approved locks. If you booked packing, bring your bike to the workshop and we will pack it.\n\n' +
           'Need to change anything? Reply to this email or WhatsApp us on +65 8722 2610.\n\nBike & Butter' });
-      props.setProperty(flag, '1');
+      props.setProperty('rem_' + r.id, '1');
+    }
+    if (r.end === today && !(r.handover && r.handover['in']) && !props.getProperty('ret_' + r.id)) {
+      MailApp.sendEmail({ to: r.email, replyTo: OWNER_EMAIL, subject: 'Your bike box is due back today (' + nice_(r.end) + ')',
+        body: 'Hi ' + r.name.split(' ')[0] + ',\n\nA reminder that your bike box rental ends today, ' + nice_(r.end) + '.\n\n' +
+          (r.collect ? 'We will collect the box from ' + r.address + '. We will WhatsApp you to arrange the time.' : 'Please return the box to ' + WORKSHOP + ', Singapore 640491. WhatsApp us on +65 8722 2610 to arrange the time.') +
+          '\n\nEach extra day after today is charged at $' + LATE_FEE + ' per box (see the rental terms: ' + TERMS_URL + '). If you need more days, please tell us now and we will check availability.\n\nThank you,\nBike & Butter' });
+      props.setProperty('ret_' + r.id, '1');
     }
   });
-  if (list.length && !props.getProperty('dig_' + target)) { props.setProperty('dig_' + target, '1'); MailApp.sendEmail({ to: OWNER_EMAIL, subject: 'Bike box collections on ' + nice_(target) + ' (' + list.length + ')', body: 'Rentals starting in 3 days (' + nice_(target) + '):\n\n' + list.join('\n') + '\n\nPaid customers with an email on file were sent a reminder.' }); }
+  sendAgenda_(recs, today, false);
+}
+/** Run from the editor to send today's agenda right now (ignores the once-a-day guard). */
+function sendAgendaNow() {
+  var today = day_(new Date()), recs = [];
+  rentalCal_().getEvents(dateOf_(addDays_(today, -90)), dateOf_(addDays_(today, HORIZON_DAYS + 8))).forEach(function (ev) { recs.push(recOf_(ev, 'rental')); });
+  sendAgenda_(recs, today, true);
+}
+function overdueDays_(r, today) { return r.handover && r.handover.out && !r.handover['in'] && r.end < today ? daysBetween_(r.end, today) : 0; }
+function agendaLine_(r, today, kind) {
+  var bits = [r.name + ' x' + r.boxes];
+  if (r.phone) bits.push(r.phone);
+  if (r.boxnos && r.boxnos.length) bits.push('box ' + r.boxnos.join(', '));
+  bits.push(r.status === 'paid' ? 'paid' : 'NOT PAID' + (r.total != null ? ' ($' + r.total + ')' : ''));
+  if (kind === 'start' && r.deliver) bits.push('DELIVER to ' + r.address);
+  if (kind === 'end' && r.collect) bits.push('COLLECT from ' + r.address);
+  if (kind === 'late') bits.push(overdueDays_(r, today) + ' day(s) overdue, due ' + nice_(r.end) + ', late fee about $' + (overdueDays_(r, today) * LATE_FEE * r.boxes));
+  return bits.join(' · ');
+}
+function sendAgenda_(recs, today, force) {
+  var props = PropertiesService.getScriptProperties();
+  if (!force && props.getProperty('agenda_' + today)) return;
+  var tomorrow = addDays_(today, 1), in3 = addDays_(today, 3), live = recs.filter(function (r) { return !r.block && !r.pending; });
+  var secs = [
+    ['COLLECTIONS TODAY', live.filter(function (r) { return r.start === today && !(r.handover && r.handover.out); }), 'start'],
+    ['RETURNS TODAY', live.filter(function (r) { return r.end === today && !(r.handover && r.handover['in']); }), 'end'],
+    ['OVERDUE (still out)', live.filter(function (r) { return overdueDays_(r, today) > 0; }), 'late'],
+    ['TOMORROW: collections', live.filter(function (r) { return r.start === tomorrow; }), 'start'],
+    ['TOMORROW: returns', live.filter(function (r) { return r.end === tomorrow; }), 'end'],
+    ['IN 3 DAYS: collections', live.filter(function (r) { return r.start === in3; }), 'start'],
+    ['UNPAID, starting within 7 days', live.filter(function (r) { return r.status !== 'paid' && r.start >= today && r.start <= addDays_(today, 7); }), 'start']
+  ].filter(function (x) { return x[1].length; });
+  var pend = recs.filter(function (r) { return r.pending && r.end >= today; }).length;
+  if (!secs.length && !pend) return;
+  props.setProperty('agenda_' + today, '1');
+  var out = live.filter(function (r) { return r.start <= today && r.end >= today; }).reduce(function (a, r) { return a + r.boxes; }, 0);
+  var blocked = recs.filter(function (r) { return r.block && r.start <= today && r.end >= today; }).reduce(function (a, r) { return a + r.boxes; }, 0);
+  var late = secs.filter(function (x) { return x[2] === 'late'; })[0];
+  var subject = 'Bike box agenda · ' + nice_(today) + (late ? ' · ' + late[1].length + ' OVERDUE' : '');
+  var text = ['Bike box agenda for ' + nice_(today), 'Boxes out today: ' + out + ' of ' + TOTAL_BOXES + (blocked ? ' (' + blocked + ' blocked)' : ''), ''], html = ['<div style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5;color:#111;max-width:620px"><h2 style="margin:0 0 4px">Bike box agenda · ' + nice_(today) + '</h2><p style="margin:0 0 12px">Boxes out today: <b>' + out + ' of ' + TOTAL_BOXES + '</b>' + (blocked ? ' (' + blocked + ' blocked)' : '') + '</p>'];
+  secs.forEach(function (x) {
+    text.push(x[0]); html.push('<h3 style="margin:14px 0 4px;font-size:13px;letter-spacing:.4px;color:' + (x[2] === 'late' ? '#b42318' : '#111') + '">' + esc_(x[0]) + '</h3><ul style="margin:0;padding-left:18px">');
+    x[1].forEach(function (r) {
+      var line = agendaLine_(r, today, x[2]), wa = whatsapp_(r.phone), link = '';
+      if (wa && x[2] === 'late') link = ' <a href="https://wa.me/' + wa + '?text=' + encodeURIComponent('Hi ' + r.name.split(' ')[0] + ', this is Bike & Butter. Your bike box was due back on ' + nice_(r.end) + '. Could you let us know when we can collect it? Each extra day is charged at $' + LATE_FEE + ' per box.') + '">WhatsApp</a>';
+      else if (wa) link = ' <a href="https://wa.me/' + wa + '">WhatsApp</a>';
+      text.push('  - ' + line + (wa ? '  https://wa.me/' + wa : '')); html.push('<li>' + esc_(line) + link + '</li>');
+    });
+    text.push(''); html.push('</ul>');
+  });
+  if (pend) { text.push('PENDING website requests waiting for payment: ' + pend); html.push('<p style="margin-top:14px"><b>' + pend + '</b> pending website request(s) waiting for payment. Open bnbhq, Bike Box Rentals.</p>'); }
+  html.push('</div>');
+  MailApp.sendEmail({ to: OWNER_EMAIL, subject: subject, body: text.join('\n'), htmlBody: html.join('') });
 }
 
 // ---------- availability ----------

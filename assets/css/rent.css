@@ -102,3 +102,5 @@
 @media(max-width:620px){.rt-photos{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:72%;overflow-x:auto;scroll-snap-type:x mandatory}.rt-photos figure{scroll-snap-align:start}}
 
 [hidden]{display:none!important}
+
+.rt-terms{align-items:flex-start;margin:4px 0 12px;font-size:13px;line-height:1.45}.rt-terms input{margin-top:2px;flex:none}.rt-terms a{text-decoration:underline}

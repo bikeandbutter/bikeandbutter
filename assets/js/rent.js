@@ -176,7 +176,7 @@
   }
   function fields() {
     var fd = new FormData(form);
-    return { name: String(fd.get("name") || "").trim(), phone: String(fd.get("phone") || "").replace(/[^\d+]/g, ""), email: String(fd.get("email") || "").trim(), bike: String(fd.get("bike") || ""), notes: String(fd.get("notes") || "").trim(), deliver: !!fd.get("deliver"), collect: !!fd.get("collect"), address: String(fd.get("address") || "").trim(), hp: String(fd.get("website") || "") };
+    return { name: String(fd.get("name") || "").trim(), phone: String(fd.get("phone") || "").replace(/[^\d+]/g, ""), email: String(fd.get("email") || "").trim(), bike: String(fd.get("bike") || ""), notes: String(fd.get("notes") || "").trim(), deliver: !!fd.get("deliver"), collect: !!fd.get("collect"), address: String(fd.get("address") || "").trim(), terms: !!fd.get("terms"), hp: String(fd.get("website") || "") };
   }
   form.addEventListener("submit", function (e) {
     e.preventDefault(); showErr("");
@@ -188,9 +188,10 @@
     if (digits.length < 8) return showErr("Please enter a WhatsApp number we can reach you on.");
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) return showErr("Please enter a valid email address. We send your confirmation and a reminder there.");
     if ((f.deliver || f.collect) && f.address.length < 6) return showErr("Please enter the address for delivery / collection.");
+    if (!f.terms) return showErr("Please tick the box to confirm you agree to the bike box rental terms.");
     if (f.hp) return;
     var btn = $("[data-submit]"); btn.disabled = true; btn.textContent = "Sending…";
-    var payload = { action: "book", start: st.start, end: st.end, boxes: st.boxes, packs: st.packs, deliver: f.deliver, collect: f.collect, address: f.address, name: f.name, phone: f.phone, email: f.email, bike: f.bike, notes: f.notes, total: p.total };
+    var payload = { action: "book", start: st.start, end: st.end, boxes: st.boxes, packs: st.packs, deliver: f.deliver, collect: f.collect, address: f.address, name: f.name, phone: f.phone, email: f.email, bike: f.bike, notes: f.notes, total: p.total, terms: true };
     function finish(ref, sent) {
       btn.disabled = false; btn.textContent = "Request this booking";
       if (window.gtag) gtag("event", "generate_lead", { method: "bike_box_rental", value: p.total, currency: "SGD" });
