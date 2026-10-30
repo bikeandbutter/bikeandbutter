@@ -161,11 +161,11 @@ function descOf_(r, state) {
     'Email: ' + r.email,
     'Bike: ' + r.bike,
     'Notes: ' + r.notes
-  ].concat((r.legs || []).map(function (l, i) { return 'Box' + (i + 2) + ': ' + JSON.stringify(l); }))
+  ].concat((r.legs || []).map(function (l, i) { return fmtLeg_(l, i + 2); }))
     .concat(r.terms ? ['Terms: ' + r.terms] : [])
-    .concat(r.boxnos && r.boxnos.length ? ['Boxnos: ' + r.boxnos.join(',')] : [])
-    .concat(r.payment ? ['Payment: ' + JSON.stringify(r.payment)] : [])
-    .concat(r.handover ? ['Handover: ' + JSON.stringify(r.handover)] : []).join('\n') +
+    .concat(r.boxnos && r.boxnos.length ? ['Box numbers: ' + r.boxnos.join(', ')] : [])
+    .concat(r.payment ? ['Payment: ' + fmtPayment_(r.payment)] : [])
+    .concat(fmtHandover_(r.handover)).join('\n') +
     (state === 'pending' ? '\n\nTO CONFIRM: once the customer has paid, mark it PAID in bnbhq (Bike Box Rentals) or use the link in the request email.' : '') +
     (state === 'paid' ? '\n\nPAID ' + Utilities.formatDate(new Date(), TZ, 'd MMM yyyy HH:mm') : '');
 }
@@ -238,7 +238,7 @@ function markPaid_(ev, payment, sendEmail) {
   var pay = payment || {};
   var rec = { amount: isNaN(+pay.amount) || pay.amount === '' || pay.amount == null ? (r0.total || 0) : +pay.amount, method: clean_(pay.method || 'PayNow', 30), ref: clean_(pay.ref, 60), date: /^\d{4}-\d{2}-\d{2}$/.test(String(pay.date || '')) ? pay.date : day_(new Date()) };
   var d = (ev.getDescription() || '').replace(/\n\nTO CONFIRM[\s\S]*$/, '').replace(/\n\n(CONFIRMED|PAID) .*$/m, '').replace(/\n?^Payment: .*$/m, '');
-  ev.setDescription(d + '\nPayment: ' + JSON.stringify(rec) + '\n\nPAID ' + Utilities.formatDate(new Date(), TZ, 'd MMM yyyy HH:mm'));
+  ev.setDescription(d + '\nPayment: ' + fmtPayment_(rec) + '\n\nPAID ' + Utilities.formatDate(new Date(), TZ, 'd MMM yyyy HH:mm'));
   CacheService.getScriptCache().remove('avail');
   var r = recOf_(ev, 'rental');
   return { emailed: sendEmail === false ? [] : emailConfirmation_(r), cmsg: confirmText_(r) };
@@ -352,7 +352,7 @@ function adminApi_(b) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(bs.start) || !/^\d{4}-\d{2}-\d{2}$/.test(bs.end) || bs.end < bs.start) return json_({ ok: false, error: 'Please check the dates.' });
     bs.boxes = Math.max(1, Math.min(TOTAL_BOXES, parseInt(b.boxes, 10) || 1)); bs.reason = clean_(b.reason, 80) || 'Blocked'; bs.nos = nums_(Array.isArray(b.boxnos) ? b.boxnos.join(',') : b.boxnos);
     var btitle = 'BLOCK ' + (bs.boxes > 1 ? 'x' + bs.boxes + ' ' : '') + '\u00b7 ' + bs.reason;
-    var bdesc = 'Reason: ' + bs.reason + '\nBoxes: ' + bs.boxes + '\nDates: ' + bs.start + ' to ' + bs.end + (bs.nos.length ? '\nBoxnos: ' + bs.nos.join(',') : '') + '\n\nBLOCKED (not available to rent)';
+    var bdesc = 'Reason: ' + bs.reason + '\nBoxes: ' + bs.boxes + '\nDates: ' + bs.start + ' to ' + bs.end + (bs.nos.length ? '\nBox numbers: ' + bs.nos.join(', ') : '') + '\n\nBLOCKED (not available to rent)';
     var bev = b.id ? cal.getEventById(String(b.id)) : null;
     if (b.id && !bev) return json_({ ok: false, error: 'Event not found. Refresh the list.' });
     if (bev) { bev.setTitle(btitle); bev.setAllDayDates(dateOf_(bs.start), dateOf_(addDays_(bs.end, 1))); bev.setDescription(bdesc); }
@@ -380,13 +380,13 @@ function recOf_(ev, source) {
   var main = { name: nm, phone: field_(d, 'WhatsApp'), email: field_(d, 'Email'), bike: field_(d, 'Bike'), deliver: /^y/i.test(field_(d, 'Deliver')), collect: /^y/i.test(field_(d, 'Collect')), address: field_(d, 'Address') };
   var legs = [];
   for (var i = 2; i <= boxes; i++) {
-    var lm = d.match(new RegExp('^Box' + i + ': (.*)$', 'm')), L = null;
-    if (lm) { try { L = JSON.parse(lm[1]); } catch (x) {} }
+    var lm = d.match(new RegExp('^Box ?' + i + ': (.*)$', 'm')), L = null;
+    if (lm) L = parseLeg_(lm[1]);
     legs.push(L ? { name: L.name || nm, phone: L.phone || '', email: L.email || '', bike: L.bike || '', deliver: !!L.deliver, collect: !!L.collect, address: L.address || '' } : JSON.parse(JSON.stringify(main)));
   }
   return {
     id: ev.getId(), calId: ev.getOriginalCalendarId ? ev.getOriginalCalendarId() : '', source: source, legacy: source !== 'rental', pending: pend, status: block ? 'blocked' : (pend ? 'pending' : (paidAt ? 'paid' : 'confirmed')), block: block, paidAt: paidAt, legs: legs,
-    terms: field_(d, 'Terms'), boxnos: nums_(field_(d, 'Boxnos')), payment: jsonField_(d, 'Payment'), handover: jsonField_(d, 'Handover'), title: t, desc: d,
+    terms: field_(d, 'Terms'), boxnos: nums_(field_(d, 'Box numbers') || field_(d, 'Boxnos')), payment: parsePayment_(d), handover: parseHandover_(d), title: t, desc: d,
     ref: field_(d, 'Ref'), start: first, end: last, boxes: boxes, packs: parseInt(field_(d, 'Packing'), 10) || 0,
     deliver: main.deliver, collect: main.collect, address: main.address,
     name: nm, phone: field_(d, 'WhatsApp'), email: field_(d, 'Email'), bike: field_(d, 'Bike'), notes: field_(d, 'Notes'),
@@ -395,6 +395,57 @@ function recOf_(ev, source) {
 }
 
 /** Run once from the editor. Prints the admin key to paste into bnbhq (Bike Box Rentals tab). */
+// ---- plain-text lines in the event description (so the calendar entry reads like a note) ----
+function plain_(v) { return String(v == null ? '' : v).replace(/\s*\|\s*/g, ' / ').replace(/\s+/g, ' ').trim(); }
+function fmtLeg_(l, n) {
+  return 'Box ' + n + ': Name: ' + plain_(l.name) + ' | WhatsApp: ' + plain_(l.phone) + ' | Email: ' + plain_(l.email) + ' | Bike: ' + plain_(l.bike) +
+    ' | Deliver: ' + yn_(l.deliver) + ' | Collect: ' + yn_(l.collect) + ' | Address: ' + plain_(l.address);
+}
+function pipeFields_(str) {
+  var o = {};
+  String(str).split(' | ').forEach(function (p) { var i = p.indexOf(': '); if (i > 0) o[p.slice(0, i)] = p.slice(i + 2); else if (/:$/.test(p)) o[p.slice(0, -1)] = ''; });
+  return o;
+}
+function parseLeg_(str) {
+  if (/^\s*\{/.test(str)) { try { return JSON.parse(str); } catch (x) { return null; } }   // older events stored this as JSON
+  var o = pipeFields_(str);
+  return { name: o.Name || '', phone: o.WhatsApp || '', email: o.Email || '', bike: o.Bike || '', deliver: /^y/i.test(o.Deliver || ''), collect: /^y/i.test(o.Collect || ''), address: o.Address || '' };
+}
+function fmtPayment_(p) { return '$' + p.amount + ' via ' + plain_(p.method) + ' on ' + p.date + (p.ref ? ', ref ' + plain_(p.ref) : ''); }
+function parsePayment_(d) {
+  var v = field_(d, 'Payment');
+  if (!v) return null;
+  if (/^\s*\{/.test(v)) { try { return JSON.parse(v); } catch (x) { return null; } }
+  var m = v.match(/^\$([\d.]+) via (.+?) on (\d{4}-\d{2}-\d{2})(?:, ref (.*))?$/);
+  return m ? { amount: +m[1], method: m[2], date: m[3], ref: m[4] || '' } : null;
+}
+function fmtHandover_(ho) {
+  var out = [];
+  if (!ho || !ho.out) return out;
+  out.push('Check-out: ' + ho.out.at + ' | Terms agreed: ' + yn_(ho.out.terms) + (ho.out.note ? ' | Note: ' + plain_(ho.out.note) : ''));
+  if (ho.out.photos && ho.out.photos.length) out.push('Check-out photos: ' + ho.out.photos.join(' '));
+  if (ho['in']) {
+    var i = ho['in'];
+    out.push('Check-in: ' + i.at + ' | Damage: ' + yn_(i.damage) + (i.fee ? ' | Extra charge: $' + i.fee + (i.feeNote ? ' | Reason: ' + plain_(i.feeNote) : '') : '') + (i.note ? ' | Note: ' + plain_(i.note) : ''));
+    if (i.photos && i.photos.length) out.push('Check-in photos: ' + i.photos.join(' '));
+  }
+  return out;
+}
+function parseHandover_(d) {
+  var legacy = field_(d, 'Handover');
+  if (legacy && /^\s*\{/.test(legacy)) { try { return JSON.parse(legacy); } catch (x) {} }
+  var co = field_(d, 'Check-out');
+  if (!co) return null;
+  var at = co.split(' | ')[0], o = pipeFields_(co.slice(at.length + 3));
+  function photos(key) { return field_(d, key).split(/\s+/).filter(function (u) { return /^https:\/\//.test(u); }); }
+  var ho = { out: { at: at, note: o.Note || '', photos: photos('Check-out photos'), terms: /^y/i.test(o['Terms agreed'] || '') } };
+  var ci = field_(d, 'Check-in');
+  if (ci) {
+    var iat = ci.split(' | ')[0], i = pipeFields_(ci.slice(iat.length + 3));
+    ho['in'] = { at: iat, note: i.Note || '', photos: photos('Check-in photos'), damage: /^y/i.test(i.Damage || ''), fee: i['Extra charge'] ? +String(i['Extra charge']).replace(/[^\d.]/g, '') : 0, feeNote: i.Reason || '' };
+  }
+  return ho;
+}
 function nums_(v) { var out = []; String(v || '').split(/[^\d]+/).forEach(function (x) { var n = parseInt(x, 10); if (n >= 1 && n <= TOTAL_BOXES && out.indexOf(n) < 0) out.push(n); }); return out; }
 function jsonField_(d, key) { var v = field_(d, key); if (!v) return null; try { return JSON.parse(v); } catch (x) { return null; } }
 function showAdminKey() { Logger.log('ADMIN KEY: ' + adminKey_()); }
@@ -432,8 +483,8 @@ function handover_(b, cal) {
     if (!ho.out) return json_({ ok: false, error: 'Check the boxes out first.' });
     ho['in'] = { at: now, note: clean_(b.note, 500), photos: photos_(b.photos), damage: !!b.damage, fee: Math.max(0, +b.fee || 0), feeNote: clean_(b.feeNote, 200) };
   } else return json_({ ok: false, error: 'unknown handover stage' });
-  var d = (ev.getDescription() || '').replace(/\n?^Handover: .*$/m, '').replace(/\n?^Boxnos: .*$/m, '');
-  var add = (nos.length ? '\nBoxnos: ' + nos.join(',') : '') + (ho.out ? '\nHandover: ' + JSON.stringify(ho) : '');
+  var d = (ev.getDescription() || '').replace(/\n?^(Handover|Boxnos|Box numbers|Check-out|Check-out photos|Check-in|Check-in photos): .*$/mg, '');
+  var add = (nos.length ? '\nBox numbers: ' + nos.join(', ') : '') + (ho.out ? '\n' + fmtHandover_(ho).join('\n') : '');
   var m = d.match(/\n\n(TO CONFIRM|PAID|CONFIRMED) /);
   d = m ? d.slice(0, m.index) + add + d.slice(m.index) : d + add;
   ev.setDescription(d);
