@@ -4231,7 +4231,7 @@ async function saveInvoice() {
   const discLabel = document.getElementById('invDiscLabel').value.trim();
   const discPct = parseFloat(document.getElementById('invDiscPct').value) || 0;
   const discType = document.getElementById('invDiscType').value === 'abs' ? 'abs' : 'pct';
-  const invoiceDiscounts = discLabel && discPct ? [{ label: discLabel, type: discType, value: discPct }] : [];
+  const invoiceDiscounts = discPct ? [{ label: discLabel || 'Discount', type: discType, value: discPct }] : [];
 
   let invoiceNo = document.getElementById('invSavedNo').value;
   let revSuffix = document.getElementById('invRevSuffix').value;
@@ -4284,7 +4284,7 @@ async function saveInvoice() {
   const validItems = currentInvoiceItems.filter(it => it.desc.trim());
   const itemRows = validItems.map((it, i) => ({
     invoice_id: invoiceId, description: it.desc, qty: it.qty, unit_price: it.price,
-    sort_order: i, subs: it.subs.filter(s=>s.text.trim()), discounts: it.discounts.filter(d=>d.label.trim()),
+    sort_order: i, subs: it.subs.filter(s=>s.text.trim()), discounts: it.discounts.filter(d=>(d.label||'').trim() || Number(d.value)).map(d=>({...d, label:(d.label||'').trim() || 'Discount'})),
     variant_id: it.variant_id || null
   }));
   if (itemRows.length) {
@@ -4539,7 +4539,7 @@ async function saveQuotation() {
   const discLabel = document.getElementById('invDiscLabel').value.trim();
   const discPct = parseFloat(document.getElementById('invDiscPct').value) || 0;
   const discType = document.getElementById('invDiscType').value === 'abs' ? 'abs' : 'pct';
-  const discounts = discLabel && discPct ? [{ label: discLabel, type: discType, value: discPct }] : [];
+  const discounts = discPct ? [{ label: discLabel || 'Discount', type: discType, value: discPct }] : [];
   const depType = document.getElementById('qtDepType').value || 'pct';
   const depValue = parseFloat(document.getElementById('qtDepValue').value) || 0;
   const depAmount = calcDeposit(total);
@@ -4587,7 +4587,7 @@ async function saveQuotation() {
   const itemRows = validItems.map((it, i) => ({
     quotation_id: quoteId, position: i, description: it.desc, quantity: it.qty, unit_price: it.price, discount: 0,
     line_total: calcItemTotal(it),
-    subs: it.subs.filter(s => s.text.trim()), discounts: it.discounts.filter(d => d.label.trim()),
+    subs: it.subs.filter(s => s.text.trim()), discounts: it.discounts.filter(d => (d.label||'').trim() || Number(d.value)).map(d => ({...d, label:(d.label||'').trim() || 'Discount'})),
     variant_id: it.variant_id || null
   }));
   if (itemRows.length) {
