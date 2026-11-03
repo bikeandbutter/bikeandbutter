@@ -3560,10 +3560,13 @@ async function quickPrintInvoice(id, btnEl) {
 async function deleteInvoice(id) {
   if (!confirm('Delete this invoice? This will restore any stock it deducted and remove its accounting entries. Cannot be undone.')) return;
   const { data: items } = await sb.from('invoice_items').select('variant_id, qty').eq('invoice_id', id);
-  for (const it of (items || [])) {
-    if (!it.variant_id) continue;
-    const v = VARIANTS.find(x => x.id === it.variant_id);
-    await sb.from('product_variants').update({ qty: (Number(v?.qty)||0) + Number(it.qty) }).eq('id', it.variant_id);
+  // Give back stock using fresh quantities from the DB, summed per variant (not the page cache).
+  const giveBack = {};
+  (items || []).forEach(it => { if (it.variant_id) giveBack[it.variant_id] = (giveBack[it.variant_id] || 0) + (Number(it.qty) || 0); });
+  const gbIds = Object.keys(giveBack);
+  if (gbIds.length) {
+    const { data: fv } = await sb.from('product_variants').select('*').in('id', gbIds);
+    for (const v of (fv || [])) await sb.from('product_variants').update({ qty: (Number(v.qty) || 0) + giveBack[v.id] }).eq('id', v.id);
   }
   await sb.from('accounting_entries').delete().eq('source_type', 'invoice').eq('source_id', id);
   const { error } = await sb.from('invoices').delete().eq('id', id);
@@ -4262,19 +4265,17 @@ async function saveInvoice() {
   };
 
   let invoiceId = id;
+  const oldStock = {}; // variant_id -> qty this invoice had already deducted before this save
   if (id) {
     const { error } = await sb.from('invoices').update(payload).eq('id', id);
     if (error) { alert('Save failed: ' + error.message); return; }
-    // Reverse stock effects of the previous version of this invoice before re-applying the new one
+    // Revision: remember what THIS invoice already deducted from stock (per product variant, from the
+    // saved items). Stock is NOT put back and re-deducted; only the difference is applied below, so an
+    // unchanged revision leaves stock alone and added qty / new links deduct only the extra.
     const { data: oldItems } = await sb.from('invoice_items').select('variant_id, qty').eq('invoice_id', id);
-    for (const oi of (oldItems || [])) {
-      if (!oi.variant_id) continue;
-      const v = VARIANTS.find(x => x.id === oi.variant_id);
-      await sb.from('product_variants').update({ qty: (Number(v?.qty)||0) + Number(oi.qty) }).eq('id', oi.variant_id);
-    }
+    (oldItems || []).forEach(oi => { if (oi.variant_id) oldStock[oi.variant_id] = (oldStock[oi.variant_id] || 0) + (Number(oi.qty) || 0); });
     await sb.from('accounting_entries').delete().eq('source_type', 'invoice').eq('source_id', id);
     await sb.from('invoice_items').delete().eq('invoice_id', id);
-    await loadProducts(); // refresh VARIANTS with reversed qty before computing new deductions
   } else {
     const { data, error } = await sb.from('invoices').insert(payload).select('id').single();
     if (error) { alert('Save failed: ' + error.message); return; }
@@ -4294,11 +4295,24 @@ async function saveInvoice() {
 
   // Apply stock deduction + COGS ledger entries for items linked to inventory
   const linkedItems = validItems.filter(it => it.variant_id);
+  // Stock: apply only the DIFFERENCE between what this invoice now needs and what it already deducted.
+  const newStock = {};
+  linkedItems.forEach(it => { newStock[it.variant_id] = (newStock[it.variant_id] || 0) + (Number(it.qty) || 0); });
+  const stockIds = Array.from(new Set([...Object.keys(oldStock), ...Object.keys(newStock)]));
+  const freshVariants = {};
+  if (stockIds.length) {
+    const { data: fv } = await sb.from('product_variants').select('*').in('id', stockIds); // fresh from the DB, not the page cache
+    (fv || []).forEach(v => { freshVariants[v.id] = v; });
+  }
+  for (const vid of stockIds) {
+    const delta = (newStock[vid] || 0) - (oldStock[vid] || 0); // + = deduct more, - = give back
+    const v = freshVariants[vid];
+    if (!delta || !v) continue;
+    await sb.from('product_variants').update({ qty: (Number(v.qty) || 0) - delta }).eq('id', vid);
+  }
   for (const it of linkedItems) {
-    const v = VARIANTS.find(x => x.id === it.variant_id);
+    const v = freshVariants[it.variant_id] || VARIANTS.find(x => x.id === it.variant_id);
     if (!v) continue;
-    const newQty = (Number(v.qty) || 0) - it.qty;
-    await sb.from('product_variants').update({ qty: newQty }).eq('id', it.variant_id);
     const cogs = it.qty * (Number(v.wac) || 0);
     await sb.from('accounting_entries').insert([
       { entry_date: payload.invoice_date, account: 'Cost of Goods Sold', account_type: 'expense', entry_type: 'debit', amount: cogs, category: 'COGS', source_type: 'invoice', source_id: invoiceId, memo: v.name + ' x' + it.qty },
