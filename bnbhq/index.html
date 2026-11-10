@@ -661,6 +661,8 @@ tr.rent-pending td { background: #fffbf0; }
             <div style="margin-top:6px"><span class="id-badge" id="bikeDetailId">—</span></div>
           </div>
           <div class="page-actions">
+            <button class="btn btn-secondary" onclick="editCurrentBike()">Edit Bike</button>
+            <button class="btn btn-secondary" style="color:#b0392c" onclick="deleteCurrentBike()">Delete Bike</button>
             <button class="btn btn-secondary" onclick="printServicingReport()">Print Servicing Report</button>
             <button class="btn btn-primary" onclick="openServiceModal()">+ Log Service</button>
           </div>
@@ -1756,7 +1758,10 @@ function renderBikesForCustomer(customerId) {
       <td>${escapeHtml(b.size || '—')}</td>
       <td class="cell-muted">${escapeHtml(b.serial_no || '—')}</td>
       <td class="cell-muted">${formatDate(b.purchase_date)}</td>
-      <td class="cell-muted">→</td>
+      <td class="cell-muted" style="white-space:nowrap">
+        <button class="btn btn-ghost btn-sm" title="Edit bike" onclick="event.stopPropagation();editBikeById('${b.id}')">${ICON_EDIT}</button>
+        <button class="btn btn-ghost btn-sm" title="Delete bike" onclick="event.stopPropagation();deleteBikeById('${b.id}')">${ICON_TRASH}</button>
+      </td>
     </tr>`).join('');
 }
 
@@ -2548,6 +2553,38 @@ function openBikeModal(bike = null) {
 }
 function closeBikeModal() { document.getElementById('bikeModalBackdrop').classList.remove('open'); }
 
+function editBikeById(bikeId) {
+  const b = BIKES.find(x => x.id === bikeId);
+  if (!b) return;
+  currentCustomerId = b.customer_id;   // the modal saves against the bike's own owner
+  openBikeModal(b);
+}
+function editCurrentBike() { if (currentBikeId) editBikeById(currentBikeId); }
+function deleteCurrentBike() { if (currentBikeId) deleteBikeById(currentBikeId); }
+
+async function deleteBikeById(bikeId) {
+  const b = BIKES.find(x => x.id === bikeId);
+  if (!b) return;
+  const name = [b.brand, b.model].filter(Boolean).join(' ') || 'this bike';
+  // A bike that still has servicing reports is not deleted: reports hold parts/stock and invoice links,
+  // so they must be deleted deliberately first (Delete button on each report).
+  const { data: recs, error: recErr } = await sb.from('service_records').select('id').eq('bike_id', bikeId);
+  if (recErr) { alert('Could not check servicing history: ' + recErr.message); return; }
+  if ((recs || []).length) {
+    alert(name + ' has ' + recs.length + ' servicing report' + (recs.length > 1 ? 's' : '') + '. Delete those reports first (open the bike, then Delete on each report), then delete the bike. This protects stock and invoice links.');
+    return;
+  }
+  if (!confirm('Delete ' + name + '? This cannot be undone.')) return;
+  await sb.from('mileage_logs').delete().eq('bike_id', bikeId);
+  const { error } = await sb.from('bikes').delete().eq('id', bikeId);
+  if (error) { alert('Delete failed: ' + error.message); return; }
+  const ownerId = b.customer_id;
+  currentBikeId = null;
+  await loadAll();
+  currentCustomerId = ownerId;
+  if (typeof openCustomerDetail === 'function') openCustomerDetail(ownerId); else renderBikesForCustomer(ownerId);
+}
+
 async function saveBike() {
   const id = document.getElementById('bikeId').value;
   const payload = {
@@ -2570,6 +2607,8 @@ async function saveBike() {
   closeBikeModal();
   await loadAll();
   renderBikesForCustomer(currentCustomerId);
+  const detailOpen = document.getElementById('tab-bike-detail').classList.contains('active');
+  if (id && detailOpen && currentBikeId) openBikeDetail(currentBikeId);   // refresh the header after editing from the bike page
 }
 
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
