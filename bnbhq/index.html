@@ -650,6 +650,19 @@ tr.rent-pending td { background: #fffbf0; }
             <tbody id="bikeRows"><tr><td colspan="5" class="cell-muted">No bikes yet</td></tr></tbody>
           </table></div>
         </div>
+        <div class="card" style="margin-top:14px" id="fitCard">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Bike fitting records</div>
+              <div class="cell-muted" style="font-size:12px;margin-top:2px">From the customer's professional fitting report (done elsewhere). Reference when they switch bikes.</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openFitModal()">+ Add fitting</button>
+          </div>
+          <div class="tbl-wrap"><table>
+            <thead><tr><th>Date</th><th>Fitter / studio</th><th>Fitted on</th><th>Key numbers</th><th></th></tr></thead>
+            <tbody id="fitRows"><tr><td colspan="5" class="cell-muted">No fitting on file</td></tr></tbody>
+          </table></div>
+        </div>
       </div>
 
       <div class="tab-panel" id="tab-bike-detail">
@@ -666,6 +679,13 @@ tr.rent-pending td { background: #fffbf0; }
             <button class="btn btn-secondary" onclick="printServicingReport()">Print Servicing Report</button>
             <button class="btn btn-primary" onclick="openServiceModal()">+ Log Service</button>
           </div>
+        </div>
+        <div class="card" style="margin-bottom:14px" id="bikeSpecCard">
+          <div class="card-header">
+            <div class="card-title">Bike specification</div>
+            <button class="btn btn-secondary btn-sm" onclick="editCurrentBike()">Edit specs</button>
+          </div>
+          <div id="bikeSpecBody" style="padding:14px 20px"></div>
         </div>
         <div class="card" style="margin-bottom:14px">
           <div class="card-header">
@@ -1346,7 +1366,7 @@ tr.rent-pending td { background: #fffbf0; }
 </div>
 
 <div class="modal-backdrop" id="bikeModalBackdrop">
-  <div class="modal">
+  <div class="modal" style="width:640px">
     <div class="modal-header"><div class="modal-title" id="bikeModalTitle">Add Bike</div><button class="modal-close" onclick="closeBikeModal()">&times;</button></div>
     <div class="modal-body">
       <input type="hidden" id="bikeId">
@@ -1361,10 +1381,49 @@ tr.rent-pending td { background: #fffbf0; }
       <div class="field"><label>Serial No.</label><input type="text" id="bikeSerial" placeholder="Frame serial number"></div>
       <div class="field"><label>Purchase Date</label><input type="date" id="bikePurchaseDate"></div>
       <div class="field"><label>Notes</label><textarea id="bikeNotes" placeholder="Optional"></textarea></div>
+      <div id="bikeSpecForm"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeBikeModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveBike()">Save Bike</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="fitModalBackdrop">
+  <div class="modal" style="width:680px">
+    <div class="modal-header"><div class="modal-title" id="fitModalTitle">Add fitting record</div><button class="modal-close" onclick="closeFitModal()">&times;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="fitId">
+      <div class="field-row fr-2">
+        <div class="field"><label>Fitting date</label><input type="date" id="fitDate"></div>
+        <div class="field"><label>Fitter / studio</label><input type="text" id="fitFitter" placeholder="Who did the fitting"></div>
+      </div>
+      <div class="field"><label>Bike it was fitted on</label><input type="text" id="fitBike" placeholder="e.g. Canyon Aeroad CF SLX, size M"></div>
+      <div class="field"><label>Fitting report (PDF / photo)</label>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input type="file" id="fitFile" accept=".pdf,image/*" style="font-size:12px">
+          <span id="fitReportCur" class="cell-muted" style="font-size:12px"></span>
+        </div>
+        <div class="cell-muted" style="font-size:11.5px;margin-top:4px">Stored with the shop's photo storage. Anyone with the exact link can open it, so only upload what the customer is happy with.</div>
+      </div>
+      <div id="fitForm"></div>
+      <div class="field"><label>Notes (injuries, flexibility, goals, anything in the report)</label><textarea id="fitNotes"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeFitModal()">Cancel</button>
+      <button class="btn btn-primary" id="fitSaveBtn" onclick="saveFit()">Save fitting</button>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" id="fitViewBackdrop">
+  <div class="modal" style="width:680px">
+    <div class="modal-header"><div class="modal-title">Fitting record</div><button class="modal-close" onclick="closeFitView()">&times;</button></div>
+    <div class="modal-body" id="fitViewBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" style="color:#b0392c;margin-right:auto" id="fitViewDel">Delete</button>
+      <button class="btn btn-secondary" id="fitViewEdit">Edit</button>
+      <button class="btn btn-primary" onclick="closeFitView()">Close</button>
     </div>
   </div>
 </div>
@@ -1742,6 +1801,7 @@ function openCustomerDetail(id) {
   document.getElementById('custDetailAddress').textContent = [c.address_line1, c.address_line2, c.postal_code].filter(Boolean).length ? '· ' + [c.address_line1, c.address_line2, c.postal_code].filter(Boolean).join(', ') : '';
   document.getElementById('custEditBtn').onclick = () => openCustomerModal(c);
   renderBikesForCustomer(id);
+  loadFittings(id);
   switchTab('customer-detail');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('topbarTitle').textContent = c.name;
@@ -1782,6 +1842,7 @@ async function openBikeDetail(bikeId) {
     c ? 'Owner: ' + c.name : null
   ].filter(Boolean).join(' · ') || '—';
   document.getElementById('bikeDetailId').textContent = bikeCode(b);
+  renderBikeSpecCard(b);
   document.getElementById('bikeDetailBackLink').onclick = () => openCustomerDetail(b.customer_id);
   switchTab('bike-detail');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -2549,9 +2610,223 @@ function openBikeModal(bike = null) {
   document.getElementById('bikeSerial').value = bike?.serial_no || '';
   document.getElementById('bikePurchaseDate').value = bike?.purchase_date || '';
   document.getElementById('bikeNotes').value = bike?.notes || '';
+  const sf = document.getElementById('bikeSpecForm');
+  sf.innerHTML = '';
+  detectBikeSpecs().then(ok => { if (ok) sf.innerHTML = '<div style="margin-top:14px;font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px">Components &amp; specification</div>' + groupsFormHtml(BIKE_SPEC_GROUPS, 'data-spec', bike?.specs); });
   document.getElementById('bikeModalBackdrop').classList.add('open');
 }
 function closeBikeModal() { document.getElementById('bikeModalBackdrop').classList.remove('open'); }
+
+
+/* ============ BIKE SPECS + FITTING RECORDS (needs supabase/bike-specs-and-fitting.sql) ============ */
+const BIKE_SPEC_GROUPS = [
+  { title: 'Frame & type', fields: [
+    ['bike_type','Bike type','',['Road','Gravel','Triathlon / TT','Mountain','Hybrid / Commuter','Folding','E-bike','Track / Fixed','Other']],
+    ['year','Model year','e.g. 2023'], ['frame','Frame / material','e.g. Carbon, 6061 alloy'], ['fork','Fork','e.g. Carbon, 1-1/8 to 1.5 tapered'],
+    ['bb_standard','Bottom bracket standard','e.g. BSA threaded, T47, PF30'], ['headset','Headset','']
+  ]},
+  { title: 'Drivetrain', fields: [
+    ['groupset','Groupset','e.g. Shimano Ultegra R8170'], ['shifting','Shifting','',['Mechanical','Electronic (Di2 / eTap / AXS)','Cable (MTB)','Single speed']],
+    ['crankset','Crankset','e.g. Shimano Ultegra R8100'], ['crank_length','Crank length (mm)','e.g. 170'],
+    ['chainrings','Chainrings','e.g. 52/36'], ['cassette','Cassette','e.g. 11-30, 12 speed'],
+    ['chain','Chain','e.g. KMC X12'], ['rear_derailleur','Rear derailleur',''], ['front_derailleur','Front derailleur',''], ['pedals','Pedals','e.g. Look Keo, Shimano SPD-SL']
+  ]},
+  { title: 'Wheels & tyres', fields: [
+    ['wheelset','Wheelset','e.g. Zipp 303 Firecrest'], ['rim_brake_type','Rim / hub notes','e.g. 12x100/142 thru-axle, 6-bolt'],
+    ['tyre_front','Tyre – front','e.g. Continental GP5000 S TR 28c'], ['tyre_rear','Tyre – rear','e.g. Continental GP5000 S TR 28c'],
+    ['tube_setup','Tube setup','',['Inner tube','Tubeless','Tubeless (inserts)','Tubular','Mixed']],
+    ['tube_detail','Tube / sealant detail','e.g. Latex 60mm valve, Stan\'s sealant'], ['tyre_pressure','Usual pressure','e.g. 70 psi front / 75 rear']
+  ]},
+  { title: 'Brakes', fields: [
+    ['brake_type','Brake type','',['Hydraulic disc','Mechanical disc','Rim (caliper)','Rim (V-brake)','Coaster / other']],
+    ['brakes','Brake model','e.g. Shimano Ultegra R8170'], ['rotors','Rotors','e.g. 160/140 mm, centerlock'], ['pads','Pads','e.g. Resin / sintered']
+  ]},
+  { title: 'Cockpit & contact points', fields: [
+    ['handlebar','Handlebar','e.g. 3T Aeroflux'], ['bar_width','Bar width (mm)','e.g. 40 c-c'], ['stem','Stem','e.g. 100mm, -6 degrees'],
+    ['bar_tape','Bar tape / grips',''], ['saddle','Saddle','e.g. Specialized Power Pro 143'], ['seatpost','Seatpost','e.g. 0 setback, 27.2'],
+    ['aerobars','Aerobars / extensions',''], ['cockpit_notes','Spacers / cockpit notes','']
+  ]},
+  { title: 'Electronics & extras', fields: [
+    ['computer','Bike computer / mount',''], ['power_meter','Power meter','e.g. Quarq DZero'], ['lights','Lights',''],
+    ['accessories','Bottle cages, mudguards, racks',''], ['mods','Known upgrades / history','']
+  ]}
+];
+const FIT_GROUPS = [
+  { title: 'Rider', fields: [
+    ['rider_height','Height (cm)',''], ['inseam','Inseam (cm)',''], ['shoe_size','Shoe size',''], ['riding_style','Riding goal / style','e.g. endurance road, triathlon']
+  ]},
+  { title: 'Saddle', fields: [
+    ['saddle_height','Saddle height (mm)','BB centre to saddle top'], ['saddle_setback','Saddle setback (mm)','Behind BB, from saddle tip or nose'],
+    ['saddle_model','Saddle model / width',''], ['saddle_tilt','Saddle tilt (deg)','']
+  ]},
+  { title: 'Reach & drop', fields: [
+    ['saddle_bar_reach','Saddle to bar reach (mm)',''], ['saddle_bar_drop','Saddle to bar drop (mm)',''],
+    ['stack','Fitted stack (mm)','Bike or fit stack'], ['reach','Fitted reach (mm)','Bike or fit reach']
+  ]},
+  { title: 'Cockpit', fields: [
+    ['bar_width','Bar width (mm)',''], ['stem_length','Stem length (mm)',''], ['stem_angle','Stem angle (deg)',''],
+    ['spacers','Spacers under stem (mm)',''], ['hood_angle','Lever / hood angle','']
+  ]},
+  { title: 'Cranks, cleats & aero', fields: [
+    ['crank_length','Crank length (mm)',''], ['cleat_position','Cleat position / rotation','e.g. 2mm back, 1 degree in'],
+    ['shims_wedges','Shims / wedges / insoles',''], ['pad_stack','Aero pad stack (mm)','Triathlon / TT'], ['pad_reach','Aero pad reach (mm)','Triathlon / TT']
+  ]}
+];
+let BIKE_SPECS_OK = null, FIT_OK = null, FITTINGS = [];
+
+async function detectBikeSpecs() {
+  if (BIKE_SPECS_OK === null) { const { error } = await sb.from('bikes').select('specs').limit(1); BIKE_SPECS_OK = !error; }
+  return BIKE_SPECS_OK;
+}
+async function detectFit() {
+  if (FIT_OK === null) { const { error } = await sb.from('bike_fittings').select('id').limit(1); FIT_OK = !error; }
+  return FIT_OK;
+}
+function specInputHtml(attr, f, val) {
+  const [key, label, ph, opts] = f;
+  const v = val == null ? '' : String(val);
+  const ctl = opts
+    ? `<select ${attr}="${key}"><option value="">—</option>${opts.map(o => `<option ${o === v ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('')}${v && !opts.includes(v) ? `<option selected>${escapeHtml(v)}</option>` : ''}</select>`
+    : `<input type="text" ${attr}="${key}" value="${escapeHtml(v)}" placeholder="${escapeHtml(ph || '')}">`;
+  return `<div class="field"><label>${escapeHtml(label)}</label>${ctl}</div>`;
+}
+function groupsFormHtml(groups, attr, vals) {
+  vals = vals || {};
+  return groups.map((g, gi) => {
+    const filled = g.fields.some(f => vals[f[0]]);
+    const rows = [];
+    for (let i = 0; i < g.fields.length; i += 2) {
+      rows.push(`<div class="field-row fr-2">${g.fields.slice(i, i + 2).map(f => specInputHtml(attr, f, vals[f[0]])).join('')}</div>`);
+    }
+    return `<details ${filled || gi === 0 ? 'open' : ''} style="border:1px solid var(--border);border-radius:8px;margin-top:10px;padding:0 12px 4px">
+      <summary style="cursor:pointer;font-weight:600;font-size:13px;padding:10px 0">${escapeHtml(g.title)}</summary>${rows.join('')}</details>`;
+  }).join('');
+}
+function collectAttr(rootId, attr) {
+  const out = {};
+  document.querySelectorAll('#' + rootId + ' [' + attr + ']').forEach(el => {
+    const v = (el.value || '').trim();
+    if (v) out[el.getAttribute(attr)] = v;
+  });
+  return out;
+}
+function groupsViewHtml(groups, vals) {
+  vals = vals || {};
+  const blocks = groups.map(g => {
+    const items = g.fields.filter(f => vals[f[0]]);
+    if (!items.length) return '';
+    return `<div style="margin-bottom:14px"><div style="font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;font-weight:700">${escapeHtml(g.title)}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px 18px">${items.map(f =>
+        `<div><div style="font-size:11px;color:var(--text3)">${escapeHtml(f[1])}</div><div style="font-size:13px;font-weight:600">${escapeHtml(vals[f[0]])}</div></div>`).join('')}</div></div>`;
+  }).join('');
+  return blocks;
+}
+async function renderBikeSpecCard(b) {
+  const card = document.getElementById('bikeSpecCard');
+  if (!(await detectBikeSpecs())) { card.style.display = 'none'; return; }
+  card.style.display = '';
+  const html = groupsViewHtml(BIKE_SPEC_GROUPS, b.specs || {});
+  document.getElementById('bikeSpecBody').innerHTML = html ||
+    '<div class="cell-muted">No components recorded yet. Press “Edit specs” to add groupset, wheels, tyres, cockpit and more.</div>';
+}
+
+/* ----- fitting records ----- */
+async function loadFittings(customerId) {
+  const card = document.getElementById('fitCard');
+  if (!(await detectFit())) {
+    card.style.display = '';
+    document.getElementById('fitRows').innerHTML = '<tr><td colspan="5" class="cell-muted">Fitting records are not switched on yet. Run <b>supabase/bike-specs-and-fitting.sql</b> once in the Supabase SQL editor.</td></tr>';
+    return;
+  }
+  card.style.display = '';
+  const { data, error } = await sb.from('bike_fittings').select('*').eq('customer_id', customerId).order('fit_date', { ascending: false });
+  if (error) { document.getElementById('fitRows').innerHTML = '<tr><td colspan="5" class="cell-muted">Could not load: ' + escapeHtml(error.message) + '</td></tr>'; return; }
+  FITTINGS = data || [];
+  renderFittings();
+}
+function fitSummary(d) {
+  d = d || {};
+  return [d.saddle_height && 'Saddle ' + d.saddle_height + 'mm', d.saddle_setback && 'Setback ' + d.saddle_setback + 'mm',
+          d.saddle_bar_reach && 'Reach ' + d.saddle_bar_reach + 'mm', d.saddle_bar_drop && 'Drop ' + d.saddle_bar_drop + 'mm'].filter(Boolean).join(' · ') || '—';
+}
+function renderFittings() {
+  const tb = document.getElementById('fitRows');
+  if (!FITTINGS.length) { tb.innerHTML = '<tr><td colspan="5" class="cell-muted">No fitting on file. Press “+ Add fitting” to record the customer’s report.</td></tr>'; return; }
+  tb.innerHTML = FITTINGS.map((f, i) => `<tr class="clickable" onclick="openFitView('${f.id}')">
+    <td class="cell-strong">${formatDate(f.fit_date)}${i === 0 ? ' <span class="badge badge-green">Latest</span>' : ''}</td>
+    <td>${escapeHtml(f.fitter || '—')}</td>
+    <td>${escapeHtml(f.fitted_bike || '—')}</td>
+    <td class="cell-muted">${escapeHtml(fitSummary(f.data))}</td>
+    <td class="cell-muted">→</td></tr>`).join('');
+}
+function openFitModal(id) {
+  if (!currentCustomerId) return;
+  const f = id ? FITTINGS.find(x => x.id === id) : null;
+  document.getElementById('fitModalTitle').textContent = f ? 'Edit fitting record' : 'Add fitting record';
+  document.getElementById('fitId').value = f ? f.id : '';
+  document.getElementById('fitDate').value = f?.fit_date || '';
+  document.getElementById('fitFitter').value = f?.fitter || '';
+  document.getElementById('fitBike').value = f?.fitted_bike || '';
+  document.getElementById('fitNotes').value = f?.notes || '';
+  document.getElementById('fitFile').value = '';
+  document.getElementById('fitReportCur').innerHTML = f?.report_url ? 'Current: <a href="' + escapeHtml(f.report_url) + '" target="_blank" rel="noopener">open report</a> (choose a file to replace it)' : '';
+  document.getElementById('fitForm').innerHTML = groupsFormHtml(FIT_GROUPS, 'data-fit', f?.data);
+  document.getElementById('fitModalBackdrop').classList.add('open');
+}
+function closeFitModal() { document.getElementById('fitModalBackdrop').classList.remove('open'); }
+async function saveFit() {
+  const btn = document.getElementById('fitSaveBtn');
+  const id = document.getElementById('fitId').value;
+  const prev = id ? FITTINGS.find(x => x.id === id) : null;
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    let reportUrl = prev?.report_url || null;
+    const file = document.getElementById('fitFile').files[0];
+    if (file) {
+      const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const path = 'fitting-' + currentCustomerId.slice(0, 8) + '-' + Date.now() + '-' + safe;
+      const { error: upErr } = await sb.storage.from('bike-photos').upload(path, file, { upsert: false });
+      if (upErr) { alert('Report upload failed: ' + upErr.message); return; }
+      reportUrl = sb.storage.from('bike-photos').getPublicUrl(path).data.publicUrl;
+    }
+    const payload = {
+      customer_id: currentCustomerId,
+      fit_date: document.getElementById('fitDate').value || null,
+      fitter: document.getElementById('fitFitter').value.trim() || null,
+      fitted_bike: document.getElementById('fitBike').value.trim() || null,
+      report_url: reportUrl,
+      data: collectAttr('fitForm', 'data-fit'),
+      notes: document.getElementById('fitNotes').value.trim() || null,
+    };
+    const { error } = id ? await sb.from('bike_fittings').update(payload).eq('id', id) : await sb.from('bike_fittings').insert(payload);
+    if (error) { alert('Save failed: ' + error.message); return; }
+    closeFitModal();
+    await loadFittings(currentCustomerId);
+  } finally { btn.disabled = false; btn.textContent = 'Save fitting'; }
+}
+function openFitView(id) {
+  const f = FITTINGS.find(x => x.id === id);
+  if (!f) return;
+  const head = [['Date', formatDate(f.fit_date)], ['Fitter / studio', f.fitter || '—'], ['Fitted on', f.fitted_bike || '—']]
+    .map(([k, v]) => `<div><div style="font-size:11px;color:var(--text3)">${k}</div><div style="font-size:13px;font-weight:600">${escapeHtml(v)}</div></div>`).join('');
+  document.getElementById('fitViewBody').innerHTML =
+    `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">${head}</div>` +
+    (groupsViewHtml(FIT_GROUPS, f.data) || '<div class="cell-muted" style="margin-bottom:12px">No measurements entered.</div>') +
+    (f.notes ? `<div style="margin-top:6px"><div style="font-size:11px;color:var(--text3)">Notes</div><div style="font-size:13px;white-space:pre-wrap">${escapeHtml(f.notes)}</div></div>` : '') +
+    (f.report_url ? `<div style="margin-top:12px"><a class="btn btn-secondary btn-sm" href="${escapeHtml(f.report_url)}" target="_blank" rel="noopener">Open original report</a></div>` : '') +
+    `<div class="cell-muted" style="font-size:11.5px;margin-top:14px">Recorded from the customer’s own professional fitting report. Bike & Butter does not provide professional bike fitting; use as a reference only.</div>`;
+  document.getElementById('fitViewEdit').onclick = () => { closeFitView(); openFitModal(id); };
+  document.getElementById('fitViewDel').onclick = () => deleteFit(id);
+  document.getElementById('fitViewBackdrop').classList.add('open');
+}
+function closeFitView() { document.getElementById('fitViewBackdrop').classList.remove('open'); }
+async function deleteFit(id) {
+  if (!confirm('Delete this fitting record? This cannot be undone.')) return;
+  const { error } = await sb.from('bike_fittings').delete().eq('id', id);
+  if (error) { alert('Delete failed: ' + error.message); return; }
+  closeFitView();
+  await loadFittings(currentCustomerId);
+}
 
 function editBikeById(bikeId) {
   const b = BIKES.find(x => x.id === bikeId);
@@ -2597,6 +2872,7 @@ async function saveBike() {
     purchase_date: document.getElementById('bikePurchaseDate').value || null,
     notes: document.getElementById('bikeNotes').value.trim() || null,
   };
+  if (BIKE_SPECS_OK) payload.specs = collectAttr('bikeSpecForm', 'data-spec');   // only once the SQL has been run
   let error;
   if (id) {
     ({ error } = await sb.from('bikes').update(payload).eq('id', id));
