@@ -1405,7 +1405,7 @@ tr.rent-pending td { background: #fffbf0; }
           <input type="file" id="fitFile" accept=".pdf,image/*" style="font-size:12px">
           <span id="fitReportCur" class="cell-muted" style="font-size:12px"></span>
         </div>
-        <div class="cell-muted" style="font-size:11.5px;margin-top:4px">Stored with the shop's photo storage. Anyone with the exact link can open it, so only upload what the customer is happy with.</div>
+        <div class="cell-muted" style="font-size:11.5px;margin-top:4px">PDF or photo, up to 15 MB. Stored privately: only logged-in staff can open it.</div>
       </div>
       <div id="fitForm"></div>
       <div class="field"><label>Notes (injuries, flexibility, goals, anything in the report)</label><textarea id="fitNotes"></textarea></div>
@@ -2656,22 +2656,30 @@ const FIT_GROUPS = [
     ['rider_height','Height (cm)',''], ['inseam','Inseam (cm)',''], ['shoe_size','Shoe size',''], ['riding_style','Riding goal / style','e.g. endurance road, triathlon']
   ]},
   { title: 'Saddle', fields: [
-    ['saddle_height','Saddle height (mm)','BB centre to saddle top'], ['saddle_setback','Saddle setback (mm)','Behind BB, from saddle tip or nose'],
-    ['saddle_model','Saddle model / width',''], ['saddle_tilt','Saddle tilt (deg)','']
+    ['saddle_height','Saddle height (mm)','BB centre to saddle top, along seat tube'], ['saddle_centre_height','Saddle centre height (mm)','Vertical, BB to saddle centre'],
+    ['saddle_setback','Saddle setback (mm)','Horizontal, behind BB'], ['saddle_tilt','Saddle tilt (deg)',''],
+    ['saddle_model','Saddle model / width',''], ['saddle_setback_note','Saddle position on rails','e.g. 12mm from rail centre']
   ]},
   { title: 'Reach & drop', fields: [
-    ['saddle_bar_reach','Saddle to bar reach (mm)',''], ['saddle_bar_drop','Saddle to bar drop (mm)',''],
-    ['stack','Fitted stack (mm)','Bike or fit stack'], ['reach','Fitted reach (mm)','Bike or fit reach']
+    ['saddle_bar_reach','Saddle to bar reach (mm)','Horizontal, saddle centre to bar centre'], ['saddle_bar_drop','Saddle to bar drop (mm)','Bar centre below saddle centre'],
+    ['bar_x','Handlebar centre X (mm)','Horizontal, forward of BB'], ['bar_y','Handlebar centre Y (mm)','Vertical, above BB'],
+    ['stack','Frame stack (mm)',''], ['reach','Frame reach (mm)','']
   ]},
   { title: 'Cockpit', fields: [
     ['bar_width','Bar width (mm)',''], ['stem_length','Stem length (mm)',''], ['stem_angle','Stem angle (deg)',''],
-    ['spacers','Spacers under stem (mm)',''], ['hood_angle','Lever / hood angle','']
+    ['spacers','Spacers under stem (mm)',''], ['hood_angle','Handlebar / hood angle (deg)',''], ['bar_drop','Bar drop / reach shape','e.g. 128 drop, 75 reach']
+  ]},
+  { title: 'Frame geometry (from report)', fields: [
+    ['seat_angle','Seat tube angle (deg)',''], ['head_angle','Head tube angle (deg)',''],
+    ['top_tube','Effective top tube (mm)',''], ['seat_tube_len','Seat tube length (mm)','']
   ]},
   { title: 'Cranks, cleats & aero', fields: [
-    ['crank_length','Crank length (mm)',''], ['cleat_position','Cleat position / rotation','e.g. 2mm back, 1 degree in'],
+    ['crank_length','Crank length (mm)',''], ['pedal_axle_height','Pedal axle below / above BB (mm)','e.g. 16.2 below'],
+    ['cleat_position','Cleat position / rotation','e.g. 2mm back, 1 degree in'],
     ['shims_wedges','Shims / wedges / insoles',''], ['pad_stack','Aero pad stack (mm)','Triathlon / TT'], ['pad_reach','Aero pad reach (mm)','Triathlon / TT']
   ]}
 ];
+const FIT_BUCKET = 'fitting-reports';
 let BIKE_SPECS_OK = null, FIT_OK = null, FITTINGS = [];
 
 async function detectBikeSpecs() {
@@ -2769,7 +2777,7 @@ function openFitModal(id) {
   document.getElementById('fitBike').value = f?.fitted_bike || '';
   document.getElementById('fitNotes').value = f?.notes || '';
   document.getElementById('fitFile').value = '';
-  document.getElementById('fitReportCur').innerHTML = f?.report_url ? 'Current: <a href="' + escapeHtml(f.report_url) + '" target="_blank" rel="noopener">open report</a> (choose a file to replace it)' : '';
+  document.getElementById('fitReportCur').innerHTML = f?.report_url ? 'Current: <a href="#" onclick="openFitReport(\'' + f.id + '\');return false">open report</a> (choose a file to replace it)' : '';
   document.getElementById('fitForm').innerHTML = groupsFormHtml(FIT_GROUPS, 'data-fit', f?.data);
   document.getElementById('fitModalBackdrop').classList.add('open');
 }
@@ -2781,13 +2789,16 @@ async function saveFit() {
   btn.disabled = true; btn.textContent = 'Saving…';
   try {
     let reportUrl = prev?.report_url || null;
+    let oldToRemove = null;
     const file = document.getElementById('fitFile').files[0];
     if (file) {
+      if (file.size > 15 * 1024 * 1024) { alert('That file is over 15 MB. Please use a smaller PDF or photo.'); return; }
       const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const path = 'fitting-' + currentCustomerId.slice(0, 8) + '-' + Date.now() + '-' + safe;
-      const { error: upErr } = await sb.storage.from('bike-photos').upload(path, file, { upsert: false });
-      if (upErr) { alert('Report upload failed: ' + upErr.message); return; }
-      reportUrl = sb.storage.from('bike-photos').getPublicUrl(path).data.publicUrl;
+      const path = currentCustomerId + '/' + Date.now() + '-' + safe;
+      const { error: upErr } = await sb.storage.from(FIT_BUCKET).upload(path, file, { upsert: false, contentType: file.type || 'application/octet-stream' });
+      if (upErr) { alert('Report upload failed: ' + upErr.message + (/bucket/i.test(upErr.message) ? '\n\nRun supabase/bike-specs-and-fitting.sql again (it creates the private reports bucket).' : '')); return; }
+      if (prev?.report_url && prev.report_url.startsWith('fit:')) oldToRemove = prev.report_url.slice(4);
+      reportUrl = 'fit:' + path;
     }
     const payload = {
       customer_id: currentCustomerId,
@@ -2800,6 +2811,7 @@ async function saveFit() {
     };
     const { error } = id ? await sb.from('bike_fittings').update(payload).eq('id', id) : await sb.from('bike_fittings').insert(payload);
     if (error) { alert('Save failed: ' + error.message); return; }
+    if (oldToRemove) { try { await sb.storage.from(FIT_BUCKET).remove([oldToRemove]); } catch (e) {} }
     closeFitModal();
     await loadFittings(currentCustomerId);
   } finally { btn.disabled = false; btn.textContent = 'Save fitting'; }
@@ -2813,17 +2825,28 @@ function openFitView(id) {
     `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">${head}</div>` +
     (groupsViewHtml(FIT_GROUPS, f.data) || '<div class="cell-muted" style="margin-bottom:12px">No measurements entered.</div>') +
     (f.notes ? `<div style="margin-top:6px"><div style="font-size:11px;color:var(--text3)">Notes</div><div style="font-size:13px;white-space:pre-wrap">${escapeHtml(f.notes)}</div></div>` : '') +
-    (f.report_url ? `<div style="margin-top:12px"><a class="btn btn-secondary btn-sm" href="${escapeHtml(f.report_url)}" target="_blank" rel="noopener">Open original report</a></div>` : '') +
+    (f.report_url ? `<div style="margin-top:12px"><button class="btn btn-secondary btn-sm" onclick="openFitReport('${f.id}')">Open original report</button></div>` : '') +
     `<div class="cell-muted" style="font-size:11.5px;margin-top:14px">Recorded from the customer’s own professional fitting report. Bike & Butter does not provide professional bike fitting; use as a reference only.</div>`;
   document.getElementById('fitViewEdit').onclick = () => { closeFitView(); openFitModal(id); };
   document.getElementById('fitViewDel').onclick = () => deleteFit(id);
   document.getElementById('fitViewBackdrop').classList.add('open');
 }
 function closeFitView() { document.getElementById('fitViewBackdrop').classList.remove('open'); }
+async function openFitReport(id) {
+  const f = FITTINGS.find(x => x.id === id);
+  if (!f || !f.report_url) return;
+  if (!f.report_url.startsWith('fit:')) { window.open(f.report_url, '_blank', 'noopener'); return; }   // older links
+  const w = window.open('', '_blank');   // open synchronously so the browser doesn't block the popup
+  const { data, error } = await sb.storage.from(FIT_BUCKET).createSignedUrl(f.report_url.slice(4), 600);
+  if (error || !data) { if (w) w.close(); alert('Could not open the report: ' + (error ? error.message : 'not found')); return; }
+  if (w) w.location.href = data.signedUrl; else window.location.href = data.signedUrl;
+}
 async function deleteFit(id) {
   if (!confirm('Delete this fitting record? This cannot be undone.')) return;
+  const f = FITTINGS.find(x => x.id === id);
   const { error } = await sb.from('bike_fittings').delete().eq('id', id);
   if (error) { alert('Delete failed: ' + error.message); return; }
+  if (f?.report_url?.startsWith('fit:')) { try { await sb.storage.from(FIT_BUCKET).remove([f.report_url.slice(4)]); } catch (e) {} }
   closeFitView();
   await loadFittings(currentCustomerId);
 }

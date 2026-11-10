@@ -22,4 +22,15 @@ drop policy if exists "staff all bike_fittings" on public.bike_fittings;
 create policy "staff all bike_fittings" on public.bike_fittings for all to authenticated using (true) with check (true);
 revoke all on public.bike_fittings from anon;
 
+-- 3) PRIVATE storage bucket for the customer's fitting report (PDF or photo, max 15 MB). Staff only.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('fitting-reports', 'fitting-reports', false, 15728640,
+        array['application/pdf','image/jpeg','image/png','image/webp','image/heic'])
+on conflict (id) do update set public = false, file_size_limit = 15728640,
+  allowed_mime_types = array['application/pdf','image/jpeg','image/png','image/webp','image/heic'];
+
+drop policy if exists "staff fitting reports" on storage.objects;
+create policy "staff fitting reports" on storage.objects for all to authenticated
+  using (bucket_id = 'fitting-reports') with check (bucket_id = 'fitting-reports');
+
 notify pgrst, 'reload schema';
