@@ -93,6 +93,17 @@ html, body { height: 100%; font-family: 'Inter', -apple-system, BlinkMacSystemFo
 .main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
 .topbar { height: 52px; flex-shrink: 0; background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; gap: 16px; }
 .topbar-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.gs-wrap { position: relative; margin-left: auto; width: min(380px, 42vw); }
+.gs-input { width: 100%; box-sizing: border-box; border: 1px solid var(--border2); border-radius: 8px; padding: 7px 12px 7px 32px; font-size: 13px; background: var(--bg); color: var(--text); }
+.gs-ico { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
+.gs-menu { position: absolute; top: calc(100% + 6px); right: 0; left: 0; min-width: 340px; max-height: 70vh; overflow: auto; background: var(--bg2); border: 1px solid var(--border2); border-radius: 10px; box-shadow: 0 12px 32px rgba(0,0,0,.18); z-index: 600; display: none; padding: 6px; }
+.gs-menu.open { display: block; }
+.gs-group { font-size: 10.5px; text-transform: uppercase; letter-spacing: .6px; color: var(--text3); font-weight: 700; padding: 8px 8px 4px; }
+.gs-item { display: flex; justify-content: space-between; gap: 12px; padding: 7px 8px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.gs-item:hover, .gs-item.sel { background: var(--bg3); }
+.gs-item .sub { color: var(--text3); font-size: 12px; text-align: right; }
+.gs-empty { padding: 14px 10px; color: var(--text3); font-size: 13px; }
+@media (max-width: 760px) { .gs-wrap { width: 46vw; } .gs-menu { min-width: 280px; left: auto; width: 86vw; } }
 
 .content { flex: 1; overflow: hidden; position: relative; }
 .tab-panel { position: absolute; inset: 0; overflow-y: auto; padding: 24px; display: none; }
@@ -565,6 +576,11 @@ tr.rent-pending td { background: #fffbf0; }
     <div class="topbar">
       <button class="sidebar-toggle-btn" title="Show/hide sidebar" onclick="toggleSidebar()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg></button>
       <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="gs-wrap">
+        <svg class="gs-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="gsInput" class="gs-input" type="search" placeholder="Search everything…  ( / )" autocomplete="off" oninput="gsRun()" onfocus="gsRun()" onkeydown="gsKey(event)">
+        <div class="gs-menu" id="gsMenu"></div>
+      </div>
     </div>
 
     <div class="content">
@@ -663,6 +679,15 @@ tr.rent-pending td { background: #fffbf0; }
             <thead><tr><th>Date</th><th>Fitter / studio</th><th>Fitted on</th><th>Key numbers</th><th></th></tr></thead>
             <tbody id="fitRows"><tr><td colspan="5" class="cell-muted">No fitting on file</td></tr></tbody>
           </table></div>
+        </div>
+        <div class="card" style="margin-top:14px" id="custHistoryCard">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Customer history</div>
+              <div class="cell-muted" id="custHistorySummary" style="font-size:12px;margin-top:2px">Loading…</div>
+            </div>
+          </div>
+          <div id="custHistoryBody" style="padding:4px 0 8px"></div>
         </div>
       </div>
 
@@ -832,6 +857,7 @@ tr.rent-pending td { background: #fffbf0; }
         <div class="page-header">
           <div><div class="page-title">Bookings</div><div class="page-subtitle">Service and bike-build requests from the website. Confirming or cancelling updates the Google Calendar automatically.</div></div>
           <div class="page-actions">
+            <button class="btn btn-primary" style="margin-right:14px" onclick="openBookingModal()">+ New booking</button>
             <button class="btn btn-primary" data-bkfilter="upcoming" onclick="setBookingFilter('upcoming')">Upcoming</button>
             <button class="btn" data-bkfilter="pending" onclick="setBookingFilter('pending')">Pending</button>
             <button class="btn" data-bkfilter="all" onclick="setBookingFilter('all')">All</button>
@@ -925,7 +951,21 @@ tr.rent-pending td { background: #fffbf0; }
           <div class="page-actions"><button class="btn btn-primary" onclick="openInvoiceEditor()">+ New Invoice</button></div>
         </div>
         <div class="card">
-          <div class="card-header"><div class="search-input" style="width:380px"><input type="text" id="invoiceSearch" placeholder="Search invoice no. or customer…" oninput="renderInvoices()"></div></div>
+          <div class="card-header" style="flex-wrap:wrap;gap:10px">
+            <div class="search-input" style="width:300px"><input type="text" id="invoiceSearch" placeholder="Search invoice no. or customer…" oninput="renderInvoices()"></div>
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="cell-muted" style="font-size:12px">From</span><input type="date" id="invFrom" onchange="renderInvoices()" style="border:1px solid var(--border2);border-radius:6px;padding:6px 8px;font-size:13px">
+              <span class="cell-muted" style="font-size:12px">To</span><input type="date" id="invTo" onchange="renderInvoices()" style="border:1px solid var(--border2);border-radius:6px;padding:6px 8px;font-size:13px">
+              <button class="btn btn-ghost btn-sm" onclick="invRange('month')">This month</button>
+              <button class="btn btn-ghost btn-sm" onclick="invRange('lastmonth')">Last month</button>
+              <button class="btn btn-ghost btn-sm" onclick="invRange('year')">This year</button>
+              <select id="invSort" onchange="renderInvoices()" style="border:1px solid var(--border2);border-radius:6px;padding:6px 8px;font-size:13px">
+                <option value="new">Newest first</option><option value="old">Oldest first</option><option value="high">Highest total</option><option value="low">Lowest total</option>
+              </select>
+              <button class="btn btn-ghost btn-sm" onclick="invClearFilters()">Clear</button>
+            </div>
+            <div id="invSummary" class="cell-muted" style="margin-left:auto;font-size:12.5px"></div>
+          </div>
           <div class="tbl-wrap"><table>
             <thead><tr><th>Invoice No.</th><th>Customer</th><th>Date</th><th>Total</th><th></th></tr></thead>
             <tbody id="invoiceRows"><tr><td colspan="5" class="cell-muted">Loading…</td></tr></tbody>
@@ -1143,7 +1183,7 @@ tr.rent-pending td { background: #fffbf0; }
       <div class="tab-panel" id="tab-products">
         <div class="page-header">
           <div><div class="page-title">Products &amp; Stock</div><div class="page-subtitle">Each product can have multiple variants, each tracked with its own stock and cost (WAC)</div></div>
-          <div class="page-actions"><button class="btn btn-primary" onclick="openProductModal()">+ New Product</button></div>
+          <div class="page-actions"><button class="btn btn-secondary" onclick="openStockLog()">Stock history</button> <button class="btn btn-primary" onclick="openProductModal()">+ New Product</button></div>
         </div>
         <div class="card">
           <div class="card-header"><div class="search-input" style="width:360px"><input type="text" id="productSearch" placeholder="Search products…" oninput="renderProducts()"></div></div>
@@ -1429,6 +1469,71 @@ tr.rent-pending td { background: #fffbf0; }
   </div>
 </div>
 
+<div class="modal-backdrop" id="bkModalBackdrop">
+  <div class="modal" style="width:560px">
+    <div class="modal-header"><div class="modal-title" id="bkModalTitle">New booking</div><button class="modal-close" onclick="closeBookingModal()">&times;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="bkId">
+      <div class="field"><label>Existing customer (optional)</label><select id="bkCustomer" onchange="bkPickCustomer()"></select></div>
+      <div class="field-row fr-2">
+        <div class="field"><label>Name *</label><input type="text" id="bkName"></div>
+        <div class="field"><label>Phone *</label><input type="text" id="bkPhone" placeholder="8 digit mobile"></div>
+      </div>
+      <div class="field"><label>Bike</label><select id="bkBike"><option value="">— none / not listed —</option></select></div>
+      <div class="field"><label>Service *</label><select id="bkService" onchange="bkSvcChanged()"></select></div>
+      <div class="field-row" style="grid-template-columns:1.2fr 1fr 1fr">
+        <div class="field"><label>Date *</label><input type="date" id="bkDate"></div>
+        <div class="field"><label>Start time *</label><input type="time" id="bkTime" step="900"></div>
+        <div class="field"><label>Duration (min)</label><input type="number" id="bkDur" min="15" step="15"></div>
+      </div>
+      <div class="field"><label>Status</label><select id="bkStatus"></select></div>
+      <div class="field"><label>Notes</label><textarea id="bkNotes" placeholder="e.g. walk-in, WhatsApp booking"></textarea></div>
+      <div id="bkErr" style="color:#b0392c;font-size:12.5px;margin-top:4px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="bkDelBtn" style="color:#b0392c;margin-right:auto;display:none" onclick="deleteBooking()">Delete</button>
+      <button class="btn btn-secondary" onclick="closeBookingModal()">Cancel</button>
+      <button class="btn btn-primary" id="bkSaveBtn" onclick="saveBooking()">Save booking</button>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" id="mileageModalBackdrop">
+  <div class="modal" style="width:420px">
+    <div class="modal-header"><div class="modal-title">Correct mileage reading</div><button class="modal-close" onclick="closeMileageModal()">&times;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="mlId">
+      <div class="field"><label>Reading (km)</label><input type="number" id="mlKm" min="0" step="any"></div>
+      <div class="field"><label>Date</label><input type="date" id="mlDate"></div>
+      <div class="cell-muted" style="font-size:12px">Logged by: <span id="mlSource"></span></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" style="color:#b0392c;margin-right:auto" onclick="deleteMileage()">Delete reading</button>
+      <button class="btn btn-secondary" onclick="closeMileageModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMileage()">Save</button>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" id="stockLogBackdrop">
+  <div class="modal" style="width:900px;max-width:96vw">
+    <div class="modal-header"><div class="modal-title" id="stockLogTitle">Stock history</div><button class="modal-close" onclick="closeStockLog()">&times;</button></div>
+    <div class="modal-body">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+        <div class="search-input" style="width:300px"><input type="text" id="stockLogSearch" placeholder="Search item, invoice no., note…" oninput="renderStockLog()"></div>
+        <select id="stockLogType" onchange="renderStockLog()" style="border:1px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:13px">
+          <option value="">All movements</option><option value="invoice">Invoices</option><option value="sale">Sales tab</option><option value="purchase">Purchases</option><option value="manual">Manual corrections</option>
+        </select>
+        <span class="cell-muted" id="stockLogNow" style="font-size:12.5px"></span>
+      </div>
+      <div class="tbl-wrap" style="max-height:55vh;overflow:auto"><table>
+        <thead><tr><th>When</th><th>Item</th><th>Change</th><th>What happened</th></tr></thead>
+        <tbody id="stockLogRows"><tr><td colspan="4" class="cell-muted">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="cell-muted" style="font-size:11.5px;margin-top:8px">Stock used on invoices is recorded here from v53 onwards; earlier invoice deductions were not logged.</div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-primary" onclick="closeStockLog()">Close</button></div>
+  </div>
+</div>
+
 <div class="modal-backdrop" id="purchaseDetailModalBackdrop">
   <div class="modal" style="width:560px">
     <div class="modal-header"><div class="modal-title">Purchase Detail</div><button class="modal-close" onclick="closePurchaseDetail()">&times;</button></div>
@@ -1661,8 +1766,8 @@ async function loadAll() {
     renderDashboard(); // re-run now that PRODUCTS/VARIANTS are loaded (low stock panel needs them)
     await loadPurchases();
     await loadSales();
-    document.getElementById('jeDate').value = new Date().toISOString().slice(0,10);
-    document.getElementById('bsAsOf').value = new Date().toISOString().slice(0,10);
+    document.getElementById('jeDate').value = todaySG();
+    document.getElementById('bsAsOf').value = todaySG();
     setThisMonth();
     await loadLedger();
     setSyncStatus('synced');
@@ -1852,6 +1957,7 @@ function openCustomerDetail(id) {
   document.getElementById('custEditBtn').onclick = () => openCustomerModal(c);
   renderBikesForCustomer(id);
   loadFittings(id);
+  renderCustomerHistory(id);
   switchTab('customer-detail');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('topbarTitle').textContent = c.name;
@@ -1951,10 +2057,15 @@ function renderMileageSection(bike) {
   if (!MILEAGE_LOGS.length) {
     rowsEl.innerHTML = '<div class="cell-muted">No readings logged yet.</div>';
   } else {
-    rowsEl.innerHTML = MILEAGE_LOGS.slice(0, 6).map(m => `
-      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+    const shown = mileageShowAll ? MILEAGE_LOGS : MILEAGE_LOGS.slice(0, 6);
+    rowsEl.innerHTML = shown.map(m => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)">
         <span>${formatDate(m.logged_at.slice(0,10))} — <strong>${m.reading_km} km</strong> <span class="cell-muted">(${m.source})</span></span>
-      </div>`).join('');
+        <span style="white-space:nowrap">
+          <button class="btn btn-ghost btn-sm" title="Correct this reading" onclick="editMileage('${m.id}')">${ICON_EDIT}</button>
+          <button class="btn btn-ghost btn-sm" title="Delete this reading" onclick="deleteMileage('${m.id}')">${ICON_TRASH}</button>
+        </span>
+      </div>`).join('') + (MILEAGE_LOGS.length > 6 ? `<div style="padding-top:6px"><a href="#" onclick="mileageShowAll=!mileageShowAll;renderMileageSection(BIKES.find(x=>x.id===currentBikeId));return false" style="font-size:12px">${mileageShowAll ? 'Show fewer' : 'Show all ' + MILEAGE_LOGS.length + ' readings'}</a></div>` : '');
   }
 }
 async function promptLogMileage() {
@@ -2220,7 +2331,7 @@ function renderServicePreview() {
   const c = CUSTOMERS.find(x => x.id === custId) || null;
   const draft = {
     report_no: svcOrigReportNo || 'DRAFT',
-    service_date: document.getElementById('svcDate')?.value || new Date().toISOString().slice(0,10),
+    service_date: document.getElementById('svcDate')?.value || todaySG(),
     mechanic: document.getElementById('svcMechanic')?.value || '',
     work_done: document.getElementById('svcWorkDone')?.value || '',
     watch_items: document.getElementById('svcWatchItems')?.value || '',
@@ -2289,7 +2400,7 @@ async function openServiceModal(bikeId, recordId) {
   await svcPopulateInvoiceSelect(custId, record ? record.invoice_id : '');
   svcPopulateQuotationSelect(custId, record ? record.quotation_id : '');
 
-  document.getElementById('svcDate').value = record ? record.service_date : new Date().toISOString().slice(0,10);
+  document.getElementById('svcDate').value = record ? record.service_date : todaySG();
   let lastMech = ''; try { lastMech = localStorage.getItem('bnb_last_mechanic') || ''; } catch (e) {}
   document.getElementById('svcMechanic').value = record ? (record.mechanic || '') : lastMech;
   document.getElementById('svcMechanicList').innerHTML = svcMechanicNames().map(n => `<option value="${escapeHtml(n)}">`).join('');
@@ -2319,7 +2430,7 @@ async function openServiceModal(bikeId, recordId) {
 }
 
 function svcQuickDue(months) {
-  const base = new Date((document.getElementById('svcDate').value || new Date().toISOString().slice(0,10)) + 'T00:00:00');
+  const base = new Date((document.getElementById('svcDate').value || todaySG()) + 'T00:00:00');
   base.setMonth(base.getMonth() + months);
   document.getElementById('svcNextDue').value = base.toLocaleDateString('en-CA');
   renderServicePreview();
@@ -2376,7 +2487,7 @@ async function saveService(opts) {
   const payload = {
     bike_id: bikeId,
     customer_id: customerId,
-    service_date: document.getElementById('svcDate').value || new Date().toISOString().slice(0,10),
+    service_date: document.getElementById('svcDate').value || todaySG(),
     mechanic: document.getElementById('svcMechanic').value.trim() || null,
     work_done: document.getElementById('svcWorkDone').value.trim() || null,
     watch_items: document.getElementById('svcWatchItems').value.trim() || null,
@@ -2667,6 +2778,313 @@ function openBikeModal(bike = null) {
 }
 function closeBikeModal() { document.getElementById('bikeModalBackdrop').classList.remove('open'); }
 
+
+
+/* ============ v53: STOCK LOG, CUSTOMER HISTORY, MANUAL BOOKINGS, MILEAGE FIXES, GLOBAL SEARCH ============ */
+
+/* ----- stock log (every stock change leaves a record) ----- */
+async function logStockMove(variantId, qtyChange, reason, refType, refId, note) {
+  try {
+    const { error } = await sb.from('stock_movements').insert({ variant_id: variantId, qty_change: qtyChange, reason, reference_type: refType || null, reference_id: refId || null, note: note || null });
+    if (error) console.warn('stock log failed', error.message);   // never block the real save because the log failed
+  } catch (e) { console.warn('stock log failed', e); }
+}
+let STOCK_LOG = [], stockLogVariant = null;
+async function openStockLog(variantId) {
+  stockLogVariant = variantId || null;
+  document.getElementById('stockLogSearch').value = '';
+  document.getElementById('stockLogType').value = '';
+  const v = variantId ? VARIANTS.find(x => x.id === variantId) : null;
+  const p = v ? PRODUCTS.find(x => x.id === v.product_id) : null;
+  document.getElementById('stockLogTitle').textContent = v ? 'Stock history — ' + (p ? p.name + ' · ' : '') + v.name : 'Stock history — all items';
+  document.getElementById('stockLogNow').textContent = v ? 'In stock now: ' + v.qty : '';
+  document.getElementById('stockLogRows').innerHTML = '<tr><td colspan="4" class="cell-muted">Loading…</td></tr>';
+  document.getElementById('stockLogBackdrop').classList.add('open');
+  let q = sb.from('stock_movements').select('*').order('created_at', { ascending: false }).limit(1000);
+  if (variantId) q = q.eq('variant_id', variantId);
+  const { data, error } = await q;
+  if (error) { document.getElementById('stockLogRows').innerHTML = '<tr><td colspan="4" class="cell-muted">Could not load: ' + escapeHtml(error.message) + '</td></tr>'; return; }
+  STOCK_LOG = data || [];
+  renderStockLog();
+}
+function closeStockLog() { document.getElementById('stockLogBackdrop').classList.remove('open'); }
+function stockWhy(m) {
+  const rt = m.reference_type, r = m.reason, note = m.note || '';
+  if (rt === 'invoice') {
+    const inv = INVOICES.find(i => i.id === m.reference_id);
+    const label = r === 'sale' ? 'Used in invoice' : 'Returned from invoice';
+    const noInNote = (note.match(/BNB-[A-Za-z0-9-]+/) || [])[0];
+    const no = inv ? (inv.full_invoice_no || inv.invoice_no) : noInNote;
+    const link = inv ? `<span class="clickable" style="text-decoration:underline" onclick="closeStockLog();openInvoiceEditor('${inv.id}')">${escapeHtml(no)}</span>` : escapeHtml(no || 'a deleted invoice');
+    return { kind: 'invoice', html: label + ' ' + link + (note && /revision|deleted/i.test(note) ? ' <span class="cell-muted">(' + (/deleted/i.test(note) ? 'invoice deleted' : 'revision') + ')</span>' : ''), text: label + ' ' + (no || '') + ' ' + note };
+  }
+  if (rt === 'sale' || (!rt && r === 'sale')) { const sl = SALES.find(x => x.id === m.reference_id); const who = sl ? [sl.customer_name, sl.source].filter(Boolean).join(' · ') : ''; return { kind: 'sale', html: 'Sold (Sales tab)' + (who ? ' <span class="cell-muted">' + escapeHtml(who) + '</span>' : ''), text: 'sold sales ' + who + ' ' + note }; }
+  if (r === 'void_sale') return { kind: 'sale', html: 'Sale voided' + (note ? ' <span class="cell-muted">' + escapeHtml(note) + '</span>' : ''), text: 'sale voided ' + note };
+  if (r === 'purchase') { const pu = PURCHASES.find(x => x.id === m.reference_id); const who = pu ? [pu.platform, pu.reference].filter(Boolean).join(' · ') : ''; return { kind: 'purchase', html: 'Purchase received' + (who ? ' <span class="cell-muted">' + escapeHtml(who) + '</span>' : ''), text: 'purchase received ' + who + ' ' + note }; }
+  if (r === 'void_purchase') return { kind: 'purchase', html: 'Purchase voided' + (note ? ' <span class="cell-muted">' + escapeHtml(note) + '</span>' : ''), text: 'purchase voided ' + note };
+  return { kind: 'manual', html: 'Manual correction' + (note ? ' <span class="cell-muted">' + escapeHtml(note) + '</span>' : ''), text: 'manual correction ' + note };
+}
+function renderStockLog() {
+  const q = (document.getElementById('stockLogSearch').value || '').trim().toLowerCase();
+  const type = document.getElementById('stockLogType').value;
+  const rows = STOCK_LOG.map(m => {
+    const v = VARIANTS.find(x => x.id === m.variant_id), p = v ? PRODUCTS.find(x => x.id === v.product_id) : null;
+    const item = v ? (p && p.name !== v.name ? p.name + ' — ' + v.name : v.name) : 'Deleted item';
+    return { m, item, why: stockWhy(m) };
+  }).filter(r => (!type || r.why.kind === type) && (!q || (r.item + ' ' + r.why.text).toLowerCase().includes(q)));
+  const tb = document.getElementById('stockLogRows');
+  if (!rows.length) { tb.innerHTML = '<tr><td colspan="4" class="cell-muted">Nothing recorded' + (q || type ? ' for this filter' : '') + '</td></tr>'; return; }
+  tb.innerHTML = rows.map(({ m, item, why }) => {
+    const n = Number(m.qty_change) || 0;
+    return `<tr><td class="cell-muted" style="white-space:nowrap">${new Date(m.created_at).toLocaleString('en-SG', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}</td>
+      <td class="cell-strong">${escapeHtml(item)}</td>
+      <td style="font-weight:700;color:${n < 0 ? 'var(--red)' : 'var(--green, #2e7d32)'}">${n > 0 ? '+' : ''}${n}</td>
+      <td>${why.html}</td></tr>`;
+  }).join('');
+}
+
+/* ----- customer history ----- */
+async function renderCustomerHistory(customerId) {
+  const sumEl = document.getElementById('custHistorySummary'), body = document.getElementById('custHistoryBody');
+  if (!sumEl || !body) return;
+  sumEl.textContent = 'Loading…'; body.innerHTML = '';
+  const c = CUSTOMERS.find(x => x.id === customerId);
+  if (!c) return;
+  const nm = x => String(x || '').trim().toLowerCase();
+  const sameCust = r => r.customer_id === customerId || (!r.customer_id && nm(r.customer_name) && nm(r.customer_name) === nm(c.name));
+  const invs = INVOICES.filter(sameCust);
+  const quotes = QUOTATIONS.filter(sameCust);
+  const last8 = String(c.phone || '').replace(/\D/g, '').slice(-8);
+  const bks = BOOKINGS.filter(b => b.customer_id === customerId || (last8.length === 8 && String(b.customer_phone || '').replace(/\D/g, '').slice(-8) === last8));
+  const bikeIds = BIKES.filter(b => b.customer_id === customerId).map(b => b.id);
+  let svc = [];
+  try {
+    const r1 = await sb.from('service_records').select('*').eq('customer_id', customerId);
+    const r2 = bikeIds.length ? await sb.from('service_records').select('*').in('bike_id', bikeIds) : { data: [] };
+    const seen = {}; [...(r1.data || []), ...(r2.data || [])].forEach(r => { seen[r.id] = r; });
+    svc = Object.values(seen).sort((a, z) => String(z.service_date || '').localeCompare(String(a.service_date || '')));
+  } catch (e) { /* leave empty */ }
+  if (currentCustomerId !== customerId) return;   // user moved on while loading
+
+  const lifetime = invs.reduce((t, i) => t + (Number(i.total) || 0), 0);
+  const lastInv = invs.map(i => i.invoice_date).filter(Boolean).sort().pop();
+  const lastSvc = svc.map(r => r.service_date).filter(Boolean).sort().pop();
+  const bits = [];
+  bits.push(invs.length + ' invoice' + (invs.length === 1 ? '' : 's') + (invs.length ? ' · ' + money(lifetime) + ' lifetime' : ''));
+  if (lastInv) bits.push('last invoice ' + formatDate(lastInv));
+  bits.push(svc.length + ' service report' + (svc.length === 1 ? '' : 's') + (lastSvc ? ' · last ' + formatDate(lastSvc) : ''));
+  sumEl.textContent = bits.join('  ·  ');
+
+  const bikeName = id => { const b = BIKES.find(x => x.id === id); return b ? [b.brand, b.model].filter(Boolean).join(' ') || 'Bike' : '—'; };
+  const section = (title, count, head, rowsHtml) => count ? `<div style="padding:10px 20px 2px"><div style="font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:700">${title} (${count})</div></div>
+    <div class="tbl-wrap"><table><thead><tr>${head.map(h => '<th>' + h + '</th>').join('')}</tr></thead><tbody>${rowsHtml}</tbody></table></div>` : '';
+  const stat = v => v ? String(v).charAt(0).toUpperCase() + String(v).slice(1) : '—';
+  const html =
+    section('Invoices', invs.length, ['Invoice', 'Date', 'Total'], invs.map(i => `<tr class="clickable" onclick="openInvoiceEditor('${i.id}')"><td class="cell-strong">${escapeHtml(i.full_invoice_no || i.invoice_no)}</td><td class="cell-muted">${formatDate(i.invoice_date)}</td><td class="cell-strong">${money(i.total)}</td></tr>`).join('')) +
+    section('Quotations', quotes.length, ['Quote', 'Date', 'Status', 'Total'], quotes.map(q => `<tr class="clickable" onclick="openQuotationEditor('${q.id}')"><td class="cell-strong">${escapeHtml(q.full_quotation_no || q.quotation_no)}</td><td class="cell-muted">${formatDate(q.quotation_date)}</td><td>${escapeHtml(stat(q.status))}</td><td class="cell-strong">${money(q.total)}</td></tr>`).join('')) +
+    section('Service reports', svc.length, ['Report', 'Date', 'Bike', 'Mechanic', 'Work done'], svc.map(r => `<tr class="clickable" onclick="openBikeDetail('${r.bike_id}')"><td class="cell-strong">${escapeHtml(r.report_no || '—')}</td><td class="cell-muted">${formatDate(r.service_date)}</td><td>${escapeHtml(bikeName(r.bike_id))}</td><td>${escapeHtml(r.mechanic || '—')}</td><td class="cell-muted" style="max-width:320px">${escapeHtml(String(r.work_done || '').slice(0, 90))}</td></tr>`).join('')) +
+    section('Bookings', bks.length, ['When', 'Service', 'Status'], bks.slice().reverse().map(b => `<tr class="clickable" onclick="switchTab('bookings');setBookingFilter('all')"><td>${new Date(b.start_time).toLocaleString('en-SG', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}</td><td>${escapeHtml((b.services && b.services.name) || '—')}</td><td>${escapeHtml((BK_STATUSES.find(x => x[0] === b.status) || [0, b.status])[1])}</td></tr>`).join(''));
+  body.innerHTML = html || '<div class="cell-muted" style="padding:10px 20px">Nothing on record for this customer yet.</div>';
+}
+
+/* ----- manual booking / reschedule ----- */
+let SERVICES_CACHE = null;
+async function bkLoadServices() {
+  if (SERVICES_CACHE) return SERVICES_CACHE;
+  const { data } = await sb.from('services').select('*').eq('active', true).order('sort_order');
+  SERVICES_CACHE = data || [];
+  return SERVICES_CACHE;
+}
+function bkBikeOptions(customerId, selected) {
+  const sel = document.getElementById('bkBike');
+  const bikes = customerId ? BIKES.filter(b => b.customer_id === customerId) : [];
+  sel.innerHTML = '<option value="">— none / not listed —</option>' + bikes.map(b => `<option value="${b.id}" ${b.id === selected ? 'selected' : ''}>${escapeHtml([b.brand, b.model, b.colour].filter(Boolean).join(' ') || 'Bike')}</option>`).join('');
+}
+function bkPickCustomer() {
+  const id = document.getElementById('bkCustomer').value;
+  const c = CUSTOMERS.find(x => x.id === id);
+  if (c) { document.getElementById('bkName').value = c.name || ''; document.getElementById('bkPhone').value = c.phone || ''; }
+  bkBikeOptions(id, '');
+}
+function bkSvcChanged() {
+  const sv = (SERVICES_CACHE || []).find(x => x.id === document.getElementById('bkService').value);
+  if (sv && sv.duration_minutes) document.getElementById('bkDur').value = sv.duration_minutes;
+}
+async function openBookingModal(id) {
+  const b = id ? BOOKINGS.find(x => x.id === id) : null;
+  const services = (await bkLoadServices()).slice();
+  if (b && b.service_id && !services.some(x => x.id === b.service_id)) services.push({ id: b.service_id, name: (b.services && b.services.name) || 'Service', duration_minutes: 60 });
+  document.getElementById('bkModalTitle').textContent = b ? 'Edit / reschedule booking' : 'New booking';
+  document.getElementById('bkId').value = b ? b.id : '';
+  document.getElementById('bkCustomer').innerHTML = '<option value="">— new / walk-in customer —</option>' + CUSTOMERS.slice().sort((a, z) => a.name.localeCompare(z.name)).map(c => `<option value="${c.id}" ${b && b.customer_id === c.id ? 'selected' : ''}>${escapeHtml(c.name)}${c.phone ? ' · ' + escapeHtml(c.phone) : ''}</option>`).join('');
+  document.getElementById('bkName').value = b ? b.customer_name || '' : '';
+  document.getElementById('bkPhone').value = b ? b.customer_phone || '' : '';
+  bkBikeOptions(b ? b.customer_id : '', b ? b.bike_id : '');
+  document.getElementById('bkService').innerHTML = services.map(x => `<option value="${x.id}" ${b && b.service_id === x.id ? 'selected' : ''}>${escapeHtml(x.name)}${x.duration_minutes ? ' (' + x.duration_minutes + ' min)' : ''}</option>`).join('');
+  document.getElementById('bkStatus').innerHTML = BK_STATUSES.map(([v, l]) => `<option value="${v}" ${(b ? b.status : 'confirmed') === v ? 'selected' : ''}>${l}</option>`).join('');
+  document.getElementById('bkNotes').value = b ? b.notes || '' : '';
+  if (b) {
+    const st = new Date(b.start_time), en = new Date(b.end_time);
+    document.getElementById('bkDate').value = st.toLocaleDateString('en-CA', { timeZone: 'Asia/Singapore' });
+    document.getElementById('bkTime').value = st.toLocaleTimeString('en-GB', { timeZone: 'Asia/Singapore', hour: '2-digit', minute: '2-digit' });
+    document.getElementById('bkDur').value = Math.round((en - st) / 60000);
+  } else {
+    document.getElementById('bkDate').value = todaySG(); document.getElementById('bkTime').value = '10:00';
+    document.getElementById('bkDur').value = services[0] && services[0].duration_minutes || 60;
+  }
+  document.getElementById('bkErr').textContent = '';
+  document.getElementById('bkDelBtn').style.display = b ? '' : 'none';
+  document.getElementById('bkModalBackdrop').classList.add('open');
+}
+function closeBookingModal() { document.getElementById('bkModalBackdrop').classList.remove('open'); }
+async function saveBooking() {
+  const g = id => document.getElementById(id), err = g('bkErr');
+  err.textContent = '';
+  const id = g('bkId').value, name = g('bkName').value.trim();
+  let phone = g('bkPhone').value.replace(/\D/g, ''); if (phone.length === 10 && phone.indexOf('65') === 0) phone = phone.slice(2);
+  const date = g('bkDate').value, time = g('bkTime').value, dur = parseInt(g('bkDur').value, 10);
+  if (!name) { err.textContent = 'Customer name is required.'; return; }
+  if (!phone) { err.textContent = 'Phone number is required.'; return; }
+  if (!g('bkService').value) { err.textContent = 'Pick a service.'; return; }
+  if (!date || !time) { err.textContent = 'Pick a date and start time.'; return; }
+  if (!dur || dur < 5) { err.textContent = 'Duration must be at least 5 minutes.'; return; }
+  const start = new Date(date + 'T' + time + ':00+08:00');
+  if (isNaN(start)) { err.textContent = 'That date or time is not valid.'; return; }
+  const payload = {
+    customer_id: g('bkCustomer').value || null, bike_id: g('bkBike').value || null, service_id: g('bkService').value,
+    customer_name: name, customer_phone: phone, start_time: start.toISOString(), end_time: new Date(start.getTime() + dur * 60000).toISOString(),
+    status: g('bkStatus').value, notes: g('bkNotes').value.trim() || null,
+  };
+  const btn = g('bkSaveBtn'); btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const { error } = id ? await sb.from('bookings').update(payload).eq('id', id) : await sb.from('bookings').insert(payload);
+    if (error) {
+      err.textContent = (error.code === '23P01' || /no_overlapping|overlap|exclusion/i.test(error.message))
+        ? 'That time overlaps another live booking (pending, confirmed or in progress). Pick a different time, or cancel the other booking first.'
+        : 'Could not save: ' + error.message;
+      return;
+    }
+    closeBookingModal();
+    await loadBookings();
+  } finally { btn.disabled = false; btn.textContent = 'Save booking'; }
+}
+async function deleteBooking() {
+  const id = document.getElementById('bkId').value;
+  if (!id || !confirm('Delete this booking? It will be removed completely. (To keep a record, set the status to Cancelled instead.)')) return;
+  const { error } = await sb.from('bookings').delete().eq('id', id);
+  if (error) { document.getElementById('bkErr').textContent = 'Could not delete: ' + error.message + ' If a servicing report is linked to it, set the status to Cancelled instead.'; return; }
+  closeBookingModal();
+  await loadBookings();
+}
+
+/* ----- mileage correction ----- */
+let mileageShowAll = false;
+function editMileage(id) {
+  const m = MILEAGE_LOGS.find(x => x.id === id);
+  if (!m) return;
+  document.getElementById('mlId').value = id;
+  document.getElementById('mlKm').value = m.reading_km;
+  document.getElementById('mlDate').value = String(m.logged_at || '').slice(0, 10);
+  document.getElementById('mlDate').dataset.orig = String(m.logged_at || '').slice(0, 10);
+  document.getElementById('mlSource').textContent = m.source === 'customer' ? 'the customer (public link)' : 'the mechanic';
+  document.getElementById('mileageModalBackdrop').classList.add('open');
+}
+function closeMileageModal() { document.getElementById('mileageModalBackdrop').classList.remove('open'); }
+async function saveMileage() {
+  const id = document.getElementById('mlId').value;
+  const km = parseFloat(document.getElementById('mlKm').value);
+  if (isNaN(km) || km < 0) { alert('Enter a valid reading.'); return; }
+  const d = document.getElementById('mlDate').value, orig = document.getElementById('mlDate').dataset.orig;
+  const payload = { reading_km: km };
+  if (d && d !== orig) payload.logged_at = d + 'T12:00:00+08:00';
+  const { error } = await sb.from('mileage_logs').update(payload).eq('id', id);
+  if (error) { alert('Could not save: ' + error.message); return; }
+  closeMileageModal();
+  await openBikeDetail(currentBikeId);
+}
+async function deleteMileage(id) {
+  id = id || document.getElementById('mlId').value;
+  if (!id || !confirm('Delete this mileage reading? This cannot be undone.')) return;
+  const { error } = await sb.from('mileage_logs').delete().eq('id', id);
+  if (error) { alert('Could not delete: ' + error.message); return; }
+  closeMileageModal();
+  await openBikeDetail(currentBikeId);
+}
+
+/* ----- global search ----- */
+let gsItems = [], gsSel = -1, gsSvcLoaded = false;
+const gsNorm = v => String(v == null ? '' : v).toLowerCase();
+async function gsEnsureData() {
+  if (!gsSvcLoaded) {
+    gsSvcLoaded = true;
+    const { data } = await sb.from('service_records').select('id, bike_id, report_no, service_date, mechanic, work_done');
+    if (data) { gsSvc = data; gsRun(); }
+  }
+}
+let gsSvc = [];
+function gsRun() {
+  const input = document.getElementById('gsInput'), menu = document.getElementById('gsMenu');
+  if (!input || !menu) return;
+  const q = gsNorm(input.value).trim();
+  gsItems = []; gsSel = -1;
+  if (!q) { menu.classList.remove('open'); menu.innerHTML = ''; return; }
+  gsEnsureData();
+  const digits = q.replace(/\D/g, '');
+  const has = (...f) => f.some(x => gsNorm(x).includes(q));
+  const groups = [];
+  const add = (title, arr, fn) => { if (arr.length) groups.push({ title, total: arr.length, items: arr.slice(0, 5).map(fn) }); };
+  const owner = id => { const c = CUSTOMERS.find(x => x.id === id); return c ? c.name : ''; };
+  add('Customers', CUSTOMERS.filter(c => has(c.name, c.email, customerCode(c)) || (digits.length >= 3 && String(c.phone || '').replace(/\D/g, '').includes(digits))),
+    c => ({ t: c.name, s: [c.phone, c.email].filter(Boolean).join(' · '), go: () => openCustomerDetail(c.id) }));
+  add('Bikes', BIKES.filter(b => has(b.brand, b.model, b.colour, b.serial_no, bikeCode(b), owner(b.customer_id))),
+    b => ({ t: [b.brand, b.model].filter(Boolean).join(' ') || 'Bike', s: [owner(b.customer_id), b.serial_no].filter(Boolean).join(' · '), go: () => openBikeDetail(b.id) }));
+  add('Invoices', INVOICES.filter(i => has(i.full_invoice_no, i.invoice_no, i.customer_name)),
+    i => ({ t: i.full_invoice_no || i.invoice_no, s: [i.customer_name, formatDate(i.invoice_date), money(i.total)].filter(Boolean).join(' · '), go: () => openInvoiceEditor(i.id) }));
+  add('Quotations', QUOTATIONS.filter(x => has(x.full_quotation_no, x.quotation_no, x.customer_name)),
+    x => ({ t: x.full_quotation_no || x.quotation_no, s: [x.customer_name, formatDate(x.quotation_date), money(x.total)].filter(Boolean).join(' · '), go: () => openQuotationEditor(x.id) }));
+  add('Service reports', gsSvc.filter(r => has(r.report_no, r.mechanic, r.work_done)),
+    r => { const b = BIKES.find(x => x.id === r.bike_id); return { t: r.report_no || 'Service report', s: [b ? [b.brand, b.model].filter(Boolean).join(' ') : '', owner(b && b.customer_id), formatDate(r.service_date)].filter(Boolean).join(' · '), go: () => openBikeDetail(r.bike_id) }; });
+  add('Bookings', BOOKINGS.filter(b => has(b.customer_name, b.notes) || (digits.length >= 3 && String(b.customer_phone || '').replace(/\D/g, '').includes(digits))),
+    b => ({ t: b.customer_name, s: [(b.services && b.services.name) || '', new Date(b.start_time).toLocaleDateString('en-SG', { day: 'numeric', month: 'short' })].filter(Boolean).join(' · '), go: () => { switchTab('bookings'); setBookingFilter('all'); } }));
+  add('Enquiries', ENQUIRIES.filter(e => has(e.name, e.product, e.topic, e.bike) || (digits.length >= 3 && String(e.mobile || '').replace(/\D/g, '').includes(digits))),
+    e => ({ t: e.name, s: [e.topic, e.product].filter(Boolean).join(' · '), go: () => { switchTab('enquiries'); } }));
+  add('Products & stock', VARIANTS.filter(v => { const p = PRODUCTS.find(x => x.id === v.product_id); return has(v.name, v.sku, p && p.name, p && p.brand); }),
+    v => { const p = PRODUCTS.find(x => x.id === v.product_id); return { t: (p && p.name !== v.name ? p.name + ' — ' : '') + v.name, s: [v.sku, 'qty ' + v.qty].filter(Boolean).join(' · '), go: () => { switchTab('products'); document.getElementById('productSearch').value = p ? p.name : v.name; renderProducts(); } }; });
+  add('Bikes for sale', LISTINGS.filter(l => has(l.name, l.brand, l.slug)),
+    l => ({ t: l.name, s: [l.status, l.price ? money(l.price) : ''].filter(Boolean).join(' · '), go: () => { switchTab('listings'); } }));
+  let html = '';
+  groups.forEach(g => {
+    html += `<div class="gs-group">${g.title}${g.total > g.items.length ? ' (' + g.total + ')' : ''}</div>`;
+    g.items.forEach(it => { gsItems.push(it); html += `<div class="gs-item" data-i="${gsItems.length - 1}" onmousedown="event.preventDefault();gsGo(${gsItems.length - 1})"><span>${escapeHtml(it.t)}</span><span class="sub">${escapeHtml(it.s || '')}</span></div>`; });
+  });
+  menu.innerHTML = html || '<div class="gs-empty">No matches</div>';
+  menu.classList.add('open');
+}
+function gsGo(i) {
+  const it = gsItems[i];
+  if (!it) return;
+  const input = document.getElementById('gsInput');
+  document.getElementById('gsMenu').classList.remove('open');
+  input.value = ''; input.blur();
+  it.go();
+}
+function gsKey(e) {
+  const menu = document.getElementById('gsMenu');
+  if (e.key === 'Escape') { menu.classList.remove('open'); e.target.blur(); return; }
+  if (!gsItems.length) return;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    gsSel = e.key === 'ArrowDown' ? Math.min(gsItems.length - 1, gsSel + 1) : Math.max(0, gsSel - 1);
+    menu.querySelectorAll('.gs-item').forEach(el => el.classList.toggle('sel', Number(el.dataset.i) === gsSel));
+    const el = menu.querySelector('.gs-item.sel'); if (el) el.scrollIntoView({ block: 'nearest' });
+  } else if (e.key === 'Enter') { e.preventDefault(); gsGo(gsSel >= 0 ? gsSel : 0); }
+}
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && !/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '') && !e.metaKey && !e.ctrlKey) {
+    const gi = document.getElementById('gsInput'); if (gi && gi.offsetParent !== null) { e.preventDefault(); gi.focus(); }
+  }
+});
+document.addEventListener('click', e => { if (!e.target.closest('.gs-wrap')) { const m = document.getElementById('gsMenu'); if (m) m.classList.remove('open'); } });
 
 /* ============ BIKE SPECS + FITTING RECORDS (needs supabase/bike-specs-and-fitting.sql) ============ */
 const BIKE_SPEC_GROUPS = [
@@ -2961,6 +3379,7 @@ async function saveBike() {
 }
 
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function todaySG() { return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Singapore' }); }   // YYYY-MM-DD in Singapore time (toISOString gives UTC, which is yesterday before 8am)
 function formatDate(d) { if (!d) return '—'; const dt = new Date(d); return dt.toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' }); }
 function money(n) { const v = Number(n)||0; return '$' + v.toLocaleString('en-SG', {minimumFractionDigits:2, maximumFractionDigits:2}); }
 function shortId(id, prefix) { if (!id) return '—'; return prefix + '-' + id.replace(/-/g,'').slice(0,6).toUpperCase(); }
@@ -3099,7 +3518,7 @@ function renderProducts() {
             <td style="font-weight:700;color:${Number(v.qty)<=Number(v.min_qty) ? 'var(--red)' : 'var(--text)'}">${v.qty}</td>
             <td class="cell-muted">${money(v.wac)}</td>
             <td class="cell-strong">${money(v.sell_sgd)}</td>
-            <td><button class="btn btn-ghost btn-sm" onclick="deleteVariant('${v.id}')">${ICON_TRASH}</button></td>
+            <td style="white-space:nowrap"><button class="btn btn-ghost btn-sm" title="Stock history" onclick="openStockLog('${v.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button><button class="btn btn-ghost btn-sm" onclick="deleteVariant('${v.id}')">${ICON_TRASH}</button></td>
           </tr>`).join('')
         : `<tr><td colspan="6" style="padding-left:28px" class="cell-muted">No variants yet</td></tr>`;
       return groupHeader + variantRows;
@@ -3195,10 +3614,18 @@ async function saveVariant() {
     qty: parseFloat(document.getElementById('variantQty').value) || 0,
     min_qty: parseFloat(document.getElementById('variantMinQty').value) || 0,
   };
-  let error;
-  if (id) ({ error } = await sb.from('product_variants').update(payload).eq('id', id));
-  else ({ error } = await sb.from('product_variants').insert(payload));
+  let error, oldQty = null, newId = id;
+  if (id) {
+    const { data: old } = await sb.from('product_variants').select('qty').eq('id', id).single();   // fresh, for the stock log
+    oldQty = old ? Number(old.qty) || 0 : null;
+    ({ error } = await sb.from('product_variants').update(payload).eq('id', id));
+  } else {
+    const r = await sb.from('product_variants').insert(payload).select('id').single();
+    error = r.error; newId = r.data && r.data.id;
+  }
   if (error) { alert('Save failed: ' + error.message); return; }
+  if (id && oldQty !== null && oldQty !== payload.qty) await logStockMove(id, payload.qty - oldQty, 'manual_correction', null, null, 'Edited in product form: ' + oldQty + ' to ' + payload.qty);
+  if (!id && newId && payload.qty) await logStockMove(newId, payload.qty, 'manual_correction', null, null, 'Opening stock when variant was created');
   closeVariantModal();
   await loadProducts();
 }
@@ -3338,7 +3765,7 @@ async function addJournalEntry() {
   const amount = parseFloat(document.getElementById('jeAmount').value);
   if (!account || !amount) { alert('Account and amount are required.'); return; }
   const payload = {
-    entry_date: document.getElementById('jeDate').value || new Date().toISOString().slice(0,10),
+    entry_date: document.getElementById('jeDate').value || todaySG(),
     account, account_type: document.getElementById('jeAccountType').value,
     entry_type: document.getElementById('jeEntryType').value,
     amount, category: 'Manual', source_type: 'manual',
@@ -3474,7 +3901,7 @@ function openPurchaseEditor(prefillVariantId, forceNew) {
     return;
   }
   document.getElementById('purchaseId').value = '';
-  document.getElementById('purchaseDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('purchaseDate').value = todaySG();
   document.getElementById('purchasePlatform').value = '';
   document.getElementById('purchaseRef').value = '';
   document.getElementById('purchaseStatus').value = 'received';
@@ -3620,7 +4047,7 @@ async function savePurchase() {
   const totalSgd = itemsTotalSgd + shipping + misc;
 
   const { data: purchase, error } = await sb.from('purchases').insert({
-    purchase_date: document.getElementById('purchaseDate').value || new Date().toISOString().slice(0,10),
+    purchase_date: document.getElementById('purchaseDate').value || todaySG(),
     platform: document.getElementById('purchasePlatform').value.trim() || null,
     ref: document.getElementById('purchaseRef').value.trim() || null,
     status: document.getElementById('purchaseStatus').value,
@@ -3648,7 +4075,7 @@ async function savePurchase() {
   await loadProducts();
   await loadPurchases();
   if (document.getElementById('purchaseStatus').value === 'received') {
-    const pDate = document.getElementById('purchaseDate').value || new Date().toISOString().slice(0,10);
+    const pDate = document.getElementById('purchaseDate').value || todaySG();
     const memo = (document.getElementById('purchasePlatform').value.trim() || 'Purchase') + (document.getElementById('purchaseRef').value.trim() ? ' — ' + document.getElementById('purchaseRef').value.trim() : '');
     await sb.from('accounting_entries').insert([
       { entry_date: pDate, account: 'Inventory', account_type: 'asset', entry_type: 'debit', amount: totalSgd, category: 'Purchases', source_type: 'purchase', source_id: purchase.id, memo },
@@ -3688,7 +4115,7 @@ async function voidSale(saleId) {
 
   const { data: entries } = await sb.from('accounting_entries').select('*').eq('source_type', 'sale').eq('source_id', saleId);
   const reversals = (entries || []).map(e => ({
-    entry_date: new Date().toISOString().slice(0,10),
+    entry_date: todaySG(),
     account: e.account, account_type: e.account_type,
     entry_type: e.entry_type === 'debit' ? 'credit' : 'debit',
     amount: e.amount, category: e.category,
@@ -3714,7 +4141,7 @@ async function voidPurchase(purchaseId) {
 
   const { data: entries } = await sb.from('accounting_entries').select('*').eq('source_type', 'purchase').eq('source_id', purchaseId);
   const reversals = (entries || []).map(e => ({
-    entry_date: new Date().toISOString().slice(0,10),
+    entry_date: todaySG(),
     account: e.account, account_type: e.account_type,
     entry_type: e.entry_type === 'debit' ? 'credit' : 'debit',
     amount: e.amount, category: e.category,
@@ -3769,7 +4196,7 @@ function openSaleEditor(forceNew) {
     return;
   }
   document.getElementById('saleId').value = '';
-  document.getElementById('saleDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('saleDate').value = todaySG();
   document.getElementById('saleSource').value = '';
   document.getElementById('saleRef').value = '';
   document.getElementById('saleCustomer').value = '';
@@ -3846,7 +4273,7 @@ async function saveSale() {
   const net = gross - fee - shipping - returns - other;
 
   const { data: sale, error } = await sb.from('sales').insert({
-    sale_date: document.getElementById('saleDate').value || new Date().toISOString().slice(0,10),
+    sale_date: document.getElementById('saleDate').value || todaySG(),
     source: document.getElementById('saleSource').value.trim() || null,
     ref: document.getElementById('saleRef').value.trim() || null,
     customer: document.getElementById('saleCustomer').value.trim() || null,
@@ -3861,7 +4288,7 @@ async function saveSale() {
     totalCogs += it.qty * (Number(v?.wac) || 0);
     await applyStockMovement(it.variant_id, -it.qty, 'sale', 'sale', sale.id);
   }
-  const saleDate = document.getElementById('saleDate').value || new Date().toISOString().slice(0,10);
+  const saleDate = document.getElementById('saleDate').value || todaySG();
   const source = document.getElementById('saleSource').value.trim() || 'Sale';
   const memo = source + (document.getElementById('saleRef').value.trim() ? ' — ' + document.getElementById('saleRef').value.trim() : '');
   const ledgerEntries = [
@@ -3892,15 +4319,38 @@ async function loadInvoices() {
   renderInvoices();
 }
 
+function ymdLocal(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function invRange(kind) {
+  const n = new Date(), y = n.getFullYear(), m = n.getMonth();
+  let a, b;
+  if (kind === 'month') { a = new Date(y, m, 1); b = new Date(y, m + 1, 0); }
+  else if (kind === 'lastmonth') { a = new Date(y, m - 1, 1); b = new Date(y, m, 0); }
+  else { a = new Date(y, 0, 1); b = new Date(y, 11, 31); }
+  document.getElementById('invFrom').value = ymdLocal(a);
+  document.getElementById('invTo').value = ymdLocal(b);
+  renderInvoices();
+}
+function invClearFilters() {
+  ['invoiceSearch', 'invFrom', 'invTo'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const so = document.getElementById('invSort'); if (so) so.value = 'new';
+  renderInvoices();
+}
 function renderInvoices() {
   const tbody = document.getElementById('invoiceRows');
   if (!tbody) return;
   const q = (document.getElementById('invoiceSearch')?.value || '').trim().toLowerCase();
-  const list = q ? INVOICES.filter(inv =>
-    (inv.full_invoice_no || inv.invoice_no || '').toLowerCase().includes(q) ||
-    (inv.customer_name || '').toLowerCase().includes(q)
-  ) : INVOICES;
-  if (!list.length) { tbody.innerHTML = `<tr><td colspan="5" class="cell-muted">${q ? 'No invoices match “' + escapeHtml(q) + '”' : 'No invoices yet'}</td></tr>`; return; }
+  const from = document.getElementById('invFrom')?.value || '', to = document.getElementById('invTo')?.value || '';
+  const sort = document.getElementById('invSort')?.value || 'new';
+  let list = INVOICES.filter(inv =>
+    (!q || (inv.full_invoice_no || inv.invoice_no || '').toLowerCase().includes(q) || (inv.customer_name || '').toLowerCase().includes(q)) &&
+    (!from || (inv.invoice_date || '') >= from) && (!to || (inv.invoice_date || '') <= to));
+  if (sort === 'old') list = list.slice().sort((a, z) => (a.invoice_date || '').localeCompare(z.invoice_date || '') || (a.created_at || '').localeCompare(z.created_at || ''));
+  else if (sort === 'high') list = list.slice().sort((a, z) => (Number(z.total) || 0) - (Number(a.total) || 0));
+  else if (sort === 'low') list = list.slice().sort((a, z) => (Number(a.total) || 0) - (Number(z.total) || 0));
+  const sum = document.getElementById('invSummary');
+  if (sum) sum.textContent = list.length + ' invoice' + (list.length === 1 ? '' : 's') + ' · ' + money(list.reduce((t, i) => t + (Number(i.total) || 0), 0));
+  const filtered = q || from || to;
+  if (!list.length) { tbody.innerHTML = `<tr><td colspan="5" class="cell-muted">${filtered ? 'No invoices match these filters' : 'No invoices yet'}</td></tr>`; return; }
   tbody.innerHTML = list.map(inv => `
     <tr>
       <td class="cell-strong clickable" onclick="openInvoiceEditor('${inv.id}')">${escapeHtml(inv.full_invoice_no || inv.invoice_no)}</td>
@@ -3949,12 +4399,17 @@ async function deleteInvoice(id) {
   if (!confirm('Delete this invoice? This will restore any stock it deducted and remove its accounting entries. Cannot be undone.')) return;
   const { data: items } = await sb.from('invoice_items').select('variant_id, qty').eq('invoice_id', id);
   // Give back stock using fresh quantities from the DB, summed per variant (not the page cache).
+  const delInv = INVOICES.find(i => i.id === id);
+  const delNo = delInv ? (delInv.full_invoice_no || delInv.invoice_no) : '';
   const giveBack = {};
   (items || []).forEach(it => { if (it.variant_id) giveBack[it.variant_id] = (giveBack[it.variant_id] || 0) + (Number(it.qty) || 0); });
   const gbIds = Object.keys(giveBack);
   if (gbIds.length) {
     const { data: fv } = await sb.from('product_variants').select('*').in('id', gbIds);
-    for (const v of (fv || [])) await sb.from('product_variants').update({ qty: (Number(v.qty) || 0) + giveBack[v.id] }).eq('id', v.id);
+    for (const v of (fv || [])) {
+      await sb.from('product_variants').update({ qty: (Number(v.qty) || 0) + giveBack[v.id] }).eq('id', v.id);
+      await logStockMove(v.id, giveBack[v.id], 'void_sale', 'invoice', id, 'Returned: invoice ' + delNo + ' deleted');
+    }
   }
   await sb.from('accounting_entries').delete().eq('source_type', 'invoice').eq('source_id', id);
   const { error } = await sb.from('invoices').delete().eq('id', id);
@@ -4078,7 +4533,7 @@ async function openDocEditor(mode, docId, prefill) {
   docMode = mode;
   const isQ = mode === 'quote';
   const setV = (id, v) => { document.getElementById(id).value = v; };
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todaySG();
   ['invId', 'invSavedNo', 'invRevSuffix', 'invCustomerName', 'invAddr1', 'invAddr2', 'invPostal', 'invRemarks',
    'invDiscLabel', 'invDiscPct', 'invQuotationId', 'invQuoteRef', 'qtDepValue', 'qtEnquiryId', 'qtPayLink'].forEach(id => setV(id, ''));
   setV('invDiscType', 'pct'); invDiscTypeChanged(true);
@@ -4641,7 +5096,7 @@ async function saveInvoice() {
     is_revision: !!revSuffix,
     full_invoice_no: fullInvoiceNo,
     customer_name: customerName,
-    invoice_date: document.getElementById('invDate').value || new Date().toISOString().slice(0,10),
+    invoice_date: document.getElementById('invDate').value || todaySG(),
     address_line1: document.getElementById('invAddr1').value.trim() || null,
     address_line2: document.getElementById('invAddr2').value.trim() || null,
     postal_code: document.getElementById('invPostal').value.trim() || null,
@@ -4697,6 +5152,8 @@ async function saveInvoice() {
     const v = freshVariants[vid];
     if (!delta || !v) continue;
     await sb.from('product_variants').update({ qty: (Number(v.qty) || 0) - delta }).eq('id', vid);
+    await logStockMove(vid, -delta, delta > 0 ? 'sale' : 'void_sale', 'invoice', invoiceId,
+      (delta > 0 ? 'Used in invoice ' : 'Returned from invoice ') + fullInvoiceNo + (id ? ' (revision)' : ''));
   }
   for (const it of linkedItems) {
     const v = freshVariants[it.variant_id] || VARIANTS.find(x => x.id === it.variant_id);
@@ -4876,7 +5333,7 @@ function renderQuotations() {
     (x.customer_name || '').toLowerCase().includes(q)
   ) : QUOTATIONS;
   if (!list.length) { tbody.innerHTML = `<tr><td colspan="9" class="cell-muted">${q ? 'No quotations match “' + escapeHtml(q) + '”' : 'No quotations yet'}</td></tr>`; return; }
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todaySG();
   const statuses = ['draft', 'sent', 'accepted', 'declined'];
   tbody.innerHTML = list.map(x => {
     const expired = x.valid_until && x.valid_until < today && (x.status === 'draft' || x.status === 'sent');
@@ -4961,7 +5418,7 @@ async function saveQuotation() {
     customer_name: customerName,
     customer_id: document.getElementById('invLinkedCustomerId').value || null,
     bike_id: document.getElementById('invLinkedBikeId').value || null,
-    quotation_date: document.getElementById('invDate').value || new Date().toISOString().slice(0, 10),
+    quotation_date: document.getElementById('invDate').value || todaySG(),
     valid_until: document.getElementById('qtValidUntil').value || null,
     address_line1: document.getElementById('invAddr1').value.trim() || null,
     address_line2: document.getElementById('invAddr2').value.trim() || null,
@@ -5143,6 +5600,7 @@ function renderBookings() {
       <td style="white-space:nowrap">
         ${b.status === 'pending' ? `<button class="btn btn-primary btn-sm" onclick="setBookingStatus('${b.id}','confirmed')">Confirm</button>` : ''}
         <a class="btn btn-ghost btn-sm" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
+        <button class="btn btn-ghost btn-sm" title="Edit / reschedule" onclick="openBookingModal('${b.id}')">${ICON_EDIT}</button>
         ${b.bike_id ? `<button class="btn btn-ghost btn-sm" onclick="openServiceFromBooking('${b.id}')">Create report</button>` : ''}
       </td></tr>`;
   }).join('');
