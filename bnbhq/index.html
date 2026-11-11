@@ -640,6 +640,7 @@ tr.rent-pending td { background: #fffbf0; }
           </div>
           <div class="page-actions">
             <button class="btn btn-secondary" id="custEditBtn">Edit Customer</button>
+            <button class="btn btn-secondary" style="color:#b0392c" onclick="deleteCustomerById(currentCustomerId)">Delete Customer</button>
             <button class="btn btn-primary" onclick="openBikeModal()">+ Add Bike</button>
           </div>
         </div>
@@ -1747,7 +1748,10 @@ function renderCustomers() {
       <td>${escapeHtml(c.phone || '—')}</td>
       <td class="cell-muted">${escapeHtml(c.email || '—')}</td>
       <td><span class="badge badge-neutral">${bikeCountFor(c.id)} bike${bikeCountFor(c.id)===1?'':'s'}</span></td>
-      <td></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-ghost btn-sm" title="Edit customer" onclick="event.stopPropagation();openCustomerModal(CUSTOMERS.find(x=>x.id==='${c.id}'))">${ICON_EDIT}</button>
+        <button class="btn btn-ghost btn-sm" title="Delete customer" onclick="event.stopPropagation();deleteCustomerById('${c.id}')">${ICON_TRASH}</button>
+      </td>
     </tr>`).join('');
 }
 
@@ -1789,6 +1793,52 @@ async function saveCustomer() {
   closeCustomerModal();
   await loadAll();
   if (id) openCustomerDetail(id);
+}
+
+async function deleteCustomerById(id) {
+  const c = CUSTOMERS.find(x => x.id === id);
+  if (!c) return;
+  const bikes = BIKES.filter(b => b.customer_id === id);
+  const bikeIds = bikes.map(b => b.id);
+  const count = async (table, col, vals) => {
+    if (!vals.length) return 0;
+    const { data, error } = await sb.from(table).select('id').in(col, vals);
+    if (error) throw error;
+    return (data || []).length;
+  };
+  let inv, svc, bkg, qts, fits = [];
+  try {
+    [inv, svc, bkg, qts] = await Promise.all([
+      count('invoices', 'customer_id', [id]), count('service_records', 'customer_id', [id]),
+      count('bookings', 'customer_id', [id]), count('quotations', 'bike_id', bikeIds)
+    ]);
+    const fr = await sb.from('bike_fittings').select('id, report_url').eq('customer_id', id);
+    if (!fr.error) fits = fr.data || [];   // table only exists once the fitting SQL has been run
+  } catch (e) { alert('Could not check this customer\'s records: ' + (e.message || e)); return; }
+
+  // Real business records are never deleted along with a customer; they must be dealt with deliberately first.
+  const blockers = [];
+  if (inv) blockers.push(inv + ' invoice' + (inv > 1 ? 's' : ''));
+  if (qts) blockers.push(qts + ' quotation' + (qts > 1 ? 's' : '') + ' linked to their bikes');
+  if (svc) blockers.push(svc + ' servicing report' + (svc > 1 ? 's' : ''));
+  if (bkg) blockers.push(bkg + ' booking' + (bkg > 1 ? 's' : ''));
+  if (blockers.length) {
+    alert(c.name + ' can\'t be deleted yet. They still have: ' + blockers.join(', ') + '.\n\nDelete those first (they carry sales, stock and accounting entries), then delete the customer.');
+    return;
+  }
+  const extras = [];
+  if (bikes.length) extras.push(bikes.length + ' bike' + (bikes.length > 1 ? 's' : '') + ' (and their mileage readings)');
+  if (fits.length) extras.push(fits.length + ' fitting record' + (fits.length > 1 ? 's' : ''));
+  if (!confirm('Delete ' + c.name + '?' + (extras.length ? '\n\nThis will also permanently delete: ' + extras.join(', ') + '.' : '') + '\n\nThis cannot be undone.')) return;
+
+  const { error } = await sb.from('customers').delete().eq('id', id);   // bikes, mileage and fittings go with it
+  if (error) { alert('Delete failed: ' + error.message); return; }
+  const files = fits.map(f => f.report_url).filter(u => u && u.startsWith('fit:')).map(u => u.slice(4));
+  if (files.length) { try { await sb.storage.from(FIT_BUCKET).remove(files); } catch (e) {} }
+  currentCustomerId = null; currentBikeId = null;
+  await loadAll();
+  switchTab('crm');
+  renderCustomers();
 }
 
 function openCustomerDetail(id) {
